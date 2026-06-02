@@ -1,1 +1,0 @@
-import{j as a,f as n}from"./index-BEdJn3sL.js";function d({className:o,children:r,...s}){return a.jsx("div",{className:n("overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow duration-300 hover:shadow-xl",o),...s,children:r})}export{d as C};

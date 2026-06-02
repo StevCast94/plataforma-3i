@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { cloudinaryOptimize } from '@/lib/utils';
+import { cld } from '@/lib/cloudinary';
 import type { Project } from '@shared/types';
 
 export function ProjectCard({ project }: { project: Project }) {
@@ -10,7 +10,7 @@ export function ProjectCard({ project }: { project: Project }) {
       <Card className="group h-full">
         <div className="relative h-56 overflow-hidden">
           <img
-            src={cloudinaryOptimize(project.coverImage)}
+            src={cld(project.coverImage, { width: 800 })}
             alt={project.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"

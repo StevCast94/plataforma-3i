@@ -8,7 +8,7 @@ import { CTASection } from '@/components/shared/CTASection';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useProjects } from '@/hooks/useProjects';
 import { useProducts } from '@/hooks/useProducts';
-import { cloudinaryOptimize } from '@/lib/utils';
+import { cld } from '@/lib/cloudinary';
 
 export default function HomePage() {
   const { data: content } = useSiteContent();
@@ -25,7 +25,7 @@ export default function HomePage() {
       <section className="relative isolate overflow-hidden bg-primary text-white">
         {hero.image_url && (
           <img
-            src={cloudinaryOptimize(hero.image_url)}
+            src={cld(hero.image_url, { width: 1920 })}
             alt=""
             className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40"
           />

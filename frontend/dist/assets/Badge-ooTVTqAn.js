@@ -1,1 +1,0 @@
-import{j as a,f as n}from"./index-BEdJn3sL.js";const s={gold:"bg-secondary/20 text-accent",dark:"bg-primary text-white",light:"bg-light text-primary"};function o({children:t,variant:e="gold",className:r}){return a.jsx("span",{className:n("inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider",s[e],r),children:t})}export{o as B};

@@ -2,13 +2,15 @@ import { PrismaClient, ProductType } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Placeholders Unsplash hasta tener las imágenes reales en Cloudinary.
+// Ibiza: imágenes reales en Cloudinary (cloud dos8bzljc).
+// Montañita / Viajes: placeholders Unsplash hasta tener las reales.
+const CLD = 'https://res.cloudinary.com/dos8bzljc/image/upload/q_auto:best,f_auto';
 const IMG = {
-  ibiza:
-    'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1600&auto=format&fit=crop',
+  ibiza: `${CLD}/Ibiza_condohotel_portada`,
   ibizaGallery: [
-    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1600&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1600&auto=format&fit=crop',
+    `${CLD}/Ibiza_condohotel_1`,
+    `${CLD}/Ibiza_condohotel_2`,
+    `${CLD}/Ibiza_condohotel_3`,
   ],
   montanita:
     'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop',

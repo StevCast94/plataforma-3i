@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PriceDisplay } from './PriceDisplay';
-import { cloudinaryOptimize } from '@/lib/utils';
+import { cld } from '@/lib/cloudinary';
 import type { Product } from '@shared/types';
 
 const typeLabels: Record<string, string> = {
@@ -18,7 +18,7 @@ export function ProductCard({ product }: { product: Product }) {
       <Card className="group flex h-full flex-col">
         <div className="relative h-52 overflow-hidden">
           <img
-            src={cloudinaryOptimize(product.images?.[0])}
+            src={cld(product.images?.[0], { width: 800 })}
             alt={product.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
