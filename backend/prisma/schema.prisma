@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SiteContent {
+  id        String   @id @default(uuid())
+  section   String // hero, about, projects, contact, footer
+  key       String // title, subtitle, body, image_url, cta_text, cta_url
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@unique([section, key])
+}
+
+model ContactSubmission {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  message   String   @db.Text
+  source    String? // landing, tienda, referencia
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  name        String
+  subtitle    String?
+  description String    @db.Text
+  location    String?
+  coverImage  String? // Cloudinary URL
+  images      String[] // Cloudinary URLs
+  features    Json? // { bedrooms, bathrooms, m2, amenities... }
+  priceFrom   Float?
+  priceLabel  String? // "Desde $12,000", "Fracciones desde $5,000"
+  active      Boolean   @default(true)
+  featured    Boolean   @default(false)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum ProductType {
+  TRAVEL_MEMBERSHIP
+  FRACTIONAL_PROPERTY
+  TRADITIONAL_PROPERTY
+  LAND
+}
+
+model Product {
+  id          String           @id @default(uuid())
+  slug        String           @unique
+  name        String
+  type        ProductType
+  price       Float
+  promoPrice  Float?
+  description String           @db.Text
+  features    Json? // ["Beneficio 1", "Beneficio 2", ...]
+  images      String[] // Cloudinary URLs
+  projectId   String?
+  project     Project?         @relation(fields: [projectId], references: [id])
+  active      Boolean          @default(true)
+  featured    Boolean          @default(false)
+  inquiries   ProductInquiry[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ProductInquiry {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  name      String
+  email     String
+  phone     String?
+  message   String?  @db.Text
+  status    String   @default("pending") // pending, contacted, closed
+  createdAt DateTime @default(now())
+}
