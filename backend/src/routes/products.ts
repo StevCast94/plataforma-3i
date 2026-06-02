@@ -48,7 +48,7 @@ productRoutes.get('/:slug', async (req, res) => {
 // POST /api/products/:id/inquiry (público) -> solicitar info de un producto
 productRoutes.post('/:id/inquiry', async (req, res) => {
   try {
-    const { name, email, phone, message } = req.body ?? {};
+    const { name, email, phone, message, referralCode } = req.body ?? {};
     if (!name || !email) {
       res.status(400).json({ error: 'name y email son requeridos' });
       return;
@@ -74,6 +74,7 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
         email: String(email).trim(),
         phone: phone ? String(phone).trim() : null,
         message: message ? String(message).trim() : null,
+        referralCode: referralCode ? String(referralCode).trim() : null,
       },
     });
 

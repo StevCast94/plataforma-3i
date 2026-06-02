@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { useReferral } from '@/hooks/useReferral';
 
 /** Hace scroll al inicio en cada cambio de ruta. */
 function ScrollToTop() {
@@ -14,6 +15,9 @@ function ScrollToTop() {
 }
 
 export function Layout() {
+  // Captura y persiste ?ref=3IP-XXXXXX desde cualquier ruta de entrada.
+  useReferral();
+
   return (
     <div className="flex min-h-screen flex-col">
       <ScrollToTop />

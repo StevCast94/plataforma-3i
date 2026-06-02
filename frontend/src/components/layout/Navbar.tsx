@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useProjects } from '@/hooks/useProjects';
 
 const links = [
   { to: '/', label: 'Inicio', end: true },
-  { to: '/proyectos', label: 'Proyectos' },
+  { to: '/proyectos', label: 'Proyectos', hasDropdown: true },
   { to: '/tienda', label: 'Tienda' },
   { to: '/club', label: 'Club 3i' },
   { to: '/sobre-nosotros', label: 'Nosotros' },
@@ -13,6 +14,7 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const { data: projects } = useProjects();
 
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur">
@@ -26,19 +28,42 @@ export function Navbar() {
         {/* Desktop */}
         <ul className="hidden items-center gap-7 md:flex">
           {links.map((l) => (
-            <li key={l.to}>
+            <li key={l.to} className="group relative">
               <NavLink
                 to={l.to}
                 end={l.end}
                 className={({ isActive }) =>
                   cn(
-                    'text-sm font-medium transition-colors hover:text-secondary',
+                    'flex items-center gap-1 text-sm font-medium transition-colors hover:text-secondary',
                     isActive ? 'text-secondary' : 'text-primary',
                   )
                 }
               >
                 {l.label}
+                {l.hasDropdown && <span className="text-xs">▾</span>}
               </NavLink>
+
+              {/* Dropdown de proyectos */}
+              {l.hasDropdown && (projects?.length ?? 0) > 0 && (
+                <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+                  <div className="w-64 overflow-hidden rounded-xl bg-white py-2 shadow-xl ring-1 ring-black/5">
+                    {projects!.map((p) => (
+                      <Link
+                        key={p.id}
+                        to={`/proyectos/${p.slug}`}
+                        className="block px-4 py-2.5 text-sm text-primary hover:bg-light"
+                      >
+                        <span className="font-medium">{p.name}</span>
+                        {p.location && (
+                          <span className="block text-xs text-brand-gray">
+                            {p.location}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -75,6 +100,18 @@ export function Navbar() {
               >
                 {l.label}
               </NavLink>
+              {/* Sub-lista de proyectos en mobile */}
+              {l.hasDropdown &&
+                (projects ?? []).map((p) => (
+                  <Link
+                    key={p.id}
+                    to={`/proyectos/${p.slug}`}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-lg px-6 py-1.5 text-sm text-brand-gray hover:text-secondary"
+                  >
+                    {p.name}
+                  </Link>
+                ))}
             </li>
           ))}
         </ul>

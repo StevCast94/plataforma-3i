@@ -9,7 +9,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // POST /api/contact  (público) -> guardar formulario de contacto
 contactRoutes.post('/', async (req, res) => {
   try {
-    const { name, email, phone, message, source } = req.body ?? {};
+    const { name, email, phone, message, source, referralCode } = req.body ?? {};
 
     if (!name || !email || !message) {
       res.status(400).json({ error: 'name, email y message son requeridos' });
@@ -27,6 +27,7 @@ contactRoutes.post('/', async (req, res) => {
         phone: phone ? String(phone).trim() : null,
         message: String(message).trim(),
         source: source ? String(source) : 'landing',
+        referralCode: referralCode ? String(referralCode).trim() : null,
       },
     });
 

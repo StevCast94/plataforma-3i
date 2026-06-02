@@ -1,6 +1,8 @@
 import { lazy } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
+import { ToastProvider } from '@/components/shared/Toast';
 
 // Lazy loading de todas las páginas.
 const HomePage = lazy(() => import('@/pages/landing/HomePage'));
@@ -15,20 +17,24 @@ const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 export default function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="proyectos" element={<ProjectsPage />} />
-          <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
-          <Route path="tienda" element={<ShopPage />} />
-          <Route path="tienda/:slug" element={<ProductDetailPage />} />
-          <Route path="club" element={<ClubPage />} />
-          <Route path="sobre-nosotros" element={<AboutPage />} />
-          <Route path="contacto" element={<ContactPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+    <HelmetProvider>
+      <ToastProvider>
+        <HashRouter>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="proyectos" element={<ProjectsPage />} />
+              <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
+              <Route path="tienda" element={<ShopPage />} />
+              <Route path="tienda/:slug" element={<ProductDetailPage />} />
+              <Route path="club" element={<ClubPage />} />
+              <Route path="sobre-nosotros" element={<AboutPage />} />
+              <Route path="contacto" element={<ContactPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
+        </HashRouter>
+      </ToastProvider>
+    </HelmetProvider>
   );
 }

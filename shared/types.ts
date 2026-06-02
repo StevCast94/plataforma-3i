@@ -66,6 +66,7 @@ export interface ContactSubmissionInput {
   phone?: string;
   message: string;
   source?: 'landing' | 'tienda' | 'referencia' | string;
+  referralCode?: string;
 }
 
 export interface ProductInquiryInput {
@@ -73,6 +74,7 @@ export interface ProductInquiryInput {
   email: string;
   phone?: string;
   message?: string;
+  referralCode?: string;
 }
 
 // Mapa section -> { key: value } usado por el frontend para el contenido dinámico.
