@@ -1,0 +1,12 @@
+{
+  "name": "plataforma-3i",
+  "private": true,
+  "description": "Plataforma Grupo 3i — Monorepo",
+  "scripts": {
+    "start": "cd backend && npx prisma generate && npx prisma migrate deploy && npx tsx src/index.ts",
+    "build": "cd frontend && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
