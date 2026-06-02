@@ -9,6 +9,7 @@ const links = [
   { to: '/tienda', label: 'Tienda' },
   { to: '/club', label: 'Club 3i' },
   { to: '/sobre-nosotros', label: 'Nosotros' },
+  { to: '/oficina', label: 'Oficina' },
   { to: '/contacto', label: 'Contacto' },
 ];
 

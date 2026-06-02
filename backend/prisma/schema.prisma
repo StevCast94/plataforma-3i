@@ -69,14 +69,15 @@ model Product {
   active      Boolean          @default(true)
   featured    Boolean          @default(false)
   inquiries   ProductInquiry[]
+  commissions Commission[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 }
 
 model ProductInquiry {
-  id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  id           String   @id @default(uuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
   name         String
   email        String
   phone        String?
@@ -84,4 +85,136 @@ model ProductInquiry {
   referralCode String? // 3IP-XXXXXX capturado del query param ?ref=
   status       String   @default("pending") // pending, contacted, closed
   createdAt    DateTime @default(now())
+}
+
+// ============================================================
+// FASE 2 — PROGRAMA DE REFERIDOS (OFICINA VIRTUAL)
+// ============================================================
+
+enum MemberStatus {
+  PREMIERE
+  ELITE
+  SUSPENDED
+}
+
+enum EliteBy {
+  PURCHASE
+  REFERRALS
+}
+
+enum CommissionStatus {
+  PENDING
+  CONFIRMED
+  LIQUIDATED
+  PAID
+  REVERSED
+}
+
+model ReferralMember {
+  id                    String           @id @default(uuid())
+  userId                String?          @unique // FK auth.users (Supabase) — nullable hasta Fase 3
+  passwordHash          String // bcrypt — auth JWT simple en Fase 2
+  fullName              String
+  email                 String           @unique
+  phone                 String?
+  docId                 String           @unique
+  docType               String           @default("cedula")
+  status                MemberStatus     @default(PREMIERE)
+  referralCode          String           @unique
+  referrerId            String?
+  referrer              ReferralMember?  @relation("ReferralChain", fields: [referrerId], references: [id])
+  referrals             ReferralMember[] @relation("ReferralChain")
+  walletBalance         Float            @default(0)
+  totalEarned           Float            @default(0)
+  totalReferrals        Int              @default(0)
+  lastReferralAt        DateTime?
+  inactiveSince         DateTime?
+  eliteSince            DateTime?
+  eliteBy               EliteBy?
+  referralsCountToElite Int              @default(0)
+  membershipAwarded     Boolean          @default(false)
+  bankInfo              Json?
+  payoutMethod          String?
+  payoutEmail           String?
+  kycVerified           Boolean          @default(false)
+  kycVerifiedAt         DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  sentReferrals     Referral[]     @relation("Referrer")
+  receivedReferrals Referral[]     @relation("Referred")
+  commissions       Commission[]
+  payouts           Payout[]
+  links             ReferralLink[]
+  notifications     Notification[]
+}
+
+model Referral {
+  id                String         @id @default(uuid())
+  referrerId        String
+  referrer          ReferralMember @relation("Referrer", fields: [referrerId], references: [id])
+  referredId        String
+  referred          ReferralMember @relation("Referred", fields: [referredId], references: [id])
+  level             Int // 1 o 2
+  attributionMethod String         @default("link") // link, code, qr, manual
+  cookieId          String?
+  status            String         @default("pending") // pending, active, inactive
+  registeredAt      DateTime       @default(now())
+  firstPurchaseAt   DateTime?
+  commissions       Commission[]
+}
+
+model ReferralLink {
+  id          String         @id @default(uuid())
+  memberId    String
+  member      ReferralMember @relation(fields: [memberId], references: [id])
+  code        String         @unique
+  fullUrl     String
+  shortUrl    String?
+  qrCodeUrl   String?
+  clicks      Int            @default(0)
+  conversions Int            @default(0)
+  status      String         @default("active")
+  createdAt   DateTime       @default(now())
+}
+
+model Commission {
+  id            String           @id @default(uuid())
+  memberId      String
+  member        ReferralMember   @relation(fields: [memberId], references: [id])
+  referralId    String
+  referral      Referral         @relation(fields: [referralId], references: [id])
+  productId     String?
+  product       Product?         @relation(fields: [productId], references: [id])
+  transactionId String?
+  amount        Float
+  rate          Float
+  type          String           @default("percentage") // percentage, fixed
+  status        CommissionStatus @default(PENDING)
+  holdUntil     DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime         @default(now())
+}
+
+model Payout {
+  id        String         @id @default(uuid())
+  memberId  String
+  member    ReferralMember @relation(fields: [memberId], references: [id])
+  amount    Float
+  method    String
+  reference String?
+  status    String         @default("pending") // pending, processing, paid, failed
+  paidAt    DateTime?
+  createdAt DateTime       @default(now())
+}
+
+model Notification {
+  id        String         @id @default(uuid())
+  memberId  String
+  member    ReferralMember @relation(fields: [memberId], references: [id])
+  type      String // new_referral, first_purchase, commission_confirmed, payout_processed, elite_ascension, inactivity_warning
+  title     String
+  body      String         @db.Text
+  read      Boolean        @default(false)
+  createdAt DateTime       @default(now())
 }

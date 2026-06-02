@@ -3,11 +3,31 @@
 // así que basta con rutas relativas /api/...
 
 const BASE = import.meta.env.VITE_API_URL ?? '';
+const TOKEN_KEY = 'g3i_member_token';
+
+export function setAuthToken(token: string | null) {
+  if (token) sessionStorage.setItem(TOKEN_KEY, token);
+  else sessionStorage.removeItem(TOKEN_KEY);
+}
+
+export function getAuthToken(): string | null {
+  try {
+    return sessionStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = getAuthToken();
   const res = await fetch(`${BASE}/api${path}`, {
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(init?.headers ?? {}),
+    },
   });
 
   if (!res.ok) {
@@ -27,9 +47,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   get: <T>(path: string) => request<T>(path),
-  post: <T>(path: string, body: unknown) =>
-    request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
-  put: <T>(path: string, body: unknown) =>
-    request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
+  post: <T>(path: string, body?: unknown) =>
+    request<T>(path, { method: 'POST', body: body ? JSON.stringify(body) : undefined }),
+  put: <T>(path: string, body?: unknown) =>
+    request<T>(path, { method: 'PUT', body: body ? JSON.stringify(body) : undefined }),
   del: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };

@@ -1,6 +1,10 @@
 import { PrismaClient, ProductType } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
+
+const PUBLIC_BASE =
+  process.env.PUBLIC_BASE_URL ?? 'https://plataforma-3i-production.up.railway.app';
 
 // Ibiza: imágenes reales en Cloudinary (cloud dos8bzljc).
 // Montañita / Viajes: placeholders Unsplash hasta tener las reales.
@@ -176,7 +180,138 @@ async function main() {
   }
   console.log(`   ✔ ${products.length} productos`);
 
+  await seedMembers();
+
   console.log('✅ Seed completado.');
+}
+
+// ============ MIEMBROS DE EJEMPLO (programa de referidos) ============
+async function seedMembers() {
+  const passwordHash = await bcrypt.hash('password123', 10);
+  const link = (code: string) => `${PUBLIC_BASE}/#/oficina/registro?ref=${code}`;
+
+  // 1) Miembro Elite (referidor)
+  const eliteCode = '3IE-ELITE1';
+  const elite = await prisma.referralMember.upsert({
+    where: { email: 'elite@club3i.com' },
+    update: {},
+    create: {
+      fullName: 'Ana Elite Demo',
+      email: 'elite@club3i.com',
+      phone: '+593 99 111 1111',
+      passwordHash,
+      docId: '0900000001',
+      status: 'ELITE',
+      referralCode: eliteCode,
+      eliteSince: new Date(),
+      eliteBy: 'PURCHASE',
+      walletBalance: 420,
+      totalEarned: 920,
+      totalReferrals: 1,
+      lastReferralAt: new Date(),
+      kycVerified: true,
+      kycVerifiedAt: new Date(),
+      payoutMethod: 'paypal',
+      payoutEmail: 'elite@club3i.com',
+    },
+  });
+  await prisma.referralLink.upsert({
+    where: { code: eliteCode },
+    update: {},
+    create: { memberId: elite.id, code: eliteCode, fullUrl: link(eliteCode), clicks: 34, conversions: 1 },
+  });
+
+  // 2) Miembro Premiere (referido por la Elite)
+  const premiereCode = '3IP-PREM01';
+  const premiere = await prisma.referralMember.upsert({
+    where: { email: 'premiere@club3i.com' },
+    update: {},
+    create: {
+      fullName: 'Carlos Premiere Demo',
+      email: 'premiere@club3i.com',
+      phone: '+593 99 222 2222',
+      passwordHash,
+      docId: '0900000002',
+      status: 'PREMIERE',
+      referralCode: premiereCode,
+      referrerId: elite.id,
+      totalReferrals: 0,
+      referralsCountToElite: 2,
+      lastReferralAt: new Date(),
+      kycVerified: true,
+      kycVerifiedAt: new Date(),
+      payoutMethod: 'transfer',
+    },
+  });
+  await prisma.referralLink.upsert({
+    where: { code: premiereCode },
+    update: {},
+    create: { memberId: premiere.id, code: premiereCode, fullUrl: link(premiereCode), clicks: 8, conversions: 1 },
+  });
+
+  // Relación de referido (nivel 1): Elite → Premiere, con primera compra hecha.
+  const existingRef = await prisma.referral.findFirst({
+    where: { referrerId: elite.id, referredId: premiere.id, level: 1 },
+  });
+  const referral =
+    existingRef ??
+    (await prisma.referral.create({
+      data: {
+        referrerId: elite.id,
+        referredId: premiere.id,
+        level: 1,
+        attributionMethod: 'link',
+        status: 'active',
+        firstPurchaseAt: new Date(),
+      },
+    }));
+
+  // Comisiones de ejemplo para la Elite (distintos estados del ciclo de vida).
+  const membership = await prisma.product.findUnique({
+    where: { slug: 'membresia-viajes-club-3i' },
+    select: { id: true },
+  });
+  const sampleCommissions = [
+    { amount: 100, rate: 0, type: 'fixed', status: 'PAID' as const, paidAt: new Date() },
+    { amount: 100, rate: 0, type: 'fixed', status: 'LIQUIDATED' as const },
+    { amount: 480, rate: 0.04, type: 'percentage', status: 'CONFIRMED' as const },
+    { amount: 240, rate: 0.04, type: 'percentage', status: 'PENDING' as const },
+  ];
+  const existingComm = await prisma.commission.count({ where: { memberId: elite.id } });
+  if (existingComm === 0) {
+    for (const c of sampleCommissions) {
+      await prisma.commission.create({
+        data: {
+          memberId: elite.id,
+          referralId: referral.id,
+          productId: membership?.id ?? null,
+          amount: c.amount,
+          rate: c.rate,
+          type: c.type,
+          status: c.status,
+          paidAt: 'paidAt' in c ? c.paidAt : null,
+          holdUntil: c.status === 'PENDING' ? new Date(Date.now() + 30 * 86400000) : null,
+        },
+      });
+    }
+  }
+
+  // Notificación de bienvenida para ambos.
+  for (const m of [elite, premiere]) {
+    const has = await prisma.notification.count({ where: { memberId: m.id } });
+    if (has === 0) {
+      await prisma.notification.create({
+        data: {
+          memberId: m.id,
+          type: 'new_referral',
+          title: '¡Bienvenido al Club 3i!',
+          body: 'Tu oficina virtual está lista. Comparte tu enlace y empieza a ganar.',
+        },
+      });
+    }
+  }
+
+  console.log('   ✔ 2 miembros demo (elite@club3i.com / premiere@club3i.com — pass: password123)');
 }
 
 main()

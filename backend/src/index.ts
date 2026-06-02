@@ -2,16 +2,24 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { contentRoutes } from './routes/content';
 import { contactRoutes } from './routes/contact';
 import { projectRoutes } from './routes/projects';
 import { productRoutes } from './routes/products';
+import { memberRoutes } from './routes/members';
+import { referralRoutes } from './routes/referrals';
+import { referralLinkRoutes } from './routes/referralLinks';
+import { commissionRoutes } from './routes/commissions';
+import { payoutRoutes } from './routes/payouts';
+import { notificationRoutes } from './routes/notifications';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 // Health check (útil para Railway)
 app.get('/api/health', (_req, res) => {
@@ -23,6 +31,14 @@ app.use('/api/content', contentRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/products', productRoutes);
+
+// Fase 2 — Programa de referidos (oficina virtual)
+app.use('/api/members', memberRoutes);
+app.use('/api/referrals', referralRoutes);
+app.use('/api/referral-links', referralLinkRoutes);
+app.use('/api/commissions', commissionRoutes);
+app.use('/api/payouts', payoutRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Cualquier /api/* no encontrada -> 404 JSON (no cae al SPA fallback)
 app.use('/api', (_req, res) => {
