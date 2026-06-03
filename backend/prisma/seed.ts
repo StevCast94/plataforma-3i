@@ -182,8 +182,81 @@ async function main() {
 
   await seedMembers();
   await seedStaff();
+  await seedCommunity();
 
   console.log('✅ Seed completado.');
+}
+
+// ============ RED SOCIAL (FASE 4) ============
+async function seedCommunity() {
+  const elite = await prisma.referralMember.findUnique({ where: { email: 'elite@club3i.com' }, select: { id: true } });
+  const premiere = await prisma.referralMember.findUnique({ where: { email: 'premiere@club3i.com' }, select: { id: true } });
+  if (!elite || !premiere) return;
+
+  // Perfiles sociales de los miembros demo.
+  await prisma.referralMember.update({
+    where: { id: elite.id },
+    data: {
+      bio: 'Inversionista inmobiliaria y miembro Elite del Club 3i. Apasionada por los viajes.',
+      location: 'Guayaquil, Ecuador',
+      interests: ['inversiones', 'viajes', 'fraccionadas'],
+    },
+  });
+  await prisma.referralMember.update({
+    where: { id: premiere.id },
+    data: {
+      bio: 'Construyendo mi red en el Club 3i. Interesado en propiedades fraccionadas.',
+      location: 'Montañita, Santa Elena',
+      interests: ['fraccionadas', 'montañita'],
+    },
+  });
+
+  // Grupos
+  const groups = [
+    { name: 'Inversiones Inmobiliarias', slug: 'inversiones-inmobiliarias', description: 'Estrategias, oportunidades y análisis del mercado inmobiliario.' },
+    { name: 'Propiedades Fraccionadas', slug: 'propiedades-fraccionadas', description: 'Todo sobre la inversión fraccionada: cómo empezar desde $5,000.' },
+    { name: 'Club de Viajes 3i', slug: 'club-de-viajes-3i', description: 'Comparte destinos, tips y aprovecha los beneficios de tu membresía.' },
+    { name: 'Montañita View Community', slug: 'montanita-view-community', description: 'La comunidad del proyecto Montañita View. Eventos y novedades.' },
+  ];
+  const groupIds: Record<string, string> = {};
+  for (const g of groups) {
+    const row = await prisma.socialGroup.upsert({
+      where: { slug: g.slug },
+      update: {},
+      create: { ...g, privacy: 'public', createdBy: elite.id, members: { create: { userId: elite.id, role: 'admin' } } },
+    });
+    groupIds[g.slug] = row.id;
+  }
+
+  // Posts de ejemplo (solo si el feed está vacío).
+  if ((await prisma.socialPost.count()) === 0) {
+    const posts = [
+      { userId: elite.id, content: '¡Bienvenidos a la comunidad Grupo 3i! 🎉 Este es el espacio para conectar, aprender e invertir juntos.', groupId: null },
+      { userId: elite.id, content: 'Acabo de cerrar mi primera fracción en Ibiza Condohotel. La rentabilidad proyectada es increíble. ¿Quién más está invirtiendo? 🏖️', groupId: groupIds['inversiones-inmobiliarias'] },
+      { userId: premiere.id, content: '¿Alguien con experiencia en propiedades fraccionadas? Quiero entender mejor el modelo antes de dar el paso.', groupId: groupIds['propiedades-fraccionadas'] },
+      { userId: elite.id, content: 'Tip de viaje ✈️: con la membresía Club 3i conseguí 65% de descuento en un hotel 5 estrellas en Cancún. ¡Vale cada centavo!', groupId: groupIds['club-de-viajes-3i'] },
+      { userId: premiere.id, content: 'Montañita View se ve espectacular. ¿Habrá evento de inauguración pronto? 🌅', groupId: groupIds['montanita-view-community'] },
+      { userId: elite.id, content: 'Recordatorio: la mejor inversión es la que entiendes. Pregunten todo lo que necesiten aquí. 💡', groupId: null },
+    ];
+    for (const p of posts) {
+      await prisma.socialPost.create({ data: { ...p, images: [] } });
+    }
+
+    // Evento de ejemplo en Montañita View Community.
+    await prisma.socialEvent.create({
+      data: {
+        groupId: groupIds['montanita-view-community'],
+        title: 'Tour de inversión — Montañita View',
+        description: 'Visita guiada al proyecto Montañita View. Conoce las amenidades y las oportunidades de inversión fraccionada en persona.',
+        location: 'Montañita, Santa Elena',
+        startDate: new Date(Date.now() + 14 * 86400000),
+        endDate: new Date(Date.now() + 14 * 86400000 + 3 * 3600000),
+        createdBy: elite.id,
+      },
+    });
+  }
+
+  console.log('   ✔ comunidad: 4 grupos, 6 posts, 1 evento');
 }
 
 // ============ STAFF ADMIN ============

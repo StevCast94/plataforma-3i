@@ -139,6 +139,11 @@ model ReferralMember {
   payoutEmail           String?
   kycVerified           Boolean          @default(false)
   kycVerifiedAt         DateTime?
+  // Perfil social (Fase 4)
+  bio                   String?
+  avatarUrl             String?
+  location              String?
+  interests             String[]
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
 
@@ -268,4 +273,118 @@ model AuditLog {
   entityId  String?
   details   Json?
   createdAt DateTime   @default(now())
+}
+
+// ============================================================
+// FASE 4 — RED SOCIAL DE LA COMUNIDAD
+// userId es el id de ReferralMember (sin FK Prisma: se resuelve manualmente).
+// ============================================================
+
+model SocialPost {
+  id          String           @id @default(uuid())
+  userId      String
+  content     String           @db.Text
+  images      String[]
+  linkUrl     String?
+  linkPreview Json?
+  groupId     String?
+  group       SocialGroup?     @relation(fields: [groupId], references: [id])
+  pinned      Boolean          @default(false)
+  comments    SocialComment[]
+  reactions   SocialReaction[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([groupId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model SocialComment {
+  id        String          @id @default(uuid())
+  postId    String
+  post      SocialPost      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  content   String          @db.Text
+  parentId  String?
+  parent    SocialComment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   SocialComment[] @relation("CommentReplies")
+  createdAt DateTime        @default(now())
+
+  @@index([postId])
+}
+
+model SocialReaction {
+  id        String     @id @default(uuid())
+  postId    String
+  post      SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  type      String // like, love, useful, interesting, celebrate
+  createdAt DateTime   @default(now())
+
+  @@unique([postId, userId])
+}
+
+model SocialGroup {
+  id          String              @id @default(uuid())
+  name        String
+  slug        String              @unique
+  description String?
+  coverImage  String?
+  privacy     String              @default("public") // public, private
+  createdBy   String
+  members     SocialGroupMember[]
+  posts       SocialPost[]
+  events      SocialEvent[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model SocialGroupMember {
+  id       String      @id @default(uuid())
+  groupId  String
+  group    SocialGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId   String
+  role     String      @default("member") // admin, moderator, member
+  joinedAt DateTime    @default(now())
+
+  @@unique([groupId, userId])
+}
+
+model SocialEvent {
+  id          String                @id @default(uuid())
+  groupId     String
+  group       SocialGroup           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  title       String
+  description String                @db.Text
+  location    String?
+  startDate   DateTime
+  endDate     DateTime?
+  coverImage  String?
+  createdBy   String
+  attendees   SocialEventAttendee[]
+  createdAt   DateTime              @default(now())
+}
+
+model SocialEventAttendee {
+  id        String      @id @default(uuid())
+  eventId   String
+  event     SocialEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  status    String      @default("going") // going, maybe, not_going
+  createdAt DateTime    @default(now())
+
+  @@unique([eventId, userId])
+}
+
+model DirectMessage {
+  id         String   @id @default(uuid())
+  senderId   String
+  receiverId String
+  content    String   @db.Text
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([senderId, receiverId])
+  @@index([receiverId, senderId])
 }

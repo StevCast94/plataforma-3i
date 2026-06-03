@@ -1,6 +1,8 @@
 // Helper para construir y optimizar URLs de Cloudinary.
 // Cloud name del proyecto Grupo 3i.
-export const CLOUDINARY_CLOUD = 'dos8bzljc';
+export const CLOUDINARY_CLOUD = 'db3t73yas';
+// Folder dentro de Cloudinary donde se guardan las imágenes de la plataforma.
+export const CLD_FOLDER = 'plataforma-3i';
 const BASE = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload`;
 
 interface CldOptions {

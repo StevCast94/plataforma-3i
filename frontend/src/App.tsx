@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { CommunityLayout } from '@/components/comunidad/CommunityLayout';
 import { ToastProvider } from '@/components/shared/Toast';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdminAuthProvider } from '@/context/AdminAuthContext';
@@ -40,6 +41,18 @@ const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPa
 const AdminPurchasesPage = lazy(() => import('@/pages/admin/AdminPurchasesPage'));
 const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
 const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
+
+// Comunidad (red social)
+const CommunityFeedPage = lazy(() => import('@/pages/comunidad/CommunityFeedPage'));
+const PostDetailPage = lazy(() => import('@/pages/comunidad/PostDetailPage'));
+const ProfilePage = lazy(() => import('@/pages/comunidad/ProfilePage'));
+const GroupsPage = lazy(() => import('@/pages/comunidad/GroupsPage'));
+const GroupDetailPage = lazy(() => import('@/pages/comunidad/GroupDetailPage'));
+const EventsPage = lazy(() => import('@/pages/comunidad/EventsPage'));
+const EventDetailPage = lazy(() => import('@/pages/comunidad/EventDetailPage'));
+const MembersPage = lazy(() => import('@/pages/comunidad/MembersPage'));
+const MessagesPage = lazy(() => import('@/pages/comunidad/MessagesPage'));
+const MessageConversation = lazy(() => import('@/pages/comunidad/MessageConversation'));
 
 export default function App() {
   return (
@@ -90,6 +103,20 @@ export default function App() {
                 <Route path="compras" element={<AdminPurchasesPage />} />
                 <Route path="reportes" element={<AdminReportsPage />} />
                 <Route path="configuracion" element={<AdminSettingsPage />} />
+              </Route>
+
+              {/* Comunidad (red social) — layout con navbar + sub-nav */}
+              <Route path="comunidad" element={<CommunityLayout />}>
+                <Route index element={<CommunityFeedPage />} />
+                <Route path="post/:id" element={<PostDetailPage />} />
+                <Route path="perfil/:code" element={<ProfilePage />} />
+                <Route path="grupos" element={<GroupsPage />} />
+                <Route path="grupos/:slug" element={<GroupDetailPage />} />
+                <Route path="eventos" element={<EventsPage />} />
+                <Route path="eventos/:id" element={<EventDetailPage />} />
+                <Route path="miembros" element={<MembersPage />} />
+                <Route path="mensajes" element={<MessagesPage />} />
+                <Route path="mensajes/:code" element={<MessageConversation />} />
               </Route>
             </Routes>
           </HashRouter>

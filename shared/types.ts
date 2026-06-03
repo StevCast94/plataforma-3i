@@ -219,3 +219,105 @@ export interface Purchase {
   confirmedAt?: string | null;
   createdAt: string;
 }
+
+// ============================================================
+// FASE 4 — Red social
+// ============================================================
+
+export interface SocialAuthor {
+  id: string;
+  fullName: string;
+  referralCode: string;
+  status: MemberStatus;
+  avatarUrl: string | null;
+  eliteBy: EliteBy | null;
+}
+
+export type ReactionType = 'like' | 'love' | 'useful' | 'interesting' | 'celebrate';
+
+export interface FeedPost {
+  id: string;
+  content: string;
+  images: string[];
+  linkUrl?: string | null;
+  linkPreview?: { title?: string; description?: string; image?: string } | null;
+  groupId?: string | null;
+  pinned: boolean;
+  createdAt: string;
+  author: SocialAuthor | null;
+  reactionsByType: Record<string, number>;
+  reactionCount: number;
+  commentCount: number;
+  myReaction: ReactionType | null;
+}
+
+export interface FeedResponse {
+  posts: FeedPost[];
+  page: number;
+  hasMore: boolean;
+}
+
+export interface SocialComment {
+  id: string;
+  content: string;
+  parentId?: string | null;
+  createdAt: string;
+  author: SocialAuthor | null;
+  replies?: SocialComment[];
+}
+
+export interface CommunityGroup {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  coverImage?: string | null;
+  privacy: 'public' | 'private';
+  memberCount: number;
+  postCount: number;
+  isMember: boolean;
+  createdBy?: string;
+}
+
+export interface CommunityEvent {
+  id: string;
+  title: string;
+  description: string;
+  location?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  coverImage?: string | null;
+  group?: { name: string; slug: string } | null;
+  attendeeCount?: number;
+  phase: 'upcoming' | 'ongoing' | 'past';
+  myStatus?: 'going' | 'maybe' | 'not_going' | null;
+  counts?: { going: number; maybe: number; not_going: number };
+  attendees?: SocialAuthor[];
+}
+
+export interface CommunityMember {
+  fullName: string;
+  referralCode: string;
+  status: MemberStatus;
+  bio?: string | null;
+  avatarUrl?: string | null;
+  location?: string | null;
+  interests: string[];
+  eliteBy?: EliteBy | null;
+  createdAt: string;
+  stats?: { posts: number; groups: number; referrals: number };
+}
+
+export interface Conversation {
+  user: SocialAuthor | null;
+  lastMessage: string;
+  lastAt: string;
+  unread: number;
+}
+
+export interface ChatMessage {
+  id: string;
+  content: string;
+  mine: boolean;
+  createdAt: string;
+}

@@ -15,6 +15,28 @@ export function signMemberToken(memberId: string, email: string): string {
   return jwt.sign({ memberId, email }, SECRET(), { expiresIn: '30d' });
 }
 
+/**
+ * Auth opcional: si hay un token válido de miembro, setea req.memberId; si no,
+ * continúa igual (sin error). Útil para endpoints públicos que muestran estado
+ * personalizado (ej. si el usuario ya reaccionó a un post).
+ */
+export function optionalMember(
+  req: MemberRequest,
+  _res: Response,
+  next: NextFunction,
+): void {
+  const header = req.headers.authorization;
+  if (header?.startsWith('Bearer ')) {
+    try {
+      const payload = jwt.verify(header.slice(7), SECRET()) as { memberId?: string };
+      if (payload.memberId) req.memberId = payload.memberId;
+    } catch {
+      /* token inválido → seguir como visitante */
+    }
+  }
+  next();
+}
+
 export async function authMember(
   req: MemberRequest,
   res: Response,

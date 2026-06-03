@@ -22,6 +22,11 @@ import { adminCommissionRoutes } from './routes/adminCommissions';
 import { adminPurchaseRoutes } from './routes/adminPurchases';
 import { adminReportRoutes } from './routes/adminReports';
 import { adminSettingsRoutes } from './routes/adminSettings';
+import { communityPostRoutes, communityCommentRoutes } from './routes/communityPosts';
+import { communityGroupRoutes } from './routes/communityGroups';
+import { communityEventRoutes } from './routes/communityEvents';
+import { communityMemberRoutes } from './routes/communityMembers';
+import { communityMessageRoutes } from './routes/communityMessages';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -59,6 +64,14 @@ app.use('/api/admin/commissions', adminCommissionRoutes);
 app.use('/api/admin/purchases', adminPurchaseRoutes);
 app.use('/api/admin/report', adminReportRoutes);
 app.use('/api/admin', adminSettingsRoutes);
+
+// Fase 4 — Red social de la comunidad
+app.use('/api/community/posts', communityPostRoutes);
+app.use('/api/community/comments', communityCommentRoutes);
+app.use('/api/community/groups', communityGroupRoutes);
+app.use('/api/community/events', communityEventRoutes);
+app.use('/api/community/members', communityMemberRoutes);
+app.use('/api/community/messages', communityMessageRoutes);
 
 // Cualquier /api/* no encontrada -> 404 JSON (no cae al SPA fallback)
 app.use('/api', (_req, res) => {
