@@ -6,15 +6,16 @@ const prisma = new PrismaClient();
 const PUBLIC_BASE =
   process.env.PUBLIC_BASE_URL ?? 'https://plataforma-3i-production.up.railway.app';
 
-// Ibiza: imágenes reales en Cloudinary (cloud dos8bzljc).
+// Ibiza: imágenes reales (subidas a public/images/ibiza/).
 // Montañita / Viajes: placeholders Unsplash hasta tener las reales.
-const CLD = 'https://res.cloudinary.com/dos8bzljc/image/upload/q_auto:best,f_auto';
+const BASE_IMG = `${PUBLIC_BASE}/images`;
 const IMG = {
-  ibiza: `${CLD}/Ibiza_condohotel_portada`,
+  ibiza: `${BASE_IMG}/ibiza/portada.jpg`,
   ibizaGallery: [
-    `${CLD}/Ibiza_condohotel_1`,
-    `${CLD}/Ibiza_condohotel_2`,
-    `${CLD}/Ibiza_condohotel_3`,
+    `${BASE_IMG}/ibiza/galeria-01.jpg`,
+    `${BASE_IMG}/ibiza/galeria-02.jpg`,
+    `${BASE_IMG}/ibiza/galeria-03.jpg`,
+    `${BASE_IMG}/ibiza/galeria-04.jpg`,
   ],
   montanita:
     'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop',
@@ -40,8 +41,7 @@ const siteContent: { section: string; key: string; value: string }[] = [
   {
     section: 'hero',
     key: 'image_url',
-    value:
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1920&auto=format&fit=crop',
+    value: `${BASE_IMG}/ibiza/portada.jpg`,
   },
   {
     section: 'about',
