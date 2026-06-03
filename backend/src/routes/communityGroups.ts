@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
 import { authMember, optionalMember, type MemberRequest } from '../middleware/authMember';
+import { asyncHandler } from '../lib/asyncHandler';
 
 export const communityGroupRoutes = Router();
 
@@ -9,7 +10,7 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 // GET /api/community/groups
-communityGroupRoutes.get('/', optionalMember, async (req: MemberRequest, res) => {
+communityGroupRoutes.get('/', optionalMember, asyncHandler(async (req: MemberRequest, res) => {
   const groups = await prisma.socialGroup.findMany({
     orderBy: { createdAt: 'asc' },
     include: { _count: { select: { members: true, posts: true } } },
@@ -36,10 +37,10 @@ communityGroupRoutes.get('/', optionalMember, async (req: MemberRequest, res) =>
       isMember: myGroups.has(g.id),
     })),
   );
-});
+}));
 
 // GET /api/community/groups/:slug
-communityGroupRoutes.get('/:slug', optionalMember, async (req: MemberRequest, res) => {
+communityGroupRoutes.get('/:slug', optionalMember, asyncHandler(async (req: MemberRequest, res) => {
   const group = await prisma.socialGroup.findUnique({
     where: { slug: req.params.slug },
     include: { _count: { select: { members: true, posts: true } } },
@@ -66,7 +67,7 @@ communityGroupRoutes.get('/:slug', optionalMember, async (req: MemberRequest, re
     postCount: group._count.posts,
     isMember,
   });
-});
+}));
 
 // POST /api/community/groups (🔒)
 communityGroupRoutes.post('/', authMember, async (req: MemberRequest, res) => {
@@ -112,9 +113,9 @@ communityGroupRoutes.post('/:id/join', authMember, async (req: MemberRequest, re
 });
 
 // DELETE /api/community/groups/:id/leave (🔒)
-communityGroupRoutes.delete('/:id/leave', authMember, async (req: MemberRequest, res) => {
+communityGroupRoutes.delete('/:id/leave', authMember, asyncHandler(async (req: MemberRequest, res) => {
   await prisma.socialGroupMember.deleteMany({
     where: { groupId: req.params.id, userId: req.memberId! },
   });
   res.json({ ok: true, isMember: false });
-});
+}));

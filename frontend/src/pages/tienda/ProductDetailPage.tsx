@@ -8,6 +8,7 @@ import { ImageGallery } from '@/components/shared/ImageGallery';
 import { PriceDisplay } from '@/components/shared/PriceDisplay';
 import { ContactForm } from '@/components/shared/ContactForm';
 import { CheckoutModal } from '@/components/shared/CheckoutModal';
+import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { ROICalculator } from '@/components/shared/ROICalculator';
 import { ProductCard } from '@/components/shared/ProductCard';
 import { EmptyState } from '@/components/shared/EmptyState';
@@ -110,6 +111,14 @@ export default function ProductDetailPage() {
               <Button size="lg" variant="outline" onClick={() => setOpen(true)}>
                 Solicitar información
               </Button>
+            </div>
+            <div className="mt-3">
+              <ShareToCommunity
+                title={product.name}
+                path={`/tienda/${product.slug}`}
+                image={gallery[0]}
+                description={product.description.slice(0, 120)}
+              />
             </div>
           </div>
         </div>

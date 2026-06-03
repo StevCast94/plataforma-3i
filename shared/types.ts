@@ -116,6 +116,11 @@ export interface ReferralMember {
   payoutEmail?: string | null;
   bankInfo?: Record<string, unknown> | null;
   kycVerified: boolean;
+  // Perfil social (Fase 4)
+  bio?: string | null;
+  avatarUrl?: string | null;
+  location?: string | null;
+  interests?: string[];
   createdAt: string;
 }
 

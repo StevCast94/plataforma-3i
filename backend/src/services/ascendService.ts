@@ -14,6 +14,26 @@ export interface AscendResult {
   by?: 'PURCHASE' | 'REFERRALS';
 }
 
+/** Publica automáticamente en el feed el ascenso a Elite del miembro. */
+async function announceElite(memberId: string, db: Db): Promise<void> {
+  try {
+    const member = await db.referralMember.findUnique({
+      where: { id: memberId },
+      select: { fullName: true },
+    });
+    if (!member) return;
+    await db.socialPost.create({
+      data: {
+        userId: memberId,
+        content: `¡${member.fullName} acaba de convertirse en Miembro Elite del Club 3i! 🎉🏆`,
+        images: [],
+      },
+    });
+  } catch (err) {
+    console.error('announceElite', err);
+  }
+}
+
 /**
  * Ascenso por compra: el miembro adquirió cualquier producto.
  * Irreversible. Las comisiones previas mantienen tasa Premiere; las nuevas, Elite.
@@ -39,6 +59,7 @@ export async function ascendByPurchase(memberId: string, db: Db = prisma): Promi
     'Tu compra te convirtió en Elite. A partir de ahora ganas comisiones a tasas Elite.',
     db,
   );
+  await announceElite(memberId, db);
   return { ascended: true, status: 'ELITE', by: 'PURCHASE' };
 }
 
@@ -92,6 +113,7 @@ export async function checkReferralAscension(
       `Alcanzaste ${ELITE_REFERRALS_REQUIRED} referidos exitosos. Eres Elite y tu membresía de viajes es GRATIS.`,
       db,
     );
+    await announceElite(memberId, db);
     return { ascended: true, status: 'ELITE', by: 'REFERRALS', count };
   }
 

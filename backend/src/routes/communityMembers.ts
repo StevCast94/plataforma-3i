@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
+import { asyncHandler } from '../lib/asyncHandler';
 
 export const communityMemberRoutes = Router();
 
 // GET /api/community/members?q=&status=&interest=
-communityMemberRoutes.get('/', async (req, res) => {
+communityMemberRoutes.get('/', asyncHandler(async (req, res) => {
   const { q, status, interest } = req.query;
   const members = await prisma.referralMember.findMany({
     where: {
@@ -34,10 +35,10 @@ communityMemberRoutes.get('/', async (req, res) => {
     take: 100,
   });
   res.json(members);
-});
+}));
 
 // GET /api/community/members/:code — perfil público + estadísticas + posts
-communityMemberRoutes.get('/:code', async (req, res) => {
+communityMemberRoutes.get('/:code', asyncHandler(async (req, res) => {
   const member = await prisma.referralMember.findUnique({
     where: { referralCode: req.params.code },
     select: {
@@ -69,10 +70,10 @@ communityMemberRoutes.get('/:code', async (req, res) => {
     ...publicProfile,
     stats: { posts: postCount, groups: groupCount, referrals: member.totalReferrals },
   });
-});
+}));
 
 // GET /api/community/members/:code/posts — feed del perfil
-communityMemberRoutes.get('/:code/posts', async (req, res) => {
+communityMemberRoutes.get('/:code/posts', asyncHandler(async (req, res) => {
   const member = await prisma.referralMember.findUnique({
     where: { referralCode: req.params.code },
     select: { id: true },
@@ -87,4 +88,4 @@ communityMemberRoutes.get('/:code/posts', async (req, res) => {
     take: 30,
   });
   res.json(posts);
-});
+}));

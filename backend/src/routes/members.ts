@@ -40,6 +40,10 @@ const memberSelect = {
   payoutEmail: true,
   bankInfo: true,
   kycVerified: true,
+  bio: true,
+  avatarUrl: true,
+  location: true,
+  interests: true,
   createdAt: true,
 } as const;
 
@@ -185,12 +189,16 @@ memberRoutes.get('/me', authMember, async (req: MemberRequest, res) => {
 // PUT /api/members/me
 memberRoutes.put('/me', authMember, async (req: MemberRequest, res) => {
   try {
-    const { fullName, phone } = req.body ?? {};
+    const { fullName, phone, bio, avatarUrl, location, interests } = req.body ?? {};
     const member = await prisma.referralMember.update({
       where: { id: req.memberId },
       data: {
         ...(fullName ? { fullName: String(fullName).trim() } : {}),
         ...(phone !== undefined ? { phone: phone ? String(phone).trim() : null } : {}),
+        ...(bio !== undefined ? { bio: bio ? String(bio) : null } : {}),
+        ...(avatarUrl !== undefined ? { avatarUrl: avatarUrl ? String(avatarUrl) : null } : {}),
+        ...(location !== undefined ? { location: location ? String(location) : null } : {}),
+        ...(Array.isArray(interests) ? { interests: interests.map(String) } : {}),
       },
       select: memberSelect,
     });

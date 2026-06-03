@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { authMember, optionalMember, type MemberRequest } from '../middleware/authMember';
 import { getAuthors } from '../services/socialAuthors';
+import { asyncHandler } from '../lib/asyncHandler';
 
 export const communityPostRoutes = Router();
 
@@ -120,7 +121,7 @@ communityPostRoutes.get('/', optionalMember, async (req: MemberRequest, res) => 
 });
 
 // GET /api/community/posts/:id — detalle con comentarios
-communityPostRoutes.get('/:id', optionalMember, async (req: MemberRequest, res) => {
+communityPostRoutes.get('/:id', optionalMember, asyncHandler(async (req: MemberRequest, res) => {
   const post = await prisma.socialPost.findUnique({ where: { id: req.params.id } });
   if (!post) {
     res.status(404).json({ error: 'Post no encontrado' });
@@ -128,7 +129,7 @@ communityPostRoutes.get('/:id', optionalMember, async (req: MemberRequest, res) 
   }
   const [shaped] = await shapePosts([post], req.memberId);
   res.json(shaped);
-});
+}));
 
 // POST /api/community/posts — crear (🔒)
 communityPostRoutes.post('/', authMember, async (req: MemberRequest, res) => {
@@ -157,7 +158,7 @@ communityPostRoutes.post('/', authMember, async (req: MemberRequest, res) => {
 });
 
 // DELETE /api/community/posts/:id — propio (🔒)
-communityPostRoutes.delete('/:id', authMember, async (req: MemberRequest, res) => {
+communityPostRoutes.delete('/:id', authMember, asyncHandler(async (req: MemberRequest, res) => {
   const post = await prisma.socialPost.findUnique({ where: { id: req.params.id }, select: { userId: true } });
   if (!post) {
     res.status(404).json({ error: 'Post no encontrado' });
@@ -169,10 +170,10 @@ communityPostRoutes.delete('/:id', authMember, async (req: MemberRequest, res) =
   }
   await prisma.socialPost.delete({ where: { id: req.params.id } });
   res.json({ ok: true });
-});
+}));
 
 // GET /api/community/posts/:id/comments
-communityPostRoutes.get('/:id/comments', async (req, res) => {
+communityPostRoutes.get('/:id/comments', asyncHandler(async (req, res) => {
   const comments = await prisma.socialComment.findMany({
     where: { postId: req.params.id },
     orderBy: { createdAt: 'asc' },
@@ -192,7 +193,7 @@ communityPostRoutes.get('/:id/comments', async (req, res) => {
     replies: comments.filter((r) => r.parentId === c.id).map(shape),
   }));
   res.json(roots);
-});
+}));
 
 // POST /api/community/posts/:id/comments (🔒)
 communityPostRoutes.post('/:id/comments', authMember, async (req: MemberRequest, res) => {
@@ -256,7 +257,7 @@ communityPostRoutes.post('/:id/react', authMember, async (req: MemberRequest, re
 
 // DELETE /api/community/comments/:id — propio (🔒)  [montado aparte]
 export const communityCommentRoutes = Router();
-communityCommentRoutes.delete('/:id', authMember, async (req: MemberRequest, res) => {
+communityCommentRoutes.delete('/:id', authMember, asyncHandler(async (req: MemberRequest, res) => {
   const comment = await prisma.socialComment.findUnique({
     where: { id: req.params.id },
     select: { userId: true },
@@ -271,4 +272,4 @@ communityCommentRoutes.delete('/:id', authMember, async (req: MemberRequest, res
   }
   await prisma.socialComment.delete({ where: { id: req.params.id } });
   res.json({ ok: true });
-});
+}));

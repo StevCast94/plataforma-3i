@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { authMember, optionalMember, type MemberRequest } from '../middleware/authMember';
 import { getAuthors } from '../services/socialAuthors';
+import { asyncHandler } from '../lib/asyncHandler';
 
 export const communityEventRoutes = Router();
 
@@ -15,7 +16,7 @@ function eventPhase(start: Date, end: Date | null): 'upcoming' | 'ongoing' | 'pa
 }
 
 // GET /api/community/events
-communityEventRoutes.get('/', optionalMember, async (req: MemberRequest, res) => {
+communityEventRoutes.get('/', optionalMember, asyncHandler(async (req: MemberRequest, res) => {
   const events = await prisma.socialEvent.findMany({
     orderBy: { startDate: 'asc' },
     include: {
@@ -47,10 +48,10 @@ communityEventRoutes.get('/', optionalMember, async (req: MemberRequest, res) =>
       myStatus: myRsvp.get(e.id) ?? null,
     })),
   );
-});
+}));
 
 // GET /api/community/events/:id
-communityEventRoutes.get('/:id', optionalMember, async (req: MemberRequest, res) => {
+communityEventRoutes.get('/:id', optionalMember, asyncHandler(async (req: MemberRequest, res) => {
   const event = await prisma.socialEvent.findUnique({
     where: { id: req.params.id },
     include: {
@@ -83,7 +84,7 @@ communityEventRoutes.get('/:id', optionalMember, async (req: MemberRequest, res)
       ? event.attendees.find((a) => a.userId === req.memberId)?.status ?? null
       : null,
   });
-});
+}));
 
 // POST /api/community/events (🔒 admin del grupo)
 communityEventRoutes.post('/', authMember, async (req: MemberRequest, res) => {

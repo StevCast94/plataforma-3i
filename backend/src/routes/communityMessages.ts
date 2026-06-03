@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { authMember, type MemberRequest } from '../middleware/authMember';
 import { getAuthors } from '../services/socialAuthors';
+import { asyncHandler } from '../lib/asyncHandler';
 
 export const communityMessageRoutes = Router();
 communityMessageRoutes.use(authMember);
@@ -15,7 +16,7 @@ async function resolveMember(code: string) {
 }
 
 // GET /api/community/messages — lista de conversaciones
-communityMessageRoutes.get('/', async (req: MemberRequest, res) => {
+communityMessageRoutes.get('/', asyncHandler(async (req: MemberRequest, res) => {
   const me = req.memberId!;
   const messages = await prisma.directMessage.findMany({
     where: { OR: [{ senderId: me }, { receiverId: me }] },
@@ -43,10 +44,10 @@ communityMessageRoutes.get('/', async (req: MemberRequest, res) => {
       unread: c.unread,
     })),
   );
-});
+}));
 
 // GET /api/community/messages/:code — mensajes con un usuario (marca leídos)
-communityMessageRoutes.get('/:code', async (req: MemberRequest, res) => {
+communityMessageRoutes.get('/:code', asyncHandler(async (req: MemberRequest, res) => {
   const me = req.memberId!;
   const other = await resolveMember(req.params.code);
   if (!other) {
@@ -81,7 +82,7 @@ communityMessageRoutes.get('/:code', async (req: MemberRequest, res) => {
       createdAt: m.createdAt,
     })),
   });
-});
+}));
 
 // POST /api/community/messages/:code — enviar
 communityMessageRoutes.post('/:code', async (req: MemberRequest, res) => {

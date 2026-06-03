@@ -8,6 +8,7 @@ const links = [
   { to: '/proyectos', label: 'Proyectos', hasDropdown: true },
   { to: '/tienda', label: 'Tienda' },
   { to: '/club', label: 'Club 3i' },
+  { to: '/comunidad', label: 'Comunidad' },
   { to: '/sobre-nosotros', label: 'Nosotros' },
   { to: '/oficina', label: 'Oficina' },
   { to: '/contacto', label: 'Contacto' },

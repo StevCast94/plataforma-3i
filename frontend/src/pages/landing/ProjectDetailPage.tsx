@@ -8,6 +8,7 @@ import { FeatureGrid } from '@/components/shared/FeatureGrid';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { ProjectCard } from '@/components/shared/ProjectCard';
 import { ContactForm } from '@/components/shared/ContactForm';
+import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { DetailSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -149,9 +150,17 @@ export default function ProjectDetailPage() {
           <p className="mt-3 text-white/70">
             Un asesor te explicará el plan de inversión a tu medida.
           </p>
-          <Button size="lg" className="mt-8" onClick={() => setOpen(true)}>
-            Solicitar información
-          </Button>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button size="lg" onClick={() => setOpen(true)}>
+              Solicitar información
+            </Button>
+            <ShareToCommunity
+              title={project.name}
+              path={`/proyectos/${project.slug}`}
+              image={project.coverImage}
+              description={project.subtitle ?? undefined}
+            />
+          </div>
         </div>
       </section>
 
