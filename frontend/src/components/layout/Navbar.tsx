@@ -20,10 +20,8 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <span className="font-serif text-2xl font-bold tracking-tight text-primary">
-            Grupo<span className="text-secondary"> 3i</span>
-          </span>
+        <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
+          <img src="/images/logo-completo.svg" alt="Grupo 3i" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop */}

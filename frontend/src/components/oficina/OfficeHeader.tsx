@@ -18,9 +18,7 @@ export function OfficeHeader() {
   return (
     <header className="flex items-center justify-between border-b border-black/5 bg-white px-4 py-3 sm:px-6">
       <div className="flex items-center gap-3">
-        <span className="font-serif text-lg font-bold text-primary md:hidden">
-          Grupo<span className="text-secondary"> 3i</span>
-        </span>
+        <img src="/images/logo-completo.svg" alt="Grupo 3i" className="h-7 w-auto md:hidden" />
       </div>
 
       <div className="flex items-center gap-3">

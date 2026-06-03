@@ -15,8 +15,10 @@ export interface CommissionInput {
   memberId: string;
   /** Estatus del miembro al momento de generar la comisión (define la tasa). */
   memberStatus: 'PREMIERE' | 'ELITE';
-  /** Referral que originó la comisión. */
-  referralId: string;
+  /** Referral miembro-a-miembro que originó la comisión (si aplica). */
+  referralId?: string | null;
+  /** Compra (checkout) que originó la comisión (si aplica). */
+  purchaseId?: string | null;
   /** Nivel del referido respecto al miembro (1 o 2). */
   level: 1 | 2;
   /** Tipo de producto vendido. */
@@ -102,9 +104,11 @@ export async function createCommission(
   const commission = await db.commission.create({
     data: {
       memberId: input.memberId,
-      referralId: input.referralId,
+      referralId: input.referralId ?? null,
+      purchaseId: input.purchaseId ?? null,
       productId: input.productId ?? null,
       transactionId: input.transactionId ?? null,
+      level: input.level,
       amount,
       rate: computed.rate,
       type: computed.type,

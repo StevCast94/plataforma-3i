@@ -196,3 +196,26 @@ export interface Notification {
   read: boolean;
   createdAt: string;
 }
+
+// ============================================================
+// FASE 3 — Admin / checkout
+// ============================================================
+
+export type PurchaseStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
+
+export interface Purchase {
+  id: string;
+  productId: string;
+  product?: { name: string } | null;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string | null;
+  amount: number;
+  status: PurchaseStatus;
+  referralCode?: string | null;
+  referrerId?: string | null;
+  referrer?: { fullName: string; referralCode: string } | null;
+  notes?: string | null;
+  confirmedAt?: string | null;
+  createdAt: string;
+}

@@ -13,12 +13,21 @@ import { referralLinkRoutes } from './routes/referralLinks';
 import { commissionRoutes } from './routes/commissions';
 import { payoutRoutes } from './routes/payouts';
 import { notificationRoutes } from './routes/notifications';
+import { adminAuthRoutes } from './routes/adminAuth';
+import { adminStatsRoutes } from './routes/adminStats';
+import { adminProductRoutes } from './routes/adminProducts';
+import { adminProjectRoutes } from './routes/adminProjects';
+import { adminMemberRoutes } from './routes/adminMembers';
+import { adminCommissionRoutes } from './routes/adminCommissions';
+import { adminPurchaseRoutes } from './routes/adminPurchases';
+import { adminReportRoutes } from './routes/adminReports';
+import { adminSettingsRoutes } from './routes/adminSettings';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '12mb' })); // 12mb para uploads base64 de imágenes
 app.use(cookieParser());
 
 // Health check (útil para Railway)
@@ -39,6 +48,17 @@ app.use('/api/referral-links', referralLinkRoutes);
 app.use('/api/commissions', commissionRoutes);
 app.use('/api/payouts', payoutRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+// Fase 3 — Panel de administración (staff)
+app.use('/api/admin', adminAuthRoutes);
+app.use('/api/admin/stats', adminStatsRoutes);
+app.use('/api/admin/products', adminProductRoutes);
+app.use('/api/admin/projects', adminProjectRoutes);
+app.use('/api/admin/members', adminMemberRoutes);
+app.use('/api/admin/commissions', adminCommissionRoutes);
+app.use('/api/admin/purchases', adminPurchaseRoutes);
+app.use('/api/admin/report', adminReportRoutes);
+app.use('/api/admin', adminSettingsRoutes);
 
 // Cualquier /api/* no encontrada -> 404 JSON (no cae al SPA fallback)
 app.use('/api', (_req, res) => {

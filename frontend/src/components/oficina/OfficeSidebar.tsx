@@ -21,10 +21,8 @@ export function OfficeSidebar() {
   return (
     <aside className="hidden w-64 flex-none flex-col bg-primary px-4 py-6 md:flex">
       <div className="px-2 pb-6">
-        <span className="font-serif text-2xl font-bold text-white">
-          Grupo<span className="text-secondary"> 3i</span>
-        </span>
-        <p className="mt-1 text-xs uppercase tracking-widest text-white/50">
+        <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="mb-2 h-7 w-auto" />
+        <p className="text-xs uppercase tracking-widest text-white/50">
           Oficina Virtual
         </p>
       </div>

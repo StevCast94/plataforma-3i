@@ -70,6 +70,7 @@ model Product {
   featured    Boolean          @default(false)
   inquiries   ProductInquiry[]
   commissions Commission[]
+  purchases   Purchase[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 }
@@ -147,6 +148,7 @@ model ReferralMember {
   payouts           Payout[]
   links             ReferralLink[]
   notifications     Notification[]
+  purchases         Purchase[]     @relation("Purchases")
 }
 
 model Referral {
@@ -182,11 +184,16 @@ model Commission {
   id            String           @id @default(uuid())
   memberId      String
   member        ReferralMember   @relation(fields: [memberId], references: [id])
-  referralId    String
-  referral      Referral         @relation(fields: [referralId], references: [id])
+  // referralId es opcional: las comisiones por compra de un cliente (checkout)
+  // se vinculan a Purchase, no a un Referral miembro-a-miembro.
+  referralId    String?
+  referral      Referral?        @relation(fields: [referralId], references: [id])
+  purchaseId    String?
+  purchase      Purchase?        @relation(fields: [purchaseId], references: [id])
   productId     String?
   product       Product?         @relation(fields: [productId], references: [id])
   transactionId String?
+  level         Int              @default(1) // 1 o 2
   amount        Float
   rate          Float
   type          String           @default("percentage") // percentage, fixed
@@ -217,4 +224,48 @@ model Notification {
   body      String         @db.Text
   read      Boolean        @default(false)
   createdAt DateTime       @default(now())
+}
+
+// ============================================================
+// FASE 3 — ADMIN PANEL + CHECKOUT
+// ============================================================
+
+model StaffUser {
+  id        String     @id @default(uuid())
+  username  String     @unique
+  password  String // bcrypt hash
+  role      String     @default("admin") // superadmin, admin, content
+  active    Boolean    @default(true)
+  auditLogs AuditLog[]
+  createdAt DateTime   @default(now())
+}
+
+model Purchase {
+  id            String          @id @default(uuid())
+  productId     String
+  product       Product         @relation(fields: [productId], references: [id])
+  customerName  String
+  customerEmail String
+  customerPhone String?
+  amount        Float
+  status        String          @default("pending") // pending, confirmed, completed, cancelled
+  referralCode  String? // código de referido usado
+  referrerId    String? // FK ReferralMember — quién gana la comisión
+  referrer      ReferralMember? @relation("Purchases", fields: [referrerId], references: [id])
+  commissions   Commission[]
+  notes         String?         @db.Text
+  confirmedAt   DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model AuditLog {
+  id        String     @id @default(uuid())
+  staffId   String?
+  staff     StaffUser? @relation(fields: [staffId], references: [id])
+  action    String // create, update, delete, confirm, reject, login
+  entity    String // product, project, member, commission, purchase
+  entityId  String?
+  details   Json?
+  createdAt DateTime   @default(now())
 }

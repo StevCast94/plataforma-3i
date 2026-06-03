@@ -7,6 +7,7 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { PriceDisplay } from '@/components/shared/PriceDisplay';
 import { ContactForm } from '@/components/shared/ContactForm';
+import { CheckoutModal } from '@/components/shared/CheckoutModal';
 import { ROICalculator } from '@/components/shared/ROICalculator';
 import { ProductCard } from '@/components/shared/ProductCard';
 import { EmptyState } from '@/components/shared/EmptyState';
@@ -30,6 +31,7 @@ export default function ProductDetailPage() {
   const { data: product, loading, error } = useProduct(slug);
   const { data: allProducts } = useProducts();
   const [open, setOpen] = useState(false);
+  const [checkout, setCheckout] = useState(false);
 
   if (loading) return <DetailSkeleton />;
   if (error) return <ErrorState message={error} onRetry={() => location.reload()} />;
@@ -101,9 +103,14 @@ export default function ProductDetailPage() {
               </ul>
             )}
 
-            <Button size="lg" className="mt-8 w-full sm:w-auto" onClick={() => setOpen(true)}>
-              Solicitar información
-            </Button>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button size="lg" onClick={() => setCheckout(true)}>
+                Quiero comprar
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => setOpen(true)}>
+                Solicitar información
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -145,6 +152,8 @@ export default function ProductDetailPage() {
           onSuccess={() => setOpen(false)}
         />
       </Modal>
+
+      <CheckoutModal open={checkout} product={product} onClose={() => setCheckout(false)} />
     </>
   );
 }

@@ -15,6 +15,10 @@ interface ContactFormProps {
   onSuccess?: () => void;
   /** Muestra el card de éxito embebido (false si lo maneja el padre vía toast). */
   inlineSuccess?: boolean;
+  /** Campos extra para el payload (ej. { intent: 'purchase' }). */
+  extra?: Record<string, unknown>;
+  /** Texto del botón de envío. */
+  submitLabel?: string;
 }
 
 interface Errors {
@@ -31,6 +35,8 @@ export function ContactForm({
   withMessage = true,
   onSuccess,
   inlineSuccess = true,
+  extra,
+  submitLabel,
 }: ContactFormProps) {
   const { toast } = useToast();
   const isContact = endpoint === '/contact';
@@ -70,6 +76,7 @@ export function ContactForm({
         ...data,
         ...(isContact ? { source } : {}),
         ...(referralCode ? { referralCode } : {}),
+        ...(extra ?? {}),
       });
       toast('¡Listo! Un asesor te contactará pronto.', 'success');
       form.reset();
@@ -139,7 +146,7 @@ export function ContactForm({
       )}
 
       <Button type="submit" size="lg" disabled={sending} className="w-full">
-        {sending ? 'Enviando…' : 'Enviar'}
+        {sending ? 'Enviando…' : (submitLabel ?? 'Enviar')}
       </Button>
     </form>
   );

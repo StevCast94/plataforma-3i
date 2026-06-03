@@ -3,8 +3,10 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
+import { AdminLayout } from '@/components/admin/AdminLayout';
 import { ToastProvider } from '@/components/shared/Toast';
 import { AuthProvider } from '@/context/AuthContext';
+import { AdminAuthProvider } from '@/context/AdminAuthContext';
 
 // Sitio público
 const HomePage = lazy(() => import('@/pages/landing/HomePage'));
@@ -28,11 +30,23 @@ const PaymentsPage = lazy(() => import('@/pages/oficina/PaymentsPage'));
 const ToolsPage = lazy(() => import('@/pages/oficina/ToolsPage'));
 const CalculatorPage = lazy(() => import('@/pages/oficina/CalculatorPage'));
 
+// Panel de administración (staff)
+const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage'));
+const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'));
+const AdminProductsPage = lazy(() => import('@/pages/admin/AdminProductsPage'));
+const AdminProjectsPage = lazy(() => import('@/pages/admin/AdminProjectsPage'));
+const AdminMembersPage = lazy(() => import('@/pages/admin/AdminMembersPage'));
+const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPage'));
+const AdminPurchasesPage = lazy(() => import('@/pages/admin/AdminPurchasesPage'));
+const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
+const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
+
 export default function App() {
   return (
     <HelmetProvider>
       <ToastProvider>
         <AuthProvider>
+          <AdminAuthProvider>
           <HashRouter>
             <Routes>
               {/* Sitio público con navbar/footer */}
@@ -62,8 +76,24 @@ export default function App() {
                 <Route path="herramientas" element={<ToolsPage />} />
                 <Route path="calculadora" element={<CalculatorPage />} />
               </Route>
+
+              {/* Admin — login standalone */}
+              <Route path="admin/login" element={<AdminLoginPage />} />
+
+              {/* Admin — protegido (sidebar + header) */}
+              <Route path="admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboardPage />} />
+                <Route path="productos" element={<AdminProductsPage />} />
+                <Route path="proyectos" element={<AdminProjectsPage />} />
+                <Route path="miembros" element={<AdminMembersPage />} />
+                <Route path="comisiones" element={<AdminCommissionsPage />} />
+                <Route path="compras" element={<AdminPurchasesPage />} />
+                <Route path="reportes" element={<AdminReportsPage />} />
+                <Route path="configuracion" element={<AdminSettingsPage />} />
+              </Route>
             </Routes>
           </HashRouter>
+          </AdminAuthProvider>
         </AuthProvider>
       </ToastProvider>
     </HelmetProvider>

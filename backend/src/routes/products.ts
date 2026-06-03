@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
+import { resolveReferrer } from '../services/referralTracking';
 
 export const productRoutes = Router();
 
@@ -58,27 +59,59 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
       return;
     }
 
+    const { intent } = req.body ?? {};
     const product = await prisma.product.findUnique({
       where: { id: req.params.id },
-      select: { id: true },
+      select: { id: true, price: true, promoPrice: true },
     });
     if (!product) {
       res.status(404).json({ error: 'Producto no encontrado' });
       return;
     }
 
-    const inquiry = await prisma.productInquiry.create({
-      data: {
-        productId: product.id,
-        name: String(name).trim(),
-        email: String(email).trim(),
-        phone: phone ? String(phone).trim() : null,
-        message: message ? String(message).trim() : null,
-        referralCode: referralCode ? String(referralCode).trim() : null,
-      },
+    const code = referralCode ? String(referralCode).trim() : null;
+
+    // Resolver el referidor (si el código es válido) para atribuir la futura comisión.
+    let referrerId: string | null = null;
+    if (code) {
+      const referrer = await resolveReferrer(code);
+      referrerId = referrer?.id ?? null;
+    }
+
+    // Lead + (si es intención de compra) una Purchase en estado pending, atómicamente.
+    const result = await prisma.$transaction(async (tx) => {
+      const inquiry = await tx.productInquiry.create({
+        data: {
+          productId: product.id,
+          name: String(name).trim(),
+          email: String(email).trim(),
+          phone: phone ? String(phone).trim() : null,
+          message: message ? String(message).trim() : null,
+          referralCode: code,
+        },
+      });
+
+      let purchaseId: string | null = null;
+      if (intent === 'purchase') {
+        const purchase = await tx.purchase.create({
+          data: {
+            productId: product.id,
+            customerName: String(name).trim(),
+            customerEmail: String(email).trim(),
+            customerPhone: phone ? String(phone).trim() : null,
+            amount: product.promoPrice ?? product.price,
+            status: 'pending',
+            referralCode: code,
+            referrerId,
+          },
+        });
+        purchaseId = purchase.id;
+      }
+
+      return { inquiryId: inquiry.id, purchaseId };
     });
 
-    res.status(201).json({ ok: true, id: inquiry.id });
+    res.status(201).json({ ok: true, ...result });
   } catch (err) {
     console.error('POST /api/products/:id/inquiry', err);
     res.status(500).json({ error: 'Error al enviar la solicitud' });

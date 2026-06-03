@@ -1,1 +1,0 @@
-import{j as a,i}from"./index-CBqmuyp1.js";const n={gold:"bg-secondary/20 text-accent",dark:"bg-primary text-white",light:"bg-light text-primary"};function o({children:t,variant:e="gold",className:r}){return a.jsx("span",{className:i("inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider",n[e],r),children:t})}export{o as B};

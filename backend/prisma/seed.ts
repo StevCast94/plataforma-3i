@@ -181,8 +181,20 @@ async function main() {
   console.log(`   ✔ ${products.length} productos`);
 
   await seedMembers();
+  await seedStaff();
 
   console.log('✅ Seed completado.');
+}
+
+// ============ STAFF ADMIN ============
+async function seedStaff() {
+  const password = await bcrypt.hash('3iAdmin2026!', 10);
+  await prisma.staffUser.upsert({
+    where: { username: 'stevens' },
+    update: {},
+    create: { username: 'stevens', password, role: 'superadmin' },
+  });
+  console.log('   ✔ staff admin (stevens / 3iAdmin2026!)');
 }
 
 // ============ MIEMBROS DE EJEMPLO (programa de referidos) ============

@@ -12,9 +12,7 @@ export function Footer() {
     <footer className="bg-primary text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <span className="font-serif text-2xl font-bold">
-            Grupo<span className="text-secondary"> 3i</span>
-          </span>
+          <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="h-8 w-auto" />
           <p className="mt-3 max-w-xs text-sm text-white/70">{tagline}</p>
         </div>
 
