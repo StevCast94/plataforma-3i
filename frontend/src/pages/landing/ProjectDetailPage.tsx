@@ -9,6 +9,7 @@ import { ImageGallery } from '@/components/shared/ImageGallery';
 import { ProjectCard } from '@/components/shared/ProjectCard';
 import { ContactForm } from '@/components/shared/ContactForm';
 import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
+import { BrochureDigital } from '@/components/shared/BrochureDigital';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { DetailSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -142,6 +143,11 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* 4.5 BROCHURE DIGITAL — solo Ibiza Condohotel */}
+      {project.slug === 'ibiza-condohotel' && (
+        <BrochureDigital project={project} onRequestInfo={() => setOpen(true)} />
+      )}
 
       {/* 5. CTA */}
       <section className="bg-primary text-white">
