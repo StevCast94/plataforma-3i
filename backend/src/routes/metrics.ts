@@ -3,25 +3,6 @@ import { Router } from 'express';
 const SUPABASE_URL = 'https://rkwbixidpaqweavghfea.supabase.co';
 const SUPABASE_SERVICE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrd2JpeGlkcGFxd2VhdmdoZmVhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzc2NjE5OCwiZXhwIjoyMDkzMzQyMTk4fQ.YhuyGwW8qia858aqMfu3nhPkmLNoIRgdWpQ6AxSvI9U';
 
-async function sbCount(table: string): Promise<number> {
-  const url = `${SUPABASE_URL}/rest/v1/${table}?select=id&limit=0`;
-  const res = await fetch(url, {
-    method: 'HEAD',
-    headers: {
-      apikey: SUPABASE_SERVICE,
-      Authorization: 'Bearer ' + SUPABASE_SERVICE,
-      Accept: 'application/json',
-      Prefer: 'count=exact',
-    },
-  });
-  const range = res.headers.get('content-range');
-  if (range) {
-    const match = range.match(/\/(\d+)$/);
-    if (match) return parseInt(match[1], 10);
-  }
-  return 0;
-}
-
 async function sbSelect<T>(table: string, select: string): Promise<T[]> {
   const url = `${SUPABASE_URL}/rest/v1/${table}?select=${encodeURIComponent(select)}`;
   const res = await fetch(url, {
@@ -46,21 +27,14 @@ metricsRoutes.get('/', async (_req, res) => {
     const [projects, profiles, investments] = await Promise.all([
       sbSelect<{ id: string; status: string }>('properties', 'id,status'),
       sbSelect<{ id: string; activated: boolean }>('profiles', 'id,activated'),
-      sbSelect<{ amount: number }>('investments', 'amount'),
+      sbSelect<{ amount_paid: number }>('investments', 'amount_paid'),
     ]);
 
-    // Also try HEAD counts as fallback
-    const [propsHead, profHead, invHead] = await Promise.all([
-      sbCount('properties'),
-      sbCount('profiles'),
-      sbCount('investments'),
-    ]);
-
-    const projectsTotal = Math.max(projects.length, propsHead);
+    const projectsTotal = projects.length;
     const projectsActive = projects.filter((p) => p.status === 'active').length;
-    const investorsTotal = Math.max(profiles.length, profHead);
+    const investorsTotal = profiles.length;
     const investorsCommitted = profiles.filter((p) => p.activated === true).length;
-    const totalInvestment = investments.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+    const totalInvestment = investments.reduce((sum, inv) => sum + Number(inv.amount_paid || 0), 0);
 
     res.json({
       projects_total: projectsTotal,
