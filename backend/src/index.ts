@@ -27,6 +27,7 @@ import { communityGroupRoutes } from './routes/communityGroups';
 import { communityEventRoutes } from './routes/communityEvents';
 import { communityMemberRoutes } from './routes/communityMembers';
 import { communityMessageRoutes } from './routes/communityMessages';
+import { metricsRoutes } from './routes/metrics';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -41,6 +42,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 // API routes
+app.use('/api/metrics', metricsRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/projects', projectRoutes);
