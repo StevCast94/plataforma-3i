@@ -3,17 +3,37 @@ import { Router } from 'express';
 const SUPABASE_URL = 'https://rkwbixidpaqweavghfea.supabase.co';
 const SUPABASE_SERVICE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrd2JpeGlkcGFxd2VhdmdoZmVhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzc2NjE5OCwiZXhwIjoyMDkzMzQyMTk4fQ.YhuyGwW8qia858aqMfu3nhPkmLNoIRgdWpQ6AxSvI9U';
 
-async function sbQuery<T>(table: string, select: string): Promise<T[]> {
+async function sbCount(table: string): Promise<number> {
+  const url = `${SUPABASE_URL}/rest/v1/${table}?select=id&limit=0`;
+  const res = await fetch(url, {
+    method: 'HEAD',
+    headers: {
+      apikey: SUPABASE_SERVICE,
+      Authorization: 'Bearer ' + SUPABASE_SERVICE,
+      Accept: 'application/json',
+      Prefer: 'count=exact',
+    },
+  });
+  const range = res.headers.get('content-range');
+  if (range) {
+    const match = range.match(/\/(\d+)$/);
+    if (match) return parseInt(match[1], 10);
+  }
+  return 0;
+}
+
+async function sbSelect<T>(table: string, select: string): Promise<T[]> {
   const url = `${SUPABASE_URL}/rest/v1/${table}?select=${encodeURIComponent(select)}`;
   const res = await fetch(url, {
     headers: {
       apikey: SUPABASE_SERVICE,
       Authorization: 'Bearer ' + SUPABASE_SERVICE,
-      'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
   });
   if (!res.ok) {
-    throw new Error(`Supabase ${res.status}: ${res.statusText}`);
+    const body = await res.text().catch(() => '');
+    throw new Error(`Supabase ${res.status}: ${body.slice(0, 200)}`);
   }
   return res.json();
 }
@@ -24,14 +44,21 @@ export const metricsRoutes = Router();
 metricsRoutes.get('/', async (_req, res) => {
   try {
     const [projects, profiles, investments] = await Promise.all([
-      sbQuery<{ id: string; status: string }>('properties', 'id,status'),
-      sbQuery<{ id: string; activated: boolean }>('profiles', 'id,activated'),
-      sbQuery<{ amount: number }>('investments', 'amount'),
+      sbSelect<{ id: string; status: string }>('properties', 'id,status'),
+      sbSelect<{ id: string; activated: boolean }>('profiles', 'id,activated'),
+      sbSelect<{ amount: number }>('investments', 'amount'),
     ]);
 
-    const projectsTotal = projects.length;
+    // Also try HEAD counts as fallback
+    const [propsHead, profHead, invHead] = await Promise.all([
+      sbCount('properties'),
+      sbCount('profiles'),
+      sbCount('investments'),
+    ]);
+
+    const projectsTotal = Math.max(projects.length, propsHead);
     const projectsActive = projects.filter((p) => p.status === 'active').length;
-    const investorsTotal = profiles.length;
+    const investorsTotal = Math.max(profiles.length, profHead);
     const investorsCommitted = profiles.filter((p) => p.activated === true).length;
     const totalInvestment = investments.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
 
