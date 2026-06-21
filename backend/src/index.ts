@@ -30,6 +30,7 @@ import { communityMessageRoutes } from './routes/communityMessages';
 import { metricsRoutes } from './routes/metrics';
 import { travelRoutes } from './routes/travel';
 import { adminTravelRoutes } from './routes/adminTravel';
+import { referralApiRoutes, referralRedirect } from './routes/referral';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -81,10 +82,16 @@ app.use('/api/community/messages', communityMessageRoutes);
 app.use('/api/travel', travelRoutes);
 app.use('/api/admin/travel', adminTravelRoutes);
 
+// Atribución de referidos (cookie persistente)
+app.use('/api/referral', referralApiRoutes);
+
 // Cualquier /api/* no encontrada -> 404 JSON (no cae al SPA fallback)
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: 'Endpoint no encontrado' });
 });
+
+// Enlaces de referido: /r/CÓDIGO?to=/tienda/slug → cookie + click + redirect al SPA
+app.get('/r/:code', referralRedirect);
 
 // Servir el frontend estático (build de Vite commiteado en frontend/dist)
 const frontendPath = path.join(__dirname, '../../frontend/dist');

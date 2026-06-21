@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
 import { useToast } from '@/components/shared/Toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useProducts } from '@/hooks/useProducts';
 import { whatsappShareUrl } from '@/lib/referral';
 
 interface LinkInfo {
@@ -23,8 +24,10 @@ const WHATSAPP_TEMPLATES = [
 export default function ToolsPage() {
   const { member } = useAuth();
   const { toast } = useToast();
+  const { data: products } = useProducts();
   const [info, setInfo] = useState<LinkInfo | null>(null);
   const [qr, setQr] = useState<string>('');
+  const [sharePath, setSharePath] = useState('/');
 
   useEffect(() => {
     if (!member) return;
@@ -44,6 +47,10 @@ export default function ToolsPage() {
   }, [fullUrl]);
 
   if (!member) return null;
+
+  const shareLink =
+    `${window.location.origin}/r/${member.referralCode}` +
+    (sharePath !== '/' ? `?to=${encodeURIComponent(sharePath)}` : '');
 
   function copy(text: string) {
     navigator.clipboard.writeText(text).then(() => toast('Copiado ✅', 'success'));
@@ -115,6 +122,44 @@ export default function ToolsPage() {
           <Button size="sm" className="mt-4" onClick={downloadQr} disabled={!qr}>
             Descargar QR
           </Button>
+        </div>
+      </section>
+
+      {/* Compartir cualquier página */}
+      <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
+        <h2 className="text-xl text-primary">Comparte cualquier página con tu código</h2>
+        <p className="mt-1 text-sm text-brand-gray">
+          Comparte la página principal o un producto. Quien abra tu enlace queda vinculado a ti
+          por 90 días, aunque solo pida información o agende una visita.
+        </p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+          <select
+            value={sharePath}
+            onChange={(e) => setSharePath(e.target.value)}
+            className="rounded-lg border border-black/15 bg-white px-3 py-2.5 text-sm text-primary"
+          >
+            <option value="/">Página principal</option>
+            <option value="/club">Club 3i</option>
+            <option value="/club/viajes">Club de Viajes</option>
+            {(products ?? []).map((p) => (
+              <option key={p.id} value={`/tienda/${p.slug}`}>
+                Producto: {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mt-3 flex items-center gap-2">
+          <input
+            readOnly
+            value={shareLink}
+            className="min-w-0 flex-1 rounded-lg bg-light px-3 py-2 text-sm text-primary"
+          />
+          <Button size="sm" variant="outline" onClick={() => copy(shareLink)}>Copiar</Button>
+          <a href={whatsappShareUrl(shareLink)} target="_blank" rel="noreferrer">
+            <Button size="sm">WhatsApp</Button>
+          </a>
         </div>
       </section>
 

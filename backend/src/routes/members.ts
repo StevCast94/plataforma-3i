@@ -6,6 +6,7 @@ import { generateReferralCode, PAYOUT_METHODS } from '../lib/referralRules';
 import { attributeReferral } from '../services/referralTracking';
 import { ascendByPurchase, checkReferralAscension } from '../services/ascendService';
 import { hasTravelAccess } from '../travel/membershipAccess';
+import { refFromRequest } from './referral';
 
 export const memberRoutes = Router();
 
@@ -61,9 +62,9 @@ memberRoutes.post('/register', async (req, res) => {
       payoutMethod,
       payoutEmail,
       bankInfo,
-      ref,
       cookieId,
     } = req.body ?? {};
+    const ref = refFromRequest(req);
 
     if (!fullName || !email || !password || !docId) {
       res.status(400).json({ error: 'Nombre, email, contraseña y documento son requeridos' });

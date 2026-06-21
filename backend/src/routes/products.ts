@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
 import { resolveReferrer } from '../services/referralTracking';
+import { refFromRequest } from './referral';
 
 export const productRoutes = Router();
 
@@ -49,7 +50,7 @@ productRoutes.get('/:slug', async (req, res) => {
 // POST /api/products/:id/inquiry (público) -> solicitar info de un producto
 productRoutes.post('/:id/inquiry', async (req, res) => {
   try {
-    const { name, email, phone, message, referralCode } = req.body ?? {};
+    const { name, email, phone, message } = req.body ?? {};
     if (!name || !email) {
       res.status(400).json({ error: 'name y email son requeridos' });
       return;
@@ -69,7 +70,7 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
       return;
     }
 
-    const code = referralCode ? String(referralCode).trim() : null;
+    const code = refFromRequest(req);
 
     // Resolver el referidor (si el código es válido) para atribuir la futura comisión.
     let referrerId: string | null = null;
