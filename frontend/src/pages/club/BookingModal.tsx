@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/Badge';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { getReferralCode } from '@/hooks/useReferral';
+import { IconTicket, IconMedallion } from '@/components/icons/TravelIcons';
 import type {
   TravelHotelOffer,
   TravelHotelSearch,
@@ -81,8 +82,11 @@ export function BookingModal({
     <Modal open={open} onClose={close} title={step === 'done' ? '¡Reserva confirmada!' : 'Reservar'}>
       {!offer ? null : step === 'done' && booking ? (
         <div className="space-y-4">
-          <div className="rounded-xl bg-secondary/15 p-4 text-center">
-            <p className="text-sm text-brand-gray">Voucher</p>
+          <div className="flex flex-col items-center rounded-xl bg-secondary/15 p-5 text-center">
+            <IconMedallion className="h-14 w-14">
+              <IconTicket className="h-7 w-7" />
+            </IconMedallion>
+            <p className="mt-3 text-sm text-brand-gray">Voucher</p>
             <p className="text-2xl font-bold tracking-widest text-accent">{booking.supplierRef}</p>
             <Badge variant="gold" className="mt-2">{booking.status}</Badge>
           </div>

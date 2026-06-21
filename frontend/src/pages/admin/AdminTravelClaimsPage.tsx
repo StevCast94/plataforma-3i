@@ -4,6 +4,7 @@ import { useAdminGet } from '@/hooks/useAdminAPI';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
 import { formatCurrency } from '@/lib/utils';
+import { IconShield } from '@/components/icons/TravelIcons';
 import type { TravelGuaranteeClaim } from '@shared/types';
 
 // ============================================================
@@ -46,7 +47,10 @@ export default function AdminTravelClaimsPage() {
   return (
     <div>
       <div className="mb-5 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-primary">Garantías de precio</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
+          <IconShield className="h-6 w-6 text-accent" />
+          Garantías de precio
+        </h1>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}

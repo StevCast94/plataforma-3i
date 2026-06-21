@@ -8,6 +8,7 @@ import { useFetch } from '@/hooks/useFetch';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { useToast } from '@/components/shared/Toast';
+import { IconSuitcase, IconShield, IconMedallion } from '@/components/icons/TravelIcons';
 import type { TravelBooking, TravelGuaranteeClaim } from '@shared/types';
 
 // ============================================================
@@ -46,18 +47,28 @@ export default function TravelBookingsPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-2xl font-bold text-primary">Mis Viajes</h1>
-      <p className="mt-1 text-sm text-brand-gray">Tus reservas del Club de Viajes 3i.</p>
+      <div className="flex items-center gap-3">
+        <IconMedallion className="h-11 w-11">
+          <IconSuitcase className="h-6 w-6" />
+        </IconMedallion>
+        <div>
+          <h1 className="font-serif text-2xl font-bold text-primary">Mis Viajes</h1>
+          <p className="text-sm text-brand-gray">Tus reservas del Club de Viajes 3i.</p>
+        </div>
+      </div>
 
       {loading && <p className="mt-8 text-brand-gray">Cargando…</p>}
 
       {!loading && bookings && bookings.length === 0 && (
-        <div className="mt-10 rounded-2xl bg-white p-8 text-center ring-1 ring-black/5">
-          <span className="text-4xl">🧳</span>
-          <p className="mt-3 text-brand-gray">Aún no tienes reservas.</p>
+        <div className="mt-10 flex flex-col items-center rounded-2xl bg-white p-10 text-center ring-1 ring-black/5">
+          <IconMedallion className="h-20 w-20">
+            <IconSuitcase className="h-9 w-9" />
+          </IconMedallion>
+          <p className="mt-5 text-brand-gray">Aún no tienes reservas.</p>
           <Link to="/club/viajes" className="mt-5 inline-block">
             <Button>Buscar hoteles</Button>
           </Link>
+          <img src="/images/isotipo.svg" alt="" aria-hidden="true" className="mt-6 h-5 w-auto opacity-40" />
         </div>
       )}
 
@@ -101,7 +112,10 @@ export default function TravelBookingsPage() {
       {/* Reclamos de garantía */}
       {claims && claims.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-lg font-semibold text-primary">Mis reclamos de garantía</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-primary">
+            <IconShield className="h-5 w-5 text-accent" />
+            Mis reclamos de garantía
+          </h2>
           <div className="mt-3 space-y-2">
             {claims.map((c) => (
               <div key={c.id} className="flex items-center justify-between rounded-xl bg-white p-4 text-sm ring-1 ring-black/5">

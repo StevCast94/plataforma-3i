@@ -9,6 +9,13 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { api } from '@/lib/api';
 import { formatCurrency, cn } from '@/lib/utils';
 import { BookingModal } from './BookingModal';
+import {
+  IconHotel,
+  IconPlane,
+  IconCompass,
+  IconSparkle,
+  IconMedallion,
+} from '@/components/icons/TravelIcons';
 import type {
   TravelHotelOffer,
   TravelHotelSearchResponse,
@@ -37,8 +44,9 @@ function durationLabel(min: number): string {
 function MembershipBanner({ isMember }: { isMember: boolean }) {
   if (isMember) {
     return (
-      <div className="mb-6 rounded-xl bg-secondary/15 px-5 py-3 text-center text-sm font-medium text-accent">
-        🎉 Estás viendo precios de socio del Club 3i.
+      <div className="mb-6 flex items-center justify-center gap-2 rounded-xl bg-secondary/15 px-5 py-3 text-center text-sm font-medium text-accent">
+        <IconSparkle className="h-4 w-4" />
+        Estás viendo precios de socio del Club 3i.
       </div>
     );
   }
@@ -209,10 +217,18 @@ export default function ViajesPage() {
     <>
       <Seo title="Club de Viajes 3i" description="Busca hoteles y vuelos con precios de socio. Beneficio exclusivo de la comunidad Grupo 3i." />
 
-      <section className="bg-primary text-white">
-        <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6">
+      <section className="relative overflow-hidden bg-primary text-white">
+        {/* Filigrana de marca */}
+        <img
+          src="/images/isotipo-light.svg"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-10 -top-10 w-72 opacity-[0.06] sm:w-96"
+        />
+        <div className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:px-6">
+          <img src="/images/isotipo-light.svg" alt="Grupo 3i" className="mx-auto mb-5 h-12 w-auto sm:h-14" />
           <Badge variant="gold" className="mb-4">Club de Viajes 3i</Badge>
-          <h1 className="text-3xl font-bold sm:text-5xl">Viaja como socio, paga como socio</h1>
+          <h1 className="font-serif text-3xl font-bold sm:text-5xl">Viaja como socio, paga como socio</h1>
           <p className="mx-auto mt-4 max-w-2xl text-white/80">
             Los socios acceden a tarifas con costo casi al neto. El precio de socio aparece en cada resultado.
           </p>
@@ -229,11 +245,12 @@ export default function ViajesPage() {
                 key={t}
                 onClick={() => switchTab(t)}
                 className={cn(
-                  'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+                  'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors',
                   tab === t ? 'bg-primary text-white' : 'bg-light text-primary hover:bg-secondary/20',
                 )}
               >
-                {t === 'hoteles' ? '🏨 Hoteles' : '✈️ Vuelos'}
+                {t === 'hoteles' ? <IconHotel className="h-4 w-4" /> : <IconPlane className="h-4 w-4" />}
+                {t === 'hoteles' ? 'Hoteles' : 'Vuelos'}
               </button>
             ))}
           </div>
@@ -292,11 +309,16 @@ export default function ViajesPage() {
         )}
 
         {!loading && !result && (
-          <div className="py-10 text-center text-brand-gray">
-            <span className="text-5xl">{tab === 'hoteles' ? '🏝️' : '🛫'}</span>
-            <p className="mt-4">
-              {tab === 'hoteles' ? 'Escribe un destino y fechas para ver las tarifas del club.' : 'Escribe origen, destino y fecha para ver vuelos.'}
+          <div className="flex flex-col items-center py-12 text-center">
+            <IconMedallion className="h-24 w-24">
+              {tab === 'hoteles' ? <IconCompass className="h-11 w-11" /> : <IconPlane className="h-11 w-11" />}
+            </IconMedallion>
+            <p className="mt-6 max-w-sm text-brand-gray">
+              {tab === 'hoteles'
+                ? 'Escribe un destino y fechas para descubrir las tarifas exclusivas del club.'
+                : 'Escribe origen, destino y fecha para encontrar tu próximo vuelo.'}
             </p>
+            <img src="/images/isotipo.svg" alt="" aria-hidden="true" className="mt-6 h-6 w-auto opacity-40" />
           </div>
         )}
       </section>
