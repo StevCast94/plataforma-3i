@@ -96,6 +96,7 @@ enum MemberStatus {
   PREMIERE
   ELITE
   SUSPENDED
+  PENDING
 }
 
 enum EliteBy {
@@ -114,13 +115,16 @@ enum CommissionStatus {
 model ReferralMember {
   id                    String           @id @default(uuid())
   userId                String?          @unique // FK auth.users (Supabase) — nullable hasta Fase 3
-  passwordHash          String // bcrypt — auth JWT simple en Fase 2
+  passwordHash          String? // null = pre-registro sin contraseña (lead aún no reclamado)
   fullName              String
   email                 String           @unique
   phone                 String?
-  docId                 String           @unique
+  docId                 String?          @unique // null hasta que reclama (crea contraseña)
   docType               String           @default("cedula")
   status                MemberStatus     @default(PREMIERE)
+  // Pre-registro: PENDING + claimed=false hasta que el lead crea su contraseña.
+  claimed               Boolean          @default(true)
+  referredByCode        String? // código de quien lo refirió (se atribuye al reclamar)
   referralCode          String           @unique
   referrerId            String?
   referrer              ReferralMember?  @relation("ReferralChain", fields: [referrerId], references: [id])

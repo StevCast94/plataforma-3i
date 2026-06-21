@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -28,9 +28,13 @@ export default function RegisterPage() {
   const referralCode = useReferral();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const claimEmail = params.get('email');
 
   const [step, setStep] = useState(1);
-  const [data, setData] = useState<RegisterData>(empty);
+  const [data, setData] = useState<RegisterData>(
+    claimEmail ? { ...empty, email: claimEmail } : empty,
+  );
   const [errors, setErrors] = useState<StepErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -83,6 +87,13 @@ export default function RegisterPage() {
         <Link to="/oficina" className="font-serif text-2xl font-bold text-primary">
           Grupo<span className="text-secondary"> 3i</span>
         </Link>
+
+        {claimEmail && (
+          <div className="mt-4 rounded-xl bg-secondary/15 p-3 text-sm text-primary">
+            ✨ Estás <strong>activando tu oficina</strong>. Define tu contraseña y datos para
+            desbloquear tu código de referidor.
+          </div>
+        )}
 
         {referralCode && (
           <div className="mt-4 flex items-center gap-2">

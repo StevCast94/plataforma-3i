@@ -3,6 +3,7 @@ import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
 import { resolveReferrer } from '../services/referralTracking';
 import { refFromRequest } from './referral';
+import { ensureProvisionalMember } from '../services/preRegister';
 
 export const productRoutes = Router();
 
@@ -112,7 +113,22 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
       return { inquiryId: inquiry.id, purchaseId };
     });
 
-    res.status(201).json({ ok: true, ...result });
+    // Pre-registro sin contraseña: quien pide info queda como miembro provisional
+    // y puede activar su código creando su contraseña. Best-effort (no rompe el lead).
+    let canActivate = false;
+    try {
+      const prov = await ensureProvisionalMember({
+        fullName: String(name).trim(),
+        email: String(email).trim(),
+        phone: phone ? String(phone).trim() : null,
+        referredByCode: code,
+      });
+      canActivate = !prov.alreadyClaimed; // si ya tiene cuenta activa, no ofrecer "activar"
+    } catch (err) {
+      console.error('preRegister inquiry', err);
+    }
+
+    res.status(201).json({ ok: true, ...result, canActivate });
   } catch (err) {
     console.error('POST /api/products/:id/inquiry', err);
     res.status(500).json({ error: 'Error al enviar la solicitud' });

@@ -117,5 +117,5 @@ export async function checkReferralAscension(
     return { ascended: true, status: 'ELITE', by: 'REFERRALS', count };
   }
 
-  return { ascended: false, status: member.status, count };
+  return { ascended: false, status: member.status as 'PREMIERE' | 'ELITE' | 'SUSPENDED', count };
 }

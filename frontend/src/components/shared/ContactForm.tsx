@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -42,6 +43,7 @@ export function ContactForm({
   const isContact = endpoint === '/contact';
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [activateEmail, setActivateEmail] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const referralCode = getReferralCode();
 
@@ -72,7 +74,7 @@ export function ContactForm({
 
     setSending(true);
     try {
-      await api.post(endpoint, {
+      const res = await api.post<{ canActivate?: boolean }>(endpoint, {
         ...data,
         ...(isContact ? { source } : {}),
         ...(referralCode ? { referralCode } : {}),
@@ -80,6 +82,7 @@ export function ContactForm({
       });
       toast('¡Listo! Un asesor te contactará pronto.', 'success');
       form.reset();
+      setActivateEmail(res?.canActivate ? data.email : null);
       setDone(true);
       onSuccess?.();
     } catch (err) {
@@ -96,6 +99,19 @@ export function ContactForm({
         <p className="mt-2 text-brand-gray">
           Hemos recibido tu mensaje. Un asesor te contactará pronto.
         </p>
+
+        {activateEmail && (
+          <div className="mx-auto mt-5 max-w-sm rounded-xl bg-secondary/15 p-4">
+            <p className="text-sm text-primary">
+              💡 <strong>Bonus:</strong> te creamos tu oficina. Activa tu código de referido
+              y gana recomendando lo que te gustó.
+            </p>
+            <Link to={`/oficina/registro?email=${encodeURIComponent(activateEmail)}`} className="mt-3 inline-block">
+              <Button size="sm">Activar mi código</Button>
+            </Link>
+          </div>
+        )}
+
         <Button variant="outline" className="mt-5" onClick={() => setDone(false)}>
           Enviar otro
         </Button>

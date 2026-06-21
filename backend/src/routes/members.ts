@@ -79,20 +79,65 @@ memberRoutes.post('/register', async (req, res) => {
       return;
     }
 
-    // Unicidad (email / documento)
-    const dup = await prisma.referralMember.findFirst({
-      where: { OR: [{ email: String(email).toLowerCase() }, { docId: String(docId) }] },
-      select: { email: true, docId: true },
+    const emailLc = String(email).toLowerCase().trim();
+    const docIdStr = String(docId).trim();
+
+    // ¿Email ya existe? Puede ser un PRE-REGISTRO provisional reclamable.
+    const existing = await prisma.referralMember.findUnique({
+      where: { email: emailLc },
+      select: { id: true, claimed: true, referredByCode: true },
     });
-    if (dup) {
-      const field = dup.email === String(email).toLowerCase() ? 'email' : 'documento';
-      res.status(409).json({ error: `Ya existe una cuenta con ese ${field}` });
+    if (existing && existing.claimed) {
+      res.status(409).json({ error: 'Ya existe una cuenta con ese email. Inicia sesión.' });
+      return;
+    }
+
+    // Documento ya usado por OTRO miembro.
+    const docDup = await prisma.referralMember.findFirst({
+      where: { docId: docIdStr, ...(existing ? { id: { not: existing.id } } : {}) },
+      select: { id: true },
+    });
+    if (docDup) {
+      res.status(409).json({ error: 'Ya existe una cuenta con ese documento' });
       return;
     }
 
     const passwordHash = await bcrypt.hash(String(password), 10);
 
-    // Código único (reintento ante colisión improbable).
+    // CAMINO A — RECLAMAR un pre-registro: activa el código existente del lead.
+    if (existing && !existing.claimed) {
+      const refToUse = existing.referredByCode ?? (ref ?? null);
+      const member = await prisma.$transaction(async (tx) => {
+        const claimed = await tx.referralMember.update({
+          where: { id: existing.id },
+          data: {
+            passwordHash,
+            docId: docIdStr,
+            docType: docType ? String(docType) : 'cedula',
+            status: 'PREMIERE',
+            claimed: true,
+            fullName: String(fullName).trim(),
+            phone: phone ? String(phone).trim() : undefined,
+            payoutMethod: payoutMethod && PAYOUT_METHODS[payoutMethod] ? String(payoutMethod) : undefined,
+            payoutEmail: payoutEmail ? String(payoutEmail).trim() : undefined,
+            bankInfo: bankInfo ?? undefined,
+          },
+          select: memberSelect,
+        });
+        if (refToUse) {
+          await attributeReferral(
+            { newMemberId: claimed.id, referrerCode: String(refToUse), attributionMethod: 'claim', cookieId: cookieId ?? null },
+            tx,
+          );
+        }
+        return claimed;
+      });
+      const token = signMemberToken(member.id, member.email);
+      res.status(201).json({ token, member, claimed: true });
+      return;
+    }
+
+    // CAMINO B — REGISTRO NUEVO (sin pre-registro previo).
     let referralCode = generateReferralCode('PREMIERE');
     for (let i = 0; i < 5; i++) {
       const exists = await prisma.referralMember.findUnique({
@@ -111,11 +156,11 @@ memberRoutes.post('/register', async (req, res) => {
       const created = await tx.referralMember.create({
         data: {
           fullName: String(fullName).trim(),
-          email: String(email).toLowerCase().trim(),
+          email: emailLc,
           phone: phone ? String(phone).trim() : null,
           passwordHash,
           docType: docType ? String(docType) : 'cedula',
-          docId: String(docId).trim(),
+          docId: docIdStr,
           referralCode: code,
           payoutMethod: payoutMethod && PAYOUT_METHODS[payoutMethod] ? String(payoutMethod) : null,
           payoutEmail: payoutEmail ? String(payoutEmail).trim() : null,
@@ -162,7 +207,12 @@ memberRoutes.post('/login', async (req, res) => {
     const member = await prisma.referralMember.findUnique({
       where: { email: String(email).toLowerCase().trim() },
     });
-    if (!member || !(await bcrypt.compare(String(password), member.passwordHash))) {
+    // Pre-registro sin contraseña: invitar a activar en vez de "credenciales inválidas".
+    if (member && !member.claimed && !member.passwordHash) {
+      res.status(409).json({ error: 'Tienes una oficina pendiente. Crea tu contraseña para activar tu código.', needsActivation: true });
+      return;
+    }
+    if (!member || !member.passwordHash || !(await bcrypt.compare(String(password), member.passwordHash))) {
       res.status(401).json({ error: 'Credenciales inválidas' });
       return;
     }
