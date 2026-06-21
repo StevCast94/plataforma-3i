@@ -59,14 +59,19 @@ adminMemberRoutes.get('/:id', async (req, res) => {
       sentReferrals: { include: { referred: { select: { fullName: true, status: true } } } },
       commissions: { orderBy: { createdAt: 'desc' }, take: 20 },
       payouts: { orderBy: { createdAt: 'desc' }, take: 20 },
+      travelMemberships: { orderBy: { createdAt: 'desc' } },
     },
   });
   if (!member) {
     res.status(404).json({ error: 'Miembro no encontrado' });
     return;
   }
+  const now = new Date();
+  const travelAccess = member.travelMemberships.some(
+    (m) => m.active && (!m.expiresAt || m.expiresAt > now),
+  );
   const { passwordHash: _ph, ...safe } = member;
-  res.json(safe);
+  res.json({ ...safe, travelAccess });
 });
 
 // PUT /api/admin/members/:id/kyc — aprobar/rechazar
@@ -118,5 +123,75 @@ adminMemberRoutes.put('/:id/status', async (req: AuthedRequest, res) => {
   } catch (err) {
     console.error('PUT /api/admin/members/:id/status', err);
     res.status(400).json({ error: 'Error al cambiar estado' });
+  }
+});
+
+// ============================================================
+// FASE 5 — Membresía del Club de Viajes (otorgable como premio/incentivo).
+// ============================================================
+
+const TRAVEL_SOURCES = ['PURCHASE', 'REWARD', 'FRACTIONAL', 'STAFF'] as const;
+
+// POST /api/admin/members/:id/travel-membership — otorgar acceso al club de viajes.
+// Por defecto source=REWARD (premio, gratis, sin comisión). Deja una sola
+// membresía activa (desactiva las previas) y notifica al socio.
+adminMemberRoutes.post('/:id/travel-membership', async (req: AuthedRequest, res) => {
+  try {
+    const { source, tier, note, expiresAt } = req.body ?? {};
+    const src = TRAVEL_SOURCES.includes(source) ? source : 'REWARD';
+    const member = await prisma.referralMember.findUnique({
+      where: { id: req.params.id },
+      select: { id: true },
+    });
+    if (!member) {
+      res.status(404).json({ error: 'Miembro no encontrado' });
+      return;
+    }
+
+    const membership = await prisma.$transaction(async (tx) => {
+      await tx.travelMembership.updateMany({
+        where: { memberId: member.id, active: true },
+        data: { active: false },
+      });
+      return tx.travelMembership.create({
+        data: {
+          memberId: member.id,
+          source: src,
+          tier: tier ? String(tier) : 'standard',
+          note: note ? String(note) : null,
+          grantedBy: req.staff?.staffId ?? null,
+          expiresAt: expiresAt ? new Date(expiresAt) : null,
+        },
+      });
+    });
+
+    await audit(req.staff?.staffId, 'create', 'travel_membership', member.id, { source: src, tier });
+    await notify(
+      member.id,
+      'new_referral',
+      '¡Bienvenido al Club de Viajes 3i! ✈️',
+      'Se activó tu membresía del club de viajes. Ya puedes ver precios de socio al buscar hoteles.',
+    );
+    res.status(201).json(membership);
+  } catch (err) {
+    console.error('POST /api/admin/members/:id/travel-membership', err);
+    res.status(400).json({ error: 'Error al otorgar la membresía de viajes' });
+  }
+});
+
+// DELETE /api/admin/members/:id/travel-membership — revocar acceso (desactiva todas).
+adminMemberRoutes.delete('/:id/travel-membership', async (req: AuthedRequest, res) => {
+  try {
+    const result = await prisma.travelMembership.updateMany({
+      where: { memberId: req.params.id, active: true },
+      data: { active: false },
+    });
+    await audit(req.staff?.staffId, 'delete', 'travel_membership', req.params.id, {
+      revoked: result.count,
+    });
+    res.json({ ok: true, revoked: result.count });
+  } catch (err) {
+    console.error('DELETE /api/admin/members/:id/travel-membership', err);
+    res.status(400).json({ error: 'Error al revocar la membresía de viajes' });
   }
 });

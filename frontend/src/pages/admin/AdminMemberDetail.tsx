@@ -8,12 +8,20 @@ import { useToast } from '@/components/shared/Toast';
 import { formatCurrency } from '@/lib/utils';
 import { statusLabel } from '@/lib/referral';
 import { COMMISSION_BADGE } from '@/lib/referral';
-import type { ReferralMember, Commission, Payout, CommissionStatus } from '@shared/types';
+import type {
+  ReferralMember,
+  Commission,
+  Payout,
+  CommissionStatus,
+  TravelMembershipInfo,
+} from '@shared/types';
 
 interface MemberDetail extends ReferralMember {
   sentReferrals: { id: string; referred: { fullName: string; status: string } }[];
   commissions: Commission[];
   payouts: Payout[];
+  travelMemberships: TravelMembershipInfo[];
+  travelAccess: boolean;
 }
 
 export function AdminMemberDetail({
@@ -53,6 +61,22 @@ export function AdminMemberDetail({
     try {
       await adminApi.put(`/admin/members/${memberId}/status`, { status });
       toast('Estado actualizado', 'success');
+      reload();
+      onChanged();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function setTravel(grant: boolean) {
+    if (!memberId) return;
+    setBusy(true);
+    try {
+      if (grant) await adminApi.post(`/admin/members/${memberId}/travel-membership`, { source: 'REWARD' });
+      else await adminApi.del(`/admin/members/${memberId}/travel-membership`);
+      toast(grant ? 'Membresía de viajes otorgada' : 'Membresía de viajes revocada', 'success');
       reload();
       onChanged();
     } catch (err) {
@@ -113,6 +137,34 @@ export function AdminMemberDetail({
               ))}
               {data.commissions.length === 0 && <li className="text-brand-gray">Sin comisiones.</li>}
             </ul>
+          </Section>
+
+          {/* Club de Viajes */}
+          <Section title="Club de Viajes 3i">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant={data.travelAccess ? 'gold' : 'light'}>
+                {data.travelAccess ? 'Socio activo ✈️' : 'Sin membresía'}
+              </Badge>
+              {data.travelAccess ? (
+                <Button size="sm" variant="ghost" className="text-red-600" onClick={() => setTravel(false)} disabled={busy}>
+                  Revocar
+                </Button>
+              ) : (
+                <Button size="sm" onClick={() => setTravel(true)} disabled={busy}>
+                  Otorgar membresía (premio)
+                </Button>
+              )}
+            </div>
+            {data.travelMemberships.length > 0 && (
+              <ul className="mt-2 space-y-1 text-xs text-brand-gray">
+                {data.travelMemberships.slice(0, 4).map((m) => (
+                  <li key={m.id} className="flex justify-between">
+                    <span>{m.source} · {m.tier}{m.active ? '' : ' (inactiva)'}</span>
+                    <span>{new Date(m.createdAt).toLocaleDateString('es-EC')}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Section>
 
           {/* Acciones */}

@@ -18,6 +18,7 @@ const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
 const ShopPage = lazy(() => import('@/pages/tienda/ShopPage'));
 const ProductDetailPage = lazy(() => import('@/pages/tienda/ProductDetailPage'));
 const ClubPage = lazy(() => import('@/pages/club/ClubPage'));
+const ViajesPage = lazy(() => import('@/pages/club/ViajesPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 // Oficina virtual (programa de referidos)
@@ -30,6 +31,7 @@ const CommissionsPage = lazy(() => import('@/pages/oficina/CommissionsPage'));
 const PaymentsPage = lazy(() => import('@/pages/oficina/PaymentsPage'));
 const ToolsPage = lazy(() => import('@/pages/oficina/ToolsPage'));
 const CalculatorPage = lazy(() => import('@/pages/oficina/CalculatorPage'));
+const TravelBookingsPage = lazy(() => import('@/pages/oficina/TravelBookingsPage'));
 
 // Panel de administración (staff)
 const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage'));
@@ -41,6 +43,7 @@ const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPa
 const AdminPurchasesPage = lazy(() => import('@/pages/admin/AdminPurchasesPage'));
 const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
 const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
+const AdminTravelClaimsPage = lazy(() => import('@/pages/admin/AdminTravelClaimsPage'));
 
 // Comunidad (red social)
 const CommunityFeedPage = lazy(() => import('@/pages/comunidad/CommunityFeedPage'));
@@ -70,6 +73,7 @@ export default function App() {
                 <Route path="tienda" element={<ShopPage />} />
                 <Route path="tienda/:slug" element={<ProductDetailPage />} />
                 <Route path="club" element={<ClubPage />} />
+                <Route path="club/viajes" element={<ViajesPage />} />
                 <Route path="sobre-nosotros" element={<AboutPage />} />
                 <Route path="contacto" element={<ContactPage />} />
                 <Route path="*" element={<NotFoundPage />} />
@@ -88,6 +92,7 @@ export default function App() {
                 <Route path="pagos" element={<PaymentsPage />} />
                 <Route path="herramientas" element={<ToolsPage />} />
                 <Route path="calculadora" element={<CalculatorPage />} />
+                <Route path="viajes" element={<TravelBookingsPage />} />
               </Route>
 
               {/* Admin — login standalone */}
@@ -102,6 +107,7 @@ export default function App() {
                 <Route path="comisiones" element={<AdminCommissionsPage />} />
                 <Route path="compras" element={<AdminPurchasesPage />} />
                 <Route path="reportes" element={<AdminReportsPage />} />
+                <Route path="garantias" element={<AdminTravelClaimsPage />} />
                 <Route path="configuracion" element={<AdminSettingsPage />} />
               </Route>
 

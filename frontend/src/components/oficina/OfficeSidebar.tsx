@@ -6,6 +6,7 @@ const items = [
   { to: '/oficina/mi-red', label: 'Mi Red', icon: '👥' },
   { to: '/oficina/comisiones', label: 'Comisiones', icon: '💲' },
   { to: '/oficina/pagos', label: 'Pagos', icon: '👛' },
+  { to: '/oficina/viajes', label: 'Mis Viajes', icon: '🧳' },
   { to: '/oficina/herramientas', label: 'Herramientas', icon: '🔗' },
   { to: '/oficina/calculadora', label: 'Calculadora', icon: '🧮' },
 ];

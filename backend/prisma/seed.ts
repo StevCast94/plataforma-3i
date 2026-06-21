@@ -334,6 +334,18 @@ async function seedMembers() {
     create: { memberId: premiere.id, code: premiereCode, fullUrl: link(premiereCode), clicks: 8, conversions: 1 },
   });
 
+  // Fase 5 — Membresía de viajes OTORGADA (premio) a la Elite demo.
+  // La Premiere NO recibe, para demostrar precio socio vs precio público.
+  const eliteTravel = await prisma.travelMembership.findFirst({
+    where: { memberId: elite.id, active: true },
+    select: { id: true },
+  });
+  if (!eliteTravel) {
+    await prisma.travelMembership.create({
+      data: { memberId: elite.id, source: 'REWARD', tier: 'standard', note: 'Otorgada en seed (demo)' },
+    });
+  }
+
   // Relación de referido (nivel 1): Elite → Premiere, con primera compra hecha.
   const existingRef = await prisma.referral.findFirst({
     where: { referrerId: elite.id, referredId: premiere.id, level: 1 },

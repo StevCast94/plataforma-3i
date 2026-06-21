@@ -28,6 +28,8 @@ import { communityEventRoutes } from './routes/communityEvents';
 import { communityMemberRoutes } from './routes/communityMembers';
 import { communityMessageRoutes } from './routes/communityMessages';
 import { metricsRoutes } from './routes/metrics';
+import { travelRoutes } from './routes/travel';
+import { adminTravelRoutes } from './routes/adminTravel';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -74,6 +76,10 @@ app.use('/api/community/groups', communityGroupRoutes);
 app.use('/api/community/events', communityEventRoutes);
 app.use('/api/community/members', communityMemberRoutes);
 app.use('/api/community/messages', communityMessageRoutes);
+
+// Fase 5 — Motor de Viajes (Club de Viajes 3i)
+app.use('/api/travel', travelRoutes);
+app.use('/api/admin/travel', adminTravelRoutes);
 
 // Cualquier /api/* no encontrada -> 404 JSON (no cae al SPA fallback)
 app.use('/api', (_req, res) => {

@@ -9,6 +9,7 @@ const items = [
   { to: '/admin/miembros', label: 'Miembros', icon: '👥' },
   { to: '/admin/comisiones', label: 'Comisiones', icon: '💲' },
   { to: '/admin/compras', label: 'Compras', icon: '🛒' },
+  { to: '/admin/garantias', label: 'Garantías', icon: '🛡️' },
   { to: '/admin/reportes', label: 'Reportes', icon: '📄' },
 ];
 

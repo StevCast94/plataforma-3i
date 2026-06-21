@@ -31,6 +31,11 @@ export default function ClubPage() {
             {club?.subtitle ??
               'Viaja por el mundo con descuentos de hasta 70% y accede a beneficios exclusivos.'}
           </p>
+          <div className="mt-8">
+            <Link to="/club/viajes">
+              <Button size="lg">Explorar viajes</Button>
+            </Link>
+          </div>
         </div>
       </section>
 

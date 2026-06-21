@@ -5,6 +5,7 @@ import { authMember, signMemberToken, type MemberRequest } from '../middleware/a
 import { generateReferralCode, PAYOUT_METHODS } from '../lib/referralRules';
 import { attributeReferral } from '../services/referralTracking';
 import { ascendByPurchase, checkReferralAscension } from '../services/ascendService';
+import { hasTravelAccess } from '../travel/membershipAccess';
 
 export const memberRoutes = Router();
 
@@ -170,7 +171,8 @@ memberRoutes.post('/login', async (req, res) => {
     }
     const token = signMemberToken(member.id, member.email);
     const { passwordHash: _ph, ...safe } = member;
-    res.json({ token, member: safe });
+    const travelAccess = await hasTravelAccess(member.id);
+    res.json({ token, member: { ...safe, travelAccess } });
   } catch (err) {
     console.error('POST /api/members/login', err);
     res.status(500).json({ error: 'Error al iniciar sesión' });
@@ -183,7 +185,8 @@ memberRoutes.get('/me', authMember, async (req: MemberRequest, res) => {
     where: { id: req.memberId },
     select: memberSelect,
   });
-  res.json(member);
+  const travelAccess = await hasTravelAccess(req.memberId);
+  res.json(member ? { ...member, travelAccess } : member);
 });
 
 // PUT /api/members/me

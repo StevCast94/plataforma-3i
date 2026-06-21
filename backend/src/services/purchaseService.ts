@@ -1,6 +1,10 @@
 import { prisma } from '../prisma';
 import { createCommission } from './commissionCalculator';
 import { notify } from './notifications';
+import {
+  grantTravelMembershipOnPurchase,
+  revokeTravelMembershipForPurchase,
+} from '../travel/membershipGrant';
 
 /**
  * Confirma una compra y genera la(s) comisión(es) al referidor.
@@ -94,6 +98,15 @@ export async function confirmPurchase(purchaseId: string): Promise<{
       }
     }
 
+    // V3 — Si es membresía de viajes, otorgar el ACCESO al motor (source=PURCHASE).
+    // Best-effort: no rompe la confirmación si el comprador no tiene cuenta de socio.
+    if (purchase.product.type === 'TRAVEL_MEMBERSHIP') {
+      await grantTravelMembershipOnPurchase(tx, {
+        customerEmail: purchase.customerEmail,
+        purchaseId: purchase.id,
+      });
+    }
+
     return { status: 'confirmed', commissionsCreated: created };
   });
 }
@@ -122,6 +135,9 @@ export async function cancelPurchase(purchaseId: string): Promise<void> {
       }
       await tx.commission.update({ where: { id: c.id }, data: { status: 'REVERSED' } });
     }
+
+    // V3 — Revocar el acceso al club de viajes si esta compra lo había otorgado.
+    await revokeTravelMembershipForPurchase(tx, purchaseId);
 
     await tx.purchase.update({
       where: { id: purchaseId },

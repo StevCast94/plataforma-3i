@@ -16,7 +16,7 @@ async function sbSelect<T>(table: string, select: string): Promise<T[]> {
     const body = await res.text().catch(() => '');
     throw new Error(`Supabase ${res.status}: ${body.slice(0, 200)}`);
   }
-  return res.json();
+  return res.json() as Promise<T[]>;
 }
 
 export const metricsRoutes = Router();

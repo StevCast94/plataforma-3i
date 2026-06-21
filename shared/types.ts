@@ -122,6 +122,8 @@ export interface ReferralMember {
   location?: string | null;
   interests?: string[];
   createdAt: string;
+  // Fase 5 — acceso al Club de Viajes (membresía activa). Lo calcula /me y login.
+  travelAccess?: boolean;
 }
 
 export interface AuthResponse {
@@ -324,5 +326,166 @@ export interface ChatMessage {
   id: string;
   content: string;
   mine: boolean;
+  createdAt: string;
+}
+
+// ============================================================
+// FASE 5 — Motor de Viajes (Club de Viajes 3i)
+// Todos los precios llegan en CENTAVOS. La tarifa neta NUNCA viaja al frontend.
+// ============================================================
+
+export type TravelKind = 'HOTEL' | 'FLIGHT' | 'ACTIVITY' | 'CAR' | 'PACKAGE';
+
+export interface TravelHotelOffer {
+  rateKey: string;
+  supplier: string;
+  name: string;
+  city: string;
+  country: string;
+  stars: number;
+  image: string;
+  amenities: string[];
+  refundable: boolean;
+  nights: number;
+  currency: string;
+  publicCents: number; // precio visitante
+  memberCents: number; // precio socio (recuperación de costo)
+  priceCents: number; // el que aplica al usuario actual
+  isMemberPrice: boolean;
+  savingsCents: number; // publicCents - memberCents
+}
+
+export interface TravelHotelSearch {
+  destination: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+}
+
+export interface TravelHotelSearchResponse {
+  offers: TravelHotelOffer[];
+  isMember: boolean;
+  currency: string;
+  query: TravelHotelSearch;
+}
+
+export interface TravelFlightOffer {
+  rateKey: string;
+  supplier: string;
+  airline: string;
+  flightNumber: string;
+  origin: string;
+  destination: string;
+  departTime: string;
+  arriveTime: string;
+  durationMin: number;
+  stops: number;
+  cabin: string;
+  roundTrip: boolean;
+  currency: string;
+  publicCents: number;
+  memberCents: number;
+  priceCents: number;
+  isMemberPrice: boolean;
+  savingsCents: number;
+}
+
+export interface TravelFlightSearch {
+  origin: string;
+  destination: string;
+  departDate: string;
+  returnDate?: string;
+  passengers: number;
+}
+
+export interface TravelFlightSearchResponse {
+  offers: TravelFlightOffer[];
+  isMember: boolean;
+  currency: string;
+  query: TravelFlightSearch;
+}
+
+export type BookingStatus =
+  | 'QUOTED'
+  | 'PENDING_PAYMENT'
+  | 'PAID'
+  | 'CONFIRMED'
+  | 'CANCELLED'
+  | 'FAILED'
+  | 'REFUNDED';
+
+export interface TravelBookingDetails {
+  name: string;
+  city: string;
+  country: string;
+  stars: number;
+  image: string;
+  amenities: string[];
+  refundable: boolean;
+  nights: number;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  isMemberPrice: boolean;
+  publicCents: number;
+  memberCents: number;
+}
+
+// Reserva tal como la ve el cliente (SIN tarifa neta ni markup).
+export interface TravelBooking {
+  id: string;
+  kind: TravelKind;
+  supplier: string;
+  supplierRef?: string | null; // voucher / localizador
+  status: BookingStatus;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string | null;
+  totalCents: number;
+  currency: string;
+  details: TravelBookingDetails;
+  paymentRef?: string | null;
+  referralCode?: string | null;
+  memberId?: string | null;
+  confirmedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  itineraryId?: string | null;
+}
+
+export interface TravelPaymentResult {
+  paymentRef: string;
+  approved: boolean;
+  redirectUrl?: string;
+}
+
+export interface CreateBookingResponse {
+  booking: TravelBooking;
+  payment: TravelPaymentResult;
+}
+
+export interface TravelGuaranteeClaim {
+  id: string;
+  bookingId?: string | null;
+  memberId?: string | null;
+  competitorUrl: string;
+  evidenceUrl?: string | null;
+  claimedCents: number;
+  ourCents: number;
+  status: 'open' | 'approved' | 'rejected' | 'paid';
+  resolution?: string | null;
+  createdAt: string;
+}
+
+export type MembershipSource = 'PURCHASE' | 'REWARD' | 'FRACTIONAL' | 'STAFF';
+
+export interface TravelMembershipInfo {
+  id: string;
+  tier: string;
+  source: MembershipSource;
+  active: boolean;
+  note?: string | null;
+  startsAt: string;
+  expiresAt?: string | null;
   createdAt: string;
 }
