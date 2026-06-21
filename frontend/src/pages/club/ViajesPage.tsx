@@ -236,7 +236,7 @@ export default function ViajesPage() {
       </section>
 
       {/* BUSCADOR */}
-      <section className="mx-auto -mt-8 max-w-5xl px-4 sm:px-6">
+      <section className="relative z-10 mx-auto -mt-8 max-w-5xl px-4 sm:px-6">
         <div className="rounded-2xl bg-white p-4 shadow-xl ring-1 ring-black/5">
           {/* Tabs */}
           <div className="mb-4 flex gap-2">
