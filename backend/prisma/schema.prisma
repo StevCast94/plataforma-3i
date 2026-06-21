@@ -84,6 +84,7 @@ model ProductInquiry {
   phone        String?
   message      String?  @db.Text
   referralCode String? // 3IP-XXXXXX capturado del query param ?ref=
+  intent       String?  @default("info") // info | whatsapp | visit | meet | purchase
   status       String   @default("pending") // pending, contacted, closed
   createdAt    DateTime @default(now())
 }

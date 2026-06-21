@@ -6,17 +6,14 @@ import { Seo } from '@/components/shared/Seo';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { PriceDisplay } from '@/components/shared/PriceDisplay';
-import { ContactForm } from '@/components/shared/ContactForm';
-import { CheckoutModal } from '@/components/shared/CheckoutModal';
+import { ProductCTAs } from '@/components/shared/ProductCTAs';
 import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { ROICalculator } from '@/components/shared/ROICalculator';
 import { ProductCard } from '@/components/shared/ProductCard';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { DetailSkeleton } from '@/components/shared/LoadingSkeleton';
-import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Modal } from '@/components/ui/Modal';
 import { cld } from '@/lib/cloudinary';
 import type { Product } from '@shared/types';
 
@@ -31,8 +28,6 @@ export default function ProductDetailPage() {
   const { slug } = useParams();
   const { data: product, loading, error } = useProduct(slug);
   const { data: allProducts } = useProducts();
-  const [open, setOpen] = useState(false);
-  const [checkout, setCheckout] = useState(false);
 
   if (loading) return <DetailSkeleton />;
   if (error) return <ErrorState message={error} onRetry={() => location.reload()} />;
@@ -49,7 +44,6 @@ export default function ProductDetailPage() {
 
   const features = Array.isArray(product.features) ? product.features : [];
   const gallery = product.images?.length ? product.images : [];
-  const inquiryEndpoint = `/products/${product.id}/inquiry`;
   const related = (allProducts ?? [])
     .filter((p) => p.id !== product.id)
     .slice(0, 3);
@@ -104,14 +98,8 @@ export default function ProductDetailPage() {
               </ul>
             )}
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" onClick={() => setCheckout(true)}>
-                Quiero comprar
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => setOpen(true)}>
-                Solicitar información
-              </Button>
-            </div>
+            <ProductCTAs product={product} />
+
             <div className="mt-3">
               <ShareToCommunity
                 title={product.name}
@@ -153,16 +141,6 @@ export default function ProductDetailPage() {
         </section>
       )}
 
-      <Modal open={open} onClose={() => setOpen(false)} title={`Solicitar: ${product.name}`}>
-        <ContactForm
-          endpoint={inquiryEndpoint}
-          withMessage
-          inlineSuccess={false}
-          onSuccess={() => setOpen(false)}
-        />
-      </Modal>
-
-      <CheckoutModal open={checkout} product={product} onClose={() => setCheckout(false)} />
     </>
   );
 }

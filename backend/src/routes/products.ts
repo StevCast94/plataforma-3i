@@ -61,7 +61,8 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
       return;
     }
 
-    const { intent } = req.body ?? {};
+    const VALID_INTENTS = ['info', 'whatsapp', 'visit', 'meet', 'purchase'];
+    const intent = VALID_INTENTS.includes(req.body?.intent) ? String(req.body.intent) : 'info';
     const product = await prisma.product.findUnique({
       where: { id: req.params.id },
       select: { id: true, price: true, promoPrice: true },
@@ -90,6 +91,7 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
           phone: phone ? String(phone).trim() : null,
           message: message ? String(message).trim() : null,
           referralCode: code,
+          intent,
         },
       });
 
