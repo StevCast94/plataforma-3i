@@ -83,6 +83,7 @@ function StaffTab() {
             <span className="mb-1.5 block text-sm font-medium text-primary">Rol</span>
             <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full rounded-lg border border-black/15 bg-white px-4 py-3 text-sm">
               <option value="admin">Admin</option>
+              <option value="advisor">Asesor (recibe leads)</option>
               <option value="content">Contenido</option>
               <option value="superadmin">Superadmin</option>
             </select>
