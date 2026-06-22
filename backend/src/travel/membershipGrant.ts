@@ -25,8 +25,9 @@ export interface GrantOnPurchaseResult {
  */
 export async function grantTravelMembershipOnPurchase(
   db: Db,
-  opts: { customerEmail: string; purchaseId: string },
+  opts: { customerEmail: string; purchaseId: string; source?: 'PURCHASE' | 'REWARD'; note?: string },
 ): Promise<GrantOnPurchaseResult> {
+  const source = opts.source ?? 'PURCHASE';
   const email = opts.customerEmail.toLowerCase().trim();
   const member = await db.referralMember.findUnique({
     where: { email },
@@ -35,7 +36,9 @@ export async function grantTravelMembershipOnPurchase(
   if (!member) return { granted: false, reason: 'no-member' };
 
   // Adquirir una membresía sube al socio a ELITE (comisiones ya ganadas quedan tal cual).
-  await upgradeToElite(db, member.id, 'compra de membresía de viajes');
+  if (source === 'PURCHASE') {
+    await upgradeToElite(db, member.id, 'compra de membresía de viajes');
+  }
 
   const existing = await db.travelMembership.findFirst({
     where: { memberId: member.id, active: true },
@@ -46,18 +49,21 @@ export async function grantTravelMembershipOnPurchase(
   await db.travelMembership.create({
     data: {
       memberId: member.id,
-      source: 'PURCHASE',
+      source,
       tier: 'standard',
       purchaseId: opts.purchaseId,
-      note: `Compra ${opts.purchaseId}`,
+      note: opts.note ?? `Compra ${opts.purchaseId}`,
     },
   });
 
+  const isReward = source === 'REWARD';
   await notify(
     member.id,
     'first_purchase',
-    '¡Tu membresía de viajes está activa! ✈️',
-    'Gracias por unirte al Club de Viajes 3i. Ya puedes ver precios de socio al buscar hoteles.',
+    isReward ? '🎁 ¡Membresía de viajes de regalo!' : '¡Tu membresía de viajes está activa! ✈️',
+    isReward
+      ? 'Como agradecimiento por tu compra, te regalamos el acceso al Club de Viajes 3i. Ya puedes ver precios de socio.'
+      : 'Gracias por unirte al Club de Viajes 3i. Ya puedes ver precios de socio al buscar hoteles.',
     db,
   );
 

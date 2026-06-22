@@ -176,6 +176,19 @@ export async function confirmPurchase(purchaseId: string): Promise<{
       });
     }
 
+    // DOBLE INCENTIVO — Si el comprador ENTRÓ por un referido y compró un
+    // producto INMOBILIARIO, se le regala (al referido) una membresía de viajes
+    // (source=REWARD). Idempotente: no duplica si ya tiene una activa.
+    const isRealEstate = purchase.product.type !== 'TRAVEL_MEMBERSHIP';
+    if (isRealEstate && purchase.referrerId) {
+      await grantTravelMembershipOnPurchase(tx, {
+        customerEmail: purchase.customerEmail,
+        purchaseId: purchase.id,
+        source: 'REWARD',
+        note: `Premio referido · compra ${purchase.id}`,
+      });
+    }
+
     return { status: 'confirmed', commissionsCreated: created };
   });
 }
