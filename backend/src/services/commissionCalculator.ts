@@ -31,6 +31,11 @@ export interface CommissionInput {
   netPrice: number;
   productId?: string | null;
   transactionId?: string | null;
+  /** Config de comisión del producto (override). 'percentage' | 'fixed'. */
+  commissionType?: string | null;
+  /** Valores fijos N1 por rango (solo si commissionType === 'fixed'). */
+  commissionFixedPremiere?: number | null;
+  commissionFixedElite?: number | null;
 }
 
 export interface CommissionComputation {
@@ -47,13 +52,28 @@ export interface CommissionComputation {
 export function computeCommission(input: CommissionInput): CommissionComputation {
   const { memberStatus, level, productType, netPrice } = input;
 
-  if (productType === 'TRAVEL_MEMBERSHIP') {
-    const fixed =
-      level === 1 ? TRAVEL_MEMBERSHIP_COMMISSION[memberStatus].level1 : TRAVEL_MEMBERSHIP_COMMISSION[memberStatus].level2;
-    return { amount: fixed, rate: 0, type: 'fixed' };
+  // Tipo efectivo: override del producto; si no, las membresías son fijas y el
+  // resto porcentaje (compatibilidad con productos sin config).
+  const effectiveType =
+    input.commissionType === 'fixed' || input.commissionType === 'percentage'
+      ? input.commissionType
+      : productType === 'TRAVEL_MEMBERSHIP'
+        ? 'fixed'
+        : 'percentage';
+
+  if (effectiveType === 'fixed') {
+    // Nivel 2 nunca gana en comisión fija.
+    if (level === 2) return { amount: 0, rate: 0, type: 'fixed' };
+
+    // Valor por rango: config del producto; si falta, cae al reglamento de membresías.
+    const configured =
+      memberStatus === 'ELITE' ? input.commissionFixedElite : input.commissionFixedPremiere;
+    const fallback = TRAVEL_MEMBERSHIP_COMMISSION[memberStatus].level1;
+    const amount = configured != null ? round2(configured) : fallback;
+    return { amount, rate: 0, type: 'fixed' };
   }
 
-  // Inmobiliario (fraccionada, tradicional, terreno)
+  // Porcentaje: tasas globales del reglamento (4/2 Elite, 2/1 Premiere).
   const rate =
     level === 1 ? REAL_ESTATE_RATES[memberStatus].level1 : REAL_ESTATE_RATES[memberStatus].level2;
   return { amount: round2(netPrice * rate), rate, type: 'percentage' };

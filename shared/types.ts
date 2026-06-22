@@ -56,6 +56,9 @@ export interface Product {
   project?: Project | null;
   active: boolean;
   featured: boolean;
+  commissionType?: 'percentage' | 'fixed';
+  commissionFixedPremiere?: number | null;
+  commissionFixedElite?: number | null;
   createdAt: string;
   updatedAt: string;
 }

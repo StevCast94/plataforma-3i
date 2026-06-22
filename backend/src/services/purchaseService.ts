@@ -55,7 +55,17 @@ export async function confirmPurchase(purchaseId: string): Promise<{
   return prisma.$transaction(async (tx) => {
     const purchase = await tx.purchase.findUnique({
       where: { id: purchaseId },
-      include: { product: { select: { type: true, id: true } } },
+      include: {
+        product: {
+          select: {
+            type: true,
+            id: true,
+            commissionType: true,
+            commissionFixedPremiere: true,
+            commissionFixedElite: true,
+          },
+        },
+      },
     });
     if (!purchase) throw new Error('Compra no encontrada');
     if (purchase.status === 'confirmed' || purchase.status === 'completed') {
@@ -101,6 +111,9 @@ export async function confirmPurchase(purchaseId: string): Promise<{
             productType: purchase.product.type,
             netPrice: purchase.amount,
             productId: purchase.product.id,
+            commissionType: purchase.product.commissionType,
+            commissionFixedPremiere: purchase.product.commissionFixedPremiere,
+            commissionFixedElite: purchase.product.commissionFixedElite,
           },
           tx,
         );
@@ -133,6 +146,9 @@ export async function confirmPurchase(purchaseId: string): Promise<{
                 productType: purchase.product.type,
                 netPrice: purchase.amount,
                 productId: purchase.product.id,
+                commissionType: purchase.product.commissionType,
+                commissionFixedPremiere: purchase.product.commissionFixedPremiere,
+                commissionFixedElite: purchase.product.commissionFixedElite,
               },
               tx,
             );

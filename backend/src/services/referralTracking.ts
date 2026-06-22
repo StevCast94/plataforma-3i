@@ -136,6 +136,14 @@ export async function processReferredPurchase(
 ): Promise<{ commissionsCreated: number }> {
   const { referredMemberId, productId, productType, netPrice, transactionId } = params;
 
+  // Config de comisión del producto (override por producto).
+  const product = productId
+    ? await db.product.findUnique({
+        where: { id: productId },
+        select: { commissionType: true, commissionFixedPremiere: true, commissionFixedElite: true },
+      })
+    : null;
+
   // Referrals (niveles 1 y 2) donde este miembro es el referido.
   const referrals = await db.referral.findMany({
     where: { referredId: referredMemberId },
@@ -167,6 +175,9 @@ export async function processReferredPurchase(
         netPrice,
         productId,
         transactionId,
+        commissionType: product?.commissionType,
+        commissionFixedPremiere: product?.commissionFixedPremiere,
+        commissionFixedElite: product?.commissionFixedElite,
       },
       db,
     );

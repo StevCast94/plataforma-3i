@@ -68,6 +68,12 @@ model Product {
   project     Project?         @relation(fields: [projectId], references: [id])
   active      Boolean          @default(true)
   featured    Boolean          @default(false)
+  // Comisión configurable por producto:
+  //  - 'percentage' → usa las tasas globales del reglamento (4/2 Elite, 2/1 Premiere)
+  //  - 'fixed'      → monto fijo nivel 1 por rango (N2 = 0)
+  commissionType     String  @default("percentage") // percentage | fixed
+  commissionFixedPremiere Float? // valor fijo N1 para referidor Premiere
+  commissionFixedElite    Float? // valor fijo N1 para referidor Elite
   inquiries   ProductInquiry[]
   commissions Commission[]
   purchases   Purchase[]

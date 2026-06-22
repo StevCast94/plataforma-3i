@@ -43,6 +43,9 @@ export function AdminProductForm({ open, product, onClose, onSaved }: Props) {
   const [projectId, setProjectId] = useState('');
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
+  const [commissionType, setCommissionType] = useState<'percentage' | 'fixed'>('percentage');
+  const [fixedPremiere, setFixedPremiere] = useState('');
+  const [fixedElite, setFixedElite] = useState('');
 
   useEffect(() => {
     if (!open) return;
@@ -58,6 +61,9 @@ export function AdminProductForm({ open, product, onClose, onSaved }: Props) {
     setProjectId(product?.projectId ?? '');
     setActive(product?.active ?? true);
     setFeatured(product?.featured ?? false);
+    setCommissionType(product?.commissionType ?? 'percentage');
+    setFixedPremiere(product?.commissionFixedPremiere != null ? String(product.commissionFixedPremiere) : '');
+    setFixedElite(product?.commissionFixedElite != null ? String(product.commissionFixedElite) : '');
   }, [open, product]);
 
   async function save() {
@@ -78,6 +84,9 @@ export function AdminProductForm({ open, product, onClose, onSaved }: Props) {
       projectId: projectId || null,
       active,
       featured,
+      commissionType,
+      commissionFixedPremiere: commissionType === 'fixed' && fixedPremiere ? Number(fixedPremiere) : null,
+      commissionFixedElite: commissionType === 'fixed' && fixedElite ? Number(fixedElite) : null,
     };
     try {
       if (isEdit) await adminApi.put(`/admin/products/${product!.id}`, payload);
@@ -146,6 +155,28 @@ export function AdminProductForm({ open, product, onClose, onSaved }: Props) {
             {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
         </label>
+
+        {/* Comisión de referidos */}
+        <div className="rounded-xl bg-light p-4">
+          <span className="mb-1.5 block text-sm font-medium text-primary">Comisión de referidos</span>
+          <select
+            value={commissionType}
+            onChange={(e) => setCommissionType(e.target.value as 'percentage' | 'fixed')}
+            className="w-full rounded-lg border border-black/15 bg-white px-4 py-3 text-sm"
+          >
+            <option value="percentage">Porcentaje (reglamento: 4/2% Elite · 2/1% Premiere)</option>
+            <option value="fixed">Valor fijo por venta</option>
+          </select>
+          {commissionType === 'fixed' && (
+            <div className="mt-3 grid grid-cols-2 gap-4">
+              <Input label="Fijo si Premiere ($)" type="number" value={fixedPremiere} onChange={(e) => setFixedPremiere(e.target.value)} />
+              <Input label="Fijo si Elite ($)" type="number" value={fixedElite} onChange={(e) => setFixedElite(e.target.value)} />
+            </div>
+          )}
+          <p className="mt-2 text-xs text-brand-gray">
+            En valor fijo, el segundo nivel no recibe comisión.
+          </p>
+        </div>
 
         <div className="flex gap-6">
           <Toggle label="Activo" checked={active} onChange={setActive} />

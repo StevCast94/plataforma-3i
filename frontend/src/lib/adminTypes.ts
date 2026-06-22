@@ -81,6 +81,9 @@ export interface AdminProduct {
   project?: { id: string; name: string } | null;
   active: boolean;
   featured: boolean;
+  commissionType?: 'percentage' | 'fixed';
+  commissionFixedPremiere?: number | null;
+  commissionFixedElite?: number | null;
 }
 
 export interface AdminProject {
