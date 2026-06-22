@@ -1,10 +1,39 @@
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../prisma';
 import { createCommission } from './commissionCalculator';
 import { notify } from './notifications';
+import { upgradeToElite } from './tierService';
 import {
   grantTravelMembershipOnPurchase,
   revokeTravelMembershipForPurchase,
 } from '../travel/membershipGrant';
+
+/**
+ * Si el comprador es un socio, devuelve el Referral (nivel dado) que lo vincula
+ * con `referrerId` y marca su primera compra. Permite que la comisión por
+ * checkout se refleje en la vista "Mi Red" (que agrupa por referralId) y que
+ * la columna "Compra" deje de aparecer vacía.
+ */
+async function linkReferralForPurchase(
+  tx: Prisma.TransactionClient,
+  buyerMemberId: string | null,
+  referrerId: string,
+  level: 1 | 2,
+): Promise<string | null> {
+  if (!buyerMemberId) return null;
+  const referral = await tx.referral.findFirst({
+    where: { referrerId, referredId: buyerMemberId, level },
+    select: { id: true, firstPurchaseAt: true },
+  });
+  if (!referral) return null;
+  if (!referral.firstPurchaseAt) {
+    await tx.referral.update({
+      where: { id: referral.id },
+      data: { firstPurchaseAt: new Date(), status: 'active' },
+    });
+  }
+  return referral.id;
+}
 
 /**
  * Confirma una compra y genera la(s) comisión(es) al referidor.
@@ -41,6 +70,17 @@ export async function confirmPurchase(purchaseId: string): Promise<{
       data: { status: 'confirmed', confirmedAt: new Date() },
     });
 
+    // ¿El comprador es un socio? (para atribuir referral + ascenso a ELITE)
+    const buyerMember = await tx.referralMember.findUnique({
+      where: { email: purchase.customerEmail.toLowerCase().trim() },
+      select: { id: true },
+    });
+
+    // Hacer una compra sube al comprador a ELITE (lo ya ganado queda tal cual).
+    if (buyerMember) {
+      await upgradeToElite(tx, buyerMember.id, 'compra realizada');
+    }
+
     let created = 0;
     if (purchase.referrerId) {
       const referrer = await tx.referralMember.findUnique({
@@ -50,11 +90,13 @@ export async function confirmPurchase(purchaseId: string): Promise<{
 
       if (referrer && referrer.status !== 'SUSPENDED') {
         // Nivel 1 — dueño del código
+        const referralId1 = await linkReferralForPurchase(tx, buyerMember?.id ?? null, referrer.id, 1);
         const c1 = await createCommission(
           {
             memberId: referrer.id,
             memberStatus: referrer.status === 'ELITE' ? 'ELITE' : 'PREMIERE',
             purchaseId: purchase.id,
+            referralId: referralId1,
             level: 1,
             productType: purchase.product.type,
             netPrice: purchase.amount,
@@ -80,11 +122,13 @@ export async function confirmPurchase(purchaseId: string): Promise<{
             select: { id: true, status: true },
           });
           if (grand && grand.status !== 'SUSPENDED') {
+            const referralId2 = await linkReferralForPurchase(tx, buyerMember?.id ?? null, grand.id, 2);
             const c2 = await createCommission(
               {
                 memberId: grand.id,
                 memberStatus: grand.status === 'ELITE' ? 'ELITE' : 'PREMIERE',
                 purchaseId: purchase.id,
+                referralId: referralId2,
                 level: 2,
                 productType: purchase.product.type,
                 netPrice: purchase.amount,
@@ -92,7 +136,16 @@ export async function confirmPurchase(purchaseId: string): Promise<{
               },
               tx,
             );
-            if (c2) created++;
+            if (c2) {
+              created++;
+              await notify(
+                grand.id,
+                'commission_confirmed',
+                'Comisión de 2º nivel generada 💰',
+                `Un referido de tu red confirmó una compra. Comisión registrada por $${c2.amount}.`,
+                tx,
+              );
+            }
           }
         }
       }

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
 import { authMember, type MemberRequest } from '../middleware/authMember';
+import { liquidateDueCommissions } from '../services/liquidationService';
 
 export const commissionRoutes = Router();
 
@@ -26,6 +27,7 @@ commissionRoutes.get('/', authMember, async (req: MemberRequest, res) => {
 // GET /api/commissions/summary — totales para el dashboard
 commissionRoutes.get('/summary', authMember, async (req: MemberRequest, res) => {
   const memberId = req.memberId!;
+  await liquidateDueCommissions(memberId).catch(() => {});
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 

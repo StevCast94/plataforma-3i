@@ -3,6 +3,7 @@ import { prisma } from '../prisma';
 import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
 import { notify } from '../services/notifications';
+import { upgradeToElite } from '../services/tierService';
 
 export const adminMemberRoutes = Router();
 adminMemberRoutes.use(requireAdmin);
@@ -149,6 +150,8 @@ adminMemberRoutes.post('/:id/travel-membership', async (req: AuthedRequest, res)
     }
 
     const membership = await prisma.$transaction(async (tx) => {
+      // Regalar/otorgar membresía sube al socio a ELITE (lo ya ganado queda tal cual).
+      await upgradeToElite(tx, member.id, 'membresía de viajes otorgada');
       await tx.travelMembership.updateMany({
         where: { memberId: member.id, active: true },
         data: { active: false },

@@ -2,11 +2,14 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { authMember, type MemberRequest } from '../middleware/authMember';
 import { minPayoutFor } from '../lib/referralRules';
+import { liquidateDueCommissions } from '../services/liquidationService';
 
 export const payoutRoutes = Router();
 
 // GET /api/payouts — historial de retiros
 payoutRoutes.get('/', authMember, async (req: MemberRequest, res) => {
+  // Acredita al wallet cualquier comisión cuyo hold ya venció.
+  await liquidateDueCommissions(req.memberId).catch(() => {});
   const payouts = await prisma.payout.findMany({
     where: { memberId: req.memberId },
     orderBy: { createdAt: 'desc' },
@@ -23,6 +26,9 @@ payoutRoutes.post('/request', authMember, async (req: MemberRequest, res) => {
       res.status(400).json({ error: 'Monto inválido' });
       return;
     }
+
+    // Asegura que el saldo refleje todas las comisiones ya liquidables.
+    await liquidateDueCommissions(req.memberId).catch(() => {});
 
     const member = await prisma.referralMember.findUnique({
       where: { id: req.memberId },

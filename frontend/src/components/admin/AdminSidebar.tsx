@@ -7,6 +7,7 @@ const items = [
   { to: '/admin/productos', label: 'Productos', icon: '📦' },
   { to: '/admin/proyectos', label: 'Proyectos', icon: '🏢' },
   { to: '/admin/miembros', label: 'Miembros', icon: '👥' },
+  { to: '/admin/leads', label: 'Leads', icon: '📨' },
   { to: '/admin/comisiones', label: 'Comisiones', icon: '💲' },
   { to: '/admin/compras', label: 'Compras', icon: '🛒' },
   { to: '/admin/garantias', label: 'Garantías', icon: '🛡️' },

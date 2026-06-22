@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { notify } from '../services/notifications';
+import { upgradeToElite } from '../services/tierService';
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
@@ -32,6 +33,9 @@ export async function grantTravelMembershipOnPurchase(
     select: { id: true },
   });
   if (!member) return { granted: false, reason: 'no-member' };
+
+  // Adquirir una membresía sube al socio a ELITE (comisiones ya ganadas quedan tal cual).
+  await upgradeToElite(db, member.id, 'compra de membresía de viajes');
 
   const existing = await db.travelMembership.findFirst({
     where: { memberId: member.id, active: true },

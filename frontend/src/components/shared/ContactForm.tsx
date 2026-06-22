@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { api } from '@/lib/api';
 import { getReferralCode } from '@/hooks/useReferral';
+import { useAuth } from '@/hooks/useAuth';
 import { useToast } from './Toast';
 
 interface ContactFormProps {
@@ -40,6 +41,7 @@ export function ContactForm({
   submitLabel,
 }: ContactFormProps) {
   const { toast } = useToast();
+  const { member } = useAuth();
   const isContact = endpoint === '/contact';
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
@@ -49,9 +51,11 @@ export function ContactForm({
 
   function validate(data: Record<string, string>): Errors {
     const e: Errors = {};
-    if (!data.name.trim()) e.name = 'Ingresa tu nombre';
-    if (!data.email.trim()) e.email = 'Ingresa tu email';
-    else if (!EMAIL_RE.test(data.email)) e.email = 'Email inválido';
+    if (!member) {
+      if (!data.name.trim()) e.name = 'Ingresa tu nombre';
+      if (!data.email.trim()) e.email = 'Ingresa tu email';
+      else if (!EMAIL_RE.test(data.email)) e.email = 'Email inválido';
+    }
     if (isContact && withMessage && !data.message.trim())
       e.message = 'Cuéntanos qué necesitas';
     return e;
@@ -61,12 +65,20 @@ export function ContactForm({
     ev.preventDefault();
     const form = ev.currentTarget;
     const fd = new FormData(form);
-    const data = {
-      name: String(fd.get('name') ?? ''),
-      email: String(fd.get('email') ?? ''),
-      phone: String(fd.get('phone') ?? ''),
-      message: String(fd.get('message') ?? ''),
-    };
+    const data = member
+      ? {
+          // Sesión iniciada: usamos los datos del socio, no se vuelven a pedir.
+          name: member.fullName,
+          email: member.email,
+          phone: member.phone ?? '',
+          message: String(fd.get('message') ?? ''),
+        }
+      : {
+          name: String(fd.get('name') ?? ''),
+          email: String(fd.get('email') ?? ''),
+          phone: String(fd.get('phone') ?? ''),
+          message: String(fd.get('message') ?? ''),
+        };
 
     const v = validate(data);
     setErrors(v);
@@ -130,23 +142,33 @@ export function ContactForm({
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <Input name="name" label="Nombre" placeholder="Tu nombre" />
-          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+      {member ? (
+        <div className="rounded-xl bg-light p-4 text-sm">
+          <p className="text-brand-gray">Enviando como</p>
+          <p className="font-semibold text-primary">{member.fullName}</p>
+          <p className="text-brand-gray">{member.email}</p>
         </div>
-        <div>
-          <Input
-            name="email"
-            type="email"
-            label="Email"
-            placeholder="tucorreo@ejemplo.com"
-          />
-          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-        </div>
-      </div>
+      ) : (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Input name="name" label="Nombre" placeholder="Tu nombre" />
+              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+            </div>
+            <div>
+              <Input
+                name="email"
+                type="email"
+                label="Email"
+                placeholder="tucorreo@ejemplo.com"
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+            </div>
+          </div>
 
-      <Input name="phone" label="Teléfono (opcional)" placeholder="+593 ..." />
+          <Input name="phone" label="Teléfono (opcional)" placeholder="+593 ..." />
+        </>
+      )}
 
       {withMessage && (
         <div>
