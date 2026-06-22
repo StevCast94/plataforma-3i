@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
-import { notify } from './notifications';
+import { ascendByPurchase } from './ascendService';
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
@@ -9,32 +9,17 @@ type Db = PrismaClient | Prisma.TransactionClient;
 // sube automáticamente a ELITE. Las comisiones ya generadas (a tasa Premiere)
 // se guardan como montos fijos, por lo que quedan tal cual; solo cambian las
 // tasas de las comisiones FUTURAS.
-// No degrada: a un SUSPENDED no se le toca; un ELITE se mantiene.
+//
+// Delegamos en `ascendByPurchase` (fuente única): setea status/eliteBy/
+// eliteSince, notifica y anuncia en el feed. No degrada: ELITE/SUSPENDED
+// se respetan. `_reason` se conserva para trazabilidad en los llamadores.
 // ============================================================
 
 export async function upgradeToElite(
   db: Db,
   memberId: string,
-  reason: string,
+  _reason: string,
 ): Promise<boolean> {
-  const member = await db.referralMember.findUnique({
-    where: { id: memberId },
-    select: { status: true },
-  });
-  if (!member || member.status !== 'PREMIERE') return false;
-
-  await db.referralMember.update({
-    where: { id: memberId },
-    data: { status: 'ELITE' },
-  });
-
-  await notify(
-    memberId,
-    'new_referral',
-    '¡Ascendiste a ELITE! 🏆',
-    `Tu cuenta subió a ELITE (${reason}). Tus comisiones ya ganadas se mantienen; desde ahora ganas a tasa Elite.`,
-    db,
-  );
-
-  return true;
+  const result = await ascendByPurchase(memberId, db);
+  return result.ascended;
 }

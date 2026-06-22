@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { startScheduler } from './services/scheduler';
 import { contentRoutes } from './routes/content';
 import { contactRoutes } from './routes/contact';
 import { projectRoutes } from './routes/projects';
@@ -20,6 +21,7 @@ import { adminProjectRoutes } from './routes/adminProjects';
 import { adminMemberRoutes } from './routes/adminMembers';
 import { adminCommissionRoutes } from './routes/adminCommissions';
 import { adminLeadRoutes } from './routes/adminLeads';
+import { adminPayoutRoutes } from './routes/adminPayouts';
 import { adminPurchaseRoutes } from './routes/adminPurchases';
 import { adminReportRoutes } from './routes/adminReports';
 import { adminSettingsRoutes } from './routes/adminSettings';
@@ -68,6 +70,7 @@ app.use('/api/admin/projects', adminProjectRoutes);
 app.use('/api/admin/members', adminMemberRoutes);
 app.use('/api/admin/commissions', adminCommissionRoutes);
 app.use('/api/admin/leads', adminLeadRoutes);
+app.use('/api/admin/payouts', adminPayoutRoutes);
 app.use('/api/admin/purchases', adminPurchaseRoutes);
 app.use('/api/admin/report', adminReportRoutes);
 app.use('/api/admin', adminSettingsRoutes);
@@ -114,4 +117,5 @@ if (hasBuild) {
 
 app.listen(PORT, () => {
   console.log(`🚀 Plataforma 3i corriendo en puerto ${PORT}`);
+  startScheduler();
 });
