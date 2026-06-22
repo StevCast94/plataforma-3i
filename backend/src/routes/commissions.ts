@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { authMember, type MemberRequest } from '../middleware/authMember';
 import { liquidateDueCommissions } from '../services/liquidationService';
+import { MONTHLY_LIMIT } from '../lib/referralRules';
 
 export const commissionRoutes = Router();
 
@@ -34,7 +35,7 @@ commissionRoutes.get('/summary', authMember, async (req: MemberRequest, res) => 
   const [member, byStatus, monthAgg] = await Promise.all([
     prisma.referralMember.findUnique({
       where: { id: memberId },
-      select: { walletBalance: true, totalEarned: true },
+      select: { walletBalance: true, totalEarned: true, status: true },
     }),
     prisma.commission.groupBy({
       by: ['status'],
@@ -50,12 +51,18 @@ commissionRoutes.get('/summary', authMember, async (req: MemberRequest, res) => 
   const sumOf = (s: string) =>
     byStatus.find((b) => b.status === s)?._sum.amount ?? 0;
 
+  const tier = member?.status === 'ELITE' ? 'ELITE' : 'PREMIERE';
+  const thisMonth = monthAgg._sum.amount ?? 0;
+  const monthlyLimit = MONTHLY_LIMIT[tier]; // null = ilimitado (Elite)
+
   res.json({
     totalEarned: member?.totalEarned ?? 0,
     available: member?.walletBalance ?? 0,
     pending: sumOf('PENDING') + sumOf('CONFIRMED'),
     liquidated: sumOf('LIQUIDATED'),
     paid: sumOf('PAID'),
-    thisMonth: monthAgg._sum.amount ?? 0,
+    thisMonth,
+    monthlyLimit,
+    monthlyRemaining: monthlyLimit != null ? Math.max(monthlyLimit - thisMonth, 0) : null,
   });
 });

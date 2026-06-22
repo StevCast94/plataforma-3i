@@ -41,6 +41,7 @@ const AdminProjectsPage = lazy(() => import('@/pages/admin/AdminProjectsPage'));
 const AdminMembersPage = lazy(() => import('@/pages/admin/AdminMembersPage'));
 const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPage'));
 const AdminLeadsPage = lazy(() => import('@/pages/admin/AdminLeadsPage'));
+const AdminMarketingPage = lazy(() => import('@/pages/admin/AdminMarketingPage'));
 const AdminPayoutsPage = lazy(() => import('@/pages/admin/AdminPayoutsPage'));
 const AdminPurchasesPage = lazy(() => import('@/pages/admin/AdminPurchasesPage'));
 const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
@@ -107,6 +108,7 @@ export default function App() {
                 <Route path="proyectos" element={<AdminProjectsPage />} />
                 <Route path="miembros" element={<AdminMembersPage />} />
                 <Route path="leads" element={<AdminLeadsPage />} />
+                <Route path="marketing" element={<AdminMarketingPage />} />
                 <Route path="comisiones" element={<AdminCommissionsPage />} />
                 <Route path="retiros" element={<AdminPayoutsPage />} />
                 <Route path="compras" element={<AdminPurchasesPage />} />

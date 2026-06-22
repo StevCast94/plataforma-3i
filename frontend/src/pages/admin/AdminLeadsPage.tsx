@@ -17,7 +17,13 @@ interface Lead {
   source: string | null;
   referralCode: string | null;
   status: string;
+  assignedTo: { id: string; username: string } | null;
   createdAt: string;
+}
+
+interface Advisor {
+  id: string;
+  username: string;
 }
 
 const INTENT_LABEL: Record<string, { label: string; cls: string }> = {
@@ -46,18 +52,22 @@ const FILTERS: { key: string; label: string; q: string }[] = [
 export default function AdminLeadsPage() {
   const { toast } = useToast();
   const [filter, setFilter] = useState('all');
-  const q = FILTERS.find((f) => f.key === filter)?.q ?? '';
-  const { data, loading, reload } = useAdminGet<Lead[]>(`/admin/leads${q ? `?${q}` : ''}`);
+  const [advisorFilter, setAdvisorFilter] = useState('');
+  const parts = [FILTERS.find((f) => f.key === filter)?.q ?? '', advisorFilter ? `advisor=${advisorFilter}` : ''].filter(Boolean);
+  const qs = parts.length ? `?${parts.join('&')}` : '';
+  const { data, loading, reload } = useAdminGet<Lead[]>(`/admin/leads${qs}`);
+  const { data: advisors } = useAdminGet<Advisor[]>('/admin/leads/advisors');
 
-  async function setStatus(lead: Lead, status: string) {
+  async function patch(lead: Lead, body: Record<string, unknown>) {
     try {
-      await adminApi.patch(`/admin/leads/${lead.id}`, { status });
-      toast('Estado actualizado', 'success');
+      await adminApi.patch(`/admin/leads/${lead.id}`, body);
+      toast('Lead actualizado', 'success');
       reload();
     } catch (err) {
       toast((err as Error).message, 'error');
     }
   }
+  const setStatus = (lead: Lead, status: string) => patch(lead, { status });
 
   const cols: Column<Lead>[] = [
     {
@@ -99,6 +109,24 @@ export default function AdminLeadsPage() {
     {
       header: 'Referido',
       cell: (l) => (l.referralCode ? <span className="text-xs text-secondary">{l.referralCode}</span> : '—'),
+    },
+    {
+      header: 'Asesor',
+      cell: (l) =>
+        l.kind === 'contact' ? (
+          <span className="text-xs text-brand-gray">—</span>
+        ) : (
+          <select
+            value={l.assignedTo?.id ?? ''}
+            onChange={(e) => patch(l, { assignedToId: e.target.value || null })}
+            className="rounded-lg border border-black/15 bg-white px-2 py-1 text-xs"
+          >
+            <option value="">Sin asignar</option>
+            {(advisors ?? []).map((a) => (
+              <option key={a.id} value={a.id}>{a.username}</option>
+            ))}
+          </select>
+        ),
     },
     { header: 'Fecha', cell: (l) => new Date(l.createdAt).toLocaleDateString('es-EC') },
     {
@@ -149,6 +177,19 @@ export default function AdminLeadsPage() {
             {f.label}
           </button>
         ))}
+        {(advisors ?? []).length > 0 && (
+          <select
+            value={advisorFilter}
+            onChange={(e) => setAdvisorFilter(e.target.value)}
+            className="rounded-full border border-black/15 bg-white px-3 py-1.5 text-xs"
+          >
+            <option value="">Todos los asesores</option>
+            <option value="none">Sin asignar</option>
+            {(advisors ?? []).map((a) => (
+              <option key={a.id} value={a.id}>{a.username}</option>
+            ))}
+          </select>
+        )}
       </div>
 
       <DataTable columns={cols} rows={data ?? []} keyOf={(l) => `${l.kind}-${l.id}`} loading={loading} empty="Sin leads aún." />

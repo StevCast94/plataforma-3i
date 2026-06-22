@@ -86,7 +86,11 @@ model ProductInquiry {
   referralCode String? // 3IP-XXXXXX capturado del query param ?ref=
   intent       String?  @default("info") // info | whatsapp | visit | meet | purchase
   status       String   @default("pending") // pending, contacted, closed
+  assignedToId String? // FK StaffUser — asesor asignado (round-robin)
+  assignedTo   StaffUser? @relation(fields: [assignedToId], references: [id])
   createdAt    DateTime @default(now())
+
+  @@index([assignedToId])
 }
 
 // ============================================================
@@ -247,9 +251,10 @@ model StaffUser {
   id        String     @id @default(uuid())
   username  String     @unique
   password  String // bcrypt hash
-  role      String     @default("admin") // superadmin, admin, content
+  role      String     @default("admin") // superadmin, admin, content, advisor
   active    Boolean    @default(true)
   auditLogs AuditLog[]
+  assignedInquiries ProductInquiry[]
   createdAt DateTime   @default(now())
 }
 

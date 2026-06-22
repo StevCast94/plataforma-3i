@@ -32,6 +32,28 @@ export default function CommissionsPage() {
         <Box label="Este mes" value={formatCurrency(summary?.thisMonth ?? 0)} />
       </div>
 
+      {/* Tope mensual (solo Premiere; Elite es ilimitado) */}
+      {summary?.monthlyLimit != null && (
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-brand-gray">Tope mensual de comisiones</span>
+            <span className="font-medium text-primary">
+              {formatCurrency(summary.thisMonth)} / {formatCurrency(summary.monthlyLimit)}
+            </span>
+          </div>
+          <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-light">
+            <div
+              className="h-full rounded-full bg-secondary transition-all"
+              style={{ width: `${Math.min((summary.thisMonth / summary.monthlyLimit) * 100, 100)}%` }}
+            />
+          </div>
+          <p className="mt-2 text-xs text-brand-gray">
+            Te quedan <strong className="text-primary">{formatCurrency(summary.monthlyRemaining ?? 0)}</strong> este mes.
+            Asciende a Elite para comisiones ilimitadas.
+          </p>
+        </div>
+      )}
+
       {/* Filtros */}
       <div className="flex flex-wrap gap-2">
         {['ALL', ...TIMELINE, 'REVERSED'].map((f) => (

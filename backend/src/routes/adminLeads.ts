@@ -17,10 +17,10 @@ const VALID_STATUS = ['pending', 'contacted', 'closed'];
 // GET /api/admin/leads — bandeja unificada (filtros: ?intent= &status= &kind=)
 adminLeadRoutes.get('/', async (req, res) => {
   try {
-    const { intent, status, kind } = req.query as Record<string, string | undefined>;
+    const { intent, status, kind, advisor } = req.query as Record<string, string | undefined>;
 
     const wantInquiries = !kind || kind === 'product';
-    const wantContacts = !kind || kind === 'contact';
+    const wantContacts = (!kind || kind === 'contact') && !advisor;
 
     const [inquiries, contacts] = await Promise.all([
       wantInquiries
@@ -28,10 +28,14 @@ adminLeadRoutes.get('/', async (req, res) => {
             where: {
               ...(intent ? { intent } : {}),
               ...(status ? { status } : {}),
+              ...(advisor ? { assignedToId: advisor === 'none' ? null : advisor } : {}),
             },
             orderBy: { createdAt: 'desc' },
             take: 300,
-            include: { product: { select: { name: true, slug: true } } },
+            include: {
+              product: { select: { name: true, slug: true } },
+              assignedTo: { select: { id: true, username: true } },
+            },
           })
         : Promise.resolve([]),
       wantContacts && !intent
@@ -56,6 +60,7 @@ adminLeadRoutes.get('/', async (req, res) => {
         source: null as string | null,
         referralCode: i.referralCode,
         status: i.status,
+        assignedTo: i.assignedTo ?? null,
         createdAt: i.createdAt,
       })),
       ...contacts.map((c) => ({
@@ -71,6 +76,7 @@ adminLeadRoutes.get('/', async (req, res) => {
         source: c.source,
         referralCode: c.referralCode,
         status: 'pending',
+        assignedTo: null,
         createdAt: c.createdAt,
       })),
     ].sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
@@ -101,21 +107,49 @@ adminLeadRoutes.get('/stats', async (_req, res) => {
   }
 });
 
-// PATCH /api/admin/leads/:id — cambiar estado de una solicitud de producto
-// body: { status: 'pending' | 'contacted' | 'closed' }
+// GET /api/admin/leads/advisors — asesores activos (para el selector de reasignación)
+adminLeadRoutes.get('/advisors', async (_req, res) => {
+  try {
+    const advisors = await prisma.staffUser.findMany({
+      where: { role: 'advisor', active: true },
+      select: { id: true, username: true },
+      orderBy: { username: 'asc' },
+    });
+    res.json(advisors);
+  } catch (err) {
+    console.error('GET /api/admin/leads/advisors', err);
+    res.status(500).json({ error: 'Error al listar asesores' });
+  }
+});
+
+// PATCH /api/admin/leads/:id — cambiar estado y/o reasignar asesor
+// body: { status?: 'pending'|'contacted'|'closed', assignedToId?: string|null }
 adminLeadRoutes.patch('/:id', async (req: AuthedRequest, res) => {
   try {
-    const { status } = req.body ?? {};
-    if (!VALID_STATUS.includes(status)) {
-      res.status(400).json({ error: 'Estado inválido' });
+    const { status, assignedToId } = req.body ?? {};
+    const data: { status?: string; assignedToId?: string | null } = {};
+
+    if (status !== undefined) {
+      if (!VALID_STATUS.includes(status)) {
+        res.status(400).json({ error: 'Estado inválido' });
+        return;
+      }
+      data.status = status;
+    }
+    if (assignedToId !== undefined) {
+      data.assignedToId = assignedToId ? String(assignedToId) : null;
+    }
+    if (Object.keys(data).length === 0) {
+      res.status(400).json({ error: 'Nada que actualizar' });
       return;
     }
+
     const updated = await prisma.productInquiry.update({
       where: { id: req.params.id },
-      data: { status },
-      select: { id: true, status: true },
+      data,
+      select: { id: true, status: true, assignedToId: true },
     });
-    await audit(req.staff?.staffId, 'update', 'lead', req.params.id, { status });
+    await audit(req.staff?.staffId, 'update', 'lead', req.params.id, data);
     res.json(updated);
   } catch (err) {
     console.error('PATCH /api/admin/leads/:id', err);

@@ -8,6 +8,7 @@ const items = [
   { to: '/admin/proyectos', label: 'Proyectos', icon: '🏢' },
   { to: '/admin/miembros', label: 'Miembros', icon: '👥' },
   { to: '/admin/leads', label: 'Leads', icon: '📨' },
+  { to: '/admin/marketing', label: 'Marketing', icon: '📈' },
   { to: '/admin/comisiones', label: 'Comisiones', icon: '💲' },
   { to: '/admin/retiros', label: 'Retiros', icon: '💸' },
   { to: '/admin/compras', label: 'Compras', icon: '🛒' },

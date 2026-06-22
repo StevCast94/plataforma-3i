@@ -183,6 +183,8 @@ export interface CommissionSummary {
   liquidated: number;
   paid: number;
   thisMonth: number;
+  monthlyLimit?: number | null;
+  monthlyRemaining?: number | null;
 }
 
 export interface Payout {

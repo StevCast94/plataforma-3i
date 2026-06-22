@@ -4,6 +4,7 @@ import { requireAdmin } from '../middleware/auth';
 import { resolveReferrer } from '../services/referralTracking';
 import { refFromRequest } from './referral';
 import { ensureProvisionalMember } from '../services/preRegister';
+import { pickAdvisor } from '../services/leadAssignment';
 
 export const productRoutes = Router();
 
@@ -81,6 +82,9 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
       referrerId = referrer?.id ?? null;
     }
 
+    // Asesor asignado por round-robin (null si no hay asesores activos).
+    const assignedToId = await pickAdvisor();
+
     // Lead + (si es intención de compra) una Purchase en estado pending, atómicamente.
     const result = await prisma.$transaction(async (tx) => {
       const inquiry = await tx.productInquiry.create({
@@ -92,6 +96,7 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
           message: message ? String(message).trim() : null,
           referralCode: code,
           intent,
+          assignedToId,
         },
       });
 

@@ -69,7 +69,7 @@ adminSettingsRoutes.post('/staff', requireSuperadmin, async (req: AuthedRequest,
       data: {
         username: String(username).trim(),
         password: hash,
-        role: role && ['superadmin', 'admin', 'content'].includes(role) ? role : 'admin',
+        role: role && ['superadmin', 'admin', 'content', 'advisor'].includes(role) ? role : 'admin',
       },
       select: { id: true, username: true, role: true, active: true },
     });
