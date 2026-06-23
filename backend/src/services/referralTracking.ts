@@ -150,14 +150,18 @@ export async function processReferredPurchase(
     select: { id: true, referrerId: true, level: true, firstPurchaseAt: true },
   });
 
+  const isRealEstate = productType !== 'TRAVEL_MEMBERSHIP';
   let created = 0;
   for (const r of referrals) {
-    if (!r.firstPurchaseAt) {
-      await db.referral.update({
-        where: { id: r.id },
-        data: { firstPurchaseAt: new Date(), status: 'active' },
-      });
-    }
+    const now = new Date();
+    await db.referral.update({
+      where: { id: r.id },
+      data: {
+        status: 'active',
+        ...(r.firstPurchaseAt ? {} : { firstPurchaseAt: now }),
+        ...(isRealEstate ? { firstRealEstateAt: now } : {}),
+      },
+    });
 
     const referrer = await db.referralMember.findUnique({
       where: { id: r.referrerId },

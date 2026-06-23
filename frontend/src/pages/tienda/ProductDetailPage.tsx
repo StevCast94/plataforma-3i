@@ -7,6 +7,7 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { PriceDisplay } from '@/components/shared/PriceDisplay';
 import { ProductCTAs } from '@/components/shared/ProductCTAs';
+import { ReferralPerks } from '@/components/shared/ReferralPerks';
 import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { ROICalculator } from '@/components/shared/ROICalculator';
 import { ProductCard } from '@/components/shared/ProductCard';
@@ -263,6 +264,10 @@ function MembershipSections({
 function PropertySections({ product }: { product: Product }) {
   return (
     <>
+      <section className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 lg:px-8">
+        <ReferralPerks variant="buyer" />
+      </section>
+
       {product.project && (
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <Link

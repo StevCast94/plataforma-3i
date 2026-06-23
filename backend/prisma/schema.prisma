@@ -186,6 +186,7 @@ model Referral {
   status            String         @default("pending") // pending, active, inactive
   registeredAt      DateTime       @default(now())
   firstPurchaseAt   DateTime?
+  firstRealEstateAt DateTime? // primera compra INMOBILIARIA del referido (cuenta para el ascenso del referidor)
   commissions       Commission[]
 }
 

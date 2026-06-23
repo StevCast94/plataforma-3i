@@ -7,6 +7,7 @@ import { useToast } from '@/components/shared/Toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useProducts } from '@/hooks/useProducts';
 import { whatsappShareUrl } from '@/lib/referral';
+import { ReferralPerks } from '@/components/shared/ReferralPerks';
 
 interface LinkInfo {
   code: string;
@@ -19,6 +20,7 @@ const WHATSAPP_TEMPLATES = [
   '¡Hola! Te invito al Club 3i 🌍 Viaja con hasta 70% de descuento en hoteles. Regístrate con mi enlace:',
   '¿Sabías que puedes invertir en propiedades desde $5,000? Te cuento cómo con Grupo 3i:',
   'Estoy ganando ingresos refiriendo al Club 3i. Únete a mi equipo aquí:',
+  '🎁 Compra tu propiedad o fracción con Grupo 3i por mi enlace y te llevas GRATIS la membresía del Club de Viajes:',
 ];
 
 export default function ToolsPage() {
@@ -71,6 +73,8 @@ export default function ToolsPage() {
     <div className="mx-auto max-w-5xl space-y-8">
       <Seo title="Herramientas — Oficina Virtual" />
       <h1 className="text-3xl font-bold text-primary">Herramientas</h1>
+
+      <ReferralPerks variant="member" />
 
       {/* Mi enlace */}
       <section className="grid gap-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 lg:grid-cols-2">

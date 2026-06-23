@@ -82,12 +82,12 @@ export async function checkReferralAscension(
     Date.now() - ELITE_REFERRALS_WINDOW_DAYS * 24 * 60 * 60 * 1000,
   );
 
-  // Referidos directos (nivel 1) que ya hicieron su primera compra dentro de la ventana.
+  // Referidos directos (nivel 1) que compraron un producto INMOBILIARIO dentro de la ventana.
   const count = await db.referral.count({
     where: {
       referrerId: memberId,
       level: 1,
-      firstPurchaseAt: { gte: windowStart },
+      firstRealEstateAt: { gte: windowStart },
     },
   });
 
@@ -106,6 +106,21 @@ export async function checkReferralAscension(
         membershipAwarded: true,
       },
     });
+    // Otorgar la membresía de viajes GRATIS (idempotente: no duplica si ya tiene activa).
+    const activeMembership = await db.travelMembership.findFirst({
+      where: { memberId, active: true },
+      select: { id: true },
+    });
+    if (!activeMembership) {
+      await db.travelMembership.create({
+        data: {
+          memberId,
+          source: 'REWARD',
+          tier: 'standard',
+          note: `Premio por ${ELITE_REFERRALS_REQUIRED} referidos inmobiliarios`,
+        },
+      });
+    }
     await notify(
       memberId,
       'elite_ascension',

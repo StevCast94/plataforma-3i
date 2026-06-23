@@ -3,6 +3,7 @@ import { prisma } from '../prisma';
 import { createCommission } from './commissionCalculator';
 import { notify } from './notifications';
 import { upgradeToElite } from './tierService';
+import { checkReferralAscension } from './ascendService';
 import {
   grantTravelMembershipOnPurchase,
   revokeTravelMembershipForPurchase,
@@ -19,19 +20,24 @@ async function linkReferralForPurchase(
   buyerMemberId: string | null,
   referrerId: string,
   level: 1 | 2,
+  isRealEstate: boolean,
 ): Promise<string | null> {
   if (!buyerMemberId) return null;
   const referral = await tx.referral.findFirst({
     where: { referrerId, referredId: buyerMemberId, level },
-    select: { id: true, firstPurchaseAt: true },
+    select: { id: true, firstPurchaseAt: true, firstRealEstateAt: true },
   });
   if (!referral) return null;
-  if (!referral.firstPurchaseAt) {
-    await tx.referral.update({
-      where: { id: referral.id },
-      data: { firstPurchaseAt: new Date(), status: 'active' },
-    });
-  }
+  const now = new Date();
+  await tx.referral.update({
+    where: { id: referral.id },
+    data: {
+      status: 'active',
+      ...(referral.firstPurchaseAt ? {} : { firstPurchaseAt: now }),
+      // La primera compra INMOBILIARIA cuenta para el ascenso del referidor.
+      ...(isRealEstate && !referral.firstRealEstateAt ? { firstRealEstateAt: now } : {}),
+    },
+  });
   return referral.id;
 }
 
@@ -87,9 +93,12 @@ export async function confirmPurchase(purchaseId: string): Promise<{
     });
 
     // Hacer una compra sube al comprador a ELITE (lo ya ganado queda tal cual).
+    // Aplica a inmobiliario y a la propia membresía (cualquier compra).
     if (buyerMember) {
       await upgradeToElite(tx, buyerMember.id, 'compra realizada');
     }
+
+    const isRealEstate = purchase.product.type !== 'TRAVEL_MEMBERSHIP';
 
     let created = 0;
     if (purchase.referrerId) {
@@ -100,7 +109,7 @@ export async function confirmPurchase(purchaseId: string): Promise<{
 
       if (referrer && referrer.status !== 'SUSPENDED') {
         // Nivel 1 — dueño del código
-        const referralId1 = await linkReferralForPurchase(tx, buyerMember?.id ?? null, referrer.id, 1);
+        const referralId1 = await linkReferralForPurchase(tx, buyerMember?.id ?? null, referrer.id, 1, isRealEstate);
         const c1 = await createCommission(
           {
             memberId: referrer.id,
@@ -135,7 +144,7 @@ export async function confirmPurchase(purchaseId: string): Promise<{
             select: { id: true, status: true },
           });
           if (grand && grand.status !== 'SUSPENDED') {
-            const referralId2 = await linkReferralForPurchase(tx, buyerMember?.id ?? null, grand.id, 2);
+            const referralId2 = await linkReferralForPurchase(tx, buyerMember?.id ?? null, grand.id, 2, isRealEstate);
             const c2 = await createCommission(
               {
                 memberId: grand.id,
@@ -164,6 +173,13 @@ export async function confirmPurchase(purchaseId: string): Promise<{
             }
           }
         }
+
+        // ASCENSO DEL REFERIDOR — Si el referido (socio) compró INMOBILIARIO,
+        // revisar si el referidor llegó a 5 referidos inmobiliarios → Elite +
+        // membresía de viajes GRATIS. Idempotente.
+        if (isRealEstate && buyerMember) {
+          await checkReferralAscension(referrer.id, tx);
+        }
       }
     }
 
@@ -179,7 +195,6 @@ export async function confirmPurchase(purchaseId: string): Promise<{
     // DOBLE INCENTIVO — Si el comprador ENTRÓ por un referido y compró un
     // producto INMOBILIARIO, se le regala (al referido) una membresía de viajes
     // (source=REWARD). Idempotente: no duplica si ya tiene una activa.
-    const isRealEstate = purchase.product.type !== 'TRAVEL_MEMBERSHIP';
     if (isRealEstate && purchase.referrerId) {
       await grantTravelMembershipOnPurchase(tx, {
         customerEmail: purchase.customerEmail,
