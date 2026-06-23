@@ -32,6 +32,7 @@ const PaymentsPage = lazy(() => import('@/pages/oficina/PaymentsPage'));
 const ToolsPage = lazy(() => import('@/pages/oficina/ToolsPage'));
 const CalculatorPage = lazy(() => import('@/pages/oficina/CalculatorPage'));
 const TravelBookingsPage = lazy(() => import('@/pages/oficina/TravelBookingsPage'));
+const ReglamentoPage = lazy(() => import('@/pages/legal/ReglamentoPage'));
 
 // Panel de administración (staff)
 const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage'));
@@ -79,6 +80,7 @@ export default function App() {
                 <Route path="club/viajes" element={<ViajesPage />} />
                 <Route path="sobre-nosotros" element={<AboutPage />} />
                 <Route path="contacto" element={<ContactPage />} />
+                <Route path="reglamento" element={<ReglamentoPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
 

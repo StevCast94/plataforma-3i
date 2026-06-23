@@ -9,7 +9,7 @@ export function Footer() {
     data?.copyright ?? '© 2026 Grupo 3i. Todos los derechos reservados.';
 
   return (
-    <footer className="bg-primary text-white">
+    <footer className="bg-primary text-white print:hidden">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="h-8 w-auto" />
@@ -27,6 +27,7 @@ export function Footer() {
             <li><Link to="/oficina" className="hover:text-secondary">Oficina Virtual</Link></li>
             <li><Link to="/sobre-nosotros" className="hover:text-secondary">Nosotros</Link></li>
             <li><Link to="/contacto" className="hover:text-secondary">Contacto</Link></li>
+            <li><Link to="/reglamento" className="hover:text-secondary">Reglamento de Referidos</Link></li>
           </ul>
         </div>
 

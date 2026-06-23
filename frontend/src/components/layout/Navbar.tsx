@@ -19,7 +19,7 @@ export function Navbar() {
   const { data: projects } = useProjects();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
           <img src="/images/logo-completo.svg" alt="Grupo 3i" className="h-10 w-auto" />
