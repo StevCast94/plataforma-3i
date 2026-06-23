@@ -42,30 +42,65 @@ class MockPaymentProvider implements PaymentProvider {
 }
 
 /**
- * PayPhone (Ecuador). Stub: la estructura está lista; la llamada real a la API
- * (Cajita/Botón de Pago + endpoint Confirm) se completa cuando exista
- * PAYPHONE_TOKEN. PayPhone trabaja en centavos, igual que nosotros.
+ * PayPhone (Ecuador) — Botón de Pago por redirección.
+ * Flujo: Prepare → el cliente paga en el formulario de PayPhone → PayPhone
+ * redirige a nuestra URL de respuesta con `id` y `clientTransactionId` →
+ * Confirm (V2) para validar (statusCode === 3 = Approved).
+ * IMPORTANTE: si no se confirma en 5 min, PayPhone reversa la transacción.
+ * Montos en CENTAVOS (igual que PayPhone).
  */
+const PAYPHONE_API = 'https://pay.payphonetodoesposible.com/api/button';
+
 class PayPhoneProvider implements PaymentProvider {
   readonly name = 'payphone';
   constructor(private token: string) {}
 
   async create(input: PaymentInit): Promise<PaymentCreateResult> {
-    // TODO(V2-prod): POST https://pay.payphonetodo.com/api/button/Prepare
-    //   { amount: input.amountCents, currency, clientTransactionId: input.reference, ... }
-    //   con Authorization: Bearer this.token. Devuelve payWithCard / payWithPayPhone URL.
+    const responseUrl =
+      (process.env.PUBLIC_BASE_URL ?? 'https://plataforma-3i-production.up.railway.app') +
+      '/api/travel/payphone/callback';
+    const res = await fetch(`${PAYPHONE_API}/Prepare`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${this.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: input.amountCents, // total en centavos (incluye impuestos)
+        amountWithoutTax: input.amountCents, // servicios turísticos: ajustar IVA según facturación
+        tax: 0,
+        service: 0,
+        tip: 0,
+        currency: input.currency || 'USD',
+        clientTransactionId: input.reference,
+        reference: input.description.slice(0, 100),
+        responseUrl,
+        email: input.email,
+        phoneNumber: input.phone,
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      throw new Error(`PayPhone Prepare HTTP ${res.status}: ${t.slice(0, 200)}`);
+    }
+    const data = (await res.json()) as { paymentId?: string | number; payWithCard?: string; payWithPayPhone?: string };
     return {
-      paymentRef: `payphone:pending:${input.reference}`,
-      approved: false,
-      redirectUrl: `https://pay.payphonetodo.com/?ref=${encodeURIComponent(input.reference)}`,
+      paymentRef: `payphone:${data.paymentId ?? input.reference}`,
+      approved: false, // se aprueba tras el Confirm
+      redirectUrl: data.payWithCard ?? data.payWithPayPhone,
     };
   }
 
   async confirm(input: { paymentRef: string; transactionId?: string }): Promise<PaymentConfirmResult> {
-    // TODO(V2-prod): POST .../api/button/Confirm { id: transactionId, clientTxId }
-    //   y validar statusCode === 3 (Approved). Por ahora no aprueba sin integración real.
-    void input;
-    return { approved: false };
+    // transactionId = `id` que PayPhone devuelve en el callback.
+    const id = input.transactionId;
+    const clientTransactionId = input.paymentRef.replace(/^payphone:/, '');
+    if (!id) return { approved: false };
+    const res = await fetch(`${PAYPHONE_API}/V2/Confirm`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${this.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: Number(id), clientTxId: clientTransactionId }),
+    });
+    if (!res.ok) return { approved: false };
+    const data = (await res.json()) as { statusCode?: number; transactionStatus?: string };
+    return { approved: data.statusCode === 3 || data.transactionStatus === 'Approved' };
   }
 }
 

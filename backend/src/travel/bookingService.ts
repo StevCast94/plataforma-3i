@@ -2,8 +2,9 @@ import type { TravelBooking } from '@prisma/client';
 import { prisma } from '../prisma';
 import { priceFromNet } from './markupEngine';
 import { hasTravelAccess } from './membershipAccess';
-import { getRawOffer } from './searchService';
+import { getRawOffer, getHotelAdapter } from './searchService';
 import { getPaymentProvider } from './payments';
+import { sendBookingVoucher } from './email';
 import { resolveReferrer } from '../services/referralTracking';
 import { notify } from '../services/notifications';
 import type { HotelQuery } from './types';
@@ -97,6 +98,15 @@ export async function createBooking(input: CreateBookingInput) {
         isMemberPrice: isMember,
         publicCents,
         memberCents,
+        // Guardamos el rateKey revalidado y la query para reservar en firme al
+        // confirmar el pago (con RateHawk: book_hash del prebook).
+        rateKey: raw.rateKey,
+        query: {
+          destination: query.destination,
+          checkIn: query.checkIn,
+          checkOut: query.checkOut,
+          guests: query.guests,
+        },
       },
     },
   });
@@ -136,9 +146,41 @@ export async function confirmBooking(bookingId: string, transactionId?: string) 
     throw new BookingError('El pago no fue aprobado');
   }
 
-  // 2) "Reservar" con el proveedor (mock: genera voucher). Con RateHawk será
-  //    adapter.bookHotel(rateKey) y supplierRef = localizador real.
-  const supplierRef = voucherCode();
+  // 2) Reservar en firme con el proveedor. Si el adapter soporta bookHotel
+  //    (RateHawk), usamos su localizador real; si no (mock), generamos voucher.
+  const details = (booking.details ?? {}) as {
+    name?: string;
+    rateKey?: string;
+    query?: HotelQuery;
+  };
+  let supplierRef = voucherCode();
+  const adapter = getHotelAdapter();
+  if (adapter.bookHotel && details.rateKey && details.query) {
+    try {
+      const result = await adapter.bookHotel({
+        rateKey: details.rateKey,
+        query: details.query,
+        orderId: booking.id,
+        customer: {
+          name: booking.customerName,
+          email: booking.customerEmail,
+          phone: booking.customerPhone,
+        },
+      });
+      supplierRef = result.supplierRef;
+    } catch (err) {
+      // El pago ya se aprobó: dejamos la reserva en PAID para resolución manual
+      // en lugar de perder el cobro. El admin completa la reserva con el proveedor.
+      console.error('bookHotel falló tras pago aprobado', err);
+      await prisma.travelBooking.update({
+        where: { id: booking.id },
+        data: { status: 'PAID' },
+      });
+      throw new BookingError(
+        'Tu pago fue recibido pero la confirmación con el proveedor está pendiente. Te contactaremos en breve.',
+      );
+    }
+  }
 
   const confirmed = await prisma.travelBooking.update({
     where: { id: booking.id },
@@ -149,12 +191,23 @@ export async function confirmBooking(bookingId: string, transactionId?: string) 
     },
   });
 
+  // Voucher por correo (best-effort; no rompe la confirmación si falla).
+  sendBookingVoucher({
+    to: booking.customerEmail,
+    customerName: booking.customerName,
+    hotelName: details.name ?? 'tu reserva',
+    voucher: supplierRef,
+    totalCents: booking.totalCents,
+    currency: booking.currency,
+    details: booking.details,
+  }).catch((err) => console.error('sendBookingVoucher', err));
+
   if (booking.memberId) {
     await notify(
       booking.memberId,
       'first_purchase',
       '¡Reserva confirmada! 🧳',
-      `Tu reserva en ${(booking.details as { name?: string })?.name ?? 'el hotel'} está confirmada. Voucher: ${supplierRef}.`,
+      `Tu reserva en ${details.name ?? 'el hotel'} está confirmada. Voucher: ${supplierRef}.`,
     );
   }
 

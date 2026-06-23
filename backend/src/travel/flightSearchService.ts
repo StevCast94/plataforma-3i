@@ -1,5 +1,6 @@
 import type { FlightAdapter } from './adapters/FlightAdapter';
 import { MockFlightAdapter } from './adapters/mockFlightAdapter';
+import { DuffelAdapter } from './adapters/duffelAdapter';
 import { priceFromNet } from './markupEngine';
 import { hasTravelAccess } from './membershipAccess';
 import type { FlightQuery, FlightSearchResult, PricedFlightOffer } from './types';
@@ -9,8 +10,8 @@ import type { FlightQuery, FlightSearchResult, PricedFlightOffer } from './types
 // que los hoteles. La tarifa neta no sale del backend.
 // ============================================================
 
-function getFlightAdapter(): FlightAdapter {
-  // if (process.env.DUFFEL_TOKEN) return new DuffelAdapter();
+export function getFlightAdapter(): FlightAdapter {
+  if (process.env.DUFFEL_TOKEN) return new DuffelAdapter();
   return new MockFlightAdapter();
 }
 

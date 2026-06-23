@@ -1,5 +1,6 @@
 import type { SupplierAdapter } from './adapters/SupplierAdapter';
 import { MockAdapter } from './adapters/mockAdapter';
+import { RateHawkAdapter } from './adapters/rateHawkAdapter';
 import { priceFromNet } from './markupEngine';
 import { hasTravelAccess } from './membershipAccess';
 import type { HotelQuery, HotelSearchResult, PricedHotelOffer, RawHotelOffer } from './types';
@@ -16,8 +17,10 @@ import type { HotelQuery, HotelSearchResult, PricedHotelOffer, RawHotelOffer } f
  * Cuando existan credenciales de RateHawk se devuelve RateHawkAdapter aquí y
  * todo lo demás sigue igual.
  */
-function getHotelAdapter(): SupplierAdapter {
-  // if (process.env.RATEHAWK_API_KEY) return new RateHawkAdapter();
+export function getHotelAdapter(): SupplierAdapter {
+  if (process.env.RATEHAWK_API_KEY && process.env.RATEHAWK_KEY_ID) {
+    return new RateHawkAdapter();
+  }
   return new MockAdapter();
 }
 
@@ -71,6 +74,11 @@ export async function getRawOffer(
   rateKey: string,
 ): Promise<RawHotelOffer | null> {
   const adapter = getHotelAdapter();
+  // Si el proveedor soporta revalidación de tarifa (prebook), úsala — es la
+  // fuente de precio autoritativa. Si no, re-buscamos y emparejamos por rateKey.
+  if (adapter.getHotelRate) {
+    return adapter.getHotelRate(query, rateKey);
+  }
   const offers = await adapter.searchHotels(query);
   return offers.find((o) => o.rateKey === rateKey) ?? null;
 }

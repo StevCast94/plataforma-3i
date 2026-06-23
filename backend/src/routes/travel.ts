@@ -144,6 +144,28 @@ travelRoutes.post(
   }),
 );
 
+// GET /api/travel/payphone/callback?id=&clientTransactionId= — retorno de PayPhone.
+// Confirma el pago y redirige al SPA con el resultado. Debe confirmarse en <5min.
+travelRoutes.get(
+  '/payphone/callback',
+  asyncHandler(async (req, res) => {
+    const id = req.query.id ? String(req.query.id) : undefined;
+    const bookingId = String(req.query.clientTransactionId ?? '').trim();
+    const base = process.env.PUBLIC_BASE_URL ?? 'https://plataforma-3i-production.up.railway.app';
+    if (!bookingId) {
+      res.redirect(`${base}/#/club/viajes?pago=error`);
+      return;
+    }
+    try {
+      await confirmBooking(bookingId, id);
+      res.redirect(`${base}/#/club/viajes?pago=ok&reserva=${encodeURIComponent(bookingId)}`);
+    } catch (err) {
+      console.error('payphone callback', err);
+      res.redirect(`${base}/#/club/viajes?pago=fallido&reserva=${encodeURIComponent(bookingId)}`);
+    }
+  }),
+);
+
 // GET /api/travel/bookings/mine — reservas del socio logueado.
 travelRoutes.get(
   '/bookings/mine',
