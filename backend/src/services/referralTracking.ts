@@ -64,6 +64,14 @@ export async function attributeReferral(
     },
   });
 
+  // Persistir el FK referrerId en el socio nuevo. Es la fuente de verdad que usa
+  // `confirmPurchase` para resolver el 2do nivel (referidor del referidor) y que
+  // habilita la creación de la fila Referral de nivel 2 en cadenas más profundas.
+  await db.referralMember.update({
+    where: { id: newMemberId },
+    data: { referrerId: referrer.id },
+  });
+
   // Nivel 2 (el referidor del referidor)
   if (referrer.referrerId) {
     await db.referral.create({
