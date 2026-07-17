@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Flame, Clock, Users, type LucideIcon } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { PostCreator } from '@/components/comunidad/PostCreator';
 import { PostCard } from '@/components/comunidad/PostCard';
@@ -29,10 +30,10 @@ export default function CommunityFeedPage() {
     return () => obs.disconnect();
   }, [loadMore]);
 
-  const tabs: { key: Tab; label: string; auth?: boolean }[] = [
-    { key: 'trending', label: '🔥 Trending' },
-    { key: 'recent', label: '🕐 Recientes' },
-    { key: 'mine', label: '👥 Mis grupos', auth: true },
+  const tabs: { key: Tab; label: string; icon: LucideIcon; auth?: boolean }[] = [
+    { key: 'trending', label: 'Trending', icon: Flame },
+    { key: 'recent', label: 'Recientes', icon: Clock },
+    { key: 'mine', label: 'Mis grupos', icon: Users, auth: true },
   ];
 
   function handleReact(id: string, myReaction: ReactionType | null, delta: number) {
@@ -66,10 +67,11 @@ export default function CommunityFeedPage() {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={cn(
-                'rounded-full px-4 py-1.5 text-sm font-medium transition',
+                'inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition',
                 tab === t.key ? 'bg-primary text-white' : 'bg-white text-brand-gray ring-1 ring-black/5 hover:text-primary',
               )}
             >
+              <t.icon className="h-3.5 w-3.5" strokeWidth={1.8} />
               {t.label}
             </button>
           ))}

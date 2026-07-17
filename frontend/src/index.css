@@ -37,3 +37,28 @@ h1, h2, h3, h4 {
   background: var(--color-secondary);
   border-radius: 9999px;
 }
+
+/* === Skeleton con brillo dorado (percepción premium al cargar) === */
+@keyframes g3i-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+.skeleton-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 169, 110, 0.22),
+    transparent
+  );
+  animation: g3i-shimmer 1.6s infinite;
+}

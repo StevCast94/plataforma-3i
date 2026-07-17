@@ -1,3 +1,4 @@
+import { MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/Badge';
 import { cld } from '@/lib/cloudinary';
@@ -25,7 +26,7 @@ export function EventCard({ event }: { event: CommunityEvent }) {
           {date.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' })}
         </p>
         <h3 className="mt-1 font-semibold text-primary">{event.title}</h3>
-        {event.location && <p className="mt-1 text-sm text-brand-gray">📍 {event.location}</p>}
+        {event.location && <p className="mt-1 flex items-center gap-1 text-sm text-brand-gray"><MapPin className="h-3.5 w-3.5" strokeWidth={1.8} /> {event.location}</p>}
         <p className="mt-2 text-xs text-brand-gray">
           {event.attendeeCount ?? 0} asistentes{event.group ? ` · ${event.group.name}` : ''}
         </p>

@@ -32,7 +32,7 @@ export function CheckoutModal({ open, product, onClose }: CheckoutModalProps) {
         {/* Resumen */}
         <div className="flex items-center justify-between rounded-xl bg-light p-4">
           <span className="font-medium text-primary">{product.name}</span>
-          <PriceDisplay price={product.price} promoPrice={product.promoPrice} />
+          <PriceDisplay price={product.price} promoPrice={product.promoPrice} compact />
         </div>
 
         {/* Atribución de referido */}

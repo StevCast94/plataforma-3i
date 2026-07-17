@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { UserX, MapPin } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { Avatar } from '@/components/comunidad/Avatar';
 import { Badge } from '@/components/ui/Badge';
@@ -33,7 +34,7 @@ export default function ProfilePage() {
 
   if (loading) return <p className="py-16 text-center text-brand-gray">Cargando perfil…</p>;
   if (!profile)
-    return <EmptyState title="Perfil no encontrado" ctaText="Ver miembros" ctaTo="/comunidad/miembros" icon="👤" />;
+    return <EmptyState title="Perfil no encontrado" ctaText="Ver miembros" ctaTo="/comunidad/miembros" icon={<UserX className="h-10 w-10" strokeWidth={1.4} />} />;
 
   const isElite = profile.status === 'ELITE';
   const isMe = member?.referralCode === profile.referralCode;
@@ -53,7 +54,11 @@ export default function ProfilePage() {
           )}
         </div>
         {profile.bio && <p className="mx-auto mt-3 max-w-md text-sm text-brand-gray">{profile.bio}</p>}
-        {profile.location && <p className="mt-2 text-sm text-brand-gray">📍 {profile.location}</p>}
+        {profile.location && (
+          <p className="mt-2 flex items-center justify-center gap-1 text-sm text-brand-gray">
+            <MapPin className="h-3.5 w-3.5" strokeWidth={1.8} /> {profile.location}
+          </p>
+        )}
         {profile.interests.length > 0 && (
           <div className="mt-3 flex flex-wrap justify-center gap-1">
             {profile.interests.map((t) => (

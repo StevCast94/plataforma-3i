@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { MailX } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { PostCard } from '@/components/comunidad/PostCard';
 import { EmptyState } from '@/components/shared/EmptyState';
@@ -16,7 +17,7 @@ export default function PostDetailPage() {
 
   if (loading && !current) return <p className="py-16 text-center text-brand-gray">Cargando…</p>;
   if (!current)
-    return <EmptyState title="Post no encontrado" ctaText="Volver a la comunidad" ctaTo="/comunidad" icon="📭" />;
+    return <EmptyState title="Post no encontrado" ctaText="Volver a la comunidad" ctaTo="/comunidad" icon={<MailX className="h-10 w-10" strokeWidth={1.4} />} />;
 
   function handleReact(_id: string, myReaction: ReactionType | null, delta: number) {
     setPost({ ...current!, myReaction, reactionCount: current!.reactionCount + delta });

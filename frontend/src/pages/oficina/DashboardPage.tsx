@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Users, DollarSign, Wallet, Link2 } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { ProgressToElite } from '@/components/oficina/ProgressToElite';
 import { useAuth } from '@/hooks/useAuth';
@@ -100,17 +101,17 @@ export default function DashboardPage() {
       {/* Links rápidos */}
       <div className="grid gap-4 sm:grid-cols-4">
         {[
-          { to: '/oficina/mi-red', label: 'Mi Red', icon: '👥' },
-          { to: '/oficina/comisiones', label: 'Comisiones', icon: '💲' },
-          { to: '/oficina/pagos', label: 'Pagos', icon: '👛' },
-          { to: '/oficina/herramientas', label: 'Herramientas', icon: '🔗' },
+          { to: '/oficina/mi-red', label: 'Mi Red', icon: Users },
+          { to: '/oficina/comisiones', label: 'Comisiones', icon: DollarSign },
+          { to: '/oficina/pagos', label: 'Pagos', icon: Wallet },
+          { to: '/oficina/herramientas', label: 'Herramientas', icon: Link2 },
         ].map((q) => (
           <Link
             key={q.to}
             to={q.to}
             className="flex flex-col items-center gap-2 rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5 transition hover:shadow-md"
           >
-            <span className="text-2xl">{q.icon}</span>
+            <q.icon className="h-6 w-6 text-accent" strokeWidth={1.6} />
             <span className="text-sm font-medium text-primary">{q.label}</span>
           </Link>
         ))}

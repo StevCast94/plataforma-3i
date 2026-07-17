@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
+import { Smartphone, Link2 } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
@@ -183,10 +184,10 @@ export default function ToolsPage() {
         <h2 className="text-xl text-primary">Compartir directamente</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           <a href={whatsappShareUrl(fullUrl)} target="_blank" rel="noreferrer">
-            <Button>📲 Compartir por WhatsApp</Button>
+            <Button><Smartphone className="h-4 w-4" strokeWidth={1.8} /> Compartir por WhatsApp</Button>
           </a>
           <Button variant="outline" onClick={() => copy(fullUrl)}>
-            🔗 Copiar enlace
+            <Link2 className="h-4 w-4" strokeWidth={1.8} /> Copiar enlace
           </Button>
         </div>
       </section>

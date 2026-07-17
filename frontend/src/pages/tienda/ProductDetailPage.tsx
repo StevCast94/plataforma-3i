@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Check, Sparkle, ShoppingBag } from 'lucide-react';
 import { useProduct, useProducts } from '@/hooks/useProducts';
 import { Seo } from '@/components/shared/Seo';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
@@ -39,7 +39,7 @@ export default function ProductDetailPage() {
         message="Es posible que ya no esté disponible."
         ctaText="Volver a la tienda"
         ctaTo="/tienda"
-        icon="🛍️"
+        icon={<ShoppingBag className="h-12 w-12 text-secondary" strokeWidth={1.4} />}
       />
     );
 
@@ -92,7 +92,7 @@ export default function ProductDetailPage() {
               <ul className="mt-6 space-y-2">
                 {features.slice(0, 5).map((f) => (
                   <li key={f} className="flex items-start gap-3 text-primary/90">
-                    <span className="mt-0.5 text-secondary">✓</span>
+                    <Check className="mt-0.5 h-4 w-4 flex-none text-accent" strokeWidth={2.2} />
                     <span>{f}</span>
                   </li>
                 ))}
@@ -100,15 +100,6 @@ export default function ProductDetailPage() {
             )}
 
             <ProductCTAs product={product} />
-
-            <div className="mt-3">
-              <ShareToCommunity
-                title={product.name}
-                path={`/tienda/${product.slug}`}
-                image={gallery[0]}
-                description={product.description.slice(0, 120)}
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -127,6 +118,16 @@ export default function ProductDetailPage() {
           <ImageGallery images={gallery} alt={product.name} />
         </section>
       )}
+
+      {/* Compartir (socios) — fuera del bloque de decisión de compra */}
+      <div className="mx-auto flex max-w-6xl justify-center px-4 pb-10 sm:px-6">
+        <ShareToCommunity
+          title={product.name}
+          path={`/tienda/${product.slug}`}
+          image={gallery[0]}
+          description={product.description.slice(0, 120)}
+        />
+      </div>
 
       {/* 5. RELACIONADOS */}
       {related.length > 0 && (
@@ -148,43 +149,6 @@ export default function ProductDetailPage() {
 
 /* ============ MEMBRESÍA ============ */
 
-function Countdown() {
-  // Cuenta regresiva al fin del mes en curso (precio de lanzamiento).
-  const target = (() => {
-    const d = new Date();
-    return new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59).getTime();
-  })();
-  const [now, setNow] = useState(Date.now());
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const diff = Math.max(target - now, 0);
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
-  const secs = Math.floor((diff % 60000) / 1000);
-  const cells = [
-    { v: days, l: 'días' },
-    { v: hours, l: 'hrs' },
-    { v: mins, l: 'min' },
-    { v: secs, l: 'seg' },
-  ];
-
-  return (
-    <div className="flex justify-center gap-3">
-      {cells.map((c) => (
-        <div key={c.l} className="w-16 rounded-xl bg-white/10 py-3 text-center">
-          <p className="font-serif text-2xl font-bold">{String(c.v).padStart(2, '0')}</p>
-          <p className="text-xs uppercase tracking-wider text-white/60">{c.l}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 const testimonials = [
   { name: 'María L.', text: 'Ahorré más del 60% en mi viaje a Cancún. La membresía se pagó sola.' },
   { name: 'Jorge P.', text: 'El certificado vacacional anual es increíble. Ya lo usé dos veces.' },
@@ -202,15 +166,14 @@ function MembershipSections({
     <>
       {product.promoPrice && (
         <section className="bg-primary text-white">
-          <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6">
+          <div className="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6">
             <Badge variant="gold" className="mb-4">Precio de lanzamiento</Badge>
             <h2 className="text-2xl font-bold sm:text-3xl">
-              Aprovecha el precio especial antes de que suba
+              Aprovecha el precio especial de lanzamiento
             </h2>
-            <p className="mt-2 text-white/70">La oferta termina en:</p>
-            <div className="mt-6">
-              <Countdown />
-            </div>
+            <p className="mt-2 text-white/70">
+              Disponible solo durante la preventa. Asegura tu membresía hoy.
+            </p>
           </div>
         </section>
       )}
@@ -226,7 +189,7 @@ function MembershipSections({
                 key={f}
                 className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5"
               >
-                <span className="text-2xl text-secondary">✦</span>
+                <Sparkle className="h-6 w-6 text-secondary" strokeWidth={1.6} />
                 <p className="mt-3 font-medium text-primary">{f}</p>
               </div>
             ))}

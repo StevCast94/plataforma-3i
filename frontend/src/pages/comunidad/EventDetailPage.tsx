@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { CalendarX, Check, HelpCircle, X, MapPin } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { Avatar } from '@/components/comunidad/Avatar';
 import { Button } from '@/components/ui/Button';
@@ -22,7 +23,7 @@ export default function EventDetailPage() {
   const [myStatus, setMyStatus] = useState<Rsvp | null>(null);
 
   if (loading) return <p className="py-16 text-center text-brand-gray">Cargando…</p>;
-  if (!data) return <EmptyState title="Evento no encontrado" ctaText="Ver eventos" ctaTo="/comunidad/eventos" icon="📅" />;
+  if (!data) return <EmptyState title="Evento no encontrado" ctaText="Ver eventos" ctaTo="/comunidad/eventos" icon={<CalendarX className="h-10 w-10" strokeWidth={1.4} />} />;
 
   const status = myStatus ?? data.myStatus ?? null;
 
@@ -58,7 +59,11 @@ export default function EventDetailPage() {
             {date.toLocaleDateString('es-EC', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} ·{' '}
             {date.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' })}
           </p>
-          {data.location && <p className="mt-1 text-sm text-brand-gray">📍 {data.location}</p>}
+          {data.location && (
+            <p className="mt-1 flex items-center gap-1 text-sm text-brand-gray">
+              <MapPin className="h-3.5 w-3.5" strokeWidth={1.8} /> {data.location}
+            </p>
+          )}
           {data.group && <p className="mt-1 text-sm text-brand-gray">Organizado por {data.group.name}</p>}
 
           <p className="mt-4 whitespace-pre-wrap text-primary/80">{data.description}</p>
@@ -66,13 +71,13 @@ export default function EventDetailPage() {
           {/* RSVP */}
           <div className="mt-6 flex flex-wrap gap-3">
             <Button variant={status === 'going' ? 'primary' : 'outline'} onClick={() => rsvp('going')}>
-              ✅ Voy ({data.counts?.going ?? 0})
+              <Check className="h-4 w-4" strokeWidth={2.2} /> Voy ({data.counts?.going ?? 0})
             </Button>
             <Button variant={status === 'maybe' ? 'primary' : 'outline'} onClick={() => rsvp('maybe')}>
-              🤔 Quizás ({data.counts?.maybe ?? 0})
+              <HelpCircle className="h-4 w-4" strokeWidth={1.8} /> Quizás ({data.counts?.maybe ?? 0})
             </Button>
             <Button variant={status === 'not_going' ? 'primary' : 'outline'} onClick={() => rsvp('not_going')}>
-              ❌ No voy
+              <X className="h-4 w-4" strokeWidth={2} /> No voy
             </Button>
           </div>
 

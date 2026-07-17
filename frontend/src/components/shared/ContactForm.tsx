@@ -183,7 +183,7 @@ export function ContactForm({
         </div>
       )}
 
-      <Button type="submit" size="lg" disabled={sending} className="w-full">
+      <Button type="submit" size="lg" loading={sending} className="w-full">
         {sending ? 'Enviando…' : (submitLabel ?? 'Enviar')}
       </Button>
     </form>

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
 import { useReferral } from '@/hooks/useReferral';
 
 /** Hace scroll al inicio en cada cambio de ruta. */
@@ -34,6 +35,7 @@ export function Layout() {
         </Suspense>
       </main>
       <Footer />
+      <WhatsAppFloat />
     </div>
   );
 }

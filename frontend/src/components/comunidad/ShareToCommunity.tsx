@@ -1,3 +1,4 @@
+import { Megaphone } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
@@ -46,7 +47,8 @@ export function ShareToCommunity({ title, path, image, description }: ShareToCom
 
   return (
     <Button variant="outline" onClick={share} disabled={sharing}>
-      {sharing ? 'Compartiendo…' : '📣 Compartir en la comunidad'}
+      <Megaphone className="h-4 w-4" strokeWidth={1.8} />
+      {sharing ? 'Compartiendo…' : 'Compartir en la comunidad'}
     </Button>
   );
 }

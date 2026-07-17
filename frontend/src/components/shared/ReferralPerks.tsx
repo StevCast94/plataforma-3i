@@ -1,3 +1,4 @@
+import { Sparkle } from 'lucide-react';
 import { IconMedallion, IconPlane, IconSparkle } from '@/components/icons/TravelIcons';
 
 // ============================================================
@@ -37,14 +38,14 @@ export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
       </div>
       <ul className="mt-3 space-y-2 text-sm text-primary/80">
         <li className="flex gap-2">
-          <span className="text-secondary">✦</span>
+          <Sparkle className="mt-0.5 h-4 w-4 flex-none text-secondary" strokeWidth={1.6} />
           <span>
             <strong>Tu invitado gana:</strong> membresía de viajes <strong>gratis</strong> cuando
             compra un producto <strong>inmobiliario</strong> con tu enlace (y sube a Elite).
           </span>
         </li>
         <li className="flex gap-2">
-          <span className="text-secondary">✦</span>
+          <Sparkle className="mt-0.5 h-4 w-4 flex-none text-secondary" strokeWidth={1.6} />
           <span>
             <strong>Tú ganas:</strong> tu comisión por cada venta y, al llegar a{' '}
             <strong>5 referidos que compren inmobiliario</strong>, asciendes a <strong>Elite</strong>{' '}

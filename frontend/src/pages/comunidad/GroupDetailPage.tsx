@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Users } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { PostCreator } from '@/components/comunidad/PostCreator';
 import { PostCard } from '@/components/comunidad/PostCard';
@@ -25,7 +26,7 @@ export default function GroupDetailPage() {
   const { posts, prepend, remove, update } = useFeed('recent', group?.id);
 
   if (loading) return <p className="py-16 text-center text-brand-gray">Cargando…</p>;
-  if (!group) return <EmptyState title="Grupo no encontrado" ctaText="Ver grupos" ctaTo="/comunidad/grupos" icon="👥" />;
+  if (!group) return <EmptyState title="Grupo no encontrado" ctaText="Ver grupos" ctaTo="/comunidad/grupos" icon={<Users className="h-10 w-10" strokeWidth={1.4} />} />;
 
   async function toggleMembership() {
     if (!isAuthenticated) {

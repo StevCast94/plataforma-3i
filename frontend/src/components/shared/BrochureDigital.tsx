@@ -1,7 +1,21 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import {
+  FileText,
+  MapPin,
+  Building2,
+  DollarSign,
+  TrendingUp,
+  Home,
+  Users,
+  ShieldCheck,
+  Wallet,
+  Landmark,
+  type LucideIcon,
+} from 'lucide-react';
 import { cld } from '@/lib/cloudinary';
 import { Button } from '@/components/ui/Button';
+import { AmenityIcon } from '@/lib/amenityIcons';
 import { ImageGallery } from './ImageGallery';
 import type { Project } from '@shared/types';
 
@@ -14,13 +28,13 @@ import type { Project } from '@shared/types';
 /** URL del PDF original para descargar (colocar en frontend/public/brochures/). */
 const PDF_URL = '/brochures/ibiza-condohotel.pdf';
 
-const KEY_FACTS = [
-  { icon: '📍', label: 'Ubicación', value: 'Manglaralto, Santa Elena' },
-  { icon: '🏗️', label: 'Tipo', value: 'Condohotel de Lujo' },
-  { icon: '💰', label: 'Inversión desde', value: 'USD $12,000 / fracción' },
-  { icon: '📈', label: 'Rentabilidad bruta', value: '16.3% anual' },
-  { icon: '🏠', label: 'Unidades', value: '17 lofts · 4 niveles' },
-  { icon: '👥', label: 'Capacidad', value: '6 personas · 71.66 m²' },
+const KEY_FACTS: { icon: LucideIcon; label: string; value: string }[] = [
+  { icon: MapPin, label: 'Ubicación', value: 'Manglaralto, Santa Elena' },
+  { icon: Building2, label: 'Tipo', value: 'Condohotel de Lujo' },
+  { icon: DollarSign, label: 'Inversión desde', value: 'USD $12,000 / fracción' },
+  { icon: TrendingUp, label: 'Rentabilidad bruta', value: '16.3% anual' },
+  { icon: Home, label: 'Unidades', value: '17 lofts · 4 niveles' },
+  { icon: Users, label: 'Capacidad', value: '6 personas · 71.66 m²' },
 ];
 
 const PAYMENT_PLAN = [
@@ -40,34 +54,34 @@ const VALUE_PROJECTION = [
 const CHART = [12000, 13200, 13800, 14400, 16000, 18500];
 
 const AMENITIES = [
-  { icon: '🏊', label: 'Piscinas' },
-  { icon: '🏋️', label: 'Gimnasio' },
-  { icon: '🏖️', label: 'Club de Playa' },
-  { icon: '💆', label: 'Spa' },
-  { icon: '🛎️', label: 'Lobby VIP' },
-  { icon: '🛡️', label: 'Seguridad 24h' },
-  { icon: '🚗', label: 'Estacionamiento + cargador EV' },
-  { icon: '🎉', label: 'Áreas sociales' },
+  'Piscinas',
+  'Gimnasio',
+  'Club de Playa',
+  'Spa',
+  'Lobby VIP',
+  'Seguridad 24h',
+  'Estacionamiento + cargador EV',
+  'Áreas sociales',
 ];
 
-const WHY_INVEST = [
+const WHY_INVEST: { icon: LucideIcon; title: string; body: string }[] = [
   {
-    icon: '🛡️',
+    icon: ShieldCheck,
     title: 'Recompra garantizada 120%',
     body: 'Garantía de capital + ganancia: recompra a $14,400 (meses 36-42). Sin riesgo de pérdida de capital.',
   },
   {
-    icon: '📈',
+    icon: TrendingUp,
     title: 'Plusvalía proyectada +65%',
     body: 'Valor estimado a 5 años entre $17K y $20K por fracción. Proyectos frente al mar superan el 3.6% del mercado.',
   },
   {
-    icon: '💵',
+    icon: Wallet,
     title: 'Ingresos pasivos administrados',
     body: 'Programa de renting 70/30 con gestión profesional. Ingreso anual potencial ~$1,960 (16.3% bruto).',
   },
   {
-    icon: '🏛️',
+    icon: Landmark,
     title: 'Respaldo patrimonial sólido',
     body: 'DIWILDI S.A., garante solidario, con $17M en activos, 108 terrenos y 16 años de experiencia.',
   },
@@ -140,9 +154,12 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
         {/* Encabezado de sección */}
         <Reveal>
           <div className="mb-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-              📄 Brochure Digital
-            </p>
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-accent" strokeWidth={1.8} />
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
+                Brochure Digital
+              </p>
+            </div>
             <span className="mt-2 block h-1 w-16 rounded bg-secondary" />
           </div>
         </Reveal>
@@ -178,7 +195,9 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           {KEY_FACTS.map((f, i) => (
             <Reveal key={f.label} delay={i * 0.05}>
               <div className="flex items-center gap-4 rounded-2xl bg-light p-5">
-                <span className="text-3xl">{f.icon}</span>
+                <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-white text-accent ring-1 ring-secondary/30">
+                  <f.icon className="h-5 w-5" strokeWidth={1.6} />
+                </span>
                 <div>
                   <p className="text-xs uppercase tracking-wider text-brand-gray">{f.label}</p>
                   <p className="font-semibold text-primary">{f.value}</p>
@@ -302,10 +321,10 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           </Reveal>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {AMENITIES.map((a, i) => (
-              <Reveal key={a.label} delay={i * 0.04}>
+              <Reveal key={a} delay={i * 0.04}>
                 <div className="flex flex-col items-center gap-2 rounded-2xl bg-light p-5 text-center">
-                  <span className="text-3xl">{a.icon}</span>
-                  <span className="text-sm font-medium text-primary">{a.label}</span>
+                  <AmenityIcon name={a} className="h-7 w-7 text-accent" />
+                  <span className="text-sm font-medium text-primary">{a}</span>
                 </div>
               </Reveal>
             ))}
@@ -333,7 +352,9 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             {WHY_INVEST.map((w, i) => (
               <Reveal key={w.title} delay={i * 0.05}>
                 <div className="h-full rounded-2xl bg-light p-6">
-                  <span className="text-3xl">{w.icon}</span>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-accent ring-1 ring-secondary/30">
+                    <w.icon className="h-5 w-5" strokeWidth={1.6} />
+                  </span>
                   <h4 className="mt-3 font-serif text-xl text-primary">{w.title}</h4>
                   <p className="mt-2 text-sm leading-relaxed text-brand-gray">{w.body}</p>
                 </div>

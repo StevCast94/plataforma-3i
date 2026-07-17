@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { CalendarDays, Video } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { ContactForm } from './ContactForm';
 import { CheckoutModal } from './CheckoutModal';
+import { PriceDisplay } from './PriceDisplay';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { getReferralCode } from '@/hooks/useReferral';
 import type { Product } from '@shared/types';
@@ -26,6 +28,17 @@ export function ProductCTAs({ product }: { product: Product }) {
   const { data: contact } = useSectionContent('contact');
   const [modal, setModal] = useState<null | 'visit' | 'meet'>(null);
   const [checkout, setCheckout] = useState(false);
+  const buyRef = useRef<HTMLDivElement>(null);
+  const [showBar, setShowBar] = useState(false);
+
+  // La barra fija solo aparece cuando el CTA principal sale del viewport.
+  useEffect(() => {
+    const el = buyRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => setShowBar(!entry.isIntersecting));
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const isMembership = product.type === 'TRAVEL_MEMBERSHIP';
   const isFractional = product.type === 'FRACTIONAL_PROPERTY';
@@ -46,53 +59,65 @@ export function ProductCTAs({ product }: { product: Product }) {
   return (
     <>
       <div className="mt-8 space-y-3">
-        {/* Fila 1: contacto blando */}
-        <div className="grid gap-3 sm:grid-cols-2">
-          {waHref ? (
-            <a href={waHref} target="_blank" rel="noreferrer">
-              <Button size="lg" className="w-full">
-                <span className="mr-2">{ICONS.whatsapp}</span>
-                Hablar con un asesor
-              </Button>
-            </a>
-          ) : (
-            <Button size="lg" className="w-full" onClick={() => setModal('meet')}>
-              Hablar con un asesor
-            </Button>
-          )}
-
-          {!isMembership ? (
-            <Button size="lg" variant="outline" className="w-full" onClick={() => setModal('visit')}>
-              Reservar una visita
-            </Button>
-          ) : (
-            <Button size="lg" variant="outline" className="w-full" onClick={() => setModal('meet')}>
-              Agendar una llamada
-            </Button>
-          )}
-        </div>
-
-        {/* Fila 2: meet + compra */}
-        <div className="grid gap-3 sm:grid-cols-2">
-          {!isMembership && (
-            <Button size="lg" variant="outline" className="w-full" onClick={() => setModal('meet')}>
-              Meet personalizado
-            </Button>
-          )}
-          <Button
-            size="lg"
-            variant="secondary"
-            className={`w-full ${isMembership ? 'sm:col-span-2' : ''}`}
-            onClick={() => setCheckout(true)}
-          >
+        {/* CTA primario: la compra manda */}
+        <div ref={buyRef}>
+          <Button size="lg" className="w-full" onClick={() => setCheckout(true)}>
             {buyLabel}
           </Button>
+        </div>
+
+        {/* Secundario: WhatsApp con el asesor */}
+        {waHref ? (
+          <a href={waHref} target="_blank" rel="noreferrer" className="block">
+            <Button size="lg" variant="outline" className="w-full">
+              <span className="text-[#25D366]">{ICONS.whatsapp}</span>
+              Hablar con un asesor
+            </Button>
+          </a>
+        ) : (
+          <Button size="lg" variant="outline" className="w-full" onClick={() => setModal('meet')}>
+            Hablar con un asesor
+          </Button>
+        )}
+
+        {/* Terciarios: enlaces discretos, no compiten con la compra */}
+        <div className="flex items-center justify-center gap-6 pt-1">
+          {!isMembership && (
+            <button
+              onClick={() => setModal('visit')}
+              className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-brand-gray underline-offset-4 transition-colors hover:text-accent hover:underline"
+            >
+              <CalendarDays className="h-4 w-4" strokeWidth={1.8} />
+              Reservar una visita
+            </button>
+          )}
+          <button
+            onClick={() => setModal('meet')}
+            className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-brand-gray underline-offset-4 transition-colors hover:text-accent hover:underline"
+          >
+            <Video className="h-4 w-4" strokeWidth={1.8} />
+            {isMembership ? 'Agendar una llamada' : 'Meet personalizado'}
+          </button>
         </div>
 
         <p className="text-center text-xs text-brand-gray">
           Sin compromiso. Un asesor te acompaña en cada paso.
         </p>
       </div>
+
+      {/* Barra fija móvil: aparece solo cuando el CTA principal sale de vista */}
+      {showBar && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-white/95 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
+            <div className="min-w-0">
+              <PriceDisplay price={product.price} promoPrice={product.promoPrice} compact />
+            </div>
+            <Button size="md" className="flex-none" onClick={() => setCheckout(true)}>
+              {buyLabel}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Modales visita / meet */}
       <Modal

@@ -1,14 +1,24 @@
 import { NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Users,
+  DollarSign,
+  Wallet,
+  Luggage,
+  Link2,
+  Calculator,
+  type LucideIcon,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const items = [
-  { to: '/oficina/dashboard', label: 'Dashboard', icon: '🏠' },
-  { to: '/oficina/mi-red', label: 'Mi Red', icon: '👥' },
-  { to: '/oficina/comisiones', label: 'Comisiones', icon: '💲' },
-  { to: '/oficina/pagos', label: 'Pagos', icon: '👛' },
-  { to: '/oficina/viajes', label: 'Mis Viajes', icon: '🧳' },
-  { to: '/oficina/herramientas', label: 'Herramientas', icon: '🔗' },
-  { to: '/oficina/calculadora', label: 'Calculadora', icon: '🧮' },
+const items: { to: string; label: string; icon: LucideIcon }[] = [
+  { to: '/oficina/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/oficina/mi-red', label: 'Mi Red', icon: Users },
+  { to: '/oficina/comisiones', label: 'Comisiones', icon: DollarSign },
+  { to: '/oficina/pagos', label: 'Pagos', icon: Wallet },
+  { to: '/oficina/viajes', label: 'Mis Viajes', icon: Luggage },
+  { to: '/oficina/herramientas', label: 'Herramientas', icon: Link2 },
+  { to: '/oficina/calculadora', label: 'Calculadora', icon: Calculator },
 ];
 
 const linkClass = (isActive: boolean) =>
@@ -30,7 +40,7 @@ export function OfficeSidebar() {
       <nav className="space-y-1">
         {items.map((it) => (
           <NavLink key={it.to} to={it.to} className={({ isActive }) => linkClass(isActive)}>
-            <span>{it.icon}</span>
+            <it.icon className="h-4 w-4" strokeWidth={1.8} />
             {it.label}
           </NavLink>
         ))}
@@ -54,7 +64,7 @@ export function OfficeBottomNav() {
             )
           }
         >
-          <span className="text-lg">{it.icon}</span>
+          <it.icon className="h-5 w-5" strokeWidth={1.8} />
           {it.label}
         </NavLink>
       ))}

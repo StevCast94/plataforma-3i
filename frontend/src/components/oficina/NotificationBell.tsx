@@ -1,3 +1,4 @@
+import { Bell } from 'lucide-react';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '@/lib/api';
@@ -25,7 +26,7 @@ export function NotificationBell() {
         className="relative cursor-pointer rounded-full p-2 hover:bg-light"
         aria-label="Notificaciones"
       >
-        <span className="text-xl">🔔</span>
+        <Bell className="h-5 w-5 text-primary" strokeWidth={1.8} />
         {unread > 0 && (
           <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
             {unread}

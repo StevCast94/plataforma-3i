@@ -4,13 +4,14 @@ import { motion } from 'framer-motion';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { ClipboardPen, Link2, HandCoins, type LucideIcon } from 'lucide-react';
 import { estimateMonthly } from '@/lib/referral';
 import { formatCurrency } from '@/lib/utils';
 
-const steps = [
-  { icon: '📝', title: 'Regístrate gratis', body: 'Crea tu cuenta Premiere con tu cédula en minutos.' },
-  { icon: '🔗', title: 'Comparte tu enlace', body: 'Recibe tu código y enlace único para invitar.' },
-  { icon: '💰', title: 'Gana comisiones', body: 'Cobra por cada membresía y propiedad referida.' },
+const steps: { icon: LucideIcon; title: string; body: string }[] = [
+  { icon: ClipboardPen, title: 'Regístrate gratis', body: 'Crea tu cuenta Premiere con tu cédula en minutos.' },
+  { icon: Link2, title: 'Comparte tu enlace', body: 'Recibe tu código y enlace único para invitar.' },
+  { icon: HandCoins, title: 'Gana comisiones', body: 'Cobra por cada membresía y propiedad referida.' },
 ];
 
 const compare = [
@@ -75,7 +76,9 @@ export default function OfficeLanding() {
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((s, i) => (
             <div key={s.title} className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-black/5">
-              <span className="text-4xl">{s.icon}</span>
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-light text-accent ring-1 ring-secondary/30">
+                <s.icon className="h-6 w-6" strokeWidth={1.6} />
+              </span>
               <p className="mt-2 text-xs font-bold uppercase tracking-widest text-secondary">Paso {i + 1}</p>
               <h3 className="mt-1 text-xl text-primary">{s.title}</h3>
               <p className="mt-2 text-sm text-brand-gray">{s.body}</p>

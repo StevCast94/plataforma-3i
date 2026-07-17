@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Building2 } from 'lucide-react';
 import { useProject, useProjects } from '@/hooks/useProjects';
 import { Seo } from '@/components/shared/Seo';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
@@ -33,7 +34,7 @@ export default function ProjectDetailPage() {
         message="Es posible que ya no esté disponible."
         ctaText="Ver todos los proyectos"
         ctaTo="/proyectos"
-        icon="🏢"
+        icon={<Building2 className="h-10 w-10" strokeWidth={1.4} />}
       />
     );
 

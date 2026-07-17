@@ -1,3 +1,4 @@
+import { MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar } from './Avatar';
 import { Badge } from '@/components/ui/Badge';
@@ -10,7 +11,7 @@ export function MemberCard({ member }: { member: CommunityMember }) {
       <Avatar name={member.fullName} avatarUrl={member.avatarUrl} size="lg" className="mx-auto" />
       <h3 className="mt-3 font-semibold text-primary">{member.fullName}</h3>
       <Badge variant={isElite ? 'gold' : 'light'} className="mt-1">{isElite ? 'Elite' : 'Premiere'}</Badge>
-      {member.location && <p className="mt-2 text-xs text-brand-gray">📍 {member.location}</p>}
+      {member.location && <p className="mt-2 flex items-center justify-center gap-1 text-xs text-brand-gray"><MapPin className="h-3 w-3" strokeWidth={1.8} /> {member.location}</p>}
       {member.bio && <p className="mt-2 line-clamp-2 text-sm text-brand-gray">{member.bio}</p>}
       {member.interests.length > 0 && (
         <div className="mt-3 flex flex-wrap justify-center gap-1">

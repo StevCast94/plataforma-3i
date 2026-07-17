@@ -33,7 +33,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.description}
           </p>
           <div className="mt-4">
-            <PriceDisplay price={product.price} promoPrice={product.promoPrice} />
+            <PriceDisplay price={product.price} promoPrice={product.promoPrice} compact />
           </div>
         </div>
       </Card>
