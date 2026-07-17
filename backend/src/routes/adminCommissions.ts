@@ -22,6 +22,7 @@ adminCommissionRoutes.get('/', async (req, res) => {
       member: { select: { fullName: true, email: true } },
       product: { select: { name: true } },
       referral: { select: { referred: { select: { fullName: true } } } },
+      purchase: { select: { customerName: true } },
     },
   });
   res.json(commissions);

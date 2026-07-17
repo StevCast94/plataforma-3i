@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
-import { requireAdmin, type AuthedRequest } from '../middleware/auth';
+import { requireAdmin, requireSuperadmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
 import { notify } from '../services/notifications';
 import { upgradeToElite } from '../services/tierService';
+import { deleteMemberCompletely } from '../services/memberDeletion';
 
 export const adminMemberRoutes = Router();
 adminMemberRoutes.use(requireAdmin);
@@ -124,6 +125,36 @@ adminMemberRoutes.put('/:id/status', async (req: AuthedRequest, res) => {
   } catch (err) {
     console.error('PUT /api/admin/members/:id/status', err);
     res.status(400).json({ error: 'Error al cambiar estado' });
+  }
+});
+
+// DELETE /api/admin/members/:id — eliminar COMPLETAMENTE (solo superadmin).
+// Uso: corregir un registro mal hecho en pruebas, para que la persona pueda
+// volver a registrarse desde el link de su referidor correcto. Bloqueado si
+// tiene comisiones ya pagadas/liquidadas (usar Suspender en ese caso).
+adminMemberRoutes.delete('/:id', requireSuperadmin, async (req: AuthedRequest, res) => {
+  try {
+    const member = await prisma.referralMember.findUnique({
+      where: { id: req.params.id },
+      select: { fullName: true, email: true },
+    });
+    if (!member) {
+      res.status(404).json({ error: 'Miembro no encontrado' });
+      return;
+    }
+    const result = await deleteMemberCompletely(req.params.id);
+    if (!result.deleted) {
+      res.status(409).json({ error: result.reason });
+      return;
+    }
+    await audit(req.staff?.staffId, 'delete', 'member', req.params.id, {
+      fullName: member.fullName,
+      email: member.email,
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('DELETE /api/admin/members/:id', err);
+    res.status(400).json({ error: 'Error al eliminar el miembro' });
   }
 });
 

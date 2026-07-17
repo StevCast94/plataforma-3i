@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../prisma';
 import { authMember, signMemberToken, type MemberRequest } from '../middleware/authMember';
 import { generateReferralCode, PAYOUT_METHODS } from '../lib/referralRules';
-import { attributeReferral } from '../services/referralTracking';
+import { attributeReferral, reconcileClaimedPurchases } from '../services/referralTracking';
 import { ascendByPurchase, checkReferralAscension } from '../services/ascendService';
 import { hasTravelAccess } from '../travel/membershipAccess';
 import { refFromRequest } from './referral';
@@ -130,6 +130,9 @@ memberRoutes.post('/register', async (req, res) => {
             tx,
           );
         }
+        // Vincular compras que ya se hayan confirmado mientras el socio estaba
+        // sin reclamar (pre-registro) — mismo email, nunca se infiere de otra forma.
+        await reconcileClaimedPurchases(claimed.id, claimed.email, tx);
         return claimed;
       });
       const token = signMemberToken(member.id, member.email);
@@ -184,6 +187,9 @@ memberRoutes.post('/register', async (req, res) => {
           tx,
         );
       }
+      // Vincular compras hechas por email antes de existir cuenta propia
+      // (ej. compra manual del admin sin pre-registro previo).
+      await reconcileClaimedPurchases(created.id, created.email, tx);
 
       return created;
     });

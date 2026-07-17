@@ -5,13 +5,14 @@ import { useNotifications } from '@/hooks/useNotifications';
 
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
-  const { data, loading } = useNotifications();
+  const { data, loading, reload } = useNotifications();
   const items = data?.items ?? [];
   const unread = data?.unread ?? 0;
 
   async function markAll() {
     try {
       await api.put('/notifications/read-all');
+      reload();
     } catch {
       /* noop */
     }

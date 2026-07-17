@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProducts } from '@/hooks/useProducts';
 import { whatsappShareUrl } from '@/lib/referral';
 import { ReferralPerks } from '@/components/shared/ReferralPerks';
+import { useSectionContent } from '@/hooks/useSiteContent';
 
 interface LinkInfo {
   code: string;
@@ -16,7 +17,9 @@ interface LinkInfo {
   conversions: number;
 }
 
-const WHATSAPP_TEMPLATES = [
+// Valores por defecto — se usan solo si el admin aún no configuró
+// "referral_templates" en Configuración > Contenido.
+const DEFAULT_WHATSAPP_TEMPLATES = [
   '¡Hola! Te invito al Club 3i 🌍 Viaja con hasta 70% de descuento en hoteles. Regístrate con mi enlace:',
   '¿Sabías que puedes invertir en propiedades desde $5,000? Te cuento cómo con Grupo 3i:',
   'Estoy ganando ingresos refiriendo al Club 3i. Únete a mi equipo aquí:',
@@ -27,9 +30,17 @@ export default function ToolsPage() {
   const { member } = useAuth();
   const { toast } = useToast();
   const { data: products } = useProducts();
+  const { data: templateContent } = useSectionContent('referral_templates');
   const [info, setInfo] = useState<LinkInfo | null>(null);
   const [qr, setQr] = useState<string>('');
   const [sharePath, setSharePath] = useState('/');
+
+  const whatsappTemplates =
+    templateContent && Object.keys(templateContent).length > 0
+      ? Object.keys(templateContent)
+          .sort()
+          .map((k) => templateContent[k])
+      : DEFAULT_WHATSAPP_TEMPLATES;
 
   useEffect(() => {
     if (!member) return;
@@ -184,7 +195,7 @@ export default function ToolsPage() {
       <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
         <h2 className="text-xl text-primary">Plantillas de WhatsApp</h2>
         <div className="mt-4 space-y-3">
-          {WHATSAPP_TEMPLATES.map((t, i) => (
+          {whatsappTemplates.map((t, i) => (
             <div key={i} className="flex items-start gap-3 rounded-xl bg-light p-4">
               <p className="flex-1 text-sm text-primary">
                 {t} <span className="text-accent">{fullUrl}</span>

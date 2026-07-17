@@ -47,6 +47,7 @@ export interface AdminCommission {
   member: { fullName: string; email: string };
   product?: { name: string } | null;
   referral?: { referred: { fullName: string } } | null;
+  purchase?: { customerName: string } | null;
 }
 
 export interface StaffUser {

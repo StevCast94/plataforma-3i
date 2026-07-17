@@ -81,6 +81,29 @@ const siteContent: { section: string; key: string; value: string }[] = [
     value: 'Inversión inmobiliaria inteligente en la costa ecuatoriana.',
   },
   { section: 'footer', key: 'copyright', value: '© 2026 Grupo 3i. Todos los derechos reservados.' },
+  // Plantillas de WhatsApp de "Herramientas" (oficina del socio) — editables
+  // desde Admin > Configuración > Contenido. ToolsPage.tsx las consume vía
+  // useSectionContent('referral_templates'); si no existen usa su fallback.
+  {
+    section: 'referral_templates',
+    key: 'template_1',
+    value: '¡Hola! Te invito al Club 3i 🌍 Viaja con hasta 70% de descuento en hoteles. Regístrate con mi enlace:',
+  },
+  {
+    section: 'referral_templates',
+    key: 'template_2',
+    value: '¿Sabías que puedes invertir en propiedades desde $5,000? Te cuento cómo con Grupo 3i:',
+  },
+  {
+    section: 'referral_templates',
+    key: 'template_3',
+    value: 'Estoy ganando ingresos refiriendo al Club 3i. Únete a mi equipo aquí:',
+  },
+  {
+    section: 'referral_templates',
+    key: 'template_4',
+    value: '🎁 Compra tu propiedad o fracción con Grupo 3i por mi enlace y te llevas GRATIS la membresía del Club de Viajes:',
+  },
 ];
 
 // ============ PROYECTOS ============

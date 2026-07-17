@@ -172,11 +172,13 @@ export interface Commission {
   rate: number;
   type: 'percentage' | 'fixed';
   status: CommissionStatus;
+  level: number;
   holdUntil?: string | null;
   paidAt?: string | null;
   createdAt: string;
   product?: { name: string; type: ProductType } | null;
   referral?: { level: number; referred: { fullName: string } } | null;
+  purchase?: { customerName: string } | null;
 }
 
 export interface CommissionSummary {

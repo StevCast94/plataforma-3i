@@ -20,6 +20,9 @@ commissionRoutes.get('/', authMember, async (req: MemberRequest, res) => {
       referral: {
         select: { level: true, referred: { select: { fullName: true } } },
       },
+      // Respaldo para mostrar nombre/nivel cuando la comisión aún no está
+      // vinculada a una fila Referral (ver reconcileClaimedPurchases).
+      purchase: { select: { customerName: true } },
     },
   });
   res.json(commissions);

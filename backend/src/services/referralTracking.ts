@@ -212,3 +212,80 @@ export async function processReferredPurchase(
 
   return { commissionsCreated: created };
 }
+
+/**
+ * Reconcilia compras YA CONFIRMADAS antes de que el socio existiera o reclamara
+ * su cuenta (caso típico: alguien pide info/compra como invitado → queda
+ * pre-registrado sin contraseña → el staff confirma la venta antes de que la
+ * persona reclame su cuenta). `confirmPurchase` solo intenta vincular la
+ * comisión a una fila `Referral` UNA vez, al confirmar; si esa fila todavía no
+ * existía, la comisión queda huérfana (referralId null) para siempre.
+ *
+ * Se invoca justo después de `attributeReferral` (mismo email = mismo socio,
+ * el vínculo NUNCA se infiere por otra vía). Para cada comisión huérfana de una
+ * compra confirmada con este email, busca la fila Referral que `attributeReferral`
+ * acaba de crear (mismo referrerId + nivel) y, si coincide, la vincula y marca
+ * `firstPurchaseAt`/`firstRealEstateAt` con la fecha real de la compra. Si el
+ * código usado en la compra no coincide con la cadena real del socio, no fuerza
+ * ningún vínculo (evita atribuciones incorrectas).
+ */
+export async function reconcileClaimedPurchases(
+  newMemberId: string,
+  email: string,
+  db: Db = prisma,
+): Promise<{ linked: number }> {
+  const purchases = await db.purchase.findMany({
+    where: {
+      customerEmail: email.toLowerCase().trim(),
+      status: { in: ['confirmed', 'completed'] },
+    },
+    select: {
+      id: true,
+      confirmedAt: true,
+      createdAt: true,
+      product: { select: { type: true } },
+    },
+  });
+  if (purchases.length === 0) return { linked: 0 };
+
+  let linked = 0;
+  const ascensionCandidates = new Set<string>();
+
+  for (const purchase of purchases) {
+    const orphans = await db.commission.findMany({
+      where: { purchaseId: purchase.id, referralId: null },
+      select: { id: true, memberId: true, level: true },
+    });
+    if (orphans.length === 0) continue;
+
+    const isRealEstate = purchase.product.type !== 'TRAVEL_MEMBERSHIP';
+    const purchaseDate = purchase.confirmedAt ?? purchase.createdAt;
+
+    for (const c of orphans) {
+      const referral = await db.referral.findFirst({
+        where: { referrerId: c.memberId, referredId: newMemberId, level: c.level },
+        select: { id: true, firstPurchaseAt: true, firstRealEstateAt: true },
+      });
+      if (!referral) continue; // el código usado en la compra no coincide con la cadena real: no forzar
+
+      await db.commission.update({ where: { id: c.id }, data: { referralId: referral.id } });
+      await db.referral.update({
+        where: { id: referral.id },
+        data: {
+          status: 'active',
+          ...(referral.firstPurchaseAt ? {} : { firstPurchaseAt: purchaseDate }),
+          ...(isRealEstate && !referral.firstRealEstateAt ? { firstRealEstateAt: purchaseDate } : {}),
+        },
+      });
+      linked++;
+      if (c.level === 1) ascensionCandidates.add(c.memberId);
+    }
+  }
+
+  // Re-evaluar ascenso de los referidores de nivel 1 afectados (idempotente).
+  for (const referrerId of ascensionCandidates) {
+    await checkReferralAscension(referrerId, db);
+  }
+
+  return { linked };
+}

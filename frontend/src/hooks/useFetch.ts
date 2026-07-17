@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface State<T> {
   data: T | null;
@@ -7,12 +7,16 @@ interface State<T> {
 }
 
 /** Hook genérico para cargar datos del API una vez al montar (o cuando cambie deps). */
-export function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[] = []): State<T> {
+export function useFetch<T>(
+  fetcher: () => Promise<T>,
+  deps: unknown[] = [],
+): State<T> & { reload: () => void } {
   const [state, setState] = useState<State<T>>({
     data: null,
     loading: true,
     error: null,
   });
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,7 +35,9 @@ export function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[] = []): St
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  }, [...deps, tick]);
 
-  return state;
+  const reload = useCallback(() => setTick((t) => t + 1), []);
+
+  return { ...state, reload };
 }

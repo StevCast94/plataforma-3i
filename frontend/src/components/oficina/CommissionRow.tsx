@@ -19,12 +19,12 @@ export function CommissionRow({
         {new Date(commission.createdAt).toLocaleDateString('es-EC')}
       </td>
       <td className="px-4 py-3 text-sm text-primary">
-        {commission.referral?.referred.fullName ?? '—'}
+        {commission.referral?.referred.fullName ?? commission.purchase?.customerName ?? '—'}
       </td>
       <td className="px-4 py-3 text-sm text-brand-gray">
         {commission.product?.name ?? '—'}
       </td>
-      <td className="px-4 py-3 text-sm">Nivel {commission.referral?.level ?? '—'}</td>
+      <td className="px-4 py-3 text-sm">Nivel {commission.level}</td>
       <td className="px-4 py-3 text-sm font-semibold text-primary">
         {formatCurrency(commission.amount)}
       </td>

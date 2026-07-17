@@ -107,9 +107,12 @@ export default function CommissionsPage() {
                 label="Tipo / Tasa"
                 value={selected.type === 'fixed' ? 'Fijo' : `${(selected.rate * 100).toFixed(0)}%`}
               />
-              <Detail label="Referido" value={selected.referral?.referred.fullName ?? '—'} />
+              <Detail
+                label="Referido"
+                value={selected.referral?.referred.fullName ?? selected.purchase?.customerName ?? '—'}
+              />
               <Detail label="Producto" value={selected.product?.name ?? '—'} />
-              <Detail label="Nivel" value={`Nivel ${selected.referral?.level ?? '—'}`} />
+              <Detail label="Nivel" value={`Nivel ${selected.level}`} />
               <Detail
                 label="Disponible"
                 value={selected.holdUntil ? new Date(selected.holdUntil).toLocaleDateString('es-EC') : '—'}

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { ConfirmModal } from '@/components/admin/ConfirmModal';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { formatCurrency } from '@/lib/utils';
 import { statusLabel } from '@/lib/referral';
 import { COMMISSION_BADGE } from '@/lib/referral';
@@ -34,10 +36,12 @@ export function AdminMemberDetail({
   onChanged: () => void;
 }) {
   const { toast } = useToast();
+  const { isSuperadmin } = useAdminAuth();
   const { data, loading, reload } = useAdminGet<MemberDetail>(
     memberId ? `/admin/members/${memberId}` : null,
   );
   const [busy, setBusy] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   async function setKyc(approve: boolean) {
     if (!memberId) return;
@@ -86,7 +90,24 @@ export function AdminMemberDetail({
     }
   }
 
+  async function deleteMember() {
+    if (!memberId) return;
+    setBusy(true);
+    try {
+      await adminApi.del(`/admin/members/${memberId}`);
+      toast('Miembro eliminado. Ya puede volver a registrarse con el mismo email.', 'success');
+      setConfirmingDelete(false);
+      onChanged();
+      onClose();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
+    <>
     <Modal open={!!memberId} onClose={onClose} title={data?.fullName ?? 'Miembro'}>
       {loading && <p className="text-brand-gray">Cargando…</p>}
       {data && (
@@ -183,10 +204,44 @@ export function AdminMemberDetail({
                 Reactivar
               </Button>
             )}
+            {isSuperadmin && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="ml-auto text-red-600"
+                onClick={() => setConfirmingDelete(true)}
+                disabled={busy}
+              >
+                🗑️ Eliminar completamente
+              </Button>
+            )}
           </div>
         </div>
       )}
     </Modal>
+
+    <ConfirmModal
+      open={confirmingDelete}
+      title="Eliminar miembro completamente"
+      message={
+        <>
+          Esto borra <strong>permanentemente</strong> la cuenta de{' '}
+          <strong>{data?.fullName}</strong> ({data?.email}) y todos sus referidos, links,
+          notificaciones y comisiones propias pendientes. Sus ventas ya confirmadas se
+          conservan (sin atribución). Su email quedará libre para volver a registrarse.
+          <br />
+          <br />
+          Se bloqueará si tiene comisiones ya <strong>pagadas o liquidadas</strong> — en ese
+          caso usa "Suspender" en su lugar.
+        </>
+      }
+      confirmLabel="Eliminar definitivamente"
+      danger
+      loading={busy}
+      onConfirm={deleteMember}
+      onClose={() => setConfirmingDelete(false)}
+    />
+    </>
   );
 }
 

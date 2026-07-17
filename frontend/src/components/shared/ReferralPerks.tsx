@@ -1,4 +1,4 @@
-import { IconMedallion, IconPlane } from '@/components/icons/TravelIcons';
+import { IconMedallion, IconPlane, IconSparkle } from '@/components/icons/TravelIcons';
 
 // ============================================================
 // Copy de marketing del programa de referidos (doble incentivo).
@@ -30,7 +30,9 @@ export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
   return (
     <div className="rounded-2xl bg-light p-5 ring-1 ring-secondary/30">
       <div className="flex items-center gap-2">
-        <span className="text-secondary"><IconMedallion className="h-7 w-7" /></span>
+        <IconMedallion className="h-7 w-7">
+          <IconSparkle className="h-4 w-4" />
+        </IconMedallion>
         <h3 className="font-serif text-lg font-bold text-primary">Doble incentivo</h3>
       </div>
       <ul className="mt-3 space-y-2 text-sm text-primary/80">

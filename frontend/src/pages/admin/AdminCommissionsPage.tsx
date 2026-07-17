@@ -38,7 +38,7 @@ export default function AdminCommissionsPage() {
 
   const cols: Column<AdminCommission>[] = [
     { header: 'Miembro', cell: (c) => <span className="text-primary">{c.member.fullName}</span> },
-    { header: 'Referido', cell: (c) => c.referral?.referred.fullName ?? '—' },
+    { header: 'Referido', cell: (c) => c.referral?.referred.fullName ?? c.purchase?.customerName ?? '—' },
     { header: 'Producto', cell: (c) => c.product?.name ?? '—' },
     { header: 'Nivel', cell: (c) => `N${c.level}` },
     { header: 'Monto', cell: (c) => <span className="font-semibold">{formatCurrency(c.amount)}</span> },
