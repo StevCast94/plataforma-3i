@@ -110,8 +110,8 @@ export default function ProjectDetailPage() {
       {/* 2. FEATURES GRID */}
       <FeatureGrid features={project.features} />
 
-      {/* 3. GALERÍA */}
-      {gallery.length > 0 && (
+      {/* 3. GALERÍA — omitida cuando el proyecto tiene Brochure Digital propio (evita duplicado) */}
+      {gallery.length > 0 && project.slug !== 'ibiza-condohotel' && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <h2 className="mb-8 text-center text-3xl font-bold text-primary sm:text-4xl">
             Galería

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import {
   FileText,
@@ -11,12 +11,14 @@ import {
   ShieldCheck,
   Wallet,
   Landmark,
+  Waves,
+  Gift,
   type LucideIcon,
 } from 'lucide-react';
 import { cld } from '@/lib/cloudinary';
 import { Button } from '@/components/ui/Button';
 import { AmenityIcon } from '@/lib/amenityIcons';
-import { ImageGallery } from './ImageGallery';
+import { Lightbox } from './Lightbox';
 import type { Project } from '@shared/types';
 
 // ============================================================
@@ -37,6 +39,24 @@ const KEY_FACTS: { icon: LucideIcon; label: string; value: string }[] = [
   { icon: Users, label: 'Capacidad', value: '6 personas · 71.66 m²' },
 ];
 
+const PILLARS: { icon: LucideIcon; title: string; body: string }[] = [
+  {
+    icon: Waves,
+    title: 'Tu playa, todo el año',
+    body: 'Una semana de uso vacacional garantizada de por vida frente al mar, en un condohotel de lujo pensado para disfrutar en familia.',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Plusvalía real',
+    body: 'Hasta +65% de valorización proyectada en 5 años, en una de las zonas costeras de mayor crecimiento turístico del Ecuador.',
+  },
+  {
+    icon: Gift,
+    title: 'Patrimonio heredable',
+    body: 'Una fracción a tu nombre, con acciones preferentes transferibles: un legado real que puedes dejar a tus hijos.',
+  },
+];
+
 const PAYMENT_PLAN = [
   { label: 'Pago inicial (separación)', value: 'USD $500' },
   { label: '23 cuotas mensuales', value: 'USD $500 c/u' },
@@ -52,6 +72,13 @@ const VALUE_PROJECTION = [
   { year: 'Año 5', label: 'Estimado conservador', value: 18500, note: '+40% a +65% plusvalía' },
 ];
 const CHART = [12000, 13200, 13800, 14400, 16000, 18500];
+
+const ROUTE_STATS = [
+  { v: '2h 30m', l: 'desde Guayaquil' },
+  { v: '45 min', l: 'desde Salinas' },
+  { v: '~80 m', l: 'a la playa' },
+  { v: '1h', l: 'a Montañita' },
+];
 
 const AMENITIES = [
   'Piscinas',
@@ -129,11 +156,183 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
   );
 }
 
-function SectionTitle({ children }: { children: ReactNode }) {
+function SectionTitle({ children, eyebrow }: { children: ReactNode; eyebrow?: string }) {
   return (
     <div className="mb-8 text-center">
       <span className="mx-auto block h-px w-12 bg-secondary" />
-      <h3 className="mt-4 text-2xl font-bold text-primary sm:text-3xl">{children}</h3>
+      {eyebrow && (
+        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+          {eyebrow}
+        </p>
+      )}
+      <h3 className="mt-2 text-2xl font-bold text-primary sm:text-3xl">{children}</h3>
+    </div>
+  );
+}
+
+/** Mosaico asimétrico de fotos: 1 grande + resto en grilla, abre lightbox. */
+function MosaicGallery({
+  images,
+  alt,
+  onOpen,
+}: {
+  images: string[];
+  alt: string;
+  onOpen: (index: number) => void;
+}) {
+  if (images.length === 0) return null;
+  const shown = images.slice(0, 7);
+  const extra = images.length - shown.length;
+
+  return (
+    <div className="grid h-[420px] grid-cols-4 grid-rows-2 gap-3 sm:h-[480px]">
+      {shown.map((img, i) => (
+        <button
+          key={img + i}
+          onClick={() => onOpen(i)}
+          aria-label={`Ampliar foto ${i + 1}`}
+          className={`group relative cursor-zoom-in overflow-hidden rounded-2xl ring-1 ring-black/5 ${
+            i === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'
+          } ${i >= 5 ? 'hidden sm:block' : ''}`}
+        >
+          <img
+            src={cld(img, { width: i === 0 ? 1000 : 500 })}
+            alt={`${alt} ${i + 1}`}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          {i === shown.length - 1 && extra > 0 && (
+            <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-lg font-semibold text-white">
+              +{extra}
+            </span>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Gráfico de área animado (SVG puro + framer-motion, sin librerías externas). */
+function GrowthChart({ data, years }: { data: number[]; years: string[] }) {
+  const w = 600;
+  const h = 220;
+  const padX = 16;
+  const padY = 24;
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const stepX = (w - padX * 2) / (data.length - 1);
+  const points = data.map((v, i) => {
+    const x = padX + i * stepX;
+    const y = h - padY - ((v - min) / range) * (h - padY * 2);
+    return [x, y] as const;
+  });
+  const linePath = points.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(' ');
+  const areaPath = `${linePath} L${points[points.length - 1][0]},${h - padY} L${points[0][0]},${h - padY} Z`;
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="h-auto w-full overflow-visible">
+      <defs>
+        <linearGradient id="brochureGrowthFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-secondary)" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="var(--color-secondary)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <motion.path
+        d={areaPath}
+        fill="url(#brochureGrowthFill)"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      />
+      <motion.path
+        d={linePath}
+        fill="none"
+        stroke="var(--color-accent)"
+        strokeWidth={3}
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.4, ease: 'easeOut' }}
+      />
+      {points.map((p, i) => (
+        <motion.g
+          key={i}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 + i * 0.15 }}
+        >
+          <circle cx={p[0]} cy={p[1]} r={4.5} fill="var(--color-primary)" stroke="white" strokeWidth={1.5} />
+          <text x={p[0]} y={p[1] - 12} textAnchor="middle" fontSize="11" fill="var(--color-primary)" fontWeight={700}>
+            {fmt(data[i])}
+          </text>
+          <text x={p[0]} y={h - 4} textAnchor="middle" fontSize="10" fill="var(--color-brand-gray, #8a8378)">
+            {years[i]}
+          </text>
+        </motion.g>
+      ))}
+    </svg>
+  );
+}
+
+/** Mapa animado: costa estilizada + ruta punteada + marcador con pulso en Manglaralto. */
+function LocationMap() {
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-primary p-6 sm:p-10">
+      <svg viewBox="0 0 400 300" className="mx-auto w-full max-w-md" aria-hidden="true">
+        <path
+          d="M70,15 C35,70 95,130 55,190 C30,235 75,270 100,295"
+          fill="none"
+          stroke="white"
+          strokeOpacity="0.15"
+          strokeWidth="7"
+          strokeLinecap="round"
+        />
+        <motion.path
+          d="M235,55 C185,85 130,140 92,185"
+          fill="none"
+          stroke="var(--color-secondary)"
+          strokeWidth="2.5"
+          strokeDasharray="7 7"
+          initial={{ strokeDashoffset: 120, opacity: 0.3 }}
+          whileInView={{ strokeDashoffset: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 2, ease: 'linear' }}
+        />
+        <circle cx="235" cy="55" r="5" fill="white" />
+        <text x="245" y="59" fill="white" fontSize="12">
+          Guayaquil
+        </text>
+        <circle cx="92" cy="185" r="6" fill="var(--color-secondary)" />
+        <motion.circle
+          cx="92"
+          cy="185"
+          r="6"
+          fill="none"
+          stroke="var(--color-secondary)"
+          strokeWidth="2"
+          animate={{ r: [6, 20], opacity: [0.9, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+        />
+        <text x="102" y="182" fill="white" fontSize="13" fontWeight={700}>
+          Manglaralto
+        </text>
+        <text x="102" y="198" fill="white" fillOpacity={0.7} fontSize="10">
+          Ibiza Condohotel
+        </text>
+      </svg>
+
+      <div className="mt-6 grid grid-cols-2 gap-4 text-center text-white sm:grid-cols-4">
+        {ROUTE_STATS.map((s) => (
+          <div key={s.l}>
+            <p className="font-serif text-xl font-bold text-secondary">{s.v}</p>
+            <p className="text-xs text-white/70">{s.l}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -146,7 +345,9 @@ interface BrochureDigitalProps {
 export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps) {
   const cover = project.coverImage ?? '';
   const gallery = project.images?.length ? project.images : cover ? [cover] : [];
-  const maxChart = Math.max(...CHART);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const sideImage = gallery[Math.min(2, gallery.length - 1)];
+  const bannerImage = gallery[Math.min(4, gallery.length - 1)];
 
   return (
     <section className="bg-white">
@@ -181,7 +382,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
               </p>
               <h2 className="mt-4 font-serif text-4xl font-bold sm:text-6xl">Ibiza Condohotel</h2>
               <p className="mx-auto mt-4 max-w-2xl text-lg text-white/85">
-                Oportunidad de Inversión Premium en la Costa Ecuatoriana
+                Disfruta tu playa, gana con la plusvalía y hereda tu patrimonio
               </p>
               <p className="mt-2 text-sm text-white/70">
                 Propiedad Fraccionada de Lujo · Manglaralto, Santa Elena, Ecuador
@@ -189,6 +390,21 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             </div>
           </div>
         </Reveal>
+
+        {/* PILARES DE VALOR */}
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {PILLARS.map((p, i) => (
+            <Reveal key={p.title} delay={i * 0.06}>
+              <div className="h-full rounded-2xl bg-primary p-6 text-white">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-secondary ring-1 ring-white/20">
+                  <p.icon className="h-5 w-5" strokeWidth={1.6} />
+                </span>
+                <h4 className="mt-3 font-serif text-lg">{p.title}</h4>
+                <p className="mt-1.5 text-sm leading-relaxed text-white/70">{p.body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
 
         {/* DATOS CLAVE */}
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -207,33 +423,72 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           ))}
         </div>
 
+        {/* GALERÍA CINEMATOGRÁFICA */}
+        {gallery.length > 0 && (
+          <div className="mt-16">
+            <Reveal>
+              <SectionTitle eyebrow="Recorrido visual">Vive Ibiza Condohotel</SectionTitle>
+            </Reveal>
+            <Reveal>
+              <MosaicGallery images={gallery} alt={project.name} onOpen={setLightboxIndex} />
+            </Reveal>
+          </div>
+        )}
+
         {/* VISTA GENERAL */}
         <div className="mt-16">
           <Reveal>
             <SectionTitle>Vista General</SectionTitle>
           </Reveal>
-          <Reveal>
-            <p className="mx-auto max-w-3xl text-center leading-relaxed text-primary/80">
-              Ibiza Condohotel nace como el <strong>primer desarrollo de propiedad fraccionada de
-              lujo</strong> en la costa ecuatoriana. Adquieres una fracción de un inmueble valorado en
-              más de <strong>$200,000</strong> por una fracción de su costo, con derecho a uso
-              vacacional perpetuo más ingresos por un programa de renting administrado.
-            </p>
-          </Reveal>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              { big: '430,000', small: 'visitantes en el último feriado' },
-              { big: '93.84%', small: 'ocupación hotelera en Santa Elena' },
-              { big: '+12.85%', small: 'crecimiento del turismo' },
-            ].map((s, i) => (
-              <Reveal key={s.small} delay={i * 0.05}>
-                <div className="rounded-2xl bg-primary p-6 text-center text-white">
-                  <p className="font-serif text-3xl font-bold text-secondary">{s.big}</p>
-                  <p className="mt-1 text-sm text-white/70">{s.small}</p>
+          <div className="grid gap-8 lg:grid-cols-5 lg:items-center">
+            <Reveal delay={0.05}>
+              <div className="lg:col-span-3">
+                <p className="leading-relaxed text-primary/80">
+                  Ibiza Condohotel nace como el <strong>primer desarrollo de propiedad fraccionada de
+                  lujo</strong> en la costa ecuatoriana. Adquieres una fracción de un inmueble valorado en
+                  más de <strong>$200,000</strong> por una fracción de su costo, con derecho a uso
+                  vacacional perpetuo, transferible a tu familia, más ingresos por un programa de renting
+                  administrado.
+                </p>
+                <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                  {[
+                    { big: '430,000', small: 'visitantes en el último feriado' },
+                    { big: '93.84%', small: 'ocupación hotelera en Santa Elena' },
+                    { big: '+12.85%', small: 'crecimiento del turismo' },
+                  ].map((s) => (
+                    <div key={s.small} className="rounded-2xl bg-primary p-5 text-center text-white">
+                      <p className="font-serif text-2xl font-bold text-secondary">{s.big}</p>
+                      <p className="mt-1 text-xs text-white/70">{s.small}</p>
+                    </div>
+                  ))}
                 </div>
+              </div>
+            </Reveal>
+            {sideImage && (
+              <Reveal delay={0.1}>
+                <button
+                  onClick={() => setLightboxIndex(gallery.indexOf(sideImage))}
+                  className="group relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-2xl lg:col-span-2"
+                >
+                  <img
+                    src={cld(sideImage, { width: 700 })}
+                    alt={`${project.name} vista`}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </button>
               </Reveal>
-            ))}
+            )}
           </div>
+        </div>
+
+        {/* UBICACIÓN */}
+        <div className="mt-16">
+          <Reveal>
+            <SectionTitle eyebrow="A pasos del mar">Ubicación privilegiada</SectionTitle>
+          </Reveal>
+          <Reveal>
+            <LocationMap />
+          </Reveal>
         </div>
 
         {/* PLAN DE INVERSIÓN */}
@@ -257,7 +512,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
               </div>
             </Reveal>
 
-            {/* Proyección de valor + chart */}
+            {/* Proyección de valor + gráfico animado */}
             <Reveal delay={0.1}>
               <div className="rounded-2xl bg-light p-6">
                 <h4 className="mb-4 font-serif text-xl text-primary">Proyección de valor</h4>
@@ -275,23 +530,11 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
                   ))}
                 </div>
 
-                {/* Mini gráfico de barras (CSS puro) */}
-                <div className="mt-5">
-                  <p className="mb-2 text-xs uppercase tracking-wider text-brand-gray">
+                <div className="mt-6">
+                  <p className="mb-1 text-xs uppercase tracking-wider text-brand-gray">
                     Crecimiento estimado (Año 0 → 5)
                   </p>
-                  <div className="flex h-28 items-end gap-2">
-                    {CHART.map((v, i) => (
-                      <div key={i} className="flex flex-1 flex-col items-center gap-1">
-                        <div
-                          className="w-full rounded-t bg-gradient-to-t from-secondary to-accent"
-                          style={{ height: `${(v / maxChart) * 100}%` }}
-                          title={fmt(v)}
-                        />
-                        <span className="text-[10px] text-brand-gray">A{i}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <GrowthChart data={CHART} years={['A0', 'A1', 'A2', 'A3', 'A4', 'A5']} />
                 </div>
               </div>
             </Reveal>
@@ -331,18 +574,6 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           </div>
         </div>
 
-        {/* GALERÍA PREMIUM */}
-        {gallery.length > 0 && (
-          <div className="mt-16">
-            <Reveal>
-              <SectionTitle>Galería Premium</SectionTitle>
-            </Reveal>
-            <Reveal>
-              <ImageGallery images={gallery} alt="Ibiza Condohotel" />
-            </Reveal>
-          </div>
-        )}
-
         {/* ¿POR QUÉ INVERTIR? */}
         <div className="mt-16">
           <Reveal>
@@ -374,6 +605,32 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             </div>
           </Reveal>
         </div>
+
+        {/* BANNER EMOTIVO: disfruta hoy, hereda mañana */}
+        {bannerImage && (
+          <Reveal>
+            <div className="relative isolate mt-16 overflow-hidden rounded-3xl">
+              <img
+                src={cld(bannerImage, { width: 1400 })}
+                alt={`${project.name} playa`}
+                className="absolute inset-0 -z-10 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/90 via-primary/60 to-transparent" />
+              <div className="max-w-md px-6 py-16 text-white sm:px-12">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
+                  Más que una inversión
+                </p>
+                <h3 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">
+                  Disfruta hoy. Hereda mañana.
+                </h3>
+                <p className="mt-3 text-white/80">
+                  Tu fracción es un lugar real donde tu familia vive experiencias frente al mar, y un
+                  activo real que crece de valor y se transmite de generación en generación.
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        )}
 
         {/* TESTIMONIOS */}
         <div className="mt-16">
@@ -434,6 +691,14 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           </div>
         </Reveal>
       </div>
+
+      <Lightbox
+        images={gallery}
+        index={lightboxIndex}
+        alt={project.name}
+        onClose={() => setLightboxIndex(null)}
+        onNavigate={setLightboxIndex}
+      />
     </section>
   );
 }
