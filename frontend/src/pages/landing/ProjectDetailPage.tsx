@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Building2 } from 'lucide-react';
 import { useProject, useProjects } from '@/hooks/useProjects';
@@ -21,6 +21,7 @@ import { formatCurrency } from '@/lib/utils';
 
 export default function ProjectDetailPage() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { data: project, loading, error } = useProject(slug);
   const { data: allProjects } = useProjects();
   const [open, setOpen] = useState(false);
@@ -48,6 +49,14 @@ export default function ProjectDetailPage() {
   const related = (allProjects ?? [])
     .filter((p) => p.id !== project.id && p.featured)
     .slice(0, 2);
+
+  // Producto de tienda vinculado a este proyecto (ej. la fracción de Ibiza) — si existe,
+  // "Quiero invertir" lleva directo a solicitar la compra en vez de abrir el formulario genérico.
+  const investProduct = project.products?.[0];
+  const goInvest = () => {
+    if (investProduct) navigate(`/tienda/${investProduct.slug}`);
+    else setOpen(true);
+  };
 
   return (
     <>
@@ -99,7 +108,7 @@ export default function ProjectDetailPage() {
               </p>
             )}
             <div className="mt-8">
-              <Button size="lg" onClick={() => setOpen(true)}>
+              <Button size="lg" onClick={goInvest}>
                 Quiero invertir
               </Button>
             </div>

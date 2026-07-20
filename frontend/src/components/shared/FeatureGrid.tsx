@@ -34,7 +34,17 @@ export function FeatureGrid({ features }: { features?: ProjectFeatures | null })
         )}
 
         {stats.length > 0 && (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div
+            className={`grid gap-5 ${
+              stats.length === 1
+                ? 'mx-auto max-w-xs'
+                : stats.length === 2
+                  ? 'mx-auto max-w-xl grid-cols-2'
+                  : stats.length === 3
+                    ? 'mx-auto max-w-4xl grid-cols-2 sm:grid-cols-3'
+                    : 'grid-cols-2 lg:grid-cols-4'
+            }`}
+          >
             {stats.map((s) => (
               <StatCard key={s.label} value={s.value} label={s.label} />
             ))}

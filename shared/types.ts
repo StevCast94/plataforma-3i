@@ -42,6 +42,7 @@ export interface Project {
   mapLat?: number | null;
   mapLng?: number | null;
   brochureContent?: Record<string, unknown> | null;
+  products?: Product[];
   createdAt: string;
   updatedAt: string;
 }
