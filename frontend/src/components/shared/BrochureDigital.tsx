@@ -142,10 +142,19 @@ function fmt(n: number) {
   return '$' + n.toLocaleString('en-US');
 }
 
-/** Wrapper de animación al hacer scroll. */
-function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
+/** Wrapper de animación al hacer scroll. Acepta className para que participe bien en grids del padre. */
+function Reveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   return (
     <motion.div
+      className={className}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
@@ -181,11 +190,12 @@ function MosaicGallery({
   onOpen: (index: number) => void;
 }) {
   if (images.length === 0) return null;
-  const shown = images.slice(0, 7);
+  // 1 foto grande + 4 pequeñas = 8 celdas exactas de la grilla (sin huecos).
+  const shown = images.slice(0, 5);
   const extra = images.length - shown.length;
 
   return (
-    <div className="grid h-[420px] grid-cols-4 grid-rows-2 gap-3 sm:h-[480px]">
+    <div className="grid h-[560px] grid-cols-2 grid-rows-4 gap-3 sm:h-[480px] sm:grid-cols-4 sm:grid-rows-2">
       {shown.map((img, i) => (
         <button
           key={img + i}
@@ -193,7 +203,7 @@ function MosaicGallery({
           aria-label={`Ampliar foto ${i + 1}`}
           className={`group relative cursor-zoom-in overflow-hidden rounded-2xl ring-1 ring-black/5 ${
             i === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'
-          } ${i >= 5 ? 'hidden sm:block' : ''}`}
+          }`}
         >
           <img
             src={cld(img, { width: i === 0 ? 1000 : 500 })}
@@ -278,52 +288,29 @@ function GrowthChart({ data, years }: { data: number[]; years: string[] }) {
   );
 }
 
-/** Mapa animado: costa estilizada + ruta punteada + marcador con pulso en Manglaralto. */
-function LocationMap() {
+/** Mapa satelital real (Google Maps embed, sin API key) + marcador con pulso sobre el proyecto. */
+function LocationMap({ lat, lng, label }: { lat: number; lng: number; label: string }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-primary p-6 sm:p-10">
-      <svg viewBox="0 0 400 300" className="mx-auto w-full max-w-md" aria-hidden="true">
-        <path
-          d="M70,15 C35,70 95,130 55,190 C30,235 75,270 100,295"
-          fill="none"
-          stroke="white"
-          strokeOpacity="0.15"
-          strokeWidth="7"
-          strokeLinecap="round"
+    <div className="overflow-hidden rounded-2xl bg-primary p-4 sm:p-6">
+      <div className="relative overflow-hidden rounded-xl">
+        <iframe
+          title={`Ubicación de ${label}`}
+          src={`https://www.google.com/maps?q=${lat},${lng}&t=k&z=15&output=embed`}
+          className="h-72 w-full border-0 sm:h-96"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
         />
-        <motion.path
-          d="M235,55 C185,85 130,140 92,185"
-          fill="none"
-          stroke="var(--color-secondary)"
-          strokeWidth="2.5"
-          strokeDasharray="7 7"
-          initial={{ strokeDashoffset: 120, opacity: 0.3 }}
-          whileInView={{ strokeDashoffset: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 2, ease: 'linear' }}
-        />
-        <circle cx="235" cy="55" r="5" fill="white" />
-        <text x="245" y="59" fill="white" fontSize="12">
-          Guayaquil
-        </text>
-        <circle cx="92" cy="185" r="6" fill="var(--color-secondary)" />
-        <motion.circle
-          cx="92"
-          cy="185"
-          r="6"
-          fill="none"
-          stroke="var(--color-secondary)"
-          strokeWidth="2"
-          animate={{ r: [6, 20], opacity: [0.9, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-        />
-        <text x="102" y="182" fill="white" fontSize="13" fontWeight={700}>
-          Manglaralto
-        </text>
-        <text x="102" y="198" fill="white" fillOpacity={0.7} fontSize="10">
-          Ibiza Condohotel
-        </text>
-      </svg>
+        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <span className="relative flex h-4 w-4">
+            <motion.span
+              className="absolute inline-flex h-full w-full rounded-full bg-secondary"
+              animate={{ scale: [1, 2.6], opacity: [0.8, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+            />
+            <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-secondary" />
+          </span>
+        </div>
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 text-center text-white sm:grid-cols-4">
         {ROUTE_STATS.map((s) => (
@@ -336,6 +323,10 @@ function LocationMap() {
     </div>
   );
 }
+
+/** Coordenadas de referencia de Manglaralto, Santa Elena — usadas si el proyecto no define mapLat/mapLng. */
+const DEFAULT_MAP_LAT = -1.7987;
+const DEFAULT_MAP_LNG = -80.7398;
 
 interface BrochureDigitalProps {
   project: Project;
@@ -441,34 +432,32 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             <SectionTitle>Vista General</SectionTitle>
           </Reveal>
           <div className="grid gap-8 lg:grid-cols-5 lg:items-center">
-            <Reveal delay={0.05}>
-              <div className="lg:col-span-3">
-                <p className="leading-relaxed text-primary/80">
-                  Ibiza Condohotel nace como el <strong>primer desarrollo de propiedad fraccionada de
-                  lujo</strong> en la costa ecuatoriana. Adquieres una fracción de un inmueble valorado en
-                  más de <strong>$200,000</strong> por una fracción de su costo, con derecho a uso
-                  vacacional perpetuo, transferible a tu familia, más ingresos por un programa de renting
-                  administrado.
-                </p>
-                <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                  {[
-                    { big: '430,000', small: 'visitantes en el último feriado' },
-                    { big: '93.84%', small: 'ocupación hotelera en Santa Elena' },
-                    { big: '+12.85%', small: 'crecimiento del turismo' },
-                  ].map((s) => (
-                    <div key={s.small} className="rounded-2xl bg-primary p-5 text-center text-white">
-                      <p className="font-serif text-2xl font-bold text-secondary">{s.big}</p>
-                      <p className="mt-1 text-xs text-white/70">{s.small}</p>
-                    </div>
-                  ))}
-                </div>
+            <Reveal delay={0.05} className="lg:col-span-3">
+              <p className="leading-relaxed text-primary/80">
+                Ibiza Condohotel nace como el <strong>primer desarrollo de propiedad fraccionada de
+                lujo</strong> en la costa ecuatoriana. Adquieres una fracción de un inmueble valorado en
+                más de <strong>$200,000</strong> por una fracción de su costo, con derecho a uso
+                vacacional perpetuo, transferible a tu familia, más ingresos por un programa de renting
+                administrado.
+              </p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {[
+                  { big: '430,000', small: 'visitantes en el último feriado' },
+                  { big: '93.84%', small: 'ocupación hotelera en Santa Elena' },
+                  { big: '+12.85%', small: 'crecimiento del turismo' },
+                ].map((s) => (
+                  <div key={s.small} className="rounded-2xl bg-primary p-5 text-center text-white">
+                    <p className="font-serif text-2xl font-bold text-secondary">{s.big}</p>
+                    <p className="mt-1 text-xs text-white/70">{s.small}</p>
+                  </div>
+                ))}
               </div>
             </Reveal>
             {sideImage && (
-              <Reveal delay={0.1}>
+              <Reveal delay={0.1} className="lg:col-span-2">
                 <button
                   onClick={() => setLightboxIndex(gallery.indexOf(sideImage))}
-                  className="group relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-2xl lg:col-span-2"
+                  className="group relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-2xl"
                 >
                   <img
                     src={cld(sideImage, { width: 700 })}
@@ -487,7 +476,11 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             <SectionTitle eyebrow="A pasos del mar">Ubicación privilegiada</SectionTitle>
           </Reveal>
           <Reveal>
-            <LocationMap />
+            <LocationMap
+              lat={project.mapLat ?? DEFAULT_MAP_LAT}
+              lng={project.mapLng ?? DEFAULT_MAP_LNG}
+              label={project.name}
+            />
           </Reveal>
         </div>
 

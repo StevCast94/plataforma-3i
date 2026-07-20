@@ -47,6 +47,14 @@ export function CloudinaryUpload({ value, onChange, single }: CloudinaryUploadPr
     onChange(value.filter((u) => u !== url));
   }
 
+  function move(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    if (target < 0 || target >= value.length) return;
+    const next = [...value];
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  }
+
   return (
     <div>
       <label
@@ -72,7 +80,7 @@ export function CloudinaryUpload({ value, onChange, single }: CloudinaryUploadPr
 
       {value.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-3">
-          {value.map((url) => (
+          {value.map((url, i) => (
             <div key={url} className="relative">
               <img
                 src={cld(url, { width: 160 })}
@@ -87,6 +95,33 @@ export function CloudinaryUpload({ value, onChange, single }: CloudinaryUploadPr
               >
                 ×
               </button>
+              {!single && value.length > 1 && (
+                <div className="absolute -bottom-2 left-1/2 flex -translate-x-1/2 gap-0.5 rounded-full bg-white shadow ring-1 ring-black/10">
+                  <button
+                    type="button"
+                    onClick={() => move(i, -1)}
+                    disabled={i === 0}
+                    className="flex h-5 w-5 items-center justify-center text-xs text-primary disabled:opacity-30"
+                    aria-label="Mover a la izquierda"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => move(i, 1)}
+                    disabled={i === value.length - 1}
+                    className="flex h-5 w-5 items-center justify-center text-xs text-primary disabled:opacity-30"
+                    aria-label="Mover a la derecha"
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
+              {i === 0 && !single && (
+                <span className="absolute -top-2 -left-2 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-bold text-primary">
+                  1ª
+                </span>
+              )}
             </div>
           ))}
         </div>

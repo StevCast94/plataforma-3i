@@ -111,7 +111,7 @@ export default function ProjectDetailPage() {
       <FeatureGrid features={project.features} />
 
       {/* 3. GALERÍA — omitida cuando el proyecto tiene Brochure Digital propio (evita duplicado) */}
-      {gallery.length > 0 && project.slug !== 'ibiza-condohotel' && (
+      {gallery.length > 0 && !project.showBrochure && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <h2 className="mb-8 text-center text-3xl font-bold text-primary sm:text-4xl">
             Galería
@@ -145,8 +145,8 @@ export default function ProjectDetailPage() {
         </div>
       </section>
 
-      {/* 4.5 BROCHURE DIGITAL — solo Ibiza Condohotel */}
-      {project.slug === 'ibiza-condohotel' && (
+      {/* 4.5 BROCHURE DIGITAL — proyectos con showBrochure activo desde el admin */}
+      {project.showBrochure && (
         <BrochureDigital project={project} onRequestInfo={() => setOpen(true)} />
       )}
 

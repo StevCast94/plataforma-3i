@@ -56,6 +56,9 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [priceLabel, setPriceLabel] = useState('');
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
+  const [showBrochure, setShowBrochure] = useState(false);
+  const [mapLat, setMapLat] = useState('');
+  const [mapLng, setMapLng] = useState('');
 
   useEffect(() => {
     if (!open) return;
@@ -71,6 +74,9 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setPriceLabel(project?.priceLabel ?? '');
     setActive(project?.active ?? true);
     setFeatured(project?.featured ?? false);
+    setShowBrochure(project?.showBrochure ?? false);
+    setMapLat(project?.mapLat != null ? String(project.mapLat) : '');
+    setMapLng(project?.mapLng != null ? String(project.mapLng) : '');
   }, [open, project]);
 
   async function save() {
@@ -92,6 +98,9 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       priceLabel: priceLabel || null,
       active,
       featured,
+      showBrochure,
+      mapLat: mapLat ? Number(mapLat) : null,
+      mapLng: mapLng ? Number(mapLng) : null,
     };
     try {
       if (isEdit) await adminApi.put(`/admin/projects/${project!.id}`, payload);
@@ -146,12 +155,25 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
           <Input label="Etiqueta de precio" value={priceLabel} onChange={(e) => setPriceLabel(e.target.value)} placeholder="Desde $25,000" />
         </div>
 
-        <div className="flex gap-6">
+        <div>
+          <span className="mb-1.5 block text-sm font-medium text-primary">
+            Coordenadas del mapa (para el mapa satelital del brochure)
+          </span>
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="Latitud" type="number" value={mapLat} onChange={(e) => setMapLat(e.target.value)} placeholder="-1.7987" />
+            <Input label="Longitud" type="number" value={mapLng} onChange={(e) => setMapLng(e.target.value)} placeholder="-80.7398" />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-6">
           <label className="flex cursor-pointer items-center gap-2 text-sm text-primary">
             <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Activo
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-primary">
             <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Destacado
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-primary">
+            <input type="checkbox" checked={showBrochure} onChange={(e) => setShowBrochure(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Brochure Digital premium
           </label>
         </div>
       </div>

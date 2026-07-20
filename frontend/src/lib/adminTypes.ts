@@ -101,4 +101,7 @@ export interface AdminProject {
   priceLabel?: string | null;
   active: boolean;
   featured: boolean;
+  showBrochure: boolean;
+  mapLat?: number | null;
+  mapLng?: number | null;
 }

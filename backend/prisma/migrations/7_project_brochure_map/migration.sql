@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Project" ADD COLUMN     "showBrochure" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Project" ADD COLUMN     "mapLat" DOUBLE PRECISION;
+ALTER TABLE "Project" ADD COLUMN     "mapLng" DOUBLE PRECISION;
