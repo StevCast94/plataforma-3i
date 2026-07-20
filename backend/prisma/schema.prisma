@@ -45,6 +45,7 @@ model Project {
   showBrochure Boolean  @default(false) // muestra el Brochure Digital premium en la ficha
   mapLat      Float? // coordenadas para el mapa satelital del brochure
   mapLng      Float?
+  brochureContent Json? // textos/cifras del Brochure Digital (ver frontend/src/lib/brochureContent.ts)
   products    Product[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

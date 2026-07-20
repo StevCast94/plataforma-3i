@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { CloudinaryUpload } from '@/components/admin/CloudinaryUpload';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
+import { DEFAULT_BROCHURE_CONTENT, ICON_KEYS } from '@/lib/brochureContent';
 import type { AdminProject } from '@/lib/adminTypes';
 
 const slugify = (s: string) =>
@@ -59,6 +60,8 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [showBrochure, setShowBrochure] = useState(false);
   const [mapLat, setMapLat] = useState('');
   const [mapLng, setMapLng] = useState('');
+  const [brochureJson, setBrochureJson] = useState('');
+  const [brochureJsonError, setBrochureJsonError] = useState('');
 
   useEffect(() => {
     if (!open) return;
@@ -77,12 +80,25 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setShowBrochure(project?.showBrochure ?? false);
     setMapLat(project?.mapLat != null ? String(project.mapLat) : '');
     setMapLng(project?.mapLng != null ? String(project.mapLng) : '');
+    setBrochureJson(project?.brochureContent ? JSON.stringify(project.brochureContent, null, 2) : '');
+    setBrochureJsonError('');
   }, [open, project]);
 
   async function save() {
     if (!name || !description) {
       toast('Nombre y descripción son requeridos', 'error');
       return;
+    }
+    let brochureContent: Record<string, unknown> | null = null;
+    if (showBrochure && brochureJson.trim()) {
+      try {
+        brochureContent = JSON.parse(brochureJson);
+        setBrochureJsonError('');
+      } catch {
+        setBrochureJsonError('JSON inválido — revisa comas y comillas antes de guardar.');
+        toast('El contenido del brochure tiene un error de formato JSON', 'error');
+        return;
+      }
     }
     setSaving(true);
     const payload = {
@@ -101,6 +117,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       showBrochure,
       mapLat: mapLat ? Number(mapLat) : null,
       mapLng: mapLng ? Number(mapLng) : null,
+      brochureContent,
     };
     try {
       if (isEdit) await adminApi.put(`/admin/projects/${project!.id}`, payload);
@@ -176,6 +193,38 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
             <input type="checkbox" checked={showBrochure} onChange={(e) => setShowBrochure(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Brochure Digital premium
           </label>
         </div>
+
+        {showBrochure && (
+          <div className="rounded-xl border border-black/10 p-4">
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <span className="text-sm font-medium text-primary">Contenido del Brochure Digital (JSON)</span>
+              <Button
+                size="sm"
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  setBrochureJson(JSON.stringify(DEFAULT_BROCHURE_CONTENT, null, 2));
+                  setBrochureJsonError('');
+                }}
+              >
+                Cargar plantilla de ejemplo
+              </Button>
+            </div>
+            <p className="mb-2 text-xs text-brand-gray">
+              Textos, cifras y testimonios que se muestran en la ficha del proyecto. Lo que dejes vacío se
+              completa con el contenido de ejemplo. Íconos disponibles: {ICON_KEYS.join(', ')}.
+            </p>
+            <textarea
+              value={brochureJson}
+              onChange={(e) => { setBrochureJson(e.target.value); setBrochureJsonError(''); }}
+              rows={14}
+              spellCheck={false}
+              placeholder="Pega aquí el JSON del brochure, o usa 'Cargar plantilla de ejemplo'"
+              className="w-full rounded-lg border border-black/15 px-3 py-2 font-mono text-xs"
+            />
+            {brochureJsonError && <p className="mt-1 text-xs text-red-600">{brochureJsonError}</p>}
+          </div>
+        )}
       </div>
 
       <div className="mt-6 flex justify-end gap-3">

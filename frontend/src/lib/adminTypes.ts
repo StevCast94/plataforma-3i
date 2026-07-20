@@ -104,4 +104,5 @@ export interface AdminProject {
   showBrochure: boolean;
   mapLat?: number | null;
   mapLng?: number | null;
+  brochureContent?: Record<string, unknown> | null;
 }
