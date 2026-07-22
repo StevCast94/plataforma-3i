@@ -3,9 +3,10 @@ import { Modal } from '@/components/ui/Modal';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUpload } from '@/components/admin/CloudinaryUpload';
+import { BrochureContentEditor } from '@/components/admin/BrochureContentEditor';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
-import { DEFAULT_BROCHURE_CONTENT, ICON_KEYS } from '@/lib/brochureContent';
+import type { BrochureContent } from '@/lib/brochureContent';
 import type { AdminProject } from '@/lib/adminTypes';
 
 const slugify = (s: string) =>
@@ -60,6 +61,8 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [showBrochure, setShowBrochure] = useState(false);
   const [mapLat, setMapLat] = useState('');
   const [mapLng, setMapLng] = useState('');
+  const [brochureContent, setBrochureContent] = useState<BrochureContent>({});
+  const [advancedMode, setAdvancedMode] = useState(false);
   const [brochureJson, setBrochureJson] = useState('');
   const [brochureJsonError, setBrochureJsonError] = useState('');
 
@@ -80,6 +83,8 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setShowBrochure(project?.showBrochure ?? false);
     setMapLat(project?.mapLat != null ? String(project.mapLat) : '');
     setMapLng(project?.mapLng != null ? String(project.mapLng) : '');
+    setBrochureContent((project?.brochureContent as BrochureContent) ?? {});
+    setAdvancedMode(false);
     setBrochureJson(project?.brochureContent ? JSON.stringify(project.brochureContent, null, 2) : '');
     setBrochureJsonError('');
   }, [open, project]);
@@ -89,15 +94,21 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       toast('Nombre y descripción son requeridos', 'error');
       return;
     }
-    let brochureContent: Record<string, unknown> | null = null;
-    if (showBrochure && brochureJson.trim()) {
-      try {
-        brochureContent = JSON.parse(brochureJson);
-        setBrochureJsonError('');
-      } catch {
-        setBrochureJsonError('JSON inválido — revisa comas y comillas antes de guardar.');
-        toast('El contenido del brochure tiene un error de formato JSON', 'error');
-        return;
+    let brochureContentPayload: BrochureContent | Record<string, unknown> | null = null;
+    if (showBrochure) {
+      if (advancedMode) {
+        if (brochureJson.trim()) {
+          try {
+            brochureContentPayload = JSON.parse(brochureJson);
+            setBrochureJsonError('');
+          } catch {
+            setBrochureJsonError('JSON inválido — revisa comas y comillas antes de guardar.');
+            toast('El contenido del brochure tiene un error de formato JSON', 'error');
+            return;
+          }
+        }
+      } else {
+        brochureContentPayload = brochureContent;
       }
     }
     setSaving(true);
@@ -117,7 +128,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       showBrochure,
       mapLat: mapLat ? Number(mapLat) : null,
       mapLng: mapLng ? Number(mapLng) : null,
-      brochureContent,
+      brochureContent: brochureContentPayload,
     };
     try {
       if (isEdit) await adminApi.put(`/admin/projects/${project!.id}`, payload);
@@ -196,33 +207,51 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
 
         {showBrochure && (
           <div className="rounded-xl border border-black/10 p-4">
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <span className="text-sm font-medium text-primary">Contenido del Brochure Digital (JSON)</span>
-              <Button
-                size="sm"
-                variant="outline"
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <span className="text-sm font-medium text-primary">Contenido del Brochure Digital</span>
+              <button
                 type="button"
+                className="text-xs text-accent underline"
                 onClick={() => {
-                  setBrochureJson(JSON.stringify(DEFAULT_BROCHURE_CONTENT, null, 2));
-                  setBrochureJsonError('');
+                  if (advancedMode) {
+                    // Volver al editor por campos: intenta parsear lo que haya en el JSON.
+                    try {
+                      const parsed = brochureJson.trim() ? JSON.parse(brochureJson) : {};
+                      setBrochureContent(parsed);
+                      setBrochureJsonError('');
+                      setAdvancedMode(false);
+                    } catch {
+                      toast('El JSON tiene un error de formato — corrígelo antes de volver al editor por campos', 'error');
+                    }
+                  } else {
+                    setBrochureJson(JSON.stringify(brochureContent, null, 2));
+                    setAdvancedMode(true);
+                  }
                 }}
               >
-                Cargar plantilla de ejemplo
-              </Button>
+                {advancedMode ? '← Volver al editor por campos' : 'Modo avanzado (JSON)'}
+              </button>
             </div>
-            <p className="mb-2 text-xs text-brand-gray">
-              Textos, cifras y testimonios que se muestran en la ficha del proyecto. Lo que dejes vacío se
-              completa con el contenido de ejemplo. Íconos disponibles: {ICON_KEYS.join(', ')}.
+            <p className="mb-3 text-xs text-brand-gray">
+              Las fotos NO se editan aquí — usa "Imagen de portada" y "Galería" arriba. El orden de la
+              galería decide qué foto sale grande en el mosaico, cuál acompaña "Vista General" y cuál se
+              usa en el banner. Lo que dejes vacío en el brochure se completa con el contenido de ejemplo.
             </p>
-            <textarea
-              value={brochureJson}
-              onChange={(e) => { setBrochureJson(e.target.value); setBrochureJsonError(''); }}
-              rows={14}
-              spellCheck={false}
-              placeholder="Pega aquí el JSON del brochure, o usa 'Cargar plantilla de ejemplo'"
-              className="w-full rounded-lg border border-black/15 px-3 py-2 font-mono text-xs"
-            />
-            {brochureJsonError && <p className="mt-1 text-xs text-red-600">{brochureJsonError}</p>}
+
+            {advancedMode ? (
+              <>
+                <textarea
+                  value={brochureJson}
+                  onChange={(e) => { setBrochureJson(e.target.value); setBrochureJsonError(''); }}
+                  rows={14}
+                  spellCheck={false}
+                  className="w-full rounded-lg border border-black/15 px-3 py-2 font-mono text-xs"
+                />
+                {brochureJsonError && <p className="mt-1 text-xs text-red-600">{brochureJsonError}</p>}
+              </>
+            ) : (
+              <BrochureContentEditor value={brochureContent} onChange={setBrochureContent} />
+            )}
           </div>
         )}
       </div>
