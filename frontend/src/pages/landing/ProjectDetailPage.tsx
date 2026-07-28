@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2 } from 'lucide-react';
+import { Building2, ArrowRight, ChevronDown } from 'lucide-react';
 import { useProject, useProjects } from '@/hooks/useProjects';
 import { Seo } from '@/components/shared/Seo';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
@@ -50,6 +50,13 @@ export default function ProjectDetailPage() {
     .filter((p) => p.id !== project.id && p.featured)
     .slice(0, 2);
 
+  // Metadatos del hero: hasta 2 datos duros junto al precio, para dar sustancia
+  // sin recargar. Salen de las características ya cargadas del proyecto.
+  const heroMeta: { label: string; value: string }[] = [];
+  if (project.features?.tipo) heroMeta.push({ label: 'Tipo', value: String(project.features.tipo) });
+  if (project.features?.unidades != null)
+    heroMeta.push({ label: 'Unidades', value: String(project.features.unidades) });
+
   // Producto de tienda vinculado a este proyecto (ej. la fracción de Ibiza) — si existe,
   // "Quiero invertir" lleva directo a solicitar la compra en vez de abrir el formulario genérico.
   const investProduct = project.products?.[0];
@@ -66,18 +73,24 @@ export default function ProjectDetailPage() {
         image={project.coverImage}
       />
 
-      {/* 1. HERO FULL-SCREEN */}
-      <section className="relative isolate flex min-h-[80vh] items-end overflow-hidden text-white">
+      {/* 1. HERO FULL-SCREEN — editorial, cinematográfico */}
+      <section className="relative isolate flex min-h-[92vh] items-end overflow-hidden text-white">
+        {/* Imagen con zoom lento (Ken Burns) para dar movimiento sin distraer */}
         {project.coverImage && (
-          <img
+          <motion.img
             src={cld(project.coverImage, { width: 1920 })}
             alt={project.name}
+            initial={{ scale: 1.12 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 12, ease: 'easeOut' }}
             className="absolute inset-0 -z-10 h-full w-full object-cover"
           />
         )}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/85 via-black/40 to-black/30" />
+        {/* Scrim direccional: oscurece SOLO el lado del texto y deja respirar la foto */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/90 via-black/55 to-black/10" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-transparent to-black/50" />
 
-        <div className="mx-auto w-full max-w-7xl px-4 pb-14 pt-28 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-20 pt-28 sm:px-6 lg:px-8">
           <Breadcrumbs
             items={[
               { label: 'Inicio', to: '/' },
@@ -85,35 +98,99 @@ export default function ProjectDetailPage() {
               { label: project.name },
             ]}
           />
+
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mt-6 max-w-3xl"
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="relative mt-10 max-w-3xl border-l-2 border-secondary pl-6 sm:pl-8"
           >
+            {/* Eyebrow: filete dorado + ubicación */}
             {project.location && (
-              <p className="text-sm uppercase tracking-widest text-secondary">
-                {project.location}
-              </p>
+              <div className="flex items-center gap-3">
+                <span className="h-px w-8 bg-secondary" />
+                <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-secondary sm:text-xs">
+                  {project.location}
+                </p>
+              </div>
             )}
-            <h1 className="mt-2 text-4xl font-bold leading-tight sm:text-6xl">
+
+            <h1 className="mt-4 font-serif text-5xl font-bold leading-[0.95] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-7xl lg:text-8xl">
               {project.name}
             </h1>
+
             {project.subtitle && (
-              <p className="mt-4 text-lg text-white/80">{project.subtitle}</p>
-            )}
-            {project.priceLabel && (
-              <p className="mt-6 inline-block rounded-full bg-secondary px-5 py-2 font-semibold text-primary">
-                {project.priceLabel}
+              <p className="mt-5 max-w-xl text-base font-light leading-relaxed text-white/85 sm:text-xl">
+                {project.subtitle}
               </p>
             )}
-            <div className="mt-8">
-              <Button size="lg" onClick={goInvest}>
+
+            {/* Precio editorial + metadatos, separados por filetes verticales */}
+            <div className="mt-8 flex flex-wrap items-end gap-x-8 gap-y-4">
+              {(project.priceFrom != null || project.priceLabel) && (
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50">
+                    Inversión desde
+                  </p>
+                  <p className="mt-1 font-serif text-3xl font-bold text-secondary sm:text-4xl">
+                    {project.priceFrom != null
+                      ? formatCurrency(project.priceFrom)
+                      : project.priceLabel}
+                  </p>
+                </div>
+              )}
+
+              {heroMeta.map((m) => (
+                <div key={m.label} className="border-l border-white/20 pl-8">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50">
+                    {m.label}
+                  </p>
+                  <p className="mt-1 font-serif text-2xl font-bold text-white sm:text-3xl">
+                    {m.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* CTAs de esquinas rectas — más arquitectónicos que las píldoras */}
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <Button
+                size="lg"
+                shape="sharp"
+                onClick={goInvest}
+                className="group px-9 text-xs font-semibold uppercase tracking-[0.2em] shadow-[0_8px_30px_rgba(201,169,110,0.35)] hover:shadow-[0_10px_40px_rgba(201,169,110,0.5)] sm:text-sm"
+              >
                 Quiero invertir
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                  strokeWidth={2}
+                />
               </Button>
+              <button
+                onClick={() => setOpen(true)}
+                className="cursor-pointer border border-white/40 px-9 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm transition-colors duration-200 hover:border-white hover:bg-white hover:text-primary sm:text-sm"
+              >
+                Solicitar información
+              </button>
             </div>
           </motion.div>
         </div>
+
+        {/* Indicador de scroll */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex"
+        >
+          <span className="text-[10px] uppercase tracking-[0.3em] text-white/50">Descubre</span>
+          <motion.span
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <ChevronDown className="h-5 w-5 text-secondary" strokeWidth={1.5} />
+          </motion.span>
+        </motion.div>
       </section>
 
       {/* 2. FEATURES GRID */}
