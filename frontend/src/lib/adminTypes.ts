@@ -22,11 +22,14 @@ export interface AdminMemberRow {
   id: string;
   fullName: string;
   email: string;
+  phone?: string | null;
+  referralCode: string;
   status: MemberStatus;
   kycVerified: boolean;
   totalReferrals: number;
   totalEarned: number;
   createdAt: string;
+  referrer?: { fullName: string; referralCode: string } | null;
 }
 
 export interface AdminMembersResponse {

@@ -133,7 +133,9 @@ export function ContactForm({
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      {referralCode && (
+      {/* Un socio ya tiene referidor fijo: no se le muestra el código de la
+          cookie (el backend lo ignora y usa su upline real). */}
+      {referralCode && !member && (
         <div className="flex items-center gap-2">
           <Badge variant="gold">Referido</Badge>
           <span className="text-sm text-brand-gray">

@@ -5,6 +5,7 @@ import { audit } from '../services/audit';
 import { notify } from '../services/notifications';
 import { upgradeToElite } from '../services/tierService';
 import { deleteMemberCompletely } from '../services/memberDeletion';
+import { resolveReferrer } from '../services/referralTracking';
 
 export const adminMemberRoutes = Router();
 adminMemberRoutes.use(requireAdmin);
@@ -13,11 +14,14 @@ const listSelect = {
   id: true,
   fullName: true,
   email: true,
+  phone: true,
+  referralCode: true,
   status: true,
   kycVerified: true,
   totalReferrals: true,
   totalEarned: true,
   createdAt: true,
+  referrer: { select: { fullName: true, referralCode: true } },
 } as const;
 
 // GET /api/admin/members — filtros, búsqueda, paginación
@@ -125,6 +129,134 @@ adminMemberRoutes.put('/:id/status', async (req: AuthedRequest, res) => {
   } catch (err) {
     console.error('PUT /api/admin/members/:id/status', err);
     res.status(400).json({ error: 'Error al cambiar estado' });
+  }
+});
+
+// PUT /api/admin/members/:id/referrer — reasignar el referidor (upline) de un socio.
+// body: { referralCode: string | null }  (null = dejarlo sin referidor)
+// Reconstruye las filas Referral de nivel 1 y 2 del socio. NO recalcula comisiones
+// ya generadas (para eso, editar la compra correspondiente y regenerar).
+adminMemberRoutes.put('/:id/referrer', requireSuperadmin, async (req: AuthedRequest, res) => {
+  try {
+    const { referralCode } = req.body ?? {};
+    const memberId = req.params.id;
+
+    const member = await prisma.referralMember.findUnique({
+      where: { id: memberId },
+      select: { id: true, fullName: true, referrerId: true },
+    });
+    if (!member) {
+      res.status(404).json({ error: 'Miembro no encontrado' });
+      return;
+    }
+
+    let newReferrer: { id: string; referrerId: string | null } | null = null;
+    if (referralCode) {
+      const found = await resolveReferrer(String(referralCode).trim());
+      if (!found) {
+        res.status(404).json({ error: 'Código de referido no encontrado' });
+        return;
+      }
+      if (found.id === memberId) {
+        res.status(400).json({ error: 'Un socio no puede ser su propio referidor' });
+        return;
+      }
+      // Evitar ciclos: el nuevo referidor no puede estar debajo de este socio.
+      let cursor: string | null = found.referrerId;
+      for (let i = 0; i < 50 && cursor; i++) {
+        if (cursor === memberId) {
+          res.status(400).json({ error: 'Esa asignación crearía un ciclo en la red' });
+          return;
+        }
+        const up: { referrerId: string | null } | null = await prisma.referralMember.findUnique({
+          where: { id: cursor },
+          select: { referrerId: true },
+        });
+        cursor = up?.referrerId ?? null;
+      }
+      newReferrer = found;
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // Quitar del contador al referidor anterior.
+      if (member.referrerId) {
+        await tx.referralMember.update({
+          where: { id: member.referrerId },
+          data: { totalReferrals: { decrement: 1 } },
+        });
+      }
+
+      // Borrar las filas Referral donde este socio es el REFERIDO (niveles 1 y 2).
+      // Las comisiones vinculadas quedan con referralId null (no se borran).
+      const old = await tx.referral.findMany({
+        where: { referredId: memberId },
+        select: { id: true },
+      });
+      if (old.length > 0) {
+        const ids = old.map((r) => r.id);
+        await tx.commission.updateMany({
+          where: { referralId: { in: ids } },
+          data: { referralId: null },
+        });
+        await tx.referral.deleteMany({ where: { id: { in: ids } } });
+      }
+
+      await tx.referralMember.update({
+        where: { id: memberId },
+        data: { referrerId: newReferrer?.id ?? null },
+      });
+
+      if (newReferrer) {
+        await tx.referral.create({
+          data: {
+            referrerId: newReferrer.id,
+            referredId: memberId,
+            level: 1,
+            attributionMethod: 'manual',
+            status: 'active',
+          },
+        });
+        if (newReferrer.referrerId) {
+          await tx.referral.create({
+            data: {
+              referrerId: newReferrer.referrerId,
+              referredId: memberId,
+              level: 2,
+              attributionMethod: 'manual',
+              status: 'active',
+            },
+          });
+        }
+        await tx.referralMember.update({
+          where: { id: newReferrer.id },
+          data: {
+            totalReferrals: { increment: 1 },
+            lastReferralAt: new Date(),
+            inactiveSince: null,
+          },
+        });
+      }
+    });
+
+    await audit(req.staff?.staffId, 'update', 'member', memberId, {
+      action: 'reassign_referrer',
+      from: member.referrerId,
+      to: newReferrer?.id ?? null,
+      referralCode: referralCode ?? null,
+    });
+
+    const updated = await prisma.referralMember.findUnique({
+      where: { id: memberId },
+      select: {
+        id: true,
+        referrerId: true,
+        referrer: { select: { fullName: true, referralCode: true } },
+      },
+    });
+    res.json(updated);
+  } catch (err) {
+    console.error('PUT /api/admin/members/:id/referrer', err);
+    res.status(400).json({ error: (err as Error).message || 'Error al reasignar el referidor' });
   }
 });
 

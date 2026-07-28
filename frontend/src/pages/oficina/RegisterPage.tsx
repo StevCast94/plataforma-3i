@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { api } from '@/lib/api';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -28,6 +29,16 @@ export default function RegisterPage() {
   const referralCode = useReferral();
   const { toast } = useToast();
   const navigate = useNavigate();
+  // Nombre del referidor (más claro que mostrarle el código crudo al invitado).
+  const [referrerName, setReferrerName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!referralCode) return;
+    api
+      .get<{ firstName: string }>(`/members/${referralCode}`)
+      .then((r) => setReferrerName(r.firstName))
+      .catch(() => setReferrerName(null));
+  }, [referralCode]);
   const [params] = useSearchParams();
   const claimEmail = params.get('email');
 
@@ -99,7 +110,8 @@ export default function RegisterPage() {
           <div className="mt-4 flex items-center gap-2">
             <Badge variant="gold">Referido</Badge>
             <span className="text-sm text-brand-gray">
-              Te invitó: <strong className="text-primary">{referralCode}</strong>
+              Te invitó:{' '}
+              <strong className="text-primary">{referrerName ?? referralCode}</strong>
             </span>
           </div>
         )}

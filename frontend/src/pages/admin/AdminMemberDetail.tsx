@@ -42,6 +42,27 @@ export function AdminMemberDetail({
   );
   const [busy, setBusy] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [editingReferrer, setEditingReferrer] = useState(false);
+  const [newReferrerCode, setNewReferrerCode] = useState('');
+
+  async function saveReferrer() {
+    if (!memberId) return;
+    setBusy(true);
+    try {
+      await adminApi.put(`/admin/members/${memberId}/referrer`, {
+        referralCode: newReferrerCode.trim() || null,
+      });
+      toast('Referidor reasignado', 'success');
+      setEditingReferrer(false);
+      setNewReferrerCode('');
+      reload();
+      onChanged();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function setKyc(approve: boolean) {
     if (!memberId) return;
@@ -187,6 +208,63 @@ export function AdminMemberDetail({
               </ul>
             )}
           </Section>
+
+          {/* Referidor (upline) — reasignable por superadmin */}
+          {isSuperadmin && (
+            <div className="rounded-xl border border-black/10 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-brand-gray">Referidor</p>
+                  <p className="font-medium text-primary">
+                    {data.referrer
+                      ? `${data.referrer.fullName} (${data.referrer.referralCode})`
+                      : 'Sin referidor'}
+                  </p>
+                </div>
+                {!editingReferrer && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setNewReferrerCode(data.referrer?.referralCode ?? '');
+                      setEditingReferrer(true);
+                    }}
+                    disabled={busy}
+                  >
+                    Reasignar
+                  </Button>
+                )}
+              </div>
+
+              {editingReferrer && (
+                <div className="mt-3 space-y-2">
+                  <input
+                    value={newReferrerCode}
+                    onChange={(e) => setNewReferrerCode(e.target.value)}
+                    placeholder="Código del nuevo referidor (vacío = sin referidor)"
+                    className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm"
+                  />
+                  <p className="text-xs text-brand-gray">
+                    Reconstruye los niveles 1 y 2 de este socio. No recalcula comisiones ya
+                    generadas — para eso, edita la compra y regenera sus comisiones.
+                  </p>
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={saveReferrer} disabled={busy}>
+                      Guardar
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setEditingReferrer(false)}
+                      disabled={busy}
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Acciones */}
           <div className="flex flex-wrap gap-2 border-t border-black/5 pt-4">

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
-import { resolveReferrer } from '../services/referralTracking';
+import { resolveReferrerForPurchase } from '../services/referralTracking';
 import { refFromRequest } from './referral';
 import { ensureProvisionalMember } from '../services/preRegister';
 import { pickAdvisor } from '../services/leadAssignment';
@@ -75,11 +75,16 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
 
     const code = refFromRequest(req);
 
-    // Resolver el referidor (si el código es válido) para atribuir la futura comisión.
-    let referrerId: string | null = null;
-    if (code) {
-      const referrer = await resolveReferrer(code);
-      referrerId = referrer?.id ?? null;
+    // Resolver el referidor. Si el comprador ya es socio, manda su upline real
+    // (nunca el código de la cookie) — ver resolveReferrerForPurchase.
+    const { referrerId, selfReferralBlocked } = await resolveReferrerForPurchase({
+      customerEmail: String(email),
+      code,
+    });
+    if (selfReferralBlocked) {
+      console.warn(
+        `[anti-fraude] Auto-referido bloqueado en compra: ${String(email).trim()} usó su propio código ${code}`,
+      );
     }
 
     // Asesor asignado por round-robin (null si no hay asesores activos).

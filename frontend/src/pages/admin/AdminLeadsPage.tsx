@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DataTable, type Column } from '@/components/admin/DataTable';
+import { WhatsAppButton } from '@/components/admin/WhatsAppButton';
 import { Button } from '@/components/ui/Button';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { adminApi } from '@/lib/adminApi';
@@ -77,14 +78,9 @@ export default function AdminLeadsPage() {
           <p className="font-medium text-primary">{l.name}</p>
           <p className="text-xs text-brand-gray">{l.email}</p>
           {l.phone && (
-            <a
-              href={`https://wa.me/${l.phone.replace(/\D/g, '')}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs font-medium text-green-700 hover:underline"
-            >
-              {l.phone}
-            </a>
+            <div className="mt-1.5">
+              <WhatsAppButton phone={l.phone} name={l.name} />
+            </div>
           )}
         </div>
       ),

@@ -47,6 +47,8 @@ const memberSelect = {
   location: true,
   interests: true,
   createdAt: true,
+  // Referidor real del socio (fuente de verdad para la atribución de comisiones).
+  referrer: { select: { fullName: true, referralCode: true } },
 } as const;
 
 // POST /api/members/register

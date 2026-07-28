@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
-import { requireAdmin, type AuthedRequest } from '../middleware/auth';
+import { requireAdmin, requireSuperadmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
-import { resolveReferrer } from '../services/referralTracking';
+import { resolveReferrerForPurchase } from '../services/referralTracking';
 import { confirmPurchase, cancelPurchase } from '../services/purchaseService';
 
 export const adminPurchaseRoutes = Router();
@@ -53,11 +53,11 @@ adminPurchaseRoutes.post('/', async (req: AuthedRequest, res) => {
     }
 
     const code = referralCode ? String(referralCode).trim() : null;
-    let referrerId: string | null = null;
-    if (code) {
-      const referrer = await resolveReferrer(code);
-      referrerId = referrer?.id ?? null;
-    }
+    // Si el comprador ya es socio, manda su upline real (evita auto-referido).
+    const { referrerId } = await resolveReferrerForPurchase({
+      customerEmail: String(customerEmail),
+      code,
+    });
 
     const purchase = await prisma.purchase.create({
       data: {
@@ -96,6 +96,114 @@ adminPurchaseRoutes.put('/:id', async (req: AuthedRequest, res) => {
   } catch (err) {
     console.error('PUT /api/admin/purchases/:id', err);
     res.status(400).json({ error: 'Error al actualizar compra' });
+  }
+});
+
+// PATCH /api/admin/purchases/:id — corrección manual de los datos de la compra
+// body: { productId?, amount?, referralCode?, customerName?, customerEmail?,
+//         customerPhone?, notes?, regenerateCommissions?: boolean }
+// Si `regenerateCommissions` y la compra ya estaba confirmada, reversa las
+// comisiones existentes y las vuelve a generar con los datos corregidos.
+adminPurchaseRoutes.patch('/:id', requireSuperadmin, async (req: AuthedRequest, res) => {
+  try {
+    const {
+      productId,
+      amount,
+      referralCode,
+      customerName,
+      customerEmail,
+      customerPhone,
+      notes,
+      regenerateCommissions,
+    } = req.body ?? {};
+
+    const existing = await prisma.purchase.findUnique({ where: { id: req.params.id } });
+    if (!existing) {
+      res.status(404).json({ error: 'Compra no encontrada' });
+      return;
+    }
+
+    // Recalcular el referidor si cambió el código o el email del comprador.
+    let referrerPatch: { referralCode: string | null; referrerId: string | null } | null = null;
+    if (referralCode !== undefined || customerEmail !== undefined) {
+      const code =
+        referralCode !== undefined
+          ? referralCode
+            ? String(referralCode).trim()
+            : null
+          : existing.referralCode;
+      const emailForLookup =
+        customerEmail !== undefined ? String(customerEmail) : existing.customerEmail;
+      const { referrerId } = await resolveReferrerForPurchase({
+        customerEmail: emailForLookup,
+        code,
+      });
+      referrerPatch = { referralCode: code, referrerId };
+    }
+
+    const wasConfirmed = existing.status === 'confirmed' || existing.status === 'completed';
+    const shouldRegenerate = !!regenerateCommissions && wasConfirmed;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.purchase.update({
+        where: { id: req.params.id },
+        data: {
+          ...(productId ? { productId: String(productId) } : {}),
+          ...(amount != null && !isNaN(Number(amount)) ? { amount: Number(amount) } : {}),
+          ...(customerName ? { customerName: String(customerName).trim() } : {}),
+          ...(customerEmail ? { customerEmail: String(customerEmail).trim() } : {}),
+          ...(customerPhone !== undefined
+            ? { customerPhone: customerPhone ? String(customerPhone).trim() : null }
+            : {}),
+          ...(notes !== undefined ? { notes: notes ? String(notes) : null } : {}),
+          ...(referrerPatch ?? {}),
+        },
+      });
+
+      if (shouldRegenerate) {
+        // Reversar comisiones vigentes (devolviendo saldo si ya estaba acreditado)
+        // y dejar la compra lista para volver a confirmarse.
+        const commissions = await tx.commission.findMany({
+          where: { purchaseId: req.params.id, status: { not: 'REVERSED' } },
+          select: { id: true, memberId: true, amount: true, status: true },
+        });
+        for (const c of commissions) {
+          if (c.status === 'PAID' || c.status === 'LIQUIDATED') {
+            await tx.referralMember.update({
+              where: { id: c.memberId },
+              data: { walletBalance: { decrement: c.amount } },
+            });
+          }
+          await tx.commission.update({ where: { id: c.id }, data: { status: 'REVERSED' } });
+        }
+        await tx.purchase.update({
+          where: { id: req.params.id },
+          data: { status: 'pending', confirmedAt: null },
+        });
+      }
+    });
+
+    // Volver a confirmar fuera de la transacción anterior (confirmPurchase abre la suya).
+    let regenerated = null;
+    if (shouldRegenerate) regenerated = await confirmPurchase(req.params.id);
+
+    await audit(req.staff?.staffId, 'update', 'purchase', req.params.id, {
+      manual: true,
+      regenerateCommissions: shouldRegenerate,
+      ...(referrerPatch ?? {}),
+    });
+
+    const updated = await prisma.purchase.findUnique({
+      where: { id: req.params.id },
+      include: {
+        product: { select: { name: true } },
+        referrer: { select: { fullName: true, referralCode: true } },
+      },
+    });
+    res.json({ purchase: updated, regenerated });
+  } catch (err) {
+    console.error('PATCH /api/admin/purchases/:id', err);
+    res.status(400).json({ error: (err as Error).message || 'Error al editar la compra' });
   }
 });
 

@@ -3,6 +3,7 @@ import { DataTable, type Column } from '@/components/admin/DataTable';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { AdminMemberDetail } from './AdminMemberDetail';
+import { WhatsAppButton } from '@/components/admin/WhatsAppButton';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { formatCurrency } from '@/lib/utils';
 import { statusLabel } from '@/lib/referral';
@@ -26,8 +27,18 @@ export default function AdminMembersPage() {
   const cols: Column<AdminMemberRow>[] = [
     { header: 'Nombre', cell: (m) => <span className="font-medium text-primary">{m.fullName}</span> },
     { header: 'Email', cell: (m) => <span className="text-sm text-brand-gray">{m.email}</span> },
+    { header: 'WhatsApp', cell: (m) => <WhatsAppButton phone={m.phone} name={m.fullName} variant="icon" /> },
     { header: 'Estatus', cell: (m) => <Badge variant={m.status === 'ELITE' ? 'gold' : 'light'}>{statusLabel(m.status)}</Badge> },
     { header: 'KYC', cell: (m) => (m.kycVerified ? '✅' : '⏳') },
+    {
+      header: 'Referidor',
+      cell: (m) =>
+        m.referrer ? (
+          <span className="text-sm text-primary">{m.referrer.fullName}</span>
+        ) : (
+          <span className="text-xs text-brand-gray">—</span>
+        ),
+    },
     { header: 'Referidos', cell: (m) => `${m.totalReferrals}` },
     { header: 'Ganado', cell: (m) => formatCurrency(m.totalEarned) },
     { header: 'Registro', cell: (m) => new Date(m.createdAt).toLocaleDateString('es-EC') },

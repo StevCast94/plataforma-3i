@@ -5,6 +5,7 @@ import { ConfirmModal } from '@/components/admin/ConfirmModal';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAdminGet } from '@/hooks/useAdminAPI';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
 import { formatCurrency } from '@/lib/utils';
@@ -26,9 +27,11 @@ export default function AdminPurchasesPage() {
   );
 
   const [createOpen, setCreateOpen] = useState(false);
+  const [editing, setEditing] = useState<Purchase | null>(null);
   const [toConfirm, setToConfirm] = useState<Purchase | null>(null);
   const [toCancel, setToCancel] = useState<Purchase | null>(null);
   const [busy, setBusy] = useState(false);
+  const { isSuperadmin } = useAdminAuth();
 
   async function confirm() {
     if (!toConfirm) return;
@@ -79,6 +82,9 @@ export default function AdminPurchasesPage() {
           {p.status === 'pending' && (
             <Button size="sm" onClick={() => setToConfirm(p)}>Confirmar</Button>
           )}
+          {isSuperadmin && (
+            <Button size="sm" variant="outline" onClick={() => setEditing(p)}>Editar</Button>
+          )}
           {p.status !== 'cancelled' && (
             <Button size="sm" variant="ghost" className="text-red-600" onClick={() => setToCancel(p)}>Cancelar</Button>
           )}
@@ -109,6 +115,7 @@ export default function AdminPurchasesPage() {
       <DataTable columns={cols} rows={data ?? []} keyOf={(p) => p.id} loading={loading} empty="Sin compras." />
 
       <CreatePurchaseModal open={createOpen} onClose={() => setCreateOpen(false)} onSaved={reload} />
+      <EditPurchaseModal purchase={editing} onClose={() => setEditing(null)} onSaved={reload} />
 
       <ConfirmModal
         open={!!toConfirm}
@@ -199,6 +206,142 @@ function CreatePurchaseModal({ open, onClose, onSaved }: { open: boolean; onClos
         <div className="flex justify-end gap-3">
           <Button variant="ghost" onClick={onClose}>Cancelar</Button>
           <Button onClick={save} disabled={saving}>{saving ? 'Guardando…' : 'Crear compra'}</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+/**
+ * Edición manual de una compra (solo superadmin). Permite corregir producto,
+ * monto, datos del cliente y el código de referido. Si la compra ya estaba
+ * confirmada, ofrece regenerar las comisiones con los datos corregidos:
+ * reversa las existentes y vuelve a confirmar.
+ */
+function EditPurchaseModal({
+  purchase,
+  onClose,
+  onSaved,
+}: {
+  purchase: Purchase | null;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const { toast } = useToast();
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [productId, setProductId] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [amount, setAmount] = useState('');
+  const [referralCode, setReferralCode] = useState('');
+  const [notes, setNotes] = useState('');
+  const [regenerate, setRegenerate] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const wasConfirmed = purchase?.status === 'confirmed' || purchase?.status === 'completed';
+
+  useEffect(() => {
+    if (!purchase) return;
+    adminApi.get<AdminProduct[]>('/admin/products?active=true').then(setProducts).catch(() => {});
+    setProductId(purchase.productId ?? '');
+    setCustomerName(purchase.customerName);
+    setCustomerEmail(purchase.customerEmail);
+    setCustomerPhone(purchase.customerPhone ?? '');
+    setAmount(String(purchase.amount));
+    setReferralCode(purchase.referralCode ?? '');
+    setNotes(purchase.notes ?? '');
+    setRegenerate(false);
+  }, [purchase]);
+
+  async function save() {
+    if (!purchase) return;
+    setSaving(true);
+    try {
+      const res = await adminApi.patch<{ regenerated: { commissionsCreated: number } | null }>(
+        `/admin/purchases/${purchase.id}`,
+        {
+          productId,
+          amount: Number(amount),
+          customerName,
+          customerEmail,
+          customerPhone,
+          referralCode: referralCode.trim() || null,
+          notes,
+          regenerateCommissions: regenerate,
+        },
+      );
+      toast(
+        res.regenerated
+          ? `Compra actualizada · ${res.regenerated.commissionsCreated} comisión(es) regenerada(s)`
+          : 'Compra actualizada',
+        'success',
+      );
+      onSaved();
+      onClose();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Modal open={!!purchase} onClose={onClose} title="Editar compra">
+      <div className="max-h-[70vh] space-y-4 overflow-y-auto pr-1">
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-medium text-primary">Producto</span>
+          <select
+            value={productId}
+            onChange={(e) => setProductId(e.target.value)}
+            className="w-full rounded-lg border border-black/15 bg-white px-4 py-3 text-sm"
+          >
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name} ({formatCurrency(p.promoPrice ?? p.price)})
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="grid grid-cols-2 gap-4">
+          <Input label="Cliente" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+          <Input label="Email" type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <Input label="Teléfono" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
+          <Input label="Monto" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
+        </div>
+        <Input
+          label="Código de referido"
+          value={referralCode}
+          onChange={(e) => setReferralCode(e.target.value)}
+          placeholder="3IP-XXXXXX (vacío = sin referidor)"
+        />
+        <p className="text-xs text-brand-gray">
+          Si el comprador ya es socio, la comisión se acredita siempre a su referidor real,
+          sin importar el código que se ponga aquí.
+        </p>
+        <Textarea label="Notas" value={notes} onChange={(e) => setNotes(e.target.value)} />
+
+        {wasConfirmed && (
+          <label className="flex cursor-pointer items-start gap-2 rounded-xl bg-light p-3 text-sm">
+            <input
+              type="checkbox"
+              checked={regenerate}
+              onChange={(e) => setRegenerate(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-[var(--color-secondary)]"
+            />
+            <span className="text-brand-gray">
+              <strong className="text-primary">Regenerar comisiones.</strong> Reversa las comisiones
+              actuales de esta compra (devolviendo el saldo si ya estaba acreditado) y las vuelve a
+              generar con los datos corregidos.
+            </span>
+          </label>
+        )}
+
+        <div className="flex justify-end gap-3">
+          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button onClick={save} disabled={saving}>{saving ? 'Guardando…' : 'Guardar cambios'}</Button>
         </div>
       </div>
     </Modal>

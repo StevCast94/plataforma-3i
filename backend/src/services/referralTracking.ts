@@ -25,6 +25,41 @@ export async function resolveReferrer(
 }
 
 /**
+ * Resuelve a QUIÉN se le atribuye la comisión de una compra.
+ *
+ * REGLA ESTRUCTURAL: un socio pertenece a UN solo referidor. Si el comprador ya
+ * es socio (match por email exacto — nunca por otra vía), la comisión va SIEMPRE
+ * a su upline real, ignorando cualquier código `?ref=` que traiga la cookie.
+ * Esto hace imposible por diseño el auto-referido (comprar con el propio link) y
+ * el robo de referido (comprar con el link de otro). Solo los compradores que aún
+ * no son socios se atribuyen por el código de la cookie.
+ *
+ * Devuelve además `selfReferralBlocked` para que el admin pueda auditar el intento.
+ */
+export async function resolveReferrerForPurchase(
+  params: { customerEmail: string; code?: string | null },
+  db: Db = prisma,
+): Promise<{ referrerId: string | null; selfReferralBlocked: boolean }> {
+  const { customerEmail, code } = params;
+
+  const buyer = await db.referralMember.findUnique({
+    where: { email: customerEmail.toLowerCase().trim() },
+    select: { id: true, referrerId: true },
+  });
+
+  if (buyer) {
+    // El comprador YA es socio: su upline real manda, venga el código que venga.
+    const codeOwner = code ? await resolveReferrer(code, db) : null;
+    const selfReferralBlocked = codeOwner?.id === buyer.id;
+    return { referrerId: buyer.referrerId, selfReferralBlocked };
+  }
+
+  // Comprador aún no socio: se atribuye por el código de la cookie.
+  const referrer = code ? await resolveReferrer(code, db) : null;
+  return { referrerId: referrer?.id ?? null, selfReferralBlocked: false };
+}
+
+/**
  * Crea la atribución de un nuevo miembro a su referidor (y al de 2do nivel si existe).
  * Reglas: no auto-referido, un referido pertenece a UN solo referidor (1er registro gana).
  * Actualiza contadores del referidor y conversiones del link.

@@ -1,1 +1,0 @@
-import{x as t,i as u}from"./index-Cd6PY5Lc.js";function o(){return t(()=>u.get("/community/groups"),[])}function r(e){return t(()=>u.get(`/community/groups/${e}`),[e])}function s(){return t(()=>u.get("/community/events"),[])}export{s as a,r as b,o as u};

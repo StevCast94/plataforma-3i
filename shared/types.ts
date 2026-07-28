@@ -111,6 +111,8 @@ export interface ReferralMember {
   status: MemberStatus;
   referralCode: string;
   referrerId?: string | null;
+  /** Referidor real del socio: manda sobre cualquier cookie ?ref= en sus compras. */
+  referrer?: { fullName: string; referralCode: string } | null;
   walletBalance: number;
   totalEarned: number;
   totalReferrals: number;

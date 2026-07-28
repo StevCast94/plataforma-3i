@@ -7,12 +7,14 @@ import {
   Luggage,
   Link2,
   Calculator,
+  ShoppingBag,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const items: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/oficina/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/tienda', label: 'Tienda 3i', icon: ShoppingBag },
   { to: '/oficina/mi-red', label: 'Mi Red', icon: Users },
   { to: '/oficina/comisiones', label: 'Comisiones', icon: DollarSign },
   { to: '/oficina/pagos', label: 'Pagos', icon: Wallet },

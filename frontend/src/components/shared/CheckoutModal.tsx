@@ -5,6 +5,7 @@ import { ContactForm } from './ContactForm';
 import { PriceDisplay } from './PriceDisplay';
 import { api } from '@/lib/api';
 import { getReferralCode } from '@/hooks/useReferral';
+import { useAuth } from '@/hooks/useAuth';
 import type { Product } from '@shared/types';
 
 interface CheckoutModalProps {
@@ -15,16 +16,23 @@ interface CheckoutModalProps {
 
 /** Modal de solicitud de compra: resumen + atribución de referido + formulario. */
 export function CheckoutModal({ open, product, onClose }: CheckoutModalProps) {
-  const referralCode = getReferralCode();
+  const { member } = useAuth();
+  const cookieCode = getReferralCode();
   const [referrerName, setReferrerName] = useState<string | null>(null);
 
+  // Un socio ya pertenece a UN referidor: su upline real manda sobre cualquier
+  // código de la cookie (así lo resuelve el backend al crear la compra).
+  const isMember = !!member;
+  const ownReferrer = member?.referrer ?? null;
+  const lookupCode = isMember ? null : cookieCode;
+
   useEffect(() => {
-    if (!open || !referralCode) return;
+    if (!open || !lookupCode) return;
     api
-      .get<{ firstName: string }>(`/members/${referralCode}`)
+      .get<{ firstName: string }>(`/members/${lookupCode}`)
       .then((r) => setReferrerName(r.firstName))
       .catch(() => setReferrerName(null));
-  }, [open, referralCode]);
+  }, [open, lookupCode]);
 
   return (
     <Modal open={open} onClose={onClose} title={`Solicitar compra: ${product.name}`}>
@@ -36,15 +44,25 @@ export function CheckoutModal({ open, product, onClose }: CheckoutModalProps) {
         </div>
 
         {/* Atribución de referido */}
-        {referralCode && (
-          <div className="flex items-center gap-2">
-            <Badge variant="gold">Referido</Badge>
-            <span className="text-sm text-brand-gray">
-              Serás referido por{' '}
-              <strong className="text-primary">{referrerName ?? referralCode}</strong>
-            </span>
-          </div>
-        )}
+        {isMember
+          ? ownReferrer && (
+              <div className="flex items-center gap-2">
+                <Badge variant="gold">Tu referidor</Badge>
+                <span className="text-sm text-brand-gray">
+                  Esta compra se acredita a{' '}
+                  <strong className="text-primary">{ownReferrer.fullName}</strong>
+                </span>
+              </div>
+            )
+          : cookieCode && (
+              <div className="flex items-center gap-2">
+                <Badge variant="gold">Referido</Badge>
+                <span className="text-sm text-brand-gray">
+                  Serás referido por{' '}
+                  <strong className="text-primary">{referrerName ?? cookieCode}</strong>
+                </span>
+              </div>
+            )}
 
         <ContactForm
           endpoint={`/products/${product.id}/inquiry`}

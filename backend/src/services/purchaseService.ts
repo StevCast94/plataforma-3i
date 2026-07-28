@@ -89,21 +89,28 @@ export async function confirmPurchase(purchaseId: string): Promise<{
     // ¿El comprador es un socio? (para atribuir referral + ascenso a ELITE)
     const buyerMember = await tx.referralMember.findUnique({
       where: { email: purchase.customerEmail.toLowerCase().trim() },
-      select: { id: true },
+      select: { id: true, referrerId: true },
     });
-
-    // Hacer una compra sube al comprador a ELITE (lo ya ganado queda tal cual).
-    // Aplica a inmobiliario y a la propia membresía (cualquier compra).
-    if (buyerMember) {
-      await upgradeToElite(tx, buyerMember.id, 'compra realizada');
-    }
 
     const isRealEstate = purchase.product.type !== 'TRAVEL_MEMBERSHIP';
 
+    // ANTI AUTO-REFERIDO (defensa en profundidad): nadie comisiona su propia
+    // compra. Si la compra quedó apuntando al propio comprador (dato viejo o
+    // creado por otra vía), se cae a su upline real. La atribución correcta ya
+    // se resuelve al crear la compra con `resolveReferrerForPurchase`.
+    let effectiveReferrerId = purchase.referrerId;
+    if (buyerMember && effectiveReferrerId === buyerMember.id) {
+      effectiveReferrerId = buyerMember.referrerId;
+      await tx.purchase.update({
+        where: { id: purchaseId },
+        data: { referrerId: effectiveReferrerId },
+      });
+    }
+
     let created = 0;
-    if (purchase.referrerId) {
+    if (effectiveReferrerId) {
       const referrer = await tx.referralMember.findUnique({
-        where: { id: purchase.referrerId },
+        where: { id: effectiveReferrerId },
         select: { id: true, status: true, referrerId: true },
       });
 
@@ -183,6 +190,15 @@ export async function confirmPurchase(purchaseId: string): Promise<{
       }
     }
 
+    // ASCENSO DEL COMPRADOR — Hacer una compra sube al comprador a ELITE.
+    // IMPORTANTE: va DESPUÉS de generar las comisiones. Si corriera antes, una
+    // compra podría subir de rango al comprador y pagarse a sí misma la tarifa
+    // ELITE en la misma operación (doble beneficio). El rango que define la
+    // comisión es el que el referidor tenía ANTES de esta compra.
+    if (buyerMember) {
+      await upgradeToElite(tx, buyerMember.id, 'compra realizada');
+    }
+
     // V3 — Si es membresía de viajes, otorgar el ACCESO al motor (source=PURCHASE).
     // Best-effort: no rompe la confirmación si el comprador no tiene cuenta de socio.
     if (purchase.product.type === 'TRAVEL_MEMBERSHIP') {
@@ -195,7 +211,7 @@ export async function confirmPurchase(purchaseId: string): Promise<{
     // DOBLE INCENTIVO — Si el comprador ENTRÓ por un referido y compró un
     // producto INMOBILIARIO, se le regala (al referido) una membresía de viajes
     // (source=REWARD). Idempotente: no duplica si ya tiene una activa.
-    if (isRealEstate && purchase.referrerId) {
+    if (isRealEstate && effectiveReferrerId) {
       await grantTravelMembershipOnPurchase(tx, {
         customerEmail: purchase.customerEmail,
         purchaseId: purchase.id,
