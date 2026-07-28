@@ -13,6 +13,7 @@ const items = [
   { to: '/admin/retiros', label: 'Retiros', icon: '💸' },
   { to: '/admin/compras', label: 'Compras', icon: '🛒' },
   { to: '/admin/garantias', label: 'Garantías', icon: '🛡️' },
+  { to: '/admin/soporte', label: 'Soporte', icon: '🆘' },
   { to: '/admin/reportes', label: 'Reportes', icon: '📄' },
 ];
 

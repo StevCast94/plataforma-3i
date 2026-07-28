@@ -6,6 +6,7 @@ import { Input, Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { WhatsAppButton } from '@/components/admin/WhatsAppButton';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
 import { formatCurrency } from '@/lib/utils';
@@ -78,9 +79,17 @@ export default function AdminPurchasesPage() {
     {
       header: '',
       cell: (p) => (
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           {p.status === 'pending' && (
             <Button size="sm" onClick={() => setToConfirm(p)}>Confirmar</Button>
+          )}
+          {(p.status === 'confirmed' || p.status === 'completed') && (
+            <WhatsAppButton
+              phone={p.customerPhone}
+              name={p.customerName}
+              variant="icon"
+              message={`Hola ${p.customerName.split(' ')[0]}, tu compra de "${p.product?.name ?? ''}" con Grupo 3i quedó confirmada. Aquí tienes tu comprobante: ${window.location.origin}/#/confirmacion/${p.id}`}
+            />
           )}
           {isSuperadmin && (
             <Button size="sm" variant="outline" onClick={() => setEditing(p)}>Editar</Button>

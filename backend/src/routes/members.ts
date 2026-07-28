@@ -309,6 +309,38 @@ memberRoutes.post('/ascend', authMember, async (req: MemberRequest, res) => {
   }
 });
 
+// POST /api/members/support-request — recuperar contraseña / soporte general.
+// Sin email: queda registrado para que el staff lo vea en Admin > Soporte y
+// resetee la contraseña manualmente. El frontend abre WhatsApp en paralelo.
+memberRoutes.post('/support-request', async (req, res) => {
+  try {
+    const { type, name, email, phone, message } = req.body ?? {};
+    if (!email || !EMAIL_RE.test(String(email))) {
+      res.status(400).json({ error: 'Email inválido' });
+      return;
+    }
+    const normalizedEmail = String(email).toLowerCase().trim();
+    const member = await prisma.referralMember.findUnique({
+      where: { email: normalizedEmail },
+      select: { id: true },
+    });
+    const request = await prisma.supportRequest.create({
+      data: {
+        type: type === 'other' ? 'other' : 'password_reset',
+        memberId: member?.id ?? null,
+        name: name ? String(name).trim() : null,
+        email: normalizedEmail,
+        phone: phone ? String(phone).trim() : null,
+        message: message ? String(message).trim() : null,
+      },
+    });
+    res.status(201).json({ id: request.id });
+  } catch (err) {
+    console.error('POST /api/members/support-request', err);
+    res.status(400).json({ error: 'Error al registrar la solicitud' });
+  }
+});
+
 // GET /api/members/:code — info pública mínima de un miembro por su código
 memberRoutes.get('/:code', async (req, res) => {
   const member = await prisma.referralMember.findUnique({

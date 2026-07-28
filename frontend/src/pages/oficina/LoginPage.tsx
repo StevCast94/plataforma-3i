@@ -2,14 +2,47 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 import { Seo } from '@/components/shared/Seo';
 import { useAuth } from '@/hooks/useAuth';
+import { useSectionContent } from '@/hooks/useSiteContent';
+import { useToast } from '@/components/shared/Toast';
+import { api } from '@/lib/api';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { data: contact } = useSectionContent('contact');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSending, setForgotSending] = useState(false);
+
+  async function submitForgot() {
+    if (!forgotEmail.trim()) return;
+    setForgotSending(true);
+    try {
+      await api.post('/members/support-request', {
+        type: 'password_reset',
+        email: forgotEmail.trim(),
+        message: 'Solicitud de recuperación de contraseña desde el login.',
+      });
+    } catch {
+      // Best-effort: aunque falle el registro, igual abrimos WhatsApp para no dejar al socio sin salida.
+    } finally {
+      setForgotSending(false);
+    }
+    const digits = (contact?.whatsapp ?? '').replace(/\D/g, '');
+    if (digits) {
+      const msg = `Hola, olvidé mi contraseña de la Oficina Virtual. Mi correo es: ${forgotEmail.trim()}. ¿Me ayudan a recuperarla?`;
+      window.open(`https://wa.me/${digits}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+    toast('Solicitud enviada. Un asesor te contactará por WhatsApp.', 'success');
+    setForgotOpen(false);
+    setForgotEmail('');
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,7 +73,11 @@ export default function LoginPage() {
           <Input name="email" type="email" label="Email" placeholder="tucorreo@ejemplo.com" required />
           <Input name="password" type="password" label="Contraseña" placeholder="••••••••" required />
           {error && <p className="text-sm text-red-600">{error}</p>}
-          <button type="button" className="text-sm text-accent hover:underline">
+          <button
+            type="button"
+            onClick={() => setForgotOpen(true)}
+            className="text-sm text-accent hover:underline"
+          >
             ¿Olvidaste tu contraseña?
           </button>
           <Button type="submit" size="lg" disabled={loading} className="w-full">
@@ -55,6 +92,29 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
+
+      <Modal open={forgotOpen} onClose={() => setForgotOpen(false)} title="Recuperar contraseña">
+        <div className="space-y-4">
+          <p className="text-sm text-brand-gray">
+            Escríbenos tu correo y te contactaremos por WhatsApp para verificar tu identidad y
+            restablecer tu contraseña.
+          </p>
+          <Input
+            label="Email de tu cuenta"
+            type="email"
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            placeholder="tucorreo@ejemplo.com"
+          />
+          <Button
+            className="w-full"
+            disabled={forgotSending || !forgotEmail.trim()}
+            onClick={submitForgot}
+          >
+            {forgotSending ? 'Enviando…' : 'Solicitar por WhatsApp'}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

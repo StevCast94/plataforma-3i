@@ -299,6 +299,24 @@ model AuditLog {
   createdAt DateTime   @default(now())
 }
 
+// Solicitudes de soporte (hoy solo "recuperar contraseña"). Sin email: el
+// socio abre WhatsApp con soporte y esto queda como registro visible para el
+// staff, que resetea la contraseña manualmente desde Admin > Soporte.
+model SupportRequest {
+  id        String   @id @default(uuid())
+  type      String   @default("password_reset") // password_reset | other
+  memberId  String? // FK ReferralMember si el email coincide con un socio
+  name      String?
+  email     String
+  phone     String?
+  message   String?  @db.Text
+  status    String   @default("pending") // pending | resolved
+  resolvedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([status])
+}
+
 // ============================================================
 // FASE 4 — RED SOCIAL DE LA COMUNIDAD
 // userId es el id de ReferralMember (sin FK Prisma: se resuelve manualmente).

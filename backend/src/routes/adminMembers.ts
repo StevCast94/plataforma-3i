@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import bcrypt from 'bcryptjs';
 import { prisma } from '../prisma';
 import { requireAdmin, requireSuperadmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
@@ -129,6 +130,29 @@ adminMemberRoutes.put('/:id/status', async (req: AuthedRequest, res) => {
   } catch (err) {
     console.error('PUT /api/admin/members/:id/status', err);
     res.status(400).json({ error: 'Error al cambiar estado' });
+  }
+});
+
+// PUT /api/admin/members/:id/reset-password — resetear manualmente (sin email).
+// body: { newPassword: string }
+adminMemberRoutes.put('/:id/reset-password', requireSuperadmin, async (req: AuthedRequest, res) => {
+  try {
+    const { newPassword } = req.body ?? {};
+    if (!newPassword || String(newPassword).length < 6) {
+      res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+      return;
+    }
+    const passwordHash = await bcrypt.hash(String(newPassword), 10);
+    const member = await prisma.referralMember.update({
+      where: { id: req.params.id },
+      data: { passwordHash, claimed: true },
+      select: { id: true, fullName: true, email: true },
+    });
+    await audit(req.staff?.staffId, 'update', 'member', req.params.id, { action: 'reset_password' });
+    res.json({ ok: true, member });
+  } catch (err) {
+    console.error('PUT /api/admin/members/:id/reset-password', err);
+    res.status(400).json({ error: (err as Error).message || 'Error al resetear la contraseña' });
   }
 });
 

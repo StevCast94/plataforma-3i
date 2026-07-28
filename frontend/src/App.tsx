@@ -33,6 +33,7 @@ const ToolsPage = lazy(() => import('@/pages/oficina/ToolsPage'));
 const CalculatorPage = lazy(() => import('@/pages/oficina/CalculatorPage'));
 const TravelBookingsPage = lazy(() => import('@/pages/oficina/TravelBookingsPage'));
 const ReglamentoPage = lazy(() => import('@/pages/legal/ReglamentoPage'));
+const PurchaseConfirmationPage = lazy(() => import('@/pages/legal/PurchaseConfirmationPage'));
 
 // Panel de administración (staff)
 const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage'));
@@ -48,6 +49,7 @@ const AdminPurchasesPage = lazy(() => import('@/pages/admin/AdminPurchasesPage')
 const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
 const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
 const AdminTravelClaimsPage = lazy(() => import('@/pages/admin/AdminTravelClaimsPage'));
+const AdminSupportPage = lazy(() => import('@/pages/admin/AdminSupportPage'));
 
 // Comunidad (red social)
 const CommunityFeedPage = lazy(() => import('@/pages/comunidad/CommunityFeedPage'));
@@ -84,6 +86,9 @@ export default function App() {
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
 
+              {/* Comprobante de compra — público, standalone, imprimible (se comparte por WhatsApp) */}
+              <Route path="confirmacion/:id" element={<PurchaseConfirmationPage />} />
+
               {/* Oficina — páginas públicas (standalone, sin layout de oficina) */}
               <Route path="oficina" element={<OfficeLanding />} />
               <Route path="oficina/login" element={<LoginPage />} />
@@ -116,6 +121,7 @@ export default function App() {
                 <Route path="compras" element={<AdminPurchasesPage />} />
                 <Route path="reportes" element={<AdminReportsPage />} />
                 <Route path="garantias" element={<AdminTravelClaimsPage />} />
+                <Route path="soporte" element={<AdminSupportPage />} />
                 <Route path="configuracion" element={<AdminSettingsPage />} />
               </Route>
 

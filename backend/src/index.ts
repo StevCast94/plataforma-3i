@@ -8,6 +8,7 @@ import { contentRoutes } from './routes/content';
 import { contactRoutes } from './routes/contact';
 import { projectRoutes } from './routes/projects';
 import { productRoutes } from './routes/products';
+import { purchaseRoutes } from './routes/purchases';
 import { memberRoutes } from './routes/members';
 import { referralRoutes } from './routes/referrals';
 import { referralLinkRoutes } from './routes/referralLinks';
@@ -26,6 +27,7 @@ import { adminPayoutRoutes } from './routes/adminPayouts';
 import { adminPurchaseRoutes } from './routes/adminPurchases';
 import { adminReportRoutes } from './routes/adminReports';
 import { adminSettingsRoutes } from './routes/adminSettings';
+import { adminSupportRoutes } from './routes/adminSupport';
 import { communityPostRoutes, communityCommentRoutes } from './routes/communityPosts';
 import { communityGroupRoutes } from './routes/communityGroups';
 import { communityEventRoutes } from './routes/communityEvents';
@@ -54,6 +56,7 @@ app.use('/api/content', contentRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/purchases', purchaseRoutes);
 
 // Fase 2 — Programa de referidos (oficina virtual)
 app.use('/api/members', memberRoutes);
@@ -76,6 +79,7 @@ app.use('/api/admin/payouts', adminPayoutRoutes);
 app.use('/api/admin/purchases', adminPurchaseRoutes);
 app.use('/api/admin/report', adminReportRoutes);
 app.use('/api/admin', adminSettingsRoutes);
+app.use('/api/admin/support-requests', adminSupportRoutes);
 
 // Fase 4 — Red social de la comunidad
 app.use('/api/community/posts', communityPostRoutes);
