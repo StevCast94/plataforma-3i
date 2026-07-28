@@ -1,11 +1,17 @@
-import { useState, type ReactNode } from 'react';
+import { Fragment, useState, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { FileText } from 'lucide-react';
 import { cld } from '@/lib/cloudinary';
 import { Button } from '@/components/ui/Button';
 import { AmenityIcon } from '@/lib/amenityIcons';
 import { Lightbox } from './Lightbox';
-import { resolveIcon, resolveBrochureContent } from '@/lib/brochureContent';
+import {
+  resolveIcon,
+  resolveBrochureContent,
+  resolveSectionOrder,
+  isSectionHidden,
+  type BrochureSectionId,
+} from '@/lib/brochureContent';
 import type { Project } from '@shared/types';
 
 // ============================================================
@@ -228,6 +234,308 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
   const bannerImage = gallery[Math.min(4, gallery.length - 1)];
   const c = resolveBrochureContent(project.brochureContent);
 
+  // Registro de bloques reordenables/ocultables (Nivel 1 del editor de página).
+  // El encabezado + hero quedan fijos arriba; todo lo demás se arma por `layout`.
+  const registry: Record<BrochureSectionId, ReactNode> = {
+    pillars: (
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        {c.pillars.map((p, i) => {
+          const Icon = resolveIcon(p.icon);
+          return (
+            <Reveal key={p.title} delay={i * 0.06}>
+              <div className="h-full rounded-2xl bg-primary p-6 text-white">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-secondary ring-1 ring-white/20">
+                  <Icon className="h-5 w-5" strokeWidth={1.6} />
+                </span>
+                <h4 className="mt-3 font-serif text-lg">{p.title}</h4>
+                <p className="mt-1.5 text-sm leading-relaxed text-white/70">{p.body}</p>
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+    ),
+
+    keyFacts: (
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {c.keyFacts.map((f, i) => {
+          const Icon = resolveIcon(f.icon);
+          return (
+            <Reveal key={f.label} delay={i * 0.05}>
+              <div className="flex items-center gap-4 rounded-2xl bg-light p-5">
+                <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-white text-accent ring-1 ring-secondary/30">
+                  <Icon className="h-5 w-5" strokeWidth={1.6} />
+                </span>
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-brand-gray">{f.label}</p>
+                  <p className="font-semibold text-primary">{f.value}</p>
+                </div>
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+    ),
+
+    gallery: gallery.length > 0 && (
+      <div className="mt-16">
+        <Reveal>
+          <SectionTitle eyebrow="Recorrido visual">Vive {project.name}</SectionTitle>
+        </Reveal>
+        <Reveal>
+          <MosaicGallery images={gallery} alt={project.name} onOpen={setLightboxIndex} />
+        </Reveal>
+      </div>
+    ),
+
+    overview: (
+      <div className="mt-16">
+        <Reveal>
+          <SectionTitle>Vista General</SectionTitle>
+        </Reveal>
+        <div className="grid gap-8 lg:grid-cols-5 lg:items-center">
+          <Reveal delay={0.05} className="lg:col-span-3">
+            <p className="leading-relaxed text-primary/80">{c.overviewText}</p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              {c.overviewStats.map((s) => (
+                <div key={s.small} className="rounded-2xl bg-primary p-5 text-center text-white">
+                  <p className="font-serif text-2xl font-bold text-secondary">{s.big}</p>
+                  <p className="mt-1 text-xs text-white/70">{s.small}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+          {sideImage && (
+            <Reveal delay={0.1} className="lg:col-span-2">
+              <button
+                onClick={() => setLightboxIndex(gallery.indexOf(sideImage))}
+                className="group relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-2xl"
+              >
+                <img
+                  src={cld(sideImage, { width: 700 })}
+                  alt={`${project.name} vista`}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </button>
+            </Reveal>
+          )}
+        </div>
+      </div>
+    ),
+
+    location: (
+      <div className="mt-16">
+        <Reveal>
+          <SectionTitle eyebrow="A pasos del mar">Ubicación privilegiada</SectionTitle>
+        </Reveal>
+        <Reveal>
+          <LocationMap
+            lat={project.mapLat ?? DEFAULT_MAP_LAT}
+            lng={project.mapLng ?? DEFAULT_MAP_LNG}
+            label={project.name}
+            routeStats={c.routeStats}
+          />
+        </Reveal>
+      </div>
+    ),
+
+    investment: (
+      <div className="mt-16">
+        <Reveal>
+          <SectionTitle>Plan de Inversión</SectionTitle>
+        </Reveal>
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* Modelo de pago */}
+          <Reveal>
+            <div className="rounded-2xl bg-light p-6">
+              <h4 className="mb-4 font-serif text-xl text-primary">Modelo de pago</h4>
+              <dl className="divide-y divide-black/5">
+                {c.paymentPlan.map((p) => (
+                  <div key={p.label} className="flex items-center justify-between py-3">
+                    <dt className="text-sm text-brand-gray">{p.label}</dt>
+                    <dd className="text-right font-semibold text-primary">{p.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </Reveal>
+
+          {/* Proyección de valor + gráfico animado */}
+          <Reveal delay={0.1}>
+            <div className="rounded-2xl bg-light p-6">
+              <h4 className="mb-4 font-serif text-xl text-primary">Proyección de valor</h4>
+              <div className="space-y-3">
+                {c.valueProjection.map((v) => (
+                  <div key={v.year} className="rounded-xl bg-white p-4">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-xs uppercase tracking-wider text-brand-gray">
+                        {v.year} · {v.label}
+                      </span>
+                      <span className="font-serif text-xl font-bold text-accent">{fmt(v.value)}</span>
+                    </div>
+                    <p className="text-xs text-brand-gray">{v.note}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6">
+                <p className="mb-1 text-xs uppercase tracking-wider text-brand-gray">
+                  Crecimiento estimado (Año 0 → {c.chart.length - 1})
+                </p>
+                <GrowthChart data={c.chart} years={c.chart.map((_, i) => `A${i}`)} />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Renting */}
+        <Reveal>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {c.rentingStats.map((s) => (
+              <div key={s.l} className="rounded-2xl border border-black/10 p-5 text-center">
+                <p className="font-serif text-2xl font-bold text-primary">{s.v}</p>
+                <p className="mt-1 text-sm text-brand-gray">{s.l}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    ),
+
+    amenities: (
+      <div className="mt-16">
+        <Reveal>
+          <SectionTitle>Amenidades</SectionTitle>
+        </Reveal>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {c.amenities.map((a, i) => (
+            <Reveal key={a} delay={i * 0.04}>
+              <div className="flex flex-col items-center gap-2 rounded-2xl bg-light p-5 text-center">
+                <AmenityIcon name={a} className="h-7 w-7 text-accent" />
+                <span className="text-sm font-medium text-primary">{a}</span>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    ),
+
+    whyInvest: (
+      <div className="mt-16">
+        <Reveal>
+          <SectionTitle>¿Por qué invertir?</SectionTitle>
+        </Reveal>
+        <div className="grid gap-5 sm:grid-cols-2">
+          {c.whyInvest.map((w, i) => {
+            const Icon = resolveIcon(w.icon);
+            return (
+              <Reveal key={w.title} delay={i * 0.05}>
+                <div className="h-full rounded-2xl bg-light p-6">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-accent ring-1 ring-secondary/30">
+                    <Icon className="h-5 w-5" strokeWidth={1.6} />
+                  </span>
+                  <h4 className="mt-3 font-serif text-xl text-primary">{w.title}</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-brand-gray">{w.body}</p>
+                </div>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        {/* Seguros + garantía */}
+        <Reveal>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {c.insurances.map((s) => (
+              <div key={s.label} className="flex items-center justify-between rounded-xl bg-primary px-5 py-4 text-white">
+                <span className="text-sm">{s.label}</span>
+                <span className="font-serif text-lg font-bold text-secondary">{s.value}</span>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    ),
+
+    banner: !!bannerImage && (
+      <Reveal>
+        <div className="relative isolate mt-16 overflow-hidden rounded-3xl">
+          <img
+            src={cld(bannerImage, { width: 1400 })}
+            alt={`${project.name} playa`}
+            className="absolute inset-0 -z-10 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/90 via-primary/60 to-transparent" />
+          <div className="max-w-md px-6 py-16 text-white sm:px-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
+              {c.bannerEyebrow}
+            </p>
+            <h3 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">{c.bannerTitle}</h3>
+            <p className="mt-3 text-white/80">{c.bannerBody}</p>
+          </div>
+        </div>
+      </Reveal>
+    ),
+
+    testimonials: (
+      <div className="mt-16">
+        <Reveal>
+          <SectionTitle>Testimonios</SectionTitle>
+        </Reveal>
+        <div className="grid gap-5 md:grid-cols-3">
+          {c.testimonials.map((t, i) => (
+            <Reveal key={t.name} delay={i * 0.05}>
+              <figure className="h-full rounded-2xl bg-light p-6">
+                <blockquote className="text-sm leading-relaxed text-primary/80">“{t.text}”</blockquote>
+                <figcaption className="mt-4">
+                  <p className="font-semibold text-primary">{t.name}</p>
+                  <p className="text-xs text-brand-gray">{t.role}</p>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    ),
+
+    cta: (
+      <Reveal>
+        <div className="mt-16 overflow-hidden rounded-3xl bg-primary px-6 py-12 text-center text-white sm:px-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
+            Tu oportunidad te espera
+          </p>
+          <h3 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">¿Listo para invertir?</h3>
+          <p className="mt-2 text-white/70">{c.ctaSubtitle}</p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-center">
+            {c.ctaStats.map((s) => (
+              <div key={s.l}>
+                <p className="font-serif text-2xl font-bold text-secondary">{s.v}</p>
+                <p className="text-xs text-white/60">{s.l}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button size="lg" onClick={onRequestInfo}>
+              Solicitar información
+            </Button>
+            {c.pdfUrl && (
+              <a href={c.pdfUrl} download target="_blank" rel="noreferrer">
+                <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white hover:text-primary">
+                  Descargar brochure PDF
+                </Button>
+              </a>
+            )}
+          </div>
+
+          {c.contactLine && <p className="mt-6 text-xs text-white/50">{c.contactLine}</p>}
+        </div>
+      </Reveal>
+    ),
+  };
+
+  const order = resolveSectionOrder(c.layout);
+
   return (
     <section className="bg-white">
       <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
@@ -244,7 +552,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           </div>
         </Reveal>
 
-        {/* HERO DEL BROCHURE */}
+        {/* HERO DEL BROCHURE — siempre primero, fijo */}
         <Reveal>
           <div className="relative isolate overflow-hidden rounded-3xl">
             {cover && (
@@ -266,294 +574,10 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           </div>
         </Reveal>
 
-        {/* PILARES DE VALOR */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          {c.pillars.map((p, i) => {
-            const Icon = resolveIcon(p.icon);
-            return (
-              <Reveal key={p.title} delay={i * 0.06}>
-                <div className="h-full rounded-2xl bg-primary p-6 text-white">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-secondary ring-1 ring-white/20">
-                    <Icon className="h-5 w-5" strokeWidth={1.6} />
-                  </span>
-                  <h4 className="mt-3 font-serif text-lg">{p.title}</h4>
-                  <p className="mt-1.5 text-sm leading-relaxed text-white/70">{p.body}</p>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
-
-        {/* DATOS CLAVE */}
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {c.keyFacts.map((f, i) => {
-            const Icon = resolveIcon(f.icon);
-            return (
-              <Reveal key={f.label} delay={i * 0.05}>
-                <div className="flex items-center gap-4 rounded-2xl bg-light p-5">
-                  <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-white text-accent ring-1 ring-secondary/30">
-                    <Icon className="h-5 w-5" strokeWidth={1.6} />
-                  </span>
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-brand-gray">{f.label}</p>
-                    <p className="font-semibold text-primary">{f.value}</p>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
-
-        {/* GALERÍA CINEMATOGRÁFICA */}
-        {gallery.length > 0 && (
-          <div className="mt-16">
-            <Reveal>
-              <SectionTitle eyebrow="Recorrido visual">Vive {project.name}</SectionTitle>
-            </Reveal>
-            <Reveal>
-              <MosaicGallery images={gallery} alt={project.name} onOpen={setLightboxIndex} />
-            </Reveal>
-          </div>
+        {/* Resto de bloques: orden y visibilidad definidos en el editor de página */}
+        {order.map((id) =>
+          isSectionHidden(id, c.layout) ? null : <Fragment key={id}>{registry[id]}</Fragment>,
         )}
-
-        {/* VISTA GENERAL */}
-        <div className="mt-16">
-          <Reveal>
-            <SectionTitle>Vista General</SectionTitle>
-          </Reveal>
-          <div className="grid gap-8 lg:grid-cols-5 lg:items-center">
-            <Reveal delay={0.05} className="lg:col-span-3">
-              <p className="leading-relaxed text-primary/80">{c.overviewText}</p>
-              <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                {c.overviewStats.map((s) => (
-                  <div key={s.small} className="rounded-2xl bg-primary p-5 text-center text-white">
-                    <p className="font-serif text-2xl font-bold text-secondary">{s.big}</p>
-                    <p className="mt-1 text-xs text-white/70">{s.small}</p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-            {sideImage && (
-              <Reveal delay={0.1} className="lg:col-span-2">
-                <button
-                  onClick={() => setLightboxIndex(gallery.indexOf(sideImage))}
-                  className="group relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-2xl"
-                >
-                  <img
-                    src={cld(sideImage, { width: 700 })}
-                    alt={`${project.name} vista`}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </button>
-              </Reveal>
-            )}
-          </div>
-        </div>
-
-        {/* UBICACIÓN */}
-        <div className="mt-16">
-          <Reveal>
-            <SectionTitle eyebrow="A pasos del mar">Ubicación privilegiada</SectionTitle>
-          </Reveal>
-          <Reveal>
-            <LocationMap
-              lat={project.mapLat ?? DEFAULT_MAP_LAT}
-              lng={project.mapLng ?? DEFAULT_MAP_LNG}
-              label={project.name}
-              routeStats={c.routeStats}
-            />
-          </Reveal>
-        </div>
-
-        {/* PLAN DE INVERSIÓN */}
-        <div className="mt-16">
-          <Reveal>
-            <SectionTitle>Plan de Inversión</SectionTitle>
-          </Reveal>
-          <div className="grid gap-8 lg:grid-cols-2">
-            {/* Modelo de pago */}
-            <Reveal>
-              <div className="rounded-2xl bg-light p-6">
-                <h4 className="mb-4 font-serif text-xl text-primary">Modelo de pago</h4>
-                <dl className="divide-y divide-black/5">
-                  {c.paymentPlan.map((p) => (
-                    <div key={p.label} className="flex items-center justify-between py-3">
-                      <dt className="text-sm text-brand-gray">{p.label}</dt>
-                      <dd className="text-right font-semibold text-primary">{p.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            </Reveal>
-
-            {/* Proyección de valor + gráfico animado */}
-            <Reveal delay={0.1}>
-              <div className="rounded-2xl bg-light p-6">
-                <h4 className="mb-4 font-serif text-xl text-primary">Proyección de valor</h4>
-                <div className="space-y-3">
-                  {c.valueProjection.map((v) => (
-                    <div key={v.year} className="rounded-xl bg-white p-4">
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-xs uppercase tracking-wider text-brand-gray">
-                          {v.year} · {v.label}
-                        </span>
-                        <span className="font-serif text-xl font-bold text-accent">{fmt(v.value)}</span>
-                      </div>
-                      <p className="text-xs text-brand-gray">{v.note}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6">
-                  <p className="mb-1 text-xs uppercase tracking-wider text-brand-gray">
-                    Crecimiento estimado (Año 0 → {c.chart.length - 1})
-                  </p>
-                  <GrowthChart data={c.chart} years={c.chart.map((_, i) => `A${i}`)} />
-                </div>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* Renting */}
-          <Reveal>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {c.rentingStats.map((s) => (
-                <div key={s.l} className="rounded-2xl border border-black/10 p-5 text-center">
-                  <p className="font-serif text-2xl font-bold text-primary">{s.v}</p>
-                  <p className="mt-1 text-sm text-brand-gray">{s.l}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-
-        {/* AMENIDADES */}
-        <div className="mt-16">
-          <Reveal>
-            <SectionTitle>Amenidades</SectionTitle>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {c.amenities.map((a, i) => (
-              <Reveal key={a} delay={i * 0.04}>
-                <div className="flex flex-col items-center gap-2 rounded-2xl bg-light p-5 text-center">
-                  <AmenityIcon name={a} className="h-7 w-7 text-accent" />
-                  <span className="text-sm font-medium text-primary">{a}</span>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-
-        {/* ¿POR QUÉ INVERTIR? */}
-        <div className="mt-16">
-          <Reveal>
-            <SectionTitle>¿Por qué invertir?</SectionTitle>
-          </Reveal>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {c.whyInvest.map((w, i) => {
-              const Icon = resolveIcon(w.icon);
-              return (
-                <Reveal key={w.title} delay={i * 0.05}>
-                  <div className="h-full rounded-2xl bg-light p-6">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-accent ring-1 ring-secondary/30">
-                      <Icon className="h-5 w-5" strokeWidth={1.6} />
-                    </span>
-                    <h4 className="mt-3 font-serif text-xl text-primary">{w.title}</h4>
-                    <p className="mt-2 text-sm leading-relaxed text-brand-gray">{w.body}</p>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-
-          {/* Seguros + garantía */}
-          <Reveal>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {c.insurances.map((s) => (
-                <div key={s.label} className="flex items-center justify-between rounded-xl bg-primary px-5 py-4 text-white">
-                  <span className="text-sm">{s.label}</span>
-                  <span className="font-serif text-lg font-bold text-secondary">{s.value}</span>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-
-        {/* BANNER EMOTIVO */}
-        {bannerImage && (
-          <Reveal>
-            <div className="relative isolate mt-16 overflow-hidden rounded-3xl">
-              <img
-                src={cld(bannerImage, { width: 1400 })}
-                alt={`${project.name} playa`}
-                className="absolute inset-0 -z-10 h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/90 via-primary/60 to-transparent" />
-              <div className="max-w-md px-6 py-16 text-white sm:px-12">
-                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
-                  {c.bannerEyebrow}
-                </p>
-                <h3 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">{c.bannerTitle}</h3>
-                <p className="mt-3 text-white/80">{c.bannerBody}</p>
-              </div>
-            </div>
-          </Reveal>
-        )}
-
-        {/* TESTIMONIOS */}
-        <div className="mt-16">
-          <Reveal>
-            <SectionTitle>Testimonios</SectionTitle>
-          </Reveal>
-          <div className="grid gap-5 md:grid-cols-3">
-            {c.testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={i * 0.05}>
-                <figure className="h-full rounded-2xl bg-light p-6">
-                  <blockquote className="text-sm leading-relaxed text-primary/80">“{t.text}”</blockquote>
-                  <figcaption className="mt-4">
-                    <p className="font-semibold text-primary">{t.name}</p>
-                    <p className="text-xs text-brand-gray">{t.role}</p>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA FINAL DEL BROCHURE */}
-        <Reveal>
-          <div className="mt-16 overflow-hidden rounded-3xl bg-primary px-6 py-12 text-center text-white sm:px-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
-              Tu oportunidad te espera
-            </p>
-            <h3 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">¿Listo para invertir?</h3>
-            <p className="mt-2 text-white/70">{c.ctaSubtitle}</p>
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-center">
-              {c.ctaStats.map((s) => (
-                <div key={s.l}>
-                  <p className="font-serif text-2xl font-bold text-secondary">{s.v}</p>
-                  <p className="text-xs text-white/60">{s.l}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={onRequestInfo}>
-                Solicitar información
-              </Button>
-              {c.pdfUrl && (
-                <a href={c.pdfUrl} download target="_blank" rel="noreferrer">
-                  <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white hover:text-primary">
-                    Descargar brochure PDF
-                  </Button>
-                </a>
-              )}
-            </div>
-
-            {c.contactLine && <p className="mt-6 text-xs text-white/50">{c.contactLine}</p>}
-          </div>
-        </Reveal>
       </div>
 
       <Lightbox

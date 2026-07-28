@@ -90,6 +90,41 @@ export interface BrochureTestimonial {
   text: string;
 }
 
+/** Id de cada bloque reordenable/ocultable del brochure (el hero siempre va primero, fijo). */
+export type BrochureSectionId =
+  | 'pillars'
+  | 'keyFacts'
+  | 'gallery'
+  | 'overview'
+  | 'location'
+  | 'investment'
+  | 'amenities'
+  | 'whyInvest'
+  | 'banner'
+  | 'testimonials'
+  | 'cta';
+
+export const SECTION_DEFS: { id: BrochureSectionId; label: string }[] = [
+  { id: 'pillars', label: 'Pilares de valor' },
+  { id: 'keyFacts', label: 'Datos clave' },
+  { id: 'gallery', label: 'Galería / recorrido visual' },
+  { id: 'overview', label: 'Vista general' },
+  { id: 'location', label: 'Ubicación (mapa)' },
+  { id: 'investment', label: 'Plan de inversión' },
+  { id: 'amenities', label: 'Amenidades' },
+  { id: 'whyInvest', label: '¿Por qué invertir?' },
+  { id: 'banner', label: 'Banner emotivo' },
+  { id: 'testimonials', label: 'Testimonios' },
+  { id: 'cta', label: 'Cierre (CTA final)' },
+];
+
+const DEFAULT_ORDER: BrochureSectionId[] = SECTION_DEFS.map((s) => s.id);
+
+export interface BrochureLayout {
+  order?: BrochureSectionId[];
+  hidden?: BrochureSectionId[];
+}
+
 export interface BrochureContent {
   eyebrow?: string;
   heroTagline?: string;
@@ -114,6 +149,20 @@ export interface BrochureContent {
   ctaStats?: BrochureStat[];
   pdfUrl?: string;
   contactLine?: string;
+  /** Orden y visibilidad de secciones (Nivel 1 del editor de página). */
+  layout?: BrochureLayout;
+}
+
+/** Orden final de secciones a renderizar: respeta el guardado, agrega al final
+ * cualquier sección nueva que no estuviera contemplada (forward-compat). */
+export function resolveSectionOrder(layout?: BrochureLayout): BrochureSectionId[] {
+  const saved = layout?.order?.filter((id) => DEFAULT_ORDER.includes(id)) ?? [];
+  const missing = DEFAULT_ORDER.filter((id) => !saved.includes(id));
+  return [...saved, ...missing];
+}
+
+export function isSectionHidden(id: BrochureSectionId, layout?: BrochureLayout): boolean {
+  return !!layout?.hidden?.includes(id);
 }
 
 /** Contenido por defecto (datos reales de Ibiza Condohotel) — se usa como respaldo campo por campo. */
@@ -244,6 +293,7 @@ export const DEFAULT_BROCHURE_CONTENT: Required<BrochureContent> = {
   ],
   pdfUrl: '/brochures/ibiza-condohotel.pdf',
   contactLine: 'condohotelibizasa@gmail.com · Gerencia: 0969369398 · www.grupo3i.com',
+  layout: {},
 };
 
 /** Combina el contenido del proyecto con los valores por defecto, campo a campo. */
@@ -275,5 +325,6 @@ export function resolveBrochureContent(
     ctaStats: c.ctaStats?.length ? c.ctaStats : DEFAULT_BROCHURE_CONTENT.ctaStats,
     pdfUrl: c.pdfUrl ?? DEFAULT_BROCHURE_CONTENT.pdfUrl,
     contactLine: c.contactLine ?? DEFAULT_BROCHURE_CONTENT.contactLine,
+    layout: c.layout ?? DEFAULT_BROCHURE_CONTENT.layout,
   };
 }

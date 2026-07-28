@@ -1,6 +1,14 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import { GripVertical, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { ICON_KEYS, DEFAULT_BROCHURE_CONTENT, type BrochureContent } from '@/lib/brochureContent';
+import {
+  ICON_KEYS,
+  DEFAULT_BROCHURE_CONTENT,
+  SECTION_DEFS,
+  resolveSectionOrder,
+  type BrochureContent,
+  type BrochureSectionId,
+} from '@/lib/brochureContent';
 
 // ============================================================
 // Editor estructurado del Brochure Digital — reemplaza el JSON a mano
@@ -115,6 +123,78 @@ function RepeatList<T>({
   );
 }
 
+/**
+ * Nivel 1 del editor de página: arrastrar para reordenar los bloques de la
+ * ficha y un botón de ojo para mostrar/ocultar cada uno. Drag & drop nativo
+ * (HTML5, sin librerías) — suficiente para reordenar una lista corta.
+ */
+function SectionOrderEditor({
+  layout,
+  onChange,
+}: {
+  layout: BrochureContent['layout'];
+  onChange: (layout: BrochureContent['layout']) => void;
+}) {
+  const order = resolveSectionOrder(layout);
+  const hidden = new Set(layout?.hidden ?? []);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+
+  function move(from: number, to: number) {
+    if (from === to) return;
+    const next = [...order];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    onChange({ ...layout, order: next });
+  }
+
+  function toggleHidden(id: BrochureSectionId) {
+    const next = new Set(hidden);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    onChange({ ...layout, hidden: [...next] });
+  }
+
+  return (
+    <div className="space-y-1.5">
+      {order.map((id, i) => {
+        const def = SECTION_DEFS.find((s) => s.id === id);
+        const isHidden = hidden.has(id);
+        return (
+          <div
+            key={id}
+            draggable
+            onDragStart={() => setDragIndex(i)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragIndex !== null) move(dragIndex, i);
+              setDragIndex(null);
+            }}
+            onDragEnd={() => setDragIndex(null)}
+            className={`flex items-center gap-2 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm ${
+              isHidden ? 'opacity-50' : ''
+            } ${dragIndex === i ? 'ring-2 ring-secondary' : ''}`}
+          >
+            <span className="cursor-grab text-brand-gray active:cursor-grabbing" aria-hidden="true">
+              <GripVertical className="h-4 w-4" />
+            </span>
+            <span className="flex-1 text-primary">{def?.label ?? id}</span>
+            <button
+              type="button"
+              onClick={() => toggleHidden(id)}
+              className="text-brand-gray hover:text-primary"
+              aria-label={isHidden ? `Mostrar ${def?.label}` : `Ocultar ${def?.label}`}
+              title={isHidden ? 'Oculto — clic para mostrar' : 'Visible — clic para ocultar'}
+            >
+              {isHidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 interface Props {
   value: BrochureContent;
   onChange: (v: BrochureContent) => void;
@@ -132,7 +212,15 @@ export function BrochureContentEditor({ value, onChange }: Props) {
         </Button>
       </div>
 
-      <Section title="Portada (hero)" defaultOpen>
+      <Section
+        title="Orden y visibilidad de secciones"
+        hint="Arrastra ⠿ para reordenar los bloques de la página, o el ojo para ocultar uno sin borrar su contenido. La portada (hero) siempre va primera."
+        defaultOpen
+      >
+        <SectionOrderEditor layout={c.layout} onChange={(layout) => set('layout', layout)} />
+      </Section>
+
+      <Section title="Portada (hero)">
         <TextInput label="Texto pequeño sobre el título" {...field(c, onChange, 'eyebrow')} />
         <TextInput label="Frase debajo del nombre del proyecto" {...field(c, onChange, 'heroTagline')} />
         <TextInput label="Línea de ubicación / tipo de propiedad" {...field(c, onChange, 'heroLocation')} />

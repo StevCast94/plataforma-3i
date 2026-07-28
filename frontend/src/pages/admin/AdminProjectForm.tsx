@@ -4,10 +4,12 @@ import { Input, Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { CloudinaryUpload } from '@/components/admin/CloudinaryUpload';
 import { BrochureContentEditor } from '@/components/admin/BrochureContentEditor';
+import { BrochureDigital } from '@/components/shared/BrochureDigital';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
 import type { BrochureContent } from '@/lib/brochureContent';
 import type { AdminProject } from '@/lib/adminTypes';
+import type { Project } from '@shared/types';
 
 const slugify = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
@@ -65,6 +67,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [advancedMode, setAdvancedMode] = useState(false);
   const [brochureJson, setBrochureJson] = useState('');
   const [brochureJsonError, setBrochureJsonError] = useState('');
+  const [previewing, setPreviewing] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -143,6 +146,39 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     }
   }
 
+  // Objeto de proyecto "en vivo" para la vista previa: el mismo componente que
+  // ve el público, alimentado con los datos aún sin guardar del formulario.
+  function buildPreviewProject(): Project {
+    let content: BrochureContent = brochureContent;
+    if (advancedMode) {
+      try {
+        content = brochureJson.trim() ? JSON.parse(brochureJson) : {};
+      } catch {
+        content = brochureContent;
+      }
+    }
+    return {
+      id: project?.id ?? 'preview',
+      slug: slug || 'preview',
+      name: name || 'Nombre del proyecto',
+      subtitle: subtitle || null,
+      description: description || '',
+      location: location || null,
+      coverImage: coverImage[0] ?? null,
+      images,
+      priceFrom: priceFrom ? Number(priceFrom) : null,
+      priceLabel: priceLabel || null,
+      active,
+      featured,
+      showBrochure: true,
+      mapLat: mapLat ? Number(mapLat) : null,
+      mapLng: mapLng ? Number(mapLng) : null,
+      brochureContent: content as Record<string, unknown>,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? 'Editar proyecto' : 'Nuevo proyecto'}>
       <div className="max-h-[70vh] space-y-4 overflow-y-auto pr-1">
@@ -209,6 +245,10 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
           <div className="rounded-xl border border-black/10 p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <span className="text-sm font-medium text-primary">Contenido del Brochure Digital</span>
+              <div className="flex items-center gap-3">
+                <Button size="sm" type="button" onClick={() => setPreviewing(true)}>
+                  Vista previa en vivo
+                </Button>
               <button
                 type="button"
                 className="text-xs text-accent underline"
@@ -231,6 +271,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
               >
                 {advancedMode ? '← Volver al editor por campos' : 'Modo avanzado (JSON)'}
               </button>
+              </div>
             </div>
             <p className="mb-3 text-xs text-brand-gray">
               Las fotos NO se editan aquí — usa "Imagen de portada" y "Galería" arriba. El orden de la
@@ -260,6 +301,20 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
         <Button variant="ghost" onClick={onClose}>Cancelar</Button>
         <Button onClick={save} disabled={saving}>{saving ? 'Guardando…' : 'Guardar'}</Button>
       </div>
+
+      {previewing && (
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-white">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-black/10 bg-white/95 px-4 py-3 backdrop-blur">
+            <span className="text-sm font-semibold text-primary">
+              Vista previa — cambios aún no guardados
+            </span>
+            <Button size="sm" variant="outline" onClick={() => setPreviewing(false)}>
+              Cerrar vista previa
+            </Button>
+          </div>
+          <BrochureDigital project={buildPreviewProject()} onRequestInfo={() => {}} />
+        </div>
+      )}
     </Modal>
   );
 }
