@@ -31,8 +31,12 @@ const sizes: Record<Size, string> = {
   lg: 'px-7 py-3.5 text-base',
 };
 
+// Ojo: `cn` es un join simple (sin tailwind-merge), así que dos utilidades en
+// conflicto las resuelve el orden del CSS, no el del atributo. Por eso el
+// tracking vive aquí y NO en la clase base: así `sharp` no arrastra un
+// `tracking-wide` que pisaría el letter-spacing que defina quien lo use.
 const shapes: Record<Shape, string> = {
-  pill: 'rounded-full',
+  pill: 'rounded-full tracking-wide',
   sharp: 'rounded-none',
 };
 
@@ -49,7 +53,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-medium tracking-wide',
+        'inline-flex items-center justify-center gap-2 font-medium',
         'transition-all duration-200 active:scale-[0.98]',
         'disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer',
         shapes[shape],
