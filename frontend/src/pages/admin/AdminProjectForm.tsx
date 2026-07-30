@@ -7,7 +7,7 @@ import { BrochureContentEditor } from '@/components/admin/BrochureContentEditor'
 import { BrochureDigital } from '@/components/shared/BrochureDigital';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
-import type { BrochureContent } from '@/lib/brochureContent';
+import { resolveBrochureContent, type BrochureContent } from '@/lib/brochureContent';
 import type { AdminProject } from '@/lib/adminTypes';
 import type { Project } from '@shared/types';
 
@@ -86,9 +86,15 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setShowBrochure(project?.showBrochure ?? false);
     setMapLat(project?.mapLat != null ? String(project.mapLat) : '');
     setMapLng(project?.mapLng != null ? String(project.mapLng) : '');
-    setBrochureContent((project?.brochureContent as BrochureContent) ?? {});
+    // Precargar con lo que YA se está mostrando en la página (contenido propio +
+    // valores por defecto donde falte), no solo lo que el proyecto tiene guardado
+    // explícitamente — así el admin ve y puede editar cada campo, no una casilla
+    // vacía. Los proyectos nuevos arrancan en blanco (usan "Cargar plantilla" si
+    // quieren partir del ejemplo, para no publicar copy de Ibiza sin querer).
+    const initialBrochure = project ? resolveBrochureContent(project.brochureContent) : {};
+    setBrochureContent(initialBrochure);
     setAdvancedMode(false);
-    setBrochureJson(project?.brochureContent ? JSON.stringify(project.brochureContent, null, 2) : '');
+    setBrochureJson(JSON.stringify(initialBrochure, null, 2));
     setBrochureJsonError('');
   }, [open, project]);
 
