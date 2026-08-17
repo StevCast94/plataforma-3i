@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useProjects } from '@/hooks/useProjects';
+import { Isotipo } from '@/components/brand/Isotipo';
 
 const links = [
   { to: '/', label: 'Inicio', end: true },
@@ -22,7 +23,14 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
-          <img src="/images/logo-completo.svg" alt="Grupo 3i" className="h-10 w-auto" />
+          {/* Móvil: isotipo solo, con más presencia y aire para respirar.
+              El logo completo se encoge hasta ser ilegible en pantallas chicas. */}
+          <Isotipo title="Grupo 3i" className="h-9 w-auto sm:hidden" />
+          <img
+            src="/images/logo-completo.svg"
+            alt="Grupo 3i"
+            className="hidden h-10 w-auto sm:block"
+          />
         </Link>
 
         {/* Desktop */}

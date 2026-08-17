@@ -41,8 +41,59 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Splash previo a React: cubre el hueco entre el HTML inicial y el primer
+         render (bundle + fuentes). Vive fuera de React a propósito — así se ve
+         de inmediato, sin esperar a que cargue ni un KB de JS de la app. */
+      #g3i-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #020608;
+        transition: opacity 420ms ease 120ms, visibility 420ms ease 120ms;
+      }
+      #g3i-splash svg { width: 72px; height: auto; }
+      #g3i-splash[data-hide] { opacity: 0; visibility: hidden; pointer-events: none; }
+      body.g3i-ready #g3i-splash { display: none; }
+
+      @keyframes g3i-splash-bar {
+        from { opacity: 0; transform: translate(-14px, 14px); }
+        to   { opacity: 1; transform: translate(0, 0); }
+      }
+      @keyframes g3i-splash-pop {
+        0%   { opacity: 0; transform: scale(0.35); }
+        70%  { opacity: 1; transform: scale(1.12); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+      #g3i-splash [data-piece] { transform-box: fill-box; transform-origin: center; opacity: 0; }
+      #g3i-splash [data-piece='bar'] { animation: g3i-splash-bar 520ms cubic-bezier(0.22,1,0.36,1) forwards; }
+      #g3i-splash [data-piece='dot'] { animation: g3i-splash-pop 380ms cubic-bezier(0.34,1.56,0.64,1) forwards; }
+      #g3i-splash [data-bar='3'] { animation-delay: 0ms; }
+      #g3i-splash [data-bar='2'] { animation-delay: 130ms; }
+      #g3i-splash [data-bar='1'] { animation-delay: 260ms; }
+      #g3i-splash [data-dot='blue'] { animation-delay: 430ms; }
+      #g3i-splash [data-dot='red']  { animation-delay: 530ms; }
+      #g3i-splash [data-dot='gold'] { animation-delay: 630ms; }
+
+      @media (prefers-reduced-motion: reduce) {
+        #g3i-splash [data-piece] { animation: none !important; opacity: 1 !important; transform: none !important; }
+      }
+    </style>
   </head>
   <body>
+    <div id="g3i-splash" aria-hidden="true">
+      <svg viewBox="0 0 165.31 166.57">
+        <polygon data-piece="bar" data-bar="3" fill="#fff" points="131.13 106.75 83.28 153.55 62.32 133.04 110.16 86.24"/>
+        <polygon data-piece="bar" data-bar="2" fill="#fff" points="81.02 107.62 128.86 60.82 107.89 40.31 60.05 87.11"/>
+        <polygon data-piece="bar" data-bar="1" fill="#fff" points="81.91 58.6 34.06 105.4 13.09 84.89 60.94 38.09"/>
+        <polygon data-piece="dot" data-dot="blue" fill="#294877" points="58.67 129.47 77.15 111.39 56.19 90.88 37.7 108.96"/>
+        <polygon data-piece="dot" data-dot="red" fill="#a83437" points="153.47 84.89 134.99 102.97 114.02 82.46 132.5 64.38"/>
+        <polygon data-piece="dot" data-dot="gold" fill="#d5c03d" points="104.25 36.74 85.77 54.82 64.8 34.31 83.28 16.23"/>
+      </svg>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -5,6 +5,7 @@ import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
 import { useReferral } from '@/hooks/useReferral';
+import { BrandLoader } from '@/components/brand/Isotipo';
 
 /** Hace scroll al inicio en cada cambio de ruta. */
 function ScrollToTop() {
@@ -24,13 +25,7 @@ export function Layout() {
       <ScrollToTop />
       <Navbar />
       <main className="flex-1">
-        <Suspense
-          fallback={
-            <div className="flex min-h-[60vh] items-center justify-center text-brand-gray">
-              Cargando…
-            </div>
-          }
-        >
+        <Suspense fallback={<BrandLoader />}>
           <Outlet />
         </Suspense>
       </main>

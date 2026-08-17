@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useSectionContent } from '@/hooks/useSiteContent';
+import { Isotipo } from '@/components/brand/Isotipo';
 
 export function Footer() {
   const { data } = useSectionContent('footer');
@@ -9,8 +10,15 @@ export function Footer() {
     data?.copyright ?? '© 2026 Grupo 3i. Todos los derechos reservados.';
 
   return (
-    <footer className="bg-primary text-white print:hidden">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
+    <footer className="relative overflow-hidden bg-primary text-white print:hidden">
+      {/* Marca de agua: isotipo gigante recortado en el borde, monocromo y casi
+          invisible. Presencia de marca sin competir con el contenido. */}
+      <Isotipo
+        tone="light"
+        className="pointer-events-none absolute -bottom-16 -right-16 h-72 w-auto opacity-[0.04] sm:h-96"
+      />
+
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="h-8 w-auto" />
           <p className="mt-3 max-w-xs text-sm text-white/70">{tagline}</p>

@@ -3,10 +3,20 @@
 /* === Tailwind v4 theme tokens (paleta Grupo 3i) === */
 @theme {
   --color-primary: #1a1a1a;
+  /* Dorado de UI: legible sobre blanco en hovers/enlaces. NO es color de marca. */
   --color-secondary: #c9a96e;
   --color-accent: #8b6914;
   --color-light: #f5f0e8;
   --color-brand-gray: #6b7280;
+
+  /* === Paleta de identidad (extraída del SVG oficial) ===
+     Uso: momentos gráficos de marca (isotipo, divisores, badges sobre oscuro).
+     El dorado #d5c03d da ~1.8:1 sobre blanco: nunca usarlo para texto sobre claro. */
+  --color-brand-ink: #020608;
+  --color-brand-gold: #d5c03d;
+  --color-brand-blue: #294877;
+  --color-brand-red: #a83437;
+  --color-brand-bronze: #ab751e;
 
   --font-serif: "Playfair Display", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
@@ -36,6 +46,83 @@ h1, h2, h3, h4 {
 ::-webkit-scrollbar-thumb {
   background: var(--color-secondary);
   border-radius: 9999px;
+}
+
+/* === Isotipo: animación "Ascenso" ===
+   Los 3 galones entran deslizando por su propio eje de 45° desde abajo-izquierda,
+   en cascada ascendente (el de más abajo primero) para que el ojo suba. Luego los
+   3 acentos aparecen con un pop, también de abajo hacia arriba: azul → rojo → dorado.
+   Las 3 marcas de color = las 3 "i" (Inversión · Inmobiliaria · Inteligente). */
+@keyframes g3i-asc-bar {
+  from {
+    opacity: 0;
+    transform: translate(-14px, 14px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes g3i-asc-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Respiración secuencial de los acentos: estado inactivo de la misma marca,
+   para loaders que deben persistir sin reiniciarse de golpe. */
+@keyframes g3i-breath {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+.g3i-mark [data-piece] {
+  /* fill-box hace que scale() gire sobre el centro de cada pieza, no del lienzo. */
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* — Entrada one-shot — */
+.g3i-mark--ascenso [data-piece='bar'] {
+  opacity: 0;
+  animation: g3i-asc-bar 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.g3i-mark--ascenso [data-piece='dot'] {
+  opacity: 0;
+  animation: g3i-asc-pop 380ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.g3i-mark--ascenso [data-bar='3'] { animation-delay: 0ms; }
+.g3i-mark--ascenso [data-bar='2'] { animation-delay: 130ms; }
+.g3i-mark--ascenso [data-bar='1'] { animation-delay: 260ms; }
+.g3i-mark--ascenso [data-dot='blue'] { animation-delay: 430ms; }
+.g3i-mark--ascenso [data-dot='red']  { animation-delay: 530ms; }
+.g3i-mark--ascenso [data-dot='gold'] { animation-delay: 630ms; }
+
+/* — Loop sutil — */
+.g3i-mark--pulso [data-piece='dot'] {
+  animation: g3i-breath 2000ms ease-in-out infinite;
+}
+.g3i-mark--pulso [data-dot='blue'] { animation-delay: 0ms; }
+.g3i-mark--pulso [data-dot='red']  { animation-delay: 200ms; }
+.g3i-mark--pulso [data-dot='gold'] { animation-delay: 400ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .g3i-mark--ascenso [data-piece],
+  .g3i-mark--pulso [data-piece] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* === Skeleton con brillo dorado (percepción premium al cargar) === */

@@ -1,29 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Capa_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 517.91 553.21">
-  <!-- Generator: Adobe Illustrator 29.8.2, SVG Export Plug-In . SVG Version: 2.1.1 Build 3)  -->
-  <defs>
-    <style>
-      .st0 {
-        fill: #020608;
-      }
-
-      .st1 {
-        fill: #294877;
-      }
-
-      .st2 {
-        fill: #ffb826;
-      }
-
-      .st3 {
-        fill: #a83437;
-      }
-    </style>
-  </defs>
-  <rect class="st0" x="30.28" y="183.77" width="222.26" height="97.41" transform="translate(-122.96 168.08) rotate(-45)"/>
-  <rect class="st2" x="220.1" y="62.14" width="85.87" height="97.41" transform="translate(-1.33 218.46) rotate(-45)"/>
-  <rect class="st0" x="184.51" y="191.23" width="222.26" height="97.41" transform="translate(-83.06 279.33) rotate(-45)"/>
-  <rect class="st1" x="131.08" y="312.85" width="85.87" height="97.41" transform="translate(-204.69 228.95) rotate(-45)"/>
-  <rect class="st0" x="191.97" y="345.45" width="222.26" height="97.41" transform="translate(-189.93 329.77) rotate(-45)"/>
-  <rect class="st3" x="381.79" y="223.82" width="85.87" height="97.41" transform="translate(-68.3 380.14) rotate(-45)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 165.31 166.57" role="img" aria-label="Grupo 3i">
+  <polygon fill="#020608" points="81.91 58.6 34.06 105.4 13.09 84.89 60.94 38.09"/>
+  <polygon fill="#d5c03d" points="104.25 36.74 85.77 54.82 64.8 34.31 83.28 16.23"/>
+  <polygon fill="#020608" points="81.02 107.62 128.86 60.82 107.89 40.31 60.05 87.11"/>
+  <polygon fill="#294877" points="58.67 129.47 77.15 111.39 56.19 90.88 37.7 108.96"/>
+  <polygon fill="#020608" points="131.13 106.75 83.28 153.55 62.32 133.04 110.16 86.24"/>
+  <polygon fill="#a83437" points="153.47 84.89 134.99 102.97 114.02 82.46 132.5 64.38"/>
 </svg>

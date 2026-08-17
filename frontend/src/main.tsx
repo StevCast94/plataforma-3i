@@ -10,3 +10,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <App />
   </React.StrictMode>,
 );
+
+// Retira el splash de index.html una vez React ya pintó el primer frame.
+// requestAnimationFrame x2 asegura que el DOM real (no solo el commit de React)
+// ya esté pintado antes de empezar el fade-out.
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    document.getElementById('g3i-splash')?.setAttribute('data-hide', '');
+    document.body.classList.add('g3i-ready');
+  });
+});

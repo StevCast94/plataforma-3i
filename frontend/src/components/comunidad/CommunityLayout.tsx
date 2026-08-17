@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CommunitySubNav } from './CommunitySubNav';
 import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
+import { BrandLoader } from '@/components/brand/Isotipo';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -21,11 +22,7 @@ export function CommunityLayout() {
       <Navbar />
       <CommunitySubNav />
       <main className="flex-1">
-        <Suspense
-          fallback={
-            <div className="flex min-h-[50vh] items-center justify-center text-brand-gray">Cargando…</div>
-          }
-        >
+        <Suspense fallback={<BrandLoader className="min-h-[50vh]" />}>
           <Outlet />
         </Suspense>
       </main>
