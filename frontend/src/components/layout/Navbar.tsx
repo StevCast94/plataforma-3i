@@ -22,10 +22,15 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
-          {/* Móvil: isotipo solo, con más presencia y aire para respirar.
-              El logo completo se encoge hasta ser ilegible en pantallas chicas. */}
+        <Link to="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
+          {/* Móvil: isotipo con más presencia + logotipo aparte (en vez del
+              logo completo, que se encoge hasta ser ilegible en pantallas chicas). */}
           <Isotipo title="Grupo 3i" className="h-9 w-auto sm:hidden" />
+          <img
+            src="/images/logotipo.svg"
+            alt="Grupo 3i"
+            className="h-5 w-auto sm:hidden"
+          />
           <img
             src="/images/logo-completo.svg"
             alt="Grupo 3i"
