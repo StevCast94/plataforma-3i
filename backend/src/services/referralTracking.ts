@@ -6,13 +6,13 @@ import { notify } from './notifications';
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
-/** Busca al miembro dueño de un código de referido (acepta código de miembro o de link). */
+/** Busca al miembro dueño de un código de referido (acepta código 3IP-XXXXXX, slug legible o código de link). */
 export async function resolveReferrer(
   code: string,
   db: Db = prisma,
 ): Promise<{ id: string; referrerId: string | null } | null> {
-  const member = await db.referralMember.findUnique({
-    where: { referralCode: code },
+  const member = await db.referralMember.findFirst({
+    where: { OR: [{ referralCode: code }, { referralSlug: code }] },
     select: { id: true, referrerId: true },
   });
   if (member) return member;

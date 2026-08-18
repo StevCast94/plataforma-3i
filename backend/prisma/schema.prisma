@@ -210,6 +210,10 @@ model ReferralMember {
   claimed               Boolean          @default(true)
   referredByCode        String? // código de quien lo refirió (se atribuye al reclamar)
   referralCode          String           @unique
+  // Slug legible para el enlace público (ej. "juan-perez-k3f9"): el código
+  // 3IP-XXXXXX sigue siendo la clave interna/de atribución, pero nadie debería
+  // ver ese código crudo en un link que comparte por WhatsApp.
+  referralSlug          String           @unique
   referrerId            String?
   referrer              ReferralMember?  @relation("ReferralChain", fields: [referrerId], references: [id])
   referrals             ReferralMember[] @relation("ReferralChain")

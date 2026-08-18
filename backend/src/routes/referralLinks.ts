@@ -1,59 +1,25 @@
 import { Router } from 'express';
-import crypto from 'crypto';
 import { prisma } from '../prisma';
-import { recordClick } from '../services/referralTracking';
-import { ATTRIBUTION_WINDOW_DAYS } from '../lib/referralRules';
 
 export const referralLinkRoutes = Router();
 
-const COOKIE = 'g3i_ref';
+// NOTA: existió aquí un POST /click que seteaba la cookie `g3i_ref` en formato
+// JSON ({code, cookieId}), en conflicto con el formato de texto plano que usa
+// routes/referral.ts para la MISMA cookie. Nunca se llamó desde el frontend
+// (código muerto), pero de haberse activado habría roto la atribución de
+// comisiones. Se eliminó: routes/referral.ts es la única fuente de verdad
+// para la cookie de atribución.
 
-// POST /api/referral-links/click — registra click y setea cookie de atribución first-click
-referralLinkRoutes.post('/click', async (req, res) => {
-  try {
-    const { code } = req.body ?? {};
-    if (!code) {
-      res.status(400).json({ error: 'code requerido' });
-      return;
-    }
-
-    const ok = await recordClick(String(code));
-    if (!ok) {
-      res.status(404).json({ error: 'Enlace no encontrado' });
-      return;
-    }
-
-    // First-click: solo seteamos la cookie si no existe una previa.
-    const existing = req.cookies?.[COOKIE];
-    if (!existing) {
-      const cookieId = crypto.randomUUID();
-      res.cookie(COOKIE, JSON.stringify({ code: String(code), cookieId }), {
-        maxAge: ATTRIBUTION_WINDOW_DAYS * 24 * 60 * 60 * 1000,
-        httpOnly: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      });
-      res.json({ ok: true, attributed: String(code), cookieId });
-      return;
-    }
-
-    res.json({ ok: true, attributed: JSON.parse(existing).code });
-  } catch (err) {
-    console.error('POST /api/referral-links/click', err);
-    res.status(500).json({ error: 'Error al registrar click' });
-  }
-});
-
-// GET /api/referral-links/:code — info pública del enlace
+// GET /api/referral-links/:code — info pública del enlace (código o slug)
 referralLinkRoutes.get('/:code', async (req, res) => {
   const link = await prisma.referralLink.findUnique({
     where: { code: req.params.code },
     select: {
       code: true,
-      fullUrl: true,
       clicks: true,
       conversions: true,
       status: true,
-      member: { select: { fullName: true } },
+      member: { select: { fullName: true, referralSlug: true } },
     },
   });
   if (!link) {
@@ -62,7 +28,7 @@ referralLinkRoutes.get('/:code', async (req, res) => {
   }
   res.json({
     code: link.code,
-    fullUrl: link.fullUrl,
+    referralSlug: link.member.referralSlug,
     clicks: link.clicks,
     conversions: link.conversions,
     status: link.status,

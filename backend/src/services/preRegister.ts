@@ -1,6 +1,6 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { prisma } from '../prisma';
-import { generateReferralCode } from '../lib/referralRules';
+import { generateReferralCode, generateReferralSlug } from '../lib/referralRules';
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
@@ -49,6 +49,13 @@ export async function ensureProvisionalMember(
     code = generateReferralCode('PREMIERE');
   }
 
+  let slug = generateReferralSlug(input.fullName);
+  for (let i = 0; i < 5; i++) {
+    const ex = await db.referralMember.findUnique({ where: { referralSlug: slug }, select: { id: true } });
+    if (!ex) break;
+    slug = generateReferralSlug(input.fullName);
+  }
+
   const member = await db.referralMember.create({
     data: {
       fullName: input.fullName.trim(),
@@ -60,12 +67,13 @@ export async function ensureProvisionalMember(
       claimed: false,
       referredByCode: input.referredByCode ?? null,
       referralCode: code,
+      referralSlug: slug,
     },
     select: { id: true, referralCode: true },
   });
 
   await db.referralLink.create({
-    data: { memberId: member.id, code, fullUrl: `${publicBase()}/#/oficina/registro?ref=${code}` },
+    data: { memberId: member.id, code, fullUrl: `${publicBase()}/r/${slug}` },
   });
 
   return { memberId: member.id, referralCode: member.referralCode, created: true, alreadyClaimed: false };

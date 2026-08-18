@@ -110,6 +110,8 @@ export interface ReferralMember {
   docId: string;
   status: MemberStatus;
   referralCode: string;
+  /** Slug legible para compartir (ej. "juan-perez-k3f9"); usarlo en enlaces públicos, nunca el código. */
+  referralSlug: string;
   referrerId?: string | null;
   /** Referidor real del socio: manda sobre cualquier cookie ?ref= en sus compras. */
   referrer?: { fullName: string; referralCode: string } | null;

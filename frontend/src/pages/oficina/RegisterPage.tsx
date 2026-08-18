@@ -111,7 +111,7 @@ export default function RegisterPage() {
             <Badge variant="gold">Referido</Badge>
             <span className="text-sm text-brand-gray">
               Te invitó:{' '}
-              <strong className="text-primary">{referrerName ?? referralCode}</strong>
+              <strong className="text-primary">{referrerName ?? 'un socio de Grupo 3i'}</strong>
             </span>
           </div>
         )}

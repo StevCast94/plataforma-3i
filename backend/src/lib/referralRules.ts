@@ -76,6 +76,32 @@ export function generateReferralCode(status: 'PREMIERE' | 'ELITE'): string {
   return `${CODE_PREFIX[status]}-${suffix}`;
 }
 
+const SLUG_SUFFIX_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+/**
+ * Genera un slug legible a partir del nombre completo, con un sufijo corto
+ * aleatorio para evitar colisiones triviales entre homónimos (ej. "juan-perez-k3f9").
+ * El llamador aún debe verificar unicidad en BD y reintentar ante colisión real.
+ */
+export function generateReferralSlug(fullName: string): string {
+  const base = fullName
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '') // quita acentos
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 40)
+    .replace(/^-|-$/g, '');
+
+  let suffix = '';
+  for (let i = 0; i < 4; i++) {
+    suffix += SLUG_SUFFIX_CHARS[Math.floor(Math.random() * SLUG_SUFFIX_CHARS.length)];
+  }
+  return `${base || 'socio'}-${suffix}`;
+}
+
 /** Mínimo de retiro aplicable a un miembro según estatus y método. */
 export function minPayoutFor(status: 'PREMIERE' | 'ELITE', method: string): number {
   const kind = PAYOUT_METHODS[method] ?? 'transfer';

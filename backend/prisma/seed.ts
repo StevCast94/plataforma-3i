@@ -296,7 +296,7 @@ async function seedStaff() {
 // ============ MIEMBROS DE EJEMPLO (programa de referidos) ============
 async function seedMembers() {
   const passwordHash = await bcrypt.hash('password123', 10);
-  const link = (code: string) => `${PUBLIC_BASE}/#/oficina/registro?ref=${code}`;
+  const link = (slug: string) => `${PUBLIC_BASE}/r/${slug}`;
 
   // 1) Miembro Elite (referidor)
   const eliteCode = '3IE-ELITE1';
@@ -311,6 +311,7 @@ async function seedMembers() {
       docId: '0900000001',
       status: 'ELITE',
       referralCode: eliteCode,
+      referralSlug: 'ana-elite-demo',
       eliteSince: new Date(),
       eliteBy: 'PURCHASE',
       walletBalance: 420,
@@ -326,7 +327,7 @@ async function seedMembers() {
   await prisma.referralLink.upsert({
     where: { code: eliteCode },
     update: {},
-    create: { memberId: elite.id, code: eliteCode, fullUrl: link(eliteCode), clicks: 34, conversions: 1 },
+    create: { memberId: elite.id, code: eliteCode, fullUrl: link('ana-elite-demo'), clicks: 34, conversions: 1 },
   });
 
   // 2) Miembro Premiere (referido por la Elite)
@@ -342,6 +343,7 @@ async function seedMembers() {
       docId: '0900000002',
       status: 'PREMIERE',
       referralCode: premiereCode,
+      referralSlug: 'carlos-premiere-demo',
       referrerId: elite.id,
       totalReferrals: 0,
       referralsCountToElite: 2,
@@ -354,7 +356,7 @@ async function seedMembers() {
   await prisma.referralLink.upsert({
     where: { code: premiereCode },
     update: {},
-    create: { memberId: premiere.id, code: premiereCode, fullUrl: link(premiereCode), clicks: 8, conversions: 1 },
+    create: { memberId: premiere.id, code: premiereCode, fullUrl: link('carlos-premiere-demo'), clicks: 8, conversions: 1 },
   });
 
   // Fase 5 — Membresía de viajes OTORGADA (premio) a la Elite demo.

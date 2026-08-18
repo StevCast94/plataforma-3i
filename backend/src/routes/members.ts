@@ -2,7 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../prisma';
 import { authMember, signMemberToken, type MemberRequest } from '../middleware/authMember';
-import { generateReferralCode, PAYOUT_METHODS } from '../lib/referralRules';
+import { generateReferralCode, generateReferralSlug, PAYOUT_METHODS } from '../lib/referralRules';
 import { attributeReferral, reconcileClaimedPurchases } from '../services/referralTracking';
 import { ascendByPurchase, checkReferralAscension } from '../services/ascendService';
 import { hasTravelAccess } from '../travel/membershipAccess';
@@ -28,6 +28,7 @@ const memberSelect = {
   docId: true,
   status: true,
   referralCode: true,
+  referralSlug: true,
   referrerId: true,
   walletBalance: true,
   totalEarned: true,
@@ -153,8 +154,21 @@ memberRoutes.post('/register', async (req, res) => {
       referralCode = generateReferralCode('PREMIERE');
     }
 
+    let referralSlug = generateReferralSlug(String(fullName));
+    for (let i = 0; i < 5; i++) {
+      const exists = await prisma.referralMember.findUnique({
+        where: { referralSlug },
+        select: { id: true },
+      });
+      if (!exists) break;
+      referralSlug = generateReferralSlug(String(fullName));
+    }
+
     const code = referralCode;
-    const fullUrl = `${publicBase()}/#/oficina/registro?ref=${code}`;
+    // Enlace principal vía /r/:slug (redirección server-side): setea la cookie de
+    // atribución y cuenta el click aunque el visitante cierre el navegador antes
+    // de registrarse — más robusto que depender del ?ref= leído por JS.
+    const fullUrl = `${publicBase()}/r/${referralSlug}`;
 
     // Transacción atómica: miembro + link + atribución.
     const member = await prisma.$transaction(async (tx) => {
@@ -167,6 +181,7 @@ memberRoutes.post('/register', async (req, res) => {
           docType: docType ? String(docType) : 'cedula',
           docId: docIdStr,
           referralCode: code,
+          referralSlug,
           payoutMethod: payoutMethod && PAYOUT_METHODS[payoutMethod] ? String(payoutMethod) : null,
           payoutEmail: payoutEmail ? String(payoutEmail).trim() : null,
           bankInfo: bankInfo ?? undefined,
@@ -341,11 +356,11 @@ memberRoutes.post('/support-request', async (req, res) => {
   }
 });
 
-// GET /api/members/:code — info pública mínima de un miembro por su código
+// GET /api/members/:code — info pública mínima de un miembro por su código o slug
 memberRoutes.get('/:code', async (req, res) => {
-  const member = await prisma.referralMember.findUnique({
-    where: { referralCode: req.params.code },
-    select: { fullName: true, referralCode: true, status: true },
+  const member = await prisma.referralMember.findFirst({
+    where: { OR: [{ referralCode: req.params.code }, { referralSlug: req.params.code }] },
+    select: { fullName: true, referralCode: true, referralSlug: true, status: true },
   });
   if (!member) {
     res.status(404).json({ error: 'Código no encontrado' });
@@ -355,6 +370,7 @@ memberRoutes.get('/:code', async (req, res) => {
   res.json({
     firstName: member.fullName.split(' ')[0],
     referralCode: member.referralCode,
+    referralSlug: member.referralSlug,
     status: member.status,
   });
 });

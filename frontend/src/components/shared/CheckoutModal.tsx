@@ -59,7 +59,7 @@ export function CheckoutModal({ open, product, onClose }: CheckoutModalProps) {
                 <Badge variant="gold">Referido</Badge>
                 <span className="text-sm text-brand-gray">
                   Serás referido por{' '}
-                  <strong className="text-primary">{referrerName ?? cookieCode}</strong>
+                  <strong className="text-primary">{referrerName ?? 'un socio de Grupo 3i'}</strong>
                 </span>
               </div>
             )}

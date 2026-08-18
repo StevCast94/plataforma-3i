@@ -8,12 +8,12 @@ import { useToast } from '@/components/shared/Toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useProducts } from '@/hooks/useProducts';
 import { whatsappShareUrl } from '@/lib/referral';
+import { copyToClipboard } from '@/lib/clipboard';
 import { ReferralPerks } from '@/components/shared/ReferralPerks';
 import { useSectionContent } from '@/hooks/useSiteContent';
 
 interface LinkInfo {
   code: string;
-  fullUrl: string;
   clicks: number;
   conversions: number;
 }
@@ -51,7 +51,11 @@ export default function ToolsPage() {
       .catch(() => setInfo(null));
   }, [member]);
 
-  const fullUrl = info?.fullUrl ?? '';
+  // El enlace se construye SIEMPRE con el origin actual del navegador, nunca
+  // con una URL guardada en la base de datos: así sigue funcionando aunque el
+  // dominio cambie más adelante (justo lo que rompió los enlaces viejos al
+  // migrar a grupo3i.com — quedaron con la URL de Railway congelada en la BD).
+  const fullUrl = member ? `${window.location.origin}/r/${member.referralSlug}` : '';
 
   useEffect(() => {
     if (!fullUrl) return;
@@ -63,11 +67,12 @@ export default function ToolsPage() {
   if (!member) return null;
 
   const shareLink =
-    `${window.location.origin}/r/${member.referralCode}` +
+    `${window.location.origin}/r/${member.referralSlug}` +
     (sharePath !== '/' ? `?to=${encodeURIComponent(sharePath)}` : '');
 
-  function copy(text: string) {
-    navigator.clipboard.writeText(text).then(() => toast('Copiado ✅', 'success'));
+  async function copy(text: string) {
+    const ok = await copyToClipboard(text);
+    toast(ok ? 'Copiado ✅' : 'No se pudo copiar. Mantén presionado el texto para copiarlo.', ok ? 'success' : 'error');
   }
 
   function downloadQr() {

@@ -1,0 +1,6 @@
+import{c,j as r,n as l}from"./index-C1uyW2pJ.js";/**
+ * @license lucide-react v1.24.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const m=[["path",{d:"M21 12a9 9 0 1 1-6.219-8.56",key:"13zald"}]],p=c("loader-circle",m),h={primary:"bg-secondary text-primary shadow-sm hover:bg-accent hover:text-white hover:shadow-md",secondary:"bg-primary text-white hover:bg-black hover:shadow-md",outline:"border border-secondary text-primary hover:bg-secondary hover:text-primary hover:shadow-sm",ghost:"text-primary hover:bg-light"},x={sm:"px-3 py-1.5 text-sm",md:"px-5 py-2.5 text-sm",lg:"px-7 py-3.5 text-base"},y={pill:"rounded-full tracking-wide",sharp:"rounded-none"};function b({variant:t="primary",size:a="md",shape:s="pill",loading:e=!1,className:o,children:i,disabled:n,...d}){return r.jsxs("button",{className:l("inline-flex items-center justify-center gap-2 font-medium","transition-all duration-200 active:scale-[0.98]","disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer",y[s],h[t],x[a],o),disabled:n||e,...d,children:[e&&r.jsx(p,{className:"h-4 w-4 animate-spin","aria-hidden":!0}),i]})}export{b as B};
