@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/Badge';
 import { ClipboardPen, Link2, HandCoins, type LucideIcon } from 'lucide-react';
 import { estimateMonthly } from '@/lib/referral';
 import { formatCurrency } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import { BrandLoader } from '@/components/brand/Isotipo';
 
 const steps: { icon: LucideIcon; title: string; body: string }[] = [
   { icon: ClipboardPen, title: 'Regístrate gratis', body: 'Crea tu cuenta Premiere con tu cédula en minutos.' },
@@ -34,6 +36,13 @@ export default function OfficeLanding() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [memberships, setMemberships] = useState(5);
   const elite = estimateMonthly('ELITE', memberships, 1, 15000);
+
+  // Esta es una página de VENTA del programa (pública, sin sidebar). Si ya hay
+  // sesión, no tiene sentido mostrarle "Regístrate gratis" a alguien que ya es
+  // socio — se lo manda directo a su panel real.
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <BrandLoader className="min-h-screen" label="Cargando…" />;
+  if (isAuthenticated) return <Navigate to="/oficina/dashboard" replace />;
 
   return (
     <>

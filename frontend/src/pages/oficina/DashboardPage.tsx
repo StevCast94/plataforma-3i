@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, DollarSign, Wallet, Link2 } from 'lucide-react';
+import { Users, DollarSign, Wallet, Link2, Luggage } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { ProgressToElite } from '@/components/oficina/ProgressToElite';
 import { useAuth } from '@/hooks/useAuth';
@@ -98,13 +98,28 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Acción principal: es literalmente cómo el socio gana dinero, así
+          que va destacada aparte de los demás accesos, no como uno más. */}
+      <Link
+        to="/oficina/herramientas"
+        className="flex items-center gap-4 rounded-2xl bg-secondary/15 p-6 shadow-sm ring-1 ring-secondary/40 transition hover:bg-secondary/25 hover:shadow-md"
+      >
+        <span className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-secondary text-primary">
+          <Link2 className="h-6 w-6" strokeWidth={2} />
+        </span>
+        <div>
+          <p className="font-semibold text-primary">Mi enlace y comisiones</p>
+          <p className="text-sm text-brand-gray">Comparte tu enlace y empieza a ganar</p>
+        </div>
+      </Link>
+
       {/* Links rápidos */}
       <div className="grid gap-4 sm:grid-cols-4">
         {[
           { to: '/oficina/mi-red', label: 'Mi Red', icon: Users },
           { to: '/oficina/comisiones', label: 'Comisiones', icon: DollarSign },
           { to: '/oficina/pagos', label: 'Pagos', icon: Wallet },
-          { to: '/oficina/herramientas', label: 'Herramientas', icon: Link2 },
+          { to: '/oficina/viajes', label: 'Mis Viajes', icon: Luggage },
         ].map((q) => (
           <Link
             key={q.to}

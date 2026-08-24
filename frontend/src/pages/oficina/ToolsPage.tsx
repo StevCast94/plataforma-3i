@@ -89,8 +89,8 @@ export default function ToolsPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
-      <Seo title="Herramientas — Oficina Virtual" />
-      <h1 className="text-3xl font-bold text-primary">Herramientas</h1>
+      <Seo title="Mi enlace y comisiones — Oficina Virtual" />
+      <h1 className="text-3xl font-bold text-primary">Mi enlace y comisiones</h1>
 
       <ReferralPerks variant="member" />
 
