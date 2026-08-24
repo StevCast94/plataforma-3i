@@ -43,9 +43,16 @@ export default function OfficeLanding() {
       />
 
       {/* Hero */}
-      <section className="bg-primary text-white">
-        <div className="mx-auto max-w-5xl px-4 py-24 text-center sm:px-6">
-          <Badge variant="gold" className="mb-5">Programa de Referidos</Badge>
+      <section className="relative isolate overflow-hidden bg-primary text-white">
+        <img
+          src="/images/secciones/hero-referidos.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-80"
+        />
+        <div className="absolute inset-0 -z-10 bg-primary/70" />
+        <div className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:px-6">
+          <Badge variant="solid" className="mb-5">Programa de Referidos</Badge>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

@@ -11,6 +11,7 @@ export default function ProjectsPage() {
       <PageHeader
         title="Proyectos"
         subtitle="Oportunidades de inversión cuidadosamente seleccionadas en la costa ecuatoriana."
+        image="/images/secciones/header-proyectos.jpg"
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         {error && <p className="text-center text-red-600">{error}</p>}

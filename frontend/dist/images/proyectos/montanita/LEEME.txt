@@ -1,0 +1,1 @@
+Coloca aquí las imágenes de esta seccion segun IMAGENES-PROMPTS.md (raiz del proyecto).

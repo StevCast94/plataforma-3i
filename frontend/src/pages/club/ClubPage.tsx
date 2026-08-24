@@ -16,16 +16,17 @@ export default function ClubPage() {
   return (
     <>
       {/* HERO CLUB */}
-      <section className="relative overflow-hidden bg-primary text-white">
+      <section className="relative isolate overflow-hidden bg-primary text-white">
         <img
-          src="/images/isotipo-light.svg"
+          src="/images/secciones/hero-club.jpg"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute -right-12 -top-12 w-80 opacity-[0.06] sm:w-[28rem]"
+          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-80"
         />
+        <div className="absolute inset-0 -z-10 bg-primary/70" />
         <div className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:px-6">
           <img src="/images/isotipo-light.svg" alt="Grupo 3i" className="mx-auto mb-5 h-14 w-auto" />
-          <Badge variant="gold" className="mb-5">Club 3i</Badge>
+          <Badge variant="solid" className="mb-5">Club 3i</Badge>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

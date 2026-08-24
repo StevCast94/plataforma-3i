@@ -3,14 +3,19 @@ import { cn } from '@/lib/utils';
 
 interface BadgeProps {
   children: ReactNode;
-  variant?: 'gold' | 'dark' | 'light';
+  /** `solid` = dorado macizo, legible sobre fotografía. */
+  variant?: 'gold' | 'dark' | 'light' | 'solid';
   className?: string;
 }
 
+// Ojo: `cn` es un join simple (sin tailwind-merge), así que no se puede pisar
+// `bg-secondary/20` pasando `bg-secondary` por className — gana el orden del
+// CSS, no el del atributo. Por eso los fondos sobre foto van como variante.
 const variants = {
   gold: 'bg-secondary/20 text-accent',
   dark: 'bg-primary text-white',
   light: 'bg-light text-primary',
+  solid: 'bg-secondary text-primary',
 };
 
 export function Badge({ children, variant = 'gold', className }: BadgeProps) {

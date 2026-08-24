@@ -11,6 +11,7 @@ export default function ShopPage() {
       <PageHeader
         title="Tienda"
         subtitle="Membresías, propiedades fraccionadas y oportunidades de inversión."
+        image="/images/secciones/header-tienda.jpg"
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         {error && <p className="text-center text-red-600">{error}</p>}

@@ -25,6 +25,7 @@ export default function AboutPage() {
       <PageHeader
         title={data?.title ?? 'Sobre Grupo 3i'}
         subtitle="Inversión inmobiliaria inteligente."
+        image="/images/secciones/header-nosotros.jpg"
       />
 
       <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6">

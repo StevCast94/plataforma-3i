@@ -23,13 +23,11 @@ export default function HomePage() {
     <>
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-primary text-white">
-        {hero.image_url && (
-          <img
-            src={cld(hero.image_url, { width: 1920 })}
-            alt=""
-            className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40"
-          />
-        )}
+        <img
+          src={hero.image_url ? cld(hero.image_url, { width: 1920 }) : '/images/secciones/hero-home.jpg'}
+          alt=""
+          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40"
+        />
         <div className="mx-auto max-w-7xl px-4 py-28 sm:px-6 lg:px-8 lg:py-40">
           <motion.div
             initial={{ opacity: 0, y: 24 }}

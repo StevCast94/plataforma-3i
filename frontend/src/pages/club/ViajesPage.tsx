@@ -217,17 +217,17 @@ export default function ViajesPage() {
     <>
       <Seo title="Club de Viajes 3i" description="Busca hoteles y vuelos con precios de socio. Beneficio exclusivo de la comunidad Grupo 3i." />
 
-      <section className="relative overflow-hidden bg-primary text-white">
-        {/* Filigrana de marca */}
+      <section className="relative isolate overflow-hidden bg-primary text-white">
         <img
-          src="/images/isotipo-light.svg"
+          src="/images/secciones/hero-viajes.jpg"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute -right-10 -top-10 w-72 opacity-[0.06] sm:w-96"
+          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-80"
         />
+        <div className="absolute inset-0 -z-10 bg-primary/70" />
         <div className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:px-6">
           <img src="/images/isotipo-light.svg" alt="Grupo 3i" className="mx-auto mb-5 h-12 w-auto sm:h-14" />
-          <Badge variant="gold" className="mb-4">Club de Viajes 3i</Badge>
+          <Badge variant="solid" className="mb-4">Club de Viajes 3i</Badge>
           <h1 className="font-serif text-3xl font-bold sm:text-5xl">Viaja como socio, paga como socio</h1>
           <p className="mx-auto mt-4 max-w-2xl text-white/80">
             Los socios acceden a tarifas con costo casi al neto. El precio de socio aparece en cada resultado.

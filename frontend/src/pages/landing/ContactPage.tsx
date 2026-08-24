@@ -13,6 +13,7 @@ export default function ContactPage() {
           data?.subtitle ??
           'Déjanos tus datos y un asesor te contactará en menos de 24 horas.'
         }
+        image="/images/secciones/header-contacto.jpg"
       />
 
       <section className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2">
