@@ -20,7 +20,7 @@ export function Footer() {
 
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="h-8 w-auto" />
+          <Link to="/" className="inline-block"><img src="/images/logotipo-light.svg" alt="Grupo 3i — Volver al inicio" className="h-8 w-auto" /></Link>
           <p className="mt-3 max-w-xs text-sm text-white/70">{tagline}</p>
         </div>
 

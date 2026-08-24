@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Seo } from '@/components/shared/Seo';
@@ -30,9 +30,9 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-primary px-4">
       <Seo title="Admin — Grupo 3i" />
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-2xl">
-        <span className="font-serif text-2xl font-bold text-primary">
+        <Link to="/" className="font-serif text-2xl font-bold text-primary">
           Grupo<span className="text-secondary"> 3i</span>
-        </span>
+        </Link>
         <p className="mt-1 text-xs uppercase tracking-widest text-brand-gray">Panel de administración</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">

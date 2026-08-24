@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
@@ -34,7 +34,9 @@ export function OfficeSidebar() {
   return (
     <aside className="hidden w-64 flex-none flex-col bg-primary px-4 py-6 md:flex">
       <div className="px-2 pb-6">
-        <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="mb-2 h-7 w-auto" />
+        <Link to="/" className="inline-block">
+          <img src="/images/logotipo-light.svg" alt="Grupo 3i — Volver al inicio" className="mb-2 h-7 w-auto" />
+        </Link>
         <p className="text-xs uppercase tracking-widest text-white/50">
           Oficina Virtual
         </p>

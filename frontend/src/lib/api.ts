@@ -5,14 +5,18 @@
 const BASE = import.meta.env.VITE_API_URL ?? '';
 const TOKEN_KEY = 'g3i_member_token';
 
+// localStorage (no sessionStorage): la sesión debe sobrevivir a cerrar el
+// navegador/app — es la app de un socio en SU celular, no una sesión compartida.
+// El JWT ya vive 10 años (ver backend/authMember.ts), así que esto es lo que
+// realmente lo mantiene 'logueado para siempre' en el dispositivo.
 export function setAuthToken(token: string | null) {
-  if (token) sessionStorage.setItem(TOKEN_KEY, token);
-  else sessionStorage.removeItem(TOKEN_KEY);
+  if (token) localStorage.setItem(TOKEN_KEY, token);
+  else localStorage.removeItem(TOKEN_KEY);
 }
 
 export function getAuthToken(): string | null {
   try {
-    return sessionStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY);
   } catch {
     return null;
   }

@@ -12,7 +12,7 @@ export interface MemberRequest extends Request {
 const SECRET = () => process.env.JWT_SECRET ?? 'dev-secret-cambiar-en-produccion';
 
 export function signMemberToken(memberId: string, email: string): string {
-  return jwt.sign({ memberId, email }, SECRET(), { expiresIn: '30d' });
+  return jwt.sign({ memberId, email }, SECRET(), { expiresIn: '3650d' });
 }
 
 /**

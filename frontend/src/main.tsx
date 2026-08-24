@@ -20,3 +20,12 @@ requestAnimationFrame(() => {
     document.body.classList.add('g3i-ready');
   });
 });
+
+// PWA: registra el service worker mínimo (requerido para instalabilidad).
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(() => {
+      /* si falla, la app sigue funcionando normal, solo sin poder instalarse */
+    });
+  });
+}

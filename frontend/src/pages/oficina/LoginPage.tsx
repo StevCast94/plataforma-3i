@@ -63,7 +63,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-light px-4">
       <Seo title="Iniciar sesión — Oficina Virtual" />
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
-        <Link to="/oficina" className="font-serif text-2xl font-bold text-primary">
+        <Link to="/" className="font-serif text-2xl font-bold text-primary">
           Grupo<span className="text-secondary"> 3i</span>
         </Link>
         <h1 className="mt-6 text-3xl text-primary">Bienvenido de vuelta</h1>

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
@@ -9,6 +10,7 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 import { useProjects } from '@/hooks/useProjects';
 import { useProducts } from '@/hooks/useProducts';
 import { cld } from '@/lib/cloudinary';
+import { ImageCrossfade } from '@/components/shared/ImageCrossfade';
 
 export default function HomePage() {
   const { data: content } = useSiteContent();
@@ -19,14 +21,29 @@ export default function HomePage() {
   const projectsSection = content?.projects ?? {};
   const club = content?.club ?? {};
 
+  // La imagen local va SIEMPRE primero (se ve al instante, sin esperar la API
+  // de contenido). Las del CMS (una por línea o separadas por coma en el campo
+  // hero.image_url del admin) se suman a la rotación cuando llegan, en vez de
+  // reemplazar de golpe lo que ya se está mostrando — así se elimina el salto
+  // brusco entre la imagen por defecto y la editada desde Configuración.
+  const heroImages = useMemo(() => {
+    const local = '/images/secciones/hero-home.jpg';
+    const cmsUrls = (hero.image_url ?? '')
+      .split(/[\n,]+/)
+      .map((u) => u.trim())
+      .filter(Boolean)
+      .map((u) => cld(u, { width: 1920 }));
+    return Array.from(new Set([local, ...cmsUrls]));
+  }, [hero.image_url]);
+
   return (
     <>
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-primary text-white">
-        <img
-          src={hero.image_url ? cld(hero.image_url, { width: 1920 }) : '/images/secciones/hero-home.jpg'}
-          alt=""
-          className="absolute inset-0 -z-10 h-full w-full object-cover opacity-40"
+        <ImageCrossfade
+          images={heroImages}
+          activeOpacity={0.4}
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
         <div className="mx-auto max-w-7xl px-4 py-28 sm:px-6 lg:px-8 lg:py-40">
           <motion.div

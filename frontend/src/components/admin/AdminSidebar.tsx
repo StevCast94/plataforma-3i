@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 
@@ -23,9 +23,9 @@ export function AdminSidebar() {
   return (
     <aside className="hidden w-60 flex-none flex-col bg-primary px-3 py-5 md:flex">
       <div className="px-3 pb-6">
-        <span className="font-serif text-xl font-bold text-white">
+        <Link to="/" className="font-serif text-xl font-bold text-white">
           Grupo<span className="text-secondary"> 3i</span>
-        </span>
+        </Link>
         <p className="mt-0.5 text-[10px] uppercase tracking-widest text-white/50">Admin</p>
       </div>
       <nav className="space-y-1">

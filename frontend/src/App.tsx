@@ -8,6 +8,7 @@ import { CommunityLayout } from '@/components/comunidad/CommunityLayout';
 import { ToastProvider } from '@/components/shared/Toast';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdminAuthProvider } from '@/context/AdminAuthContext';
+import { InstallAppBanner } from '@/components/shared/InstallAppBanner';
 
 // Sitio público
 const HomePage = lazy(() => import('@/pages/landing/HomePage'));
@@ -69,6 +70,7 @@ export default function App() {
       <ToastProvider>
         <AuthProvider>
           <AdminAuthProvider>
+          <InstallAppBanner />
           <HashRouter>
             <Routes>
               {/* Sitio público con navbar/footer */}

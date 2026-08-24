@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { statusLabel } from '@/lib/referral';
 import { NotificationBell } from './NotificationBell';
@@ -18,7 +18,9 @@ export function OfficeHeader() {
   return (
     <header className="flex items-center justify-between border-b border-black/5 bg-white px-4 py-3 sm:px-6">
       <div className="flex items-center gap-3">
-        <img src="/images/logo-completo.svg" alt="Grupo 3i" className="h-7 w-auto md:hidden" />
+        <Link to="/" className="md:hidden">
+          <img src="/images/logo-completo.svg" alt="Grupo 3i — Volver al inicio" className="h-7 w-auto" />
+        </Link>
       </div>
 
       <div className="flex items-center gap-3">

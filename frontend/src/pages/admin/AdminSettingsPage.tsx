@@ -134,7 +134,18 @@ function ContentTab() {
           <h3 className="text-lg capitalize text-primary">{section}</h3>
           <div className="mt-4 space-y-3">
             {Object.entries(fields).map(([key, value]) => (
-              <ContentField key={key} section={section} fieldKey={key} initial={value} onSave={saveField} />
+              <ContentField
+                key={key}
+                section={section}
+                fieldKey={key}
+                initial={value}
+                onSave={saveField}
+                hint={
+                  section === 'hero' && key === 'image_url'
+                    ? 'Una URL por línea (o separadas por coma) para que el hero rote entre varias imágenes. La imagen del proyecto ya incluida por defecto se muestra siempre primero.'
+                    : undefined
+                }
+              />
             ))}
           </div>
         </div>
@@ -148,11 +159,13 @@ function ContentField({
   fieldKey,
   initial,
   onSave,
+  hint,
 }: {
   section: string;
   fieldKey: string;
   initial: string;
   onSave: (section: string, key: string, value: string) => void;
+  hint?: string;
 }) {
   const [value, setValue] = useState(initial);
   const dirty = value !== initial;
@@ -161,6 +174,7 @@ function ContentField({
       <label className="flex-1">
         <span className="mb-1 block text-xs uppercase tracking-wider text-brand-gray">{fieldKey}</span>
         <textarea value={value} onChange={(e) => setValue(e.target.value)} rows={value.length > 60 ? 2 : 1} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+        {hint && <span className="mt-1 block text-xs text-brand-gray">{hint}</span>}
       </label>
       <Button size="sm" disabled={!dirty} onClick={() => onSave(section, fieldKey, value)}>Guardar</Button>
     </div>

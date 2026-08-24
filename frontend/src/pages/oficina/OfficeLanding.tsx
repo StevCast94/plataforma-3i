@@ -42,6 +42,13 @@ export default function OfficeLanding() {
         description="Transforma tus recomendaciones en ingresos con el Club 3i."
       />
 
+      {/* Barra superior: la única página de Oficina sin Navbar del sitio público. */}
+      <header className="border-b border-black/5 bg-white px-4 py-3 sm:px-6">
+        <Link to="/" className="inline-flex items-center">
+          <img src="/images/logo-completo.svg" alt="Grupo 3i — Volver al inicio" className="h-8 w-auto" />
+        </Link>
+      </header>
+
       {/* Hero */}
       <section className="relative isolate overflow-hidden bg-primary text-white">
         <img
