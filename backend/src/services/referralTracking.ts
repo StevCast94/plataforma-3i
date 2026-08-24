@@ -150,11 +150,27 @@ export async function attributeReferral(
 
 /** Registra un click en un enlace de referido (atribución first-click vía cookie). */
 export async function recordClick(code: string, db: Db = prisma): Promise<boolean> {
-  const result = await db.referralLink.updateMany({
+  // El identificador que llega por /r/:code puede ser el code del link
+  // (3IP-XXXXXX), el referralCode del miembro o su slug legible. Se intenta el
+  // match directo y, si no da, se resuelve al miembro dueño para llegar a su
+  // link: sin esto los enlaces con slug no sumaban ni un click.
+  const direct = await db.referralLink.updateMany({
     where: { code },
     data: { clicks: { increment: 1 } },
   });
-  return result.count > 0;
+  if (direct.count > 0) return true;
+
+  const member = await db.referralMember.findFirst({
+    where: { OR: [{ referralCode: code }, { referralSlug: code }] },
+    select: { id: true },
+  });
+  if (!member) return false;
+
+  const byMember = await db.referralLink.updateMany({
+    where: { memberId: member.id },
+    data: { clicks: { increment: 1 } },
+  });
+  return byMember.count > 0;
 }
 
 /**

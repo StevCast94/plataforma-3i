@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { api } from '@/lib/api';
 
@@ -15,37 +15,47 @@ const KEY = 'grupo3i_ref';
  */
 export function useReferral(): string | null {
   const [params] = useSearchParams();
+  // El código vive en estado, no solo en localStorage: quien llega por /r/:slug
+  // lo recibe de forma asíncrona desde la cookie, y sin estado el componente
+  // nunca volvía a renderizar (por eso el badge "Te invitó X" no aparecía).
+  const [code, setCode] = useState<string | null>(() => getReferralCode());
 
   useEffect(() => {
     const ref = params.get('ref');
     if (ref) {
-      const code = ref.trim();
+      const fromUrl = ref.trim();
       try {
-        localStorage.setItem(KEY, code);
+        localStorage.setItem(KEY, fromUrl);
       } catch {
         /* almacenamiento no disponible */
       }
-      api.post('/referral/track', { code }).catch(() => {});
+      setCode(fromUrl);
+      api.post('/referral/track', { code: fromUrl }).catch(() => {});
       return;
     }
     // Sin ?ref: si tampoco hay código local, intentar recuperarlo de la cookie.
-    if (!getReferralCode()) {
-      api
-        .get<{ code: string | null }>('/referral/current')
-        .then((r) => {
-          if (r?.code) {
-            try {
-              localStorage.setItem(KEY, r.code);
-            } catch {
-              /* noop */
-            }
-          }
-        })
-        .catch(() => {});
-    }
+    if (getReferralCode()) return;
+
+    let cancelled = false;
+    api
+      .get<{ code: string | null }>('/referral/current')
+      .then((r) => {
+        if (cancelled || !r?.code) return;
+        try {
+          localStorage.setItem(KEY, r.code);
+        } catch {
+          /* noop */
+        }
+        setCode(r.code);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
   }, [params]);
 
-  return getReferralCode();
+  return code;
 }
 
 /** Lectura puntual del código de referido guardado (sin hook). */

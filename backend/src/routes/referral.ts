@@ -39,6 +39,14 @@ function setRefCookieIfAbsent(req: Request, res: Response, code: string): boolea
   return true;
 }
 
+/**
+ * Destino por defecto de un enlace de referido "pelado" (/r/:code sin ?to=).
+ * Un enlace de referido significa "únete a través de mí", así que aterriza en el
+ * FORMULARIO DE REGISTRO, no en la home. Para compartir cualquier otra página se
+ * usa ?to=/ruta explícito (lo hace Herramientas > "Comparte cualquier página").
+ */
+const DEFAULT_REF_DESTINATION = '/oficina/registro';
+
 /** GET /r/:code?to=/tienda/slug → cuenta click, setea cookie y redirige al SPA. */
 export const referralRedirect = asyncHandler(async (req: Request, res: Response) => {
   const code = String(req.params.code ?? '').trim();
@@ -48,8 +56,8 @@ export const referralRedirect = asyncHandler(async (req: Request, res: Response)
     await recordClick(code).catch(() => {});
   }
   // Sanitizar destino: solo rutas internas relativas (evita open-redirect).
-  let to = String(req.query.to ?? '/');
-  if (!to.startsWith('/') || to.startsWith('//')) to = '/';
+  let to = String(req.query.to ?? DEFAULT_REF_DESTINATION);
+  if (!to.startsWith('/') || to.startsWith('//')) to = DEFAULT_REF_DESTINATION;
   res.redirect(302, `/#${to}`);
 });
 

@@ -55,6 +55,7 @@ export default function ToolsPage() {
   // con una URL guardada en la base de datos: así sigue funcionando aunque el
   // dominio cambie más adelante (justo lo que rompió los enlaces viejos al
   // migrar a grupo3i.com — quedaron con la URL de Railway congelada en la BD).
+  // Sin ?to=, el backend lo manda al formulario de registro (ver referral.ts).
   const fullUrl = member ? `${window.location.origin}/r/${member.referralSlug}` : '';
 
   useEffect(() => {
@@ -66,9 +67,9 @@ export default function ToolsPage() {
 
   if (!member) return null;
 
-  const shareLink =
-    `${window.location.origin}/r/${member.referralSlug}` +
-    (sharePath !== '/' ? `?to=${encodeURIComponent(sharePath)}` : '');
+  // ?to= SIEMPRE explícito: el destino por defecto de /r/:slug es el registro,
+  // así que "Página principal" necesita declararlo para no caer en el formulario.
+  const shareLink = `${window.location.origin}/r/${member.referralSlug}?to=${encodeURIComponent(sharePath)}`;
 
   async function copy(text: string) {
     const ok = await copyToClipboard(text);
@@ -97,7 +98,10 @@ export default function ToolsPage() {
       <section className="grid gap-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 lg:grid-cols-2">
         <div>
           <h2 className="text-xl text-primary">Mi enlace de referido</h2>
-          <p className="mt-1 text-sm text-brand-gray">Compártelo para empezar a ganar.</p>
+          <p className="mt-1 text-sm text-brand-gray">
+            Lleva directo al <strong className="text-primary">formulario de registro</strong> con
+            tu nombre ya vinculado. Compártelo para empezar a ganar.
+          </p>
 
           <div className="mt-4">
             <p className="text-xs uppercase tracking-wider text-brand-gray">Código</p>
