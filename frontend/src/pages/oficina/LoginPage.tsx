@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Seo } from '@/components/shared/Seo';
+import { Isotipo } from '@/components/brand/Isotipo';
 import { useAuth } from '@/hooks/useAuth';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { useToast } from '@/components/shared/Toast';
@@ -63,11 +64,12 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-light px-4">
       <Seo title="Iniciar sesión — Oficina Virtual" />
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
-        <Link to="/" className="font-serif text-2xl font-bold text-primary">
-          Grupo<span className="text-secondary"> 3i</span>
+        <Link to="/" className="flex flex-col items-center gap-3 text-center">
+          <Isotipo animation="ascenso" className="h-14 w-auto" title="Grupo 3i" />
+          <img src="/images/logotipo.svg" alt="Grupo 3i" className="h-6 w-auto" />
         </Link>
-        <h1 className="mt-6 text-3xl text-primary">Bienvenido de vuelta</h1>
-        <p className="mt-1 text-sm text-brand-gray">Ingresa a tu oficina virtual.</p>
+        <h1 className="mt-7 text-center text-3xl text-primary">Bienvenido de vuelta</h1>
+        <p className="mt-1 text-center text-sm text-brand-gray">Ingresa a tu oficina virtual.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <Input name="email" type="email" label="Email" placeholder="tucorreo@ejemplo.com" required />

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Seo } from '@/components/shared/Seo';
+import { Isotipo } from '@/components/brand/Isotipo';
 import { useAuth } from '@/hooks/useAuth';
 import { type RegisterData } from '@/context/AuthContext';
 import { useReferral } from '@/hooks/useReferral';
@@ -95,8 +96,9 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-light px-4 py-10">
       <Seo title="Registro — Oficina Virtual" />
       <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-xl">
-        <Link to="/" className="font-serif text-2xl font-bold text-primary">
-          Grupo<span className="text-secondary"> 3i</span>
+        <Link to="/" className="flex flex-col items-center gap-3 text-center">
+          <Isotipo animation="ascenso" className="h-14 w-auto" title="Grupo 3i" />
+          <img src="/images/logotipo.svg" alt="Grupo 3i" className="h-6 w-auto" />
         </Link>
 
         {claimEmail && (
