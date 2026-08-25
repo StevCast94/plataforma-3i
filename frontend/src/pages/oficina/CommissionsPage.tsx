@@ -74,13 +74,17 @@ export default function CommissionsPage() {
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-black/5 text-xs uppercase tracking-wider text-brand-gray">
-              <th className="px-4 py-3">Fecha</th>
-              <th className="px-4 py-3">Referido</th>
-              <th className="px-4 py-3">Producto</th>
-              <th className="px-4 py-3">Nivel</th>
-              <th className="px-4 py-3">Monto</th>
-              <th className="px-4 py-3">Tasa</th>
-              <th className="px-4 py-3">Estado</th>
+              {/* En móvil solo caben 4 columnas (7 medían 580px en una pantalla
+                  de 343px y las últimas quedaban fuera de vista). Producto,
+                  Nivel y Tasa se ocultan ahí: la fila abre el modal de detalle,
+                  que las muestra todas. */}
+              <th className="px-2 py-3 sm:px-4">Fecha</th>
+              <th className="px-2 py-3 sm:px-4">Referido</th>
+              <th className="hidden px-2 py-3 sm:table-cell sm:px-4">Producto</th>
+              <th className="hidden px-2 py-3 sm:table-cell sm:px-4">Nivel</th>
+              <th className="px-2 py-3 sm:px-4">Monto</th>
+              <th className="hidden px-2 py-3 sm:table-cell sm:px-4">Tasa</th>
+              <th className="px-2 py-3 sm:px-4">Estado</th>
             </tr>
           </thead>
           <tbody>

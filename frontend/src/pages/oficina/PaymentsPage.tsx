@@ -96,11 +96,15 @@ export default function PaymentsPage() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-black/5 text-xs uppercase tracking-wider text-brand-gray">
-                <th className="px-4 py-3">Fecha</th>
-                <th className="px-4 py-3">Monto</th>
-                <th className="px-4 py-3">Método</th>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3">Referencia</th>
+                {/* Las 5 columnas medían 444px en una pantalla de 343px, así que
+                    las dos últimas quedaban fuera de vista. En móvil se ocultan
+                    Método y Referencia como columnas y se muestran debajo de la
+                    fecha: no se pierde ningún dato. */}
+                <th className="px-2 py-3 sm:px-4">Fecha</th>
+                <th className="px-2 py-3 sm:px-4">Monto</th>
+                <th className="hidden px-2 py-3 sm:table-cell sm:px-4">Método</th>
+                <th className="px-2 py-3 sm:px-4">Estado</th>
+                <th className="hidden px-2 py-3 sm:table-cell sm:px-4">Referencia</th>
               </tr>
             </thead>
             <tbody>
@@ -109,19 +113,23 @@ export default function PaymentsPage() {
               )}
               {rows.map((p) => (
                 <tr key={p.id} className="border-b border-black/5">
-                  <td className="px-4 py-3 text-sm text-brand-gray">
+                  <td className="px-2 py-3 sm:px-4 text-sm text-brand-gray">
                     {new Date(p.createdAt).toLocaleDateString('es-EC')}
+                    <span className="block capitalize sm:hidden">{p.method}</span>
+                    {p.reference && (
+                      <span className="block break-all text-xs sm:hidden">{p.reference}</span>
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-sm font-semibold text-primary">
+                  <td className="px-2 py-3 sm:px-4 text-sm font-semibold text-primary">
                     {formatCurrency(p.amount)}
                   </td>
-                  <td className="px-4 py-3 text-sm capitalize">{p.method}</td>
-                  <td className="px-4 py-3">
+                  <td className="hidden px-2 py-3 sm:px-4 text-sm capitalize sm:table-cell">{p.method}</td>
+                  <td className="px-2 py-3 sm:px-4">
                     <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${PAYOUT_STATUS[p.status]}`}>
                       {p.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-brand-gray">{p.reference ?? '—'}</td>
+                  <td className="hidden px-2 py-3 sm:px-4 text-sm text-brand-gray sm:table-cell">{p.reference ?? '—'}</td>
                 </tr>
               ))}
             </tbody>

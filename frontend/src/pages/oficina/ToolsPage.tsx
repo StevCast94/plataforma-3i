@@ -307,7 +307,12 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl bg-light p-3">
       <p className="font-serif text-xl font-bold text-primary">{value}</p>
-      <p className="text-[10px] uppercase tracking-wider text-brand-gray">{label}</p>
+      {/* Sin tracking extra y con guion de corte: "Conversiones" es una sola
+          palabra de 85px y la celda mide 66px en pantallas de 375px — con
+          letter-spacing se cortaba a media palabra. */}
+      <p className="hyphens-auto break-words text-[10px] uppercase text-brand-gray" lang="es">
+        {label}
+      </p>
     </div>
   );
 }
