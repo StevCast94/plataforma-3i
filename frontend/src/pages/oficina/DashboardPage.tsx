@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, DollarSign, Wallet, Link2, Luggage } from 'lucide-react';
+import { Users, DollarSign, Wallet, Link2, Luggage, Smartphone } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
+import { Button } from '@/components/ui/Button';
 import { ProgressToElite } from '@/components/oficina/ProgressToElite';
+import { OnboardingWelcome } from '@/components/oficina/OnboardingWelcome';
 import { useAuth } from '@/hooks/useAuth';
 import { useCommissionSummary } from '@/hooks/useCommissions';
 import { useReferrals } from '@/hooks/useReferrals';
 import { formatCurrency } from '@/lib/utils';
-import { statusLabel } from '@/lib/referral';
+import { statusLabel, whatsappShareUrl } from '@/lib/referral';
+import { copyToClipboard } from '@/lib/clipboard';
+import { useToast } from '@/components/shared/Toast';
 
 function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
@@ -32,13 +36,21 @@ export default function DashboardPage() {
   const { member } = useAuth();
   const { data: summary } = useCommissionSummary();
   const { data: referrals } = useReferrals();
+  const { toast } = useToast();
 
   if (!member) return null;
   const recent = (referrals ?? []).slice(0, 5);
+  const fullUrl = `${window.location.origin}/r/${member.referralSlug}`;
+
+  async function copyLink() {
+    const ok = await copyToClipboard(fullUrl);
+    toast(ok ? 'Enlace copiado ✅' : 'No se pudo copiar. Mantén presionado el texto.', ok ? 'success' : 'error');
+  }
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       <Seo title="Dashboard — Oficina Virtual" />
+      <OnboardingWelcome member={member} />
 
       <div>
         <h1 className="text-3xl font-bold text-primary">Hola, {member.fullName.split(' ')[0]} 👋</h1>
@@ -99,19 +111,43 @@ export default function DashboardPage() {
       </div>
 
       {/* Acción principal: es literalmente cómo el socio gana dinero, así
-          que va destacada aparte de los demás accesos, no como uno más. */}
-      <Link
-        to="/oficina/herramientas"
-        className="flex items-center gap-4 rounded-2xl bg-secondary/15 p-6 shadow-sm ring-1 ring-secondary/40 transition hover:bg-secondary/25 hover:shadow-md"
-      >
-        <span className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-secondary text-primary">
-          <Link2 className="h-6 w-6" strokeWidth={2} />
-        </span>
-        <div>
-          <p className="font-semibold text-primary">Mi enlace y comisiones</p>
-          <p className="text-sm text-brand-gray">Comparte tu enlace y empieza a ganar</p>
+          que va destacada aparte de los demás accesos, no como uno más — y
+          el enlace se comparte de un solo tap sin salir del dashboard. */}
+      <div id="mi-enlace" className="rounded-2xl bg-secondary/15 p-6 shadow-sm ring-1 ring-secondary/40">
+        <Link to="/oficina/herramientas" className="flex items-center gap-4">
+          <span className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-secondary text-primary">
+            <Link2 className="h-6 w-6" strokeWidth={2} />
+          </span>
+          <div>
+            <p className="font-semibold text-primary">Mi enlace y comisiones</p>
+            <p className="text-sm text-brand-gray">Comparte tu enlace y empieza a ganar</p>
+          </div>
+        </Link>
+
+        <div className="mt-4 flex items-center gap-2">
+          <input
+            readOnly
+            value={fullUrl}
+            onClick={(e) => e.currentTarget.select()}
+            className="min-w-0 flex-1 rounded-lg bg-white px-3 py-2 text-sm text-primary ring-1 ring-black/5"
+          />
+          <Button size="sm" variant="outline" onClick={copyLink}>
+            Copiar
+          </Button>
+          <a href={whatsappShareUrl(fullUrl)} target="_blank" rel="noreferrer">
+            <Button size="sm">
+              <Smartphone className="h-3.5 w-3.5" strokeWidth={1.8} /> WhatsApp
+            </Button>
+          </a>
         </div>
-      </Link>
+
+        <Link
+          to="/oficina/herramientas"
+          className="mt-3 inline-block text-sm font-medium text-accent hover:underline"
+        >
+          Ver QR, plantillas y más opciones para compartir →
+        </Link>
+      </div>
 
       {/* Links rápidos */}
       <div className="grid gap-4 sm:grid-cols-4">

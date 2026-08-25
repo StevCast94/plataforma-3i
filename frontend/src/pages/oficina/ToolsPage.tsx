@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
-import { Smartphone, Link2 } from 'lucide-react';
+import { Smartphone, Link2, Image as ImageIcon } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useProducts } from '@/hooks/useProducts';
 import { whatsappShareUrl } from '@/lib/referral';
 import { copyToClipboard } from '@/lib/clipboard';
+import { generateShareCard } from '@/lib/shareCard';
 import { ReferralPerks } from '@/components/shared/ReferralPerks';
 import { useSectionContent } from '@/hooks/useSiteContent';
 
@@ -35,6 +36,7 @@ export default function ToolsPage() {
   const [info, setInfo] = useState<LinkInfo | null>(null);
   const [qr, setQr] = useState<string>('');
   const [sharePath, setSharePath] = useState('/');
+  const [generatingCard, setGeneratingCard] = useState(false);
 
   const whatsappTemplates =
     templateContent && Object.keys(templateContent).length > 0
@@ -82,6 +84,22 @@ export default function ToolsPage() {
     a.href = qr;
     a.download = `qr-${member!.referralCode}.png`;
     a.click();
+  }
+
+  async function downloadShareCard() {
+    if (!qr || !member) return;
+    setGeneratingCard(true);
+    try {
+      const dataUrl = await generateShareCard(qr, member.fullName.split(' ')[0]);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `grupo3i-${member.referralSlug}.png`;
+      a.click();
+    } catch {
+      toast('No se pudo generar la tarjeta. Intenta de nuevo.', 'error');
+    } finally {
+      setGeneratingCard(false);
+    }
   }
 
   const conversionRate =
@@ -144,9 +162,22 @@ export default function ToolsPage() {
           ) : (
             <div className="h-48 w-48 animate-pulse rounded-xl bg-white" />
           )}
-          <Button size="sm" className="mt-4" onClick={downloadQr} disabled={!qr}>
-            Descargar QR
-          </Button>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            <Button size="sm" variant="outline" onClick={downloadQr} disabled={!qr}>
+              Descargar QR
+            </Button>
+            <Button
+              size="sm"
+              onClick={downloadShareCard}
+              disabled={!qr}
+              loading={generatingCard}
+            >
+              <ImageIcon className="h-3.5 w-3.5" strokeWidth={1.8} /> Tarjeta para Stories
+            </Button>
+          </div>
+          <p className="mt-2 max-w-[220px] text-center text-xs text-brand-gray">
+            Lista para Instagram o WhatsApp Status, con tu QR y la marca 3i.
+          </p>
         </div>
       </section>
 
