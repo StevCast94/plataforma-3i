@@ -14,14 +14,21 @@ export function isSocialCrawler(req: Request): boolean {
   return CRAWLER_UA.test(String(req.get('user-agent') ?? ''));
 }
 
-/** Origen público del sitio. Railway va detrás de proxy, así que se prefiere
- *  la variable de entorno antes que adivinar por los headers. */
-export function publicOrigin(req: Request): string {
-  const fromEnv = process.env.PUBLIC_BASE_URL?.trim().replace(/\/+$/, '');
-  if (fromEnv) return fromEnv;
-  const host = req.get('x-forwarded-host') ?? req.get('host');
-  const proto = req.get('x-forwarded-proto') ?? req.protocol ?? 'https';
-  return host ? `${proto}://${host}` : 'https://grupo3i.com';
+/** Dominio público oficial. Se usa como base de og:url y og:image. */
+const CANONICAL_ORIGIN = 'https://grupo3i.com';
+
+/**
+ * Origen público del sitio.
+ *
+ * NO se deduce de los headers a propósito: detrás de Cloudflare + Railway,
+ * `x-forwarded-host` llega con el dominio interno de Railway
+ * (plataforma-3i-production.up.railway.app), así que las tarjetas quedaban
+ * apuntando al dominio viejo — justo lo que se acaba de corregir en el
+ * index.html. La tarjeta social siempre debe usar el dominio canónico.
+ * Para entornos de prueba se puede fijar PUBLIC_BASE_URL.
+ */
+export function publicOrigin(_req: Request): string {
+  return process.env.PUBLIC_BASE_URL?.trim().replace(/\/+$/, '') || CANONICAL_ORIGIN;
 }
 
 /**
