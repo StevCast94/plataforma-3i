@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
+import { v2 as cloudinary } from 'cloudinary';
 import { prisma } from '../prisma';
 import { authMember, signMemberToken, type MemberRequest } from '../middleware/authMember';
 import { generateReferralCode, generateReferralSlug, PAYOUT_METHODS } from '../lib/referralRules';
@@ -307,6 +308,35 @@ memberRoutes.put('/payout-method', authMember, async (req: MemberRequest, res) =
   } catch (err) {
     console.error('PUT /api/members/payout-method', err);
     res.status(400).json({ error: 'Error al guardar método de pago' });
+  }
+});
+
+// Cloudinary se configura vía CLOUDINARY_URL (env), igual que en adminSettings.
+if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
+
+// POST /api/members/upload-image — subida de imágenes para socios (posts de
+// comunidad, avatar). El uploader de admin (/api/admin/seed-images) requiere
+// token de staff, así que un socio no podía usarlo: por eso este endpoint
+// aparte, con el mismo mecanismo pero detrás de authMember en vez de admin.
+memberRoutes.post('/upload-image', authMember, async (req: MemberRequest, res) => {
+  try {
+    if (!process.env.CLOUDINARY_URL) {
+      res.status(500).json({ error: 'CLOUDINARY_URL no configurado' });
+      return;
+    }
+    const { dataUri } = req.body ?? {};
+    if (!dataUri || typeof dataUri !== 'string') {
+      res.status(400).json({ error: 'dataUri requerido (base64 data URL)' });
+      return;
+    }
+    const result = await cloudinary.uploader.upload(dataUri, {
+      folder: 'grupo3i/comunidad',
+      resource_type: 'image',
+    });
+    res.json({ url: result.secure_url });
+  } catch (err) {
+    console.error('POST /api/members/upload-image', err);
+    res.status(500).json({ error: 'Error al subir la imagen' });
   }
 });
 

@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { useGroups } from '@/hooks/useGroups';
 import { useToast } from '@/components/shared/Toast';
-import { cld } from '@/lib/cloudinary';
+import { ImageUpload } from '@/components/shared/ImageUpload';
 import type { FeedPost } from '@shared/types';
 
 interface PostCreatorProps {
@@ -21,24 +21,12 @@ export function PostCreator({ onCreated, fixedGroupId }: PostCreatorProps) {
   const [expanded, setExpanded] = useState(false);
   const [content, setContent] = useState('');
   const [images, setImages] = useState<string[]>([]);
-  const [imageInput, setImageInput] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
   const [groupId, setGroupId] = useState(fixedGroupId ?? '');
   const [sending, setSending] = useState(false);
 
   if (!member) return null;
   const myGroups = (groups ?? []).filter((g) => g.isMember);
-
-  function addImage() {
-    const url = imageInput.trim();
-    if (!url) return;
-    if (images.length >= 4) {
-      toast('Máximo 4 imágenes', 'info');
-      return;
-    }
-    setImages((a) => [...a, url]);
-    setImageInput('');
-  }
 
   async function publish() {
     if (!content.trim()) return;
@@ -86,21 +74,8 @@ export function PostCreator({ onCreated, fixedGroupId }: PostCreatorProps) {
             className="min-h-24 w-full rounded-xl border border-black/15 px-4 py-3 text-sm focus:border-secondary focus:outline-none"
           />
 
-          {images.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {images.map((img, i) => (
-                <div key={i} className="relative">
-                  <img src={cld(img, { width: 160 })} alt="" className="h-16 w-16 rounded-lg object-cover" />
-                  <button onClick={() => setImages((a) => a.filter((_, j) => j !== i))} className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">×</button>
-                </div>
-              ))}
-            </div>
-          )}
+          <ImageUpload value={images} onChange={setImages} max={4} />
 
-          <div className="flex gap-2">
-            <input value={imageInput} onChange={(e) => setImageInput(e.target.value)} placeholder="URL de imagen (opcional)" className="flex-1 rounded-lg border border-black/15 px-3 py-2 text-sm" />
-            <Button size="sm" variant="outline" onClick={addImage}>+ Imagen</Button>
-          </div>
           <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="Pegar un enlace (opcional)" className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
 
           <div className="flex flex-wrap items-center justify-between gap-3">

@@ -2,12 +2,18 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { CloudinaryUpload } from '@/components/admin/CloudinaryUpload';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import type { StaffUser, AuditLogRow } from '@/lib/adminTypes';
 import type { SiteContentMap } from '@shared/types';
+
+/** Campos de SiteContent que son imágenes: se editan subiendo archivos, no
+ * pegando una URL a mano. "hero.image_url" además rota entre varias (por eso
+ * usa CloudinaryUpload sin `single`, guardando las URLs unidas por línea). */
+const IMAGE_FIELDS = new Set(['hero.image_url']);
 
 type Tab = 'staff' | 'content' | 'audit';
 
@@ -133,20 +139,20 @@ function ContentTab() {
         <div key={section} className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5">
           <h3 className="text-lg capitalize text-primary">{section}</h3>
           <div className="mt-4 space-y-3">
-            {Object.entries(fields).map(([key, value]) => (
-              <ContentField
-                key={key}
-                section={section}
-                fieldKey={key}
-                initial={value}
-                onSave={saveField}
-                hint={
-                  section === 'hero' && key === 'image_url'
-                    ? 'Una URL por línea (o separadas por coma) para que el hero rote entre varias imágenes. La imagen del proyecto ya incluida por defecto se muestra siempre primero.'
-                    : undefined
-                }
-              />
-            ))}
+            {Object.entries(fields).map(([key, value]) =>
+              IMAGE_FIELDS.has(`${section}.${key}`) ? (
+                <ImageContentField
+                  key={key}
+                  section={section}
+                  fieldKey={key}
+                  initial={value}
+                  onSave={saveField}
+                  hint="La imagen del proyecto ya incluida por defecto se muestra siempre primero; las que subas aquí se agregan a la rotación del hero."
+                />
+              ) : (
+                <ContentField key={key} section={section} fieldKey={key} initial={value} onSave={saveField} />
+              ),
+            )}
           </div>
         </div>
       ))}
@@ -177,6 +183,43 @@ function ContentField({
         {hint && <span className="mt-1 block text-xs text-brand-gray">{hint}</span>}
       </label>
       <Button size="sm" disabled={!dirty} onClick={() => onSave(section, fieldKey, value)}>Guardar</Button>
+    </div>
+  );
+}
+
+function ImageContentField({
+  section,
+  fieldKey,
+  initial,
+  onSave,
+  hint,
+}: {
+  section: string;
+  fieldKey: string;
+  initial: string;
+  onSave: (section: string, key: string, value: string) => void;
+  hint?: string;
+}) {
+  const initialUrls = initial
+    .split(/[\n,]+/)
+    .map((u) => u.trim())
+    .filter(Boolean);
+  const [urls, setUrls] = useState<string[]>(initialUrls);
+  const dirty = urls.join('\n') !== initial;
+
+  return (
+    <div>
+      <span className="mb-1 block text-xs uppercase tracking-wider text-brand-gray">{fieldKey}</span>
+      <CloudinaryUpload value={urls} onChange={setUrls} />
+      {hint && <p className="mt-1 text-xs text-brand-gray">{hint}</p>}
+      <Button
+        size="sm"
+        className="mt-2"
+        disabled={!dirty}
+        onClick={() => onSave(section, fieldKey, urls.join('\n'))}
+      >
+        Guardar
+      </Button>
     </div>
   );
 }

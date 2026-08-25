@@ -1,4 +1,6 @@
 import type { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const baseField =
@@ -8,7 +10,10 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 }
 
-export function Input({ label, id, className, ...props }: InputProps) {
+export function Input({ label, id, className, type, ...props }: InputProps) {
+  const [reveal, setReveal] = useState(false);
+  const isPassword = type === 'password';
+
   return (
     <label className="block">
       {label && (
@@ -16,7 +21,27 @@ export function Input({ label, id, className, ...props }: InputProps) {
           {label}
         </span>
       )}
-      <input id={id} className={cn(baseField, className)} {...props} />
+      {isPassword ? (
+        <div className="relative">
+          <input
+            id={id}
+            type={reveal ? 'text' : 'password'}
+            className={cn(baseField, 'pr-11', className)}
+            {...props}
+          />
+          <button
+            type="button"
+            onClick={() => setReveal((v) => !v)}
+            aria-label={reveal ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            tabIndex={-1}
+            className="absolute right-0 top-0 flex h-full w-11 cursor-pointer items-center justify-center text-brand-gray hover:text-primary"
+          >
+            {reveal ? <EyeOff className="h-[18px] w-[18px]" strokeWidth={1.8} /> : <Eye className="h-[18px] w-[18px]" strokeWidth={1.8} />}
+          </button>
+        </div>
+      ) : (
+        <input id={id} type={type} className={cn(baseField, className)} {...props} />
+      )}
     </label>
   );
 }
