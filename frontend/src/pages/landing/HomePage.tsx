@@ -122,6 +122,28 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* COMUNIDAD */}
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <img
+            src="/images/secciones/comunidad-3i.jpg"
+            alt="Comunidad Grupo 3i"
+            className="aspect-[4/3] w-full rounded-2xl object-cover shadow-lg md:order-2"
+          />
+          <div>
+            <h2 className="text-3xl font-bold text-primary sm:text-4xl">Una comunidad, no solo una inversión</h2>
+            <p className="mt-4 text-brand-gray">
+              Socios, referidos y clientes se conectan en un mismo espacio: comparten experiencias
+              de viaje, oportunidades y consejos de inversión. Únete y forma parte de algo más
+              grande que una propiedad.
+            </p>
+            <Link to="/comunidad" className="mt-8 inline-block">
+              <Button size="lg" variant="outline">Conoce la comunidad</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CLUB 3i */}
       <CTASection
         title={club.title ?? 'Únete al Club 3i'}

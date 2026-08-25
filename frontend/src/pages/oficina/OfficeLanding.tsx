@@ -10,10 +10,25 @@ import { formatCurrency } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { BrandLoader } from '@/components/brand/Isotipo';
 
-const steps: { icon: LucideIcon; title: string; body: string }[] = [
-  { icon: ClipboardPen, title: 'Regístrate gratis', body: 'Crea tu cuenta Premiere con tu cédula en minutos.' },
-  { icon: Link2, title: 'Comparte tu enlace', body: 'Recibe tu código y enlace único para invitar.' },
-  { icon: HandCoins, title: 'Gana comisiones', body: 'Cobra por cada membresía y propiedad referida.' },
+const steps: { icon: LucideIcon; title: string; body: string; image: string }[] = [
+  {
+    icon: ClipboardPen,
+    title: 'Regístrate gratis',
+    body: 'Crea tu cuenta Premiere con tu cédula en minutos.',
+    image: '/images/secciones/paso-registro.jpg',
+  },
+  {
+    icon: Link2,
+    title: 'Comparte tu enlace',
+    body: 'Recibe tu código y enlace único para invitar.',
+    image: '/images/secciones/paso-comparte.jpg',
+  },
+  {
+    icon: HandCoins,
+    title: 'Gana comisiones',
+    body: 'Cobra por cada membresía y propiedad referida.',
+    image: '/images/secciones/paso-gana.jpg',
+  },
 ];
 
 const compare = [
@@ -98,13 +113,16 @@ export default function OfficeLanding() {
         <h2 className="mb-12 text-center text-3xl font-bold text-primary sm:text-4xl">Cómo funciona</h2>
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div key={s.title} className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-black/5">
-              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-light text-accent ring-1 ring-secondary/30">
-                <s.icon className="h-6 w-6" strokeWidth={1.6} />
-              </span>
-              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-secondary">Paso {i + 1}</p>
-              <h3 className="mt-1 text-xl text-primary">{s.title}</h3>
-              <p className="mt-2 text-sm text-brand-gray">{s.body}</p>
+            <div key={s.title} className="overflow-hidden rounded-2xl bg-white text-center shadow-sm ring-1 ring-black/5">
+              <img src={s.image} alt="" className="h-36 w-full object-cover" />
+              <div className="p-8">
+                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-light text-accent ring-1 ring-secondary/30">
+                  <s.icon className="h-6 w-6" strokeWidth={1.6} />
+                </span>
+                <p className="mt-2 text-xs font-bold uppercase tracking-widest text-secondary">Paso {i + 1}</p>
+                <h3 className="mt-1 text-xl text-primary">{s.title}</h3>
+                <p className="mt-2 text-sm text-brand-gray">{s.body}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -159,6 +177,27 @@ export default function OfficeLanding() {
             Como Elite ganarías hasta{' '}
             <strong className="font-serif text-2xl text-accent">{formatCurrency(elite)}/mes</strong>
           </p>
+        </div>
+      </section>
+
+      {/* Libertad financiera */}
+      <section className="relative overflow-hidden bg-primary text-white">
+        <img
+          src="/images/secciones/libertad-financiera.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-primary/70" />
+        <div className="relative mx-auto max-w-3xl px-4 py-24 text-center sm:px-6">
+          <h2 className="text-3xl font-bold sm:text-4xl">Libertad financiera, no solo un ingreso extra</h2>
+          <p className="mx-auto mt-4 max-w-xl text-white/80">
+            Tus comisiones se acumulan con cada referido, sin importar dónde estés. Empieza hoy y
+            deja que tu red trabaje para ti.
+          </p>
+          <Link to="/oficina/registro" className="mt-8 inline-block">
+            <Button size="lg">Registrarme gratis</Button>
+          </Link>
         </div>
       </section>
 

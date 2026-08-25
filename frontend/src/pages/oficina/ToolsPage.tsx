@@ -249,17 +249,25 @@ export default function ToolsPage() {
         </div>
       </section>
 
-      {/* Banners placeholder */}
+      {/* Materiales promocionales */}
       <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
         <h2 className="text-xl text-primary">Materiales promocionales</h2>
-        <p className="mt-1 text-sm text-brand-gray">Banners y posts listos para compartir (próximamente).</p>
+        <p className="mt-1 text-sm text-brand-gray">Banners listos para publicar en tus redes.</p>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="flex aspect-square items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-center text-sm font-semibold text-white"
-            >
-              Banner 3i #{i}
+          {[
+            { src: '/images/banners/banner-inversion.jpg', label: 'Inversión' },
+            { src: '/images/banners/banner-viajes.jpg', label: 'Viajes' },
+            { src: '/images/banners/banner-comunidad.jpg', label: 'Comunidad' },
+          ].map((b) => (
+            <div key={b.src} className="overflow-hidden rounded-xl ring-1 ring-black/10">
+              <img src={b.src} alt={`Banner ${b.label}`} className="aspect-square w-full object-cover" />
+              <a
+                href={b.src}
+                download={`grupo3i-banner-${b.label.toLowerCase()}.jpg`}
+                className="flex items-center justify-center gap-1.5 bg-light py-2 text-xs font-medium text-primary hover:bg-secondary/20"
+              >
+                Descargar
+              </a>
             </div>
           ))}
         </div>
