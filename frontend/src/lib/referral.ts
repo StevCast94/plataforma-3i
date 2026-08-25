@@ -45,8 +45,10 @@ export const COMMISSION_BADGE: Record<CommissionStatus, { label: string; classNa
 };
 
 /** Mensaje de WhatsApp pre-armado con el enlace de referido. */
-export function whatsappShareUrl(fullUrl: string): string {
-  const msg = `¡Únete al Club 3i conmigo! 🌍 Viaja con descuentos de hasta 70% y gana ingresos por referir. Regístrate aquí: ${fullUrl}`;
+export function whatsappShareUrl(fullUrl: string, message?: string): string {
+  const msg = message
+    ? `${message} ${fullUrl}`
+    : `¡Únete al Club 3i conmigo! 🌍 Viaja con descuentos de hasta 70% y gana ingresos por referir. Regístrate aquí: ${fullUrl}`;
   return `https://wa.me/?text=${encodeURIComponent(msg)}`;
 }
 

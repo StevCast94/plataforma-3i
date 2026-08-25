@@ -2,6 +2,8 @@ import { Router, type Request, type Response } from 'express';
 import { prisma } from '../prisma';
 import { asyncHandler } from '../lib/asyncHandler';
 import { resolveReferrer, recordClick } from '../services/referralTracking';
+import { loadCampaigns } from '../lib/ogCampaigns';
+import { isSocialCrawler, publicOrigin, renderOgCard } from '../lib/ogCard';
 
 // ============================================================
 // Atribución de referidos ROBUSTA y persistente.
@@ -47,21 +49,73 @@ function setRefCookieIfAbsent(req: Request, res: Response, code: string): boolea
  */
 const DEFAULT_REF_DESTINATION = '/oficina/registro';
 
-/** GET /r/:code?to=/tienda/slug → cuenta click, setea cookie y redirige al SPA. */
+/** Sanitiza un destino: solo rutas internas relativas (evita open-redirect). */
+function safeDestination(raw: unknown, fallback: string): string {
+  const to = String(raw ?? fallback);
+  if (!to.startsWith('/') || to.startsWith('//')) return fallback;
+  return to;
+}
+
+/**
+ * GET /r/:code?to=/tienda/slug&c=inversion
+ *
+ * - Crawler social (WhatsApp y compañía): responde HTML con las meta tags de
+ *   la campaña `c` para que la vista previa del enlace sea una tarjeta de
+ *   presentación real. NO cuenta click ni setea cookie: el bot no es visitante.
+ * - Humano: comportamiento de siempre — cookie de referido + click + redirect.
+ */
 export const referralRedirect = asyncHandler(async (req: Request, res: Response) => {
   const code = String(req.params.code ?? '').trim();
   const ref = await resolveReferrer(code).catch(() => null);
+
+  const campaignKey = String(req.query.c ?? '').trim();
+  const campaigns = await loadCampaigns();
+  const campaign = campaigns[campaignKey];
+
+  // El destino explícito (?to=) manda; si no, el de la campaña; si no, registro.
+  const fallbackTo = campaign?.to ?? DEFAULT_REF_DESTINATION;
+  const to = safeDestination(req.query.to, fallbackTo);
+
+  if (campaign && isSocialCrawler(req)) {
+    const origin = publicOrigin(req);
+    const member = ref
+      ? await prisma.referralMember
+          .findUnique({ where: { id: ref.id }, select: { fullName: true } })
+          .catch(() => null)
+      : null;
+
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.type('html').send(
+      renderOgCard({
+        campaign,
+        referrerName: member?.fullName.split(' ')[0] ?? null,
+        canonicalUrl: `${origin}${req.originalUrl}`,
+        redirectTo: `${origin}/#${to}`,
+        origin,
+      }),
+    );
+    return;
+  }
+
   if (ref) {
     setRefCookieIfAbsent(req, res, code);
     await recordClick(code).catch(() => {});
   }
-  // Sanitizar destino: solo rutas internas relativas (evita open-redirect).
-  let to = String(req.query.to ?? DEFAULT_REF_DESTINATION);
-  if (!to.startsWith('/') || to.startsWith('//')) to = DEFAULT_REF_DESTINATION;
   res.redirect(302, `/#${to}`);
 });
 
 export const referralApiRoutes = Router();
+
+// GET /api/referral/campaigns — plantillas + tarjetas para Herramientas.
+referralApiRoutes.get(
+  '/campaigns',
+  asyncHandler(async (_req: Request, res: Response) => {
+    const campaigns = await loadCampaigns();
+    res.json(
+      Object.entries(campaigns).map(([key, c]) => ({ key, ...c })),
+    );
+  }),
+);
 
 // POST /api/referral/track { code } — para aterrizajes con ?ref= directo (setea cookie).
 referralApiRoutes.post(

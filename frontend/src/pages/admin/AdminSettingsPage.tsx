@@ -15,7 +15,21 @@ import type { SiteContentMap } from '@shared/types';
  * usa CloudinaryUpload sin `single`, guardando las URLs unidas por línea). */
 const IMAGE_FIELDS = new Set(['hero.image_url']);
 
-type Tab = 'staff' | 'content' | 'audit';
+type Tab = 'staff' | 'content' | 'cards' | 'audit';
+
+/** Sección de SiteContent donde viven las campañas (una fila por campaña,
+ *  el `value` es el JSON de la tarjeta). Debe coincidir con OG_SECTION del backend. */
+const OG_SECTION = 'referral_og';
+
+interface Campaign {
+  key: string;
+  label: string;
+  title: string;
+  description: string;
+  image: string;
+  message: string;
+  to: string;
+}
 
 export default function AdminSettingsPage() {
   const { isSuperadmin } = useAdminAuth();
@@ -29,19 +43,26 @@ export default function AdminSettingsPage() {
     <div className="space-y-5">
       <h1 className="text-2xl font-bold text-primary">Configuración</h1>
       <div className="flex gap-2">
-        {(['staff', 'content', 'audit'] as Tab[]).map((t) => (
+        {(['staff', 'content', 'cards', 'audit'] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium ${tab === t ? 'bg-primary text-white' : 'bg-light text-brand-gray'}`}
           >
-            {t === 'staff' ? 'Staff' : t === 'content' ? 'Contenido' : 'Auditoría'}
+            {t === 'staff'
+              ? 'Staff'
+              : t === 'content'
+                ? 'Contenido'
+                : t === 'cards'
+                  ? 'Tarjetas de referido'
+                  : 'Auditoría'}
           </button>
         ))}
       </div>
 
       {tab === 'staff' && <StaffTab />}
       {tab === 'content' && <ContentTab />}
+      {tab === 'cards' && <CardsTab />}
       {tab === 'audit' && <AuditTab />}
     </div>
   );
@@ -220,6 +241,119 @@ function ImageContentField({
       >
         Guardar
       </Button>
+    </div>
+  );
+}
+
+/**
+ * Editor de las tarjetas que WhatsApp muestra al pegar un enlace de referido.
+ * Lee las campañas efectivas desde /referral/campaigns (defaults del código ya
+ * fusionados con lo guardado) y escribe cada una como un JSON en SiteContent.
+ */
+function CardsTab() {
+  const { toast } = useToast();
+  const { data, loading } = useAdminGet<Campaign[]>('/referral/campaigns');
+
+  if (loading) return <p className="text-brand-gray">Cargando tarjetas…</p>;
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-xl bg-light p-4 text-sm text-brand-gray">
+        Cada tarjeta es lo que ve quien recibe el enlace por WhatsApp. Usa{' '}
+        <code className="rounded bg-white px-1 font-mono text-primary">{'{nombre}'}</code> en el
+        título para insertar el nombre del socio que comparte. La imagen debe ser{' '}
+        <strong className="text-primary">cuadrada</strong> y con el texto al centro.
+        <br />
+        <span className="mt-1 block">
+          Ojo: WhatsApp guarda la tarjeta de cada enlace por varios días. Si cambias una imagen,
+          los mensajes ya enviados seguirán mostrando la anterior.
+        </span>
+      </div>
+
+      {(data ?? []).map((c) => (
+        <CampaignEditor key={c.key} campaign={c} onSaved={() => toast('Tarjeta guardada', 'success')} />
+      ))}
+    </div>
+  );
+}
+
+function CampaignEditor({ campaign, onSaved }: { campaign: Campaign; onSaved: () => void }) {
+  const { toast } = useToast();
+  const { key, ...initial } = campaign;
+  const [form, setForm] = useState(initial);
+  const [saving, setSaving] = useState(false);
+
+  const dirty = JSON.stringify(form) !== JSON.stringify(initial);
+  const set = (field: keyof typeof form) => (value: string) =>
+    setForm((f) => ({ ...f, [field]: value }));
+
+  async function save() {
+    setSaving(true);
+    try {
+      await adminApi.put('/content', {
+        section: OG_SECTION,
+        key,
+        value: JSON.stringify(form),
+      });
+      onSaved();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5">
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="text-lg text-primary">{form.label || key}</h3>
+        <code className="rounded bg-light px-2 py-1 font-mono text-xs text-brand-gray">?c={key}</code>
+      </div>
+
+      <div className="mt-4 grid gap-5 md:grid-cols-[13rem_1fr]">
+        <div>
+          <span className="mb-1 block text-xs uppercase tracking-wider text-brand-gray">
+            Imagen de la tarjeta
+          </span>
+          <CloudinaryUpload
+            value={form.image ? [form.image] : []}
+            onChange={(urls) => set('image')(urls[urls.length - 1] ?? '')}
+          />
+        </div>
+
+        <div className="space-y-3">
+          <Input label="Nombre interno" value={form.label} onChange={(e) => set('label')(e.target.value)} />
+          <Input label="Título de la tarjeta" value={form.title} onChange={(e) => set('title')(e.target.value)} />
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-medium text-primary">Descripción</span>
+            <textarea
+              value={form.description}
+              onChange={(e) => set('description')(e.target.value)}
+              rows={2}
+              className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-medium text-primary">
+              Mensaje de WhatsApp (el enlace se agrega solo al final)
+            </span>
+            <textarea
+              value={form.message}
+              onChange={(e) => set('message')(e.target.value)}
+              rows={2}
+              className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm"
+            />
+          </label>
+          <Input
+            label="Página de destino"
+            value={form.to}
+            onChange={(e) => set('to')(e.target.value)}
+          />
+          <Button disabled={!dirty} loading={saving} onClick={save}>
+            Guardar tarjeta
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ import { copyToClipboard } from '@/lib/clipboard';
 import { generateShareCard } from '@/lib/shareCard';
 import { ReferralPerks } from '@/components/shared/ReferralPerks';
 import { useSectionContent } from '@/hooks/useSiteContent';
+import { useReferralCampaigns } from '@/hooks/useReferralCampaigns';
 
 interface LinkInfo {
   code: string;
@@ -33,6 +34,7 @@ export default function ToolsPage() {
   const { toast } = useToast();
   const { data: products } = useProducts();
   const { data: templateContent } = useSectionContent('referral_templates');
+  const { data: campaigns, loading: loadingCampaigns } = useReferralCampaigns();
   const [info, setInfo] = useState<LinkInfo | null>(null);
   const [qr, setQr] = useState<string>('');
   const [sharePath, setSharePath] = useState('/');
@@ -232,44 +234,69 @@ export default function ToolsPage() {
         </div>
       </section>
 
-      {/* Materiales */}
+      {/* Mensajes listos con su tarjeta */}
       <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-        <h2 className="text-xl text-primary">Plantillas de WhatsApp</h2>
-        <div className="mt-4 space-y-3">
-          {whatsappTemplates.map((t, i) => (
-            <div key={i} className="flex items-start gap-3 rounded-xl bg-light p-4">
-              <p className="flex-1 text-sm text-primary">
-                {t} <span className="text-accent">{fullUrl}</span>
-              </p>
-              <Button size="sm" variant="outline" onClick={() => copy(`${t} ${fullUrl}`)}>
-                Copiar
-              </Button>
-            </div>
-          ))}
-        </div>
-      </section>
+        <h2 className="text-xl text-primary">Mensajes listos para compartir</h2>
+        <p className="mt-1 text-sm text-brand-gray">
+          Cada mensaje lleva su propia tarjeta de presentación: al pegarlo en WhatsApp,
+          quien lo reciba verá esta imagen con tu nombre. Copia y pega, nada más.
+        </p>
 
-      {/* Materiales promocionales */}
-      <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-        <h2 className="text-xl text-primary">Materiales promocionales</h2>
-        <p className="mt-1 text-sm text-brand-gray">Banners listos para publicar en tus redes.</p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          {[
-            { src: '/images/banners/banner-inversion.jpg', label: 'Inversión' },
-            { src: '/images/banners/banner-viajes.jpg', label: 'Viajes' },
-            { src: '/images/banners/banner-comunidad.jpg', label: 'Comunidad' },
-          ].map((b) => (
-            <div key={b.src} className="overflow-hidden rounded-xl ring-1 ring-black/10">
-              <img src={b.src} alt={`Banner ${b.label}`} className="aspect-square w-full object-cover" />
-              <a
-                href={b.src}
-                download={`grupo3i-banner-${b.label.toLowerCase()}.jpg`}
-                className="flex items-center justify-center gap-1.5 bg-light py-2 text-xs font-medium text-primary hover:bg-secondary/20"
+        <div className="mt-5 space-y-4">
+          {(campaigns ?? []).map((c) => {
+            const link = `${window.location.origin}/r/${member.referralSlug}?c=${c.key}`;
+            const text = `${c.message} ${link}`;
+            return (
+              <div
+                key={c.key}
+                className="grid gap-4 rounded-xl bg-light p-4 sm:grid-cols-[9rem_1fr]"
               >
-                Descargar
-              </a>
-            </div>
-          ))}
+                <img
+                  src={c.image}
+                  alt={`Tarjeta: ${c.label}`}
+                  loading="lazy"
+                  className="aspect-square w-full rounded-lg object-cover ring-1 ring-black/10"
+                />
+                <div className="min-w-0">
+                  <p className="text-xs font-bold uppercase tracking-wider text-secondary">
+                    {c.label}
+                  </p>
+                  <p className="mt-1.5 text-sm text-primary">{c.message}</p>
+                  <p className="mt-1 break-all text-sm text-accent">{link}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button size="sm" onClick={() => copy(text)}>
+                      Copiar mensaje
+                    </Button>
+                    <a href={whatsappShareUrl(link, c.message)} target="_blank" rel="noreferrer">
+                      <Button size="sm" variant="outline">
+                        <Smartphone className="h-3.5 w-3.5" strokeWidth={1.8} /> WhatsApp
+                      </Button>
+                    </a>
+                    <a href={c.image} download={`grupo3i-${c.key}.jpg`}>
+                      <Button size="sm" variant="outline">
+                        <ImageIcon className="h-3.5 w-3.5" strokeWidth={1.8} /> Imagen
+                      </Button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {loadingCampaigns && <p className="text-sm text-brand-gray">Cargando mensajes…</p>}
+
+          {/* Respaldo: si la API de campañas falla, al menos quedan los textos. */}
+          {!loadingCampaigns && (campaigns?.length ?? 0) === 0 &&
+            whatsappTemplates.map((t, i) => (
+              <div key={i} className="flex items-start gap-3 rounded-xl bg-light p-4">
+                <p className="flex-1 text-sm text-primary">
+                  {t} <span className="text-accent">{fullUrl}</span>
+                </p>
+                <Button size="sm" variant="outline" onClick={() => copy(`${t} ${fullUrl}`)}>
+                  Copiar
+                </Button>
+              </div>
+            ))}
         </div>
       </section>
     </div>
