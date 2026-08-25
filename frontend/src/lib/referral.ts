@@ -3,8 +3,8 @@
 import type { MemberStatus, CommissionStatus } from '@shared/types';
 
 export const RATES = {
-  PREMIERE: { realEstateL1: 0.02, realEstateL2: 0.01, travelL1: 50, monthlyLimit: 5000 },
-  ELITE: { realEstateL1: 0.04, realEstateL2: 0.02, travelL1: 100, monthlyLimit: Infinity },
+  PREMIERE: { realEstateL1: 0.02, realEstateL2: 0.01, travelL1: 50 },
+  ELITE: { realEstateL1: 0.04, realEstateL2: 0.02, travelL1: 100 },
 } as const;
 
 export const ELITE_REFERRALS_REQUIRED = 5;
@@ -21,8 +21,7 @@ export function estimateMonthly(
   const r = RATES[status];
   const fromTravel = membershipsPerMonth * r.travelL1;
   const fromRealEstate = fractionalSales * avgPropertyPrice * r.realEstateL1;
-  const total = fromTravel + fromRealEstate;
-  return Math.min(total, r.monthlyLimit);
+  return fromTravel + fromRealEstate;
 }
 
 /** Días restantes desde una fecha hasta cumplir N días. */

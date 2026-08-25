@@ -35,22 +35,25 @@ const compare = [
   { feature: 'Comisión membresía (nivel 1)', premiere: '$50', elite: '$100' },
   { feature: 'Inmobiliario nivel 1', premiere: '2%', elite: '4%' },
   { feature: 'Inmobiliario nivel 2', premiere: '1%', elite: '2%' },
-  { feature: 'Límite mensual', premiere: '$5,000', elite: 'Ilimitado' },
   { feature: 'Frecuencia de pago', premiere: 'Mensual', elite: 'Quincenal' },
-  { feature: 'Liquidación', premiere: '45 días', elite: '30 días' },
+  { feature: 'Liquidación', premiere: '30 días', elite: '3 días' },
 ];
 
 const faqs = [
   { q: '¿Cuánto cuesta ser miembro?', a: 'El registro Premiere es gratuito. Solo necesitas verificar tu identidad (KYC).' },
   { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto, o refiriendo 5 personas exitosas en 180 días (¡con membresía de viajes gratis!).' },
-  { q: '¿Cuándo cobro mis comisiones?', a: 'Tras un período de retracto de 14 días y la liquidación según tu nivel (45 días Premiere / 30 días Elite).' },
+  { q: '¿Cuándo cobro mis comisiones?', a: 'Tras un período de retracto de 14 días y la liquidación según tu nivel (30 días Premiere / 3 días Elite).' },
   { q: '¿Pierdo mi cuenta si no refiero?', a: 'Premiere: tras 90 días sin referidos se da de baja. Elite es vitalicio.' },
 ];
+
+// Precio de referencia de una fracción, igual al "Invierte desde $12,000" del hero.
+const FRACTION_PRICE = 12000;
 
 export default function OfficeLanding() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [memberships, setMemberships] = useState(5);
-  const elite = estimateMonthly('ELITE', memberships, 1, 15000);
+  const [fractions, setFractions] = useState(1);
+  const elite = estimateMonthly('ELITE', memberships, fractions, FRACTION_PRICE);
 
   // Esta es una página de VENTA del programa (pública, sin sidebar). Si ya hay
   // sesión, no tiene sentido mostrarle "Regístrate gratis" a alguien que ya es
@@ -158,7 +161,7 @@ export default function OfficeLanding() {
       {/* Calculadora rápida */}
       <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
         <h2 className="mb-8 text-center text-3xl font-bold text-primary">¿Cuánto podrías ganar?</h2>
-        <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-black/5">
+        <div className="space-y-5 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-black/5">
           <label className="block">
             <div className="flex items-baseline justify-between">
               <span className="text-sm font-medium text-primary">Membresías referidas al mes</span>
@@ -173,7 +176,23 @@ export default function OfficeLanding() {
               className="mt-2 w-full cursor-pointer accent-[var(--color-secondary)]"
             />
           </label>
-          <p className="mt-6 text-center text-brand-gray">
+          <label className="block">
+            <div className="flex items-baseline justify-between">
+              <span className="text-sm font-medium text-primary">
+                Fracciones de {formatCurrency(FRACTION_PRICE)} vendidas al mes
+              </span>
+              <span className="font-serif text-xl font-bold text-accent">{fractions}</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={10}
+              value={fractions}
+              onChange={(e) => setFractions(Number(e.target.value))}
+              className="mt-2 w-full cursor-pointer accent-[var(--color-secondary)]"
+            />
+          </label>
+          <p className="pt-2 text-center text-brand-gray">
             Como Elite ganarías hasta{' '}
             <strong className="font-serif text-2xl text-accent">{formatCurrency(elite)}/mes</strong>
           </p>

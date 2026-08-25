@@ -15,7 +15,7 @@ const SECTIONS = [
   { id: 'incentivo', n: '5', t: 'Doble incentivo (membresía de regalo)' },
   { id: 'atribucion', n: '6', t: 'Atribución de referidos' },
   { id: 'liquidacion', n: '7', t: 'Liquidación y retiros' },
-  { id: 'limites', n: '8', t: 'Límites e inactividad' },
+  { id: 'limites', n: '8', t: 'Inactividad' },
   { id: 'condiciones', n: '9', t: 'Condiciones generales' },
 ];
 
@@ -81,14 +81,13 @@ export default function ReglamentoPage() {
           </Section>
 
           <Section id="membresia" n="2" t="Rangos: Premiere y Elite">
-            <p>Todo socio inicia como <b>Premiere</b> y puede ascender a <b>Elite</b>. El rango define las tasas de comisión, los límites y los mínimos de retiro.</p>
+            <p>Todo socio inicia como <b>Premiere</b> y puede ascender a <b>Elite</b>. El rango define las tasas de comisión, la liquidación y los mínimos de retiro.</p>
             <Table
               head={['', 'Premiere', 'Elite']}
               rows={[
                 ['Prefijo de código', '3IP-XXXXXX', '3IE-XXXXXX'],
                 ['Comisión inmobiliaria N1 / N2', '2% / 1%', '4% / 2%'],
-                ['Límite mensual de comisiones', 'US$ 5.000', 'Ilimitado'],
-                ['Liquidación (días de espera)', '45 días', '30 días'],
+                ['Liquidación (días de espera)', '30 días', '3 días'],
               ]}
             />
             <p className="text-sm text-brand-gray">El código de referido no cambia al ascender, para no romper enlaces ya compartidos.</p>
@@ -143,7 +142,7 @@ export default function ReglamentoPage() {
           <Section id="liquidacion" n="7" t="Liquidación y retiros">
             <ul className="list-disc space-y-1 pl-5">
               <li><b>Período de retracto:</b> 14 días desde la confirmación de la venta.</li>
-              <li><b>Liquidación:</b> 45 días (Premiere) / 30 días (Elite). Tras este plazo la comisión queda disponible en el saldo retirable.</li>
+              <li><b>Liquidación:</b> 30 días (Premiere) / 3 días (Elite). Tras este plazo la comisión queda disponible en el saldo retirable.</li>
               <li>El administrador valida las comisiones; una comisión validada queda disponible para retiro.</li>
             </ul>
             <p><b>Mínimos de retiro</b> según rango y método:</p>
@@ -157,9 +156,9 @@ export default function ReglamentoPage() {
             <p className="text-sm text-brand-gray">Si un retiro es marcado como fallido, el monto se devuelve automáticamente al saldo del socio.</p>
           </Section>
 
-          <Section id="limites" n="8" t="Límites e inactividad">
+          <Section id="limites" n="8" t="Inactividad">
             <ul className="list-disc space-y-1 pl-5">
-              <li><b>Límite mensual de comisiones:</b> US$ 5.000 para Premiere; ilimitado para Elite.</li>
+              <li>No hay límite mensual de comisiones para ningún rango.</li>
               <li><b>Inactividad (solo Premiere):</b> avisos a los 60 y 80 días sin referidos nuevos; a los <b>90 días</b> sin referidos la cuenta se suspende. La reactivación se gestiona con el administrador.</li>
             </ul>
           </Section>

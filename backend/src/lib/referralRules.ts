@@ -17,16 +17,16 @@ export const TRAVEL_MEMBERSHIP_COMMISSION: Record<'PREMIERE' | 'ELITE', { level1
   ELITE: { level1: 100, level2: 0 },
 };
 
-/** Límite mensual de comisiones (null = ilimitado). */
+/** Límite mensual de comisiones (null = ilimitado). No hay tope real para ningún nivel. */
 export const MONTHLY_LIMIT: Record<'PREMIERE' | 'ELITE', number | null> = {
-  PREMIERE: 5000,
+  PREMIERE: null,
   ELITE: null,
 };
 
 /** Período de espera (hold) antes de liquidar, en días, desde la confirmación. */
 export const LIQUIDATION_DAYS: Record<'PREMIERE' | 'ELITE', number> = {
-  PREMIERE: 45,
-  ELITE: 30,
+  PREMIERE: 30,
+  ELITE: 3,
 };
 
 /** Mínimo de retiro (USD) por método y estatus. */
