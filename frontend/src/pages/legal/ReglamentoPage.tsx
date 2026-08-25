@@ -36,7 +36,7 @@ export default function ReglamentoPage() {
               Reglamento del Programa de Referidos
             </h1>
             <p className="mt-2 text-white/70">
-              Versión vigente · Última actualización: junio 2026
+              Versión vigente · Última actualización: agosto 2026
             </p>
           </div>
           <Button variant="secondary" className="print:hidden" onClick={() => window.print()}>
@@ -73,7 +73,7 @@ export default function ReglamentoPage() {
               productos inmobiliarios y la membresía del Club de Viajes 3i.
             </p>
             <ul className="list-disc space-y-1 pl-5">
-              <li><b>Socio / referidor:</b> persona registrada con un código de referido propio.</li>
+              <li><b>Socio / referidor:</b> persona registrada con un código de referido propio (formato 3IP-XXXXXX), único y de por vida — no cambia al ascender de rango.</li>
               <li><b>Referido:</b> persona que llega a través del enlace o código de un socio.</li>
               <li><b>Nivel 1:</b> referido directo del socio. <b>Nivel 2:</b> referido de su referido.</li>
               <li><b>Producto inmobiliario:</b> propiedad fraccionada, propiedad tradicional o terreno.</li>
@@ -85,12 +85,14 @@ export default function ReglamentoPage() {
             <Table
               head={['', 'Premiere', 'Elite']}
               rows={[
-                ['Prefijo de código', '3IP-XXXXXX', '3IE-XXXXXX'],
                 ['Comisión inmobiliaria N1 / N2', '2% / 1%', '4% / 2%'],
                 ['Liquidación (días de espera)', '30 días', '3 días'],
               ]}
             />
-            <p className="text-sm text-brand-gray">El código de referido no cambia al ascender, para no romper enlaces ya compartidos.</p>
+            <p className="text-sm text-brand-gray">
+              El código y el enlace de referido son los mismos desde el registro: no cambian al
+              ascender, para no romper enlaces ya compartidos.
+            </p>
           </Section>
 
           <Section id="comisiones" n="3" t="Comisiones">
@@ -142,8 +144,8 @@ export default function ReglamentoPage() {
           <Section id="liquidacion" n="7" t="Liquidación y retiros">
             <ul className="list-disc space-y-1 pl-5">
               <li><b>Período de retracto:</b> 14 días desde la confirmación de la venta.</li>
-              <li><b>Liquidación:</b> 30 días (Premiere) / 3 días (Elite). Tras este plazo la comisión queda disponible en el saldo retirable.</li>
-              <li>El administrador valida las comisiones; una comisión validada queda disponible para retiro.</li>
+              <li><b>Liquidación automática:</b> 30 días (Premiere) / 3 días (Elite) desde que termina el retracto. Cumplido el plazo, la comisión pasa sola al saldo retirable, sin que el socio tenga que hacer nada.</li>
+              <li><b>Liquidación anticipada:</b> el administrador puede validar una comisión antes de que se cumpla el plazo, acreditándola de inmediato.</li>
             </ul>
             <p><b>Mínimos de retiro</b> según rango y método:</p>
             <Table

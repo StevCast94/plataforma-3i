@@ -95,7 +95,8 @@ export async function monthlyCommissionTotal(memberId: string, db: Db = prisma):
 }
 
 /**
- * Crea la comisión aplicando el límite mensual (recorta el excedente para Premiere).
+ * Crea la comisión aplicando el límite mensual, si `MONTHLY_LIMIT` llegara a
+ * definir uno para el rango (hoy ninguno lo tiene: ambos son `null`, sin tope).
  * Estado inicial PENDING; holdUntil = ahora + retracto(14) + liquidación(según estatus).
  * Devuelve la comisión creada, o null si el límite ya estaba alcanzado.
  */
@@ -105,7 +106,8 @@ export async function createCommission(
 ): Promise<{ id: string; amount: number } | null> {
   const computed = computeCommission(input);
 
-  // Aplicar límite mensual (Premiere = $5,000; Elite = ilimitado).
+  // Sin tope hoy (ver referralRules.ts); el código queda listo por si en el
+  // futuro se reintroduce un límite para algún rango.
   const limit = MONTHLY_LIMIT[input.memberStatus];
   let amount = computed.amount;
   if (limit != null) {

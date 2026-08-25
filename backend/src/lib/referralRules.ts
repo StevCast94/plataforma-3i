@@ -50,11 +50,15 @@ export const ELITE_REFERRALS_WINDOW_DAYS = 180;
 /** Ventana de atribución de la cookie de referido (días, first-click). */
 export const ATTRIBUTION_WINDOW_DAYS = 90;
 
-/** Prefijos de código de referido. */
-export const CODE_PREFIX: Record<'PREMIERE' | 'ELITE', string> = {
-  PREMIERE: '3IP',
-  ELITE: '3IE',
-};
+/**
+ * Prefijo único del código de referido. Todo socio se registra Premiere
+ * (el ascenso a Elite es posterior y NUNCA regenera el código, justo para no
+ * romper enlaces/QR ya compartidos — ver `ascendService.ts`), así que nunca
+ * existió un prefijo "3IE-" real: hubo uno definido pero jamás se invocaba.
+ * Se deja como constante única para que quede imposible reintroducir esa
+ * confusión (el reglamento público llegó a documentar el prefijo Elite falso).
+ */
+export const CODE_PREFIX = '3IP';
 
 /** Métodos de pago válidos y a qué mínimo (transfer/paypal) mapean. */
 export const PAYOUT_METHODS: Record<string, 'transfer' | 'paypal'> = {
@@ -67,13 +71,13 @@ export const PAYOUT_METHODS: Record<string, 'transfer' | 'paypal'> = {
 
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-/** Genera un código de referido: 3IP-XXXXXX o 3IE-XXXXXX (6 alfanuméricos). */
-export function generateReferralCode(status: 'PREMIERE' | 'ELITE'): string {
+/** Genera un código de referido: 3IP-XXXXXX (6 alfanuméricos). */
+export function generateReferralCode(): string {
   let suffix = '';
   for (let i = 0; i < 6; i++) {
     suffix += CHARS[Math.floor(Math.random() * CHARS.length)];
   }
-  return `${CODE_PREFIX[status]}-${suffix}`;
+  return `${CODE_PREFIX}-${suffix}`;
 }
 
 const SLUG_SUFFIX_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';

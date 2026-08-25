@@ -41,11 +41,11 @@ export async function ensureProvisionalMember(
   }
 
   // Código único (reintento ante colisión improbable).
-  let code = generateReferralCode('PREMIERE');
+  let code = generateReferralCode();
   for (let i = 0; i < 5; i++) {
     const ex = await db.referralMember.findUnique({ where: { referralCode: code }, select: { id: true } });
     if (!ex) break;
-    code = generateReferralCode('PREMIERE');
+    code = generateReferralCode();
   }
 
   let slug = generateReferralSlug(input.fullName);

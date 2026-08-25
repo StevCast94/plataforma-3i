@@ -142,14 +142,14 @@ memberRoutes.post('/register', async (req, res) => {
     }
 
     // CAMINO B — REGISTRO NUEVO (sin pre-registro previo).
-    let referralCode = generateReferralCode('PREMIERE');
+    let referralCode = generateReferralCode();
     for (let i = 0; i < 5; i++) {
       const exists = await prisma.referralMember.findUnique({
         where: { referralCode },
         select: { id: true },
       });
       if (!exists) break;
-      referralCode = generateReferralCode('PREMIERE');
+      referralCode = generateReferralCode();
     }
 
     let referralSlug = generateReferralSlug(String(fullName));
