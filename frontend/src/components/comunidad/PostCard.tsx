@@ -37,16 +37,20 @@ interface PostCardProps {
   post: FeedPost;
   onReact: (id: string, myReaction: ReactionType | null, delta: number) => void;
   onDelete?: (id: string) => void;
+  onEdit?: (id: string, patch: Partial<FeedPost>) => void;
   groupName?: string;
   defaultShowComments?: boolean;
 }
 
-export function PostCard({ post, onReact, onDelete, groupName, defaultShowComments }: PostCardProps) {
+export function PostCard({ post, onReact, onDelete, onEdit, groupName, defaultShowComments }: PostCardProps) {
   const { member } = useAuth();
   const { toast } = useToast();
   const [showComments, setShowComments] = useState(!!defaultShowComments);
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [expanded, setExpanded] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(post.content);
+  const [saving, setSaving] = useState(false);
 
   const author = post.author;
   const isMine = member && author && member.id === author.id;
@@ -60,6 +64,25 @@ export function PostCard({ post, onReact, onDelete, groupName, defaultShowCommen
       toast('Post eliminado', 'success');
     } catch (err) {
       toast((err as Error).message, 'error');
+    }
+  }
+
+  async function saveEdit() {
+    if (!draft.trim() || draft === post.content) {
+      setEditing(false);
+      setDraft(post.content);
+      return;
+    }
+    setSaving(true);
+    try {
+      const updated = await api.put<FeedPost>(`/community/posts/${post.id}`, { content: draft });
+      onEdit?.(post.id, { content: updated.content, edited: true });
+      setEditing(false);
+      toast('Publicación actualizada', 'success');
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -80,24 +103,61 @@ export function PostCard({ post, onReact, onDelete, groupName, defaultShowCommen
             <Badge variant={isElite ? 'gold' : 'light'}>{isElite ? 'Elite' : 'Premiere'}</Badge>
             {groupName && <span className="text-xs text-brand-gray">en {groupName}</span>}
           </div>
-          <span className="text-xs text-brand-gray">{timeAgo(post.createdAt)}</span>
+          <span className="text-xs text-brand-gray">
+            {timeAgo(post.createdAt)}
+            {post.edited && <span className="ml-1">· editado</span>}
+          </span>
         </div>
-        {isMine && (
-          <button onClick={remove} className="text-brand-gray hover:text-red-600" title="Eliminar">
-            ✕
-          </button>
+        {isMine && !editing && (
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => { setDraft(post.content); setEditing(true); }}
+              className="text-xs font-medium text-brand-gray hover:text-primary"
+            >
+              Editar
+            </button>
+            <button onClick={remove} className="text-brand-gray hover:text-red-600" title="Eliminar">
+              ✕
+            </button>
+          </div>
         )}
       </div>
 
       {/* Contenido */}
-      <p className="mt-3 whitespace-pre-wrap text-primary/90">
-        {long && !expanded ? post.content.slice(0, 280) + '…' : post.content}
-        {long && (
-          <button onClick={() => setExpanded((v) => !v)} className="ml-1 text-sm font-medium text-accent">
-            {expanded ? 'ver menos' : 'ver más'}
-          </button>
-        )}
-      </p>
+      {editing ? (
+        <div className="mt-3 space-y-2">
+          <textarea
+            autoFocus
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            className="min-h-20 w-full rounded-xl border border-black/15 px-3 py-2 text-sm focus:border-secondary focus:outline-none"
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => { setEditing(false); setDraft(post.content); }}
+              className="rounded-lg px-3 py-1.5 text-sm text-brand-gray hover:bg-light"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={saveEdit}
+              disabled={saving || !draft.trim()}
+              className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+            >
+              {saving ? 'Guardando…' : 'Guardar'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p className="mt-3 whitespace-pre-wrap text-primary/90">
+          {long && !expanded ? post.content.slice(0, 280) + '…' : post.content}
+          {long && (
+            <button onClick={() => setExpanded((v) => !v)} className="ml-1 text-sm font-medium text-accent">
+              {expanded ? 'ver menos' : 'ver más'}
+            </button>
+          )}
+        </p>
+      )}
 
       <ImageGrid images={post.images} />
 

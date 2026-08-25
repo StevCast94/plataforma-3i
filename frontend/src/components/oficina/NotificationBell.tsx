@@ -1,12 +1,15 @@
 import { Bell } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import { useNotifications } from '@/hooks/useNotifications';
+import type { Notification } from '@shared/types';
 
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
   const { data, loading, reload } = useNotifications();
+  const navigate = useNavigate();
   const items = data?.items ?? [];
   const unread = data?.unread ?? 0;
 
@@ -17,6 +20,14 @@ export function NotificationBell() {
     } catch {
       /* noop */
     }
+  }
+
+  async function openItem(n: Notification) {
+    setOpen(false);
+    if (!n.read) {
+      api.put(`/notifications/${n.id}/read`).then(reload).catch(() => {});
+    }
+    if (n.link) navigate(n.link);
   }
 
   return (
@@ -63,13 +74,15 @@ export function NotificationBell() {
                   </p>
                 )}
                 {items.map((n) => (
-                  <div
+                  <button
                     key={n.id}
-                    className={`border-b border-black/5 px-4 py-3 ${n.read ? '' : 'bg-light'}`}
+                    onClick={() => openItem(n)}
+                    disabled={!n.link}
+                    className={`block w-full border-b border-black/5 px-4 py-3 text-left ${n.read ? '' : 'bg-light'} ${n.link ? 'cursor-pointer hover:bg-light/70' : 'cursor-default'}`}
                   >
                     <p className="text-sm font-semibold text-primary">{n.title}</p>
-                    <p className="mt-0.5 text-xs text-brand-gray">{n.body}</p>
-                  </div>
+                    {n.body && <p className="mt-0.5 text-xs text-brand-gray">{n.body}</p>}
+                  </button>
                 ))}
               </div>
             </motion.div>

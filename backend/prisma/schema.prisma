@@ -320,9 +320,12 @@ model Notification {
   id        String         @id @default(uuid())
   memberId  String
   member    ReferralMember @relation(fields: [memberId], references: [id])
-  type      String // new_referral, first_purchase, commission_confirmed, payout_processed, elite_ascension, inactivity_warning
+  type      String // new_referral, first_purchase, commission_confirmed, payout_processed, elite_ascension, inactivity_warning, post_reaction, post_comment, comment_reply
   title     String
   body      String         @db.Text
+  // Ruta del SPA a la que navega la campanita al hacer click (ej. /comunidad/post/xyz).
+  // Nullable: las notificaciones de comisiones/pagos no necesitan destino propio.
+  link      String?
   read      Boolean        @default(false)
   createdAt DateTime       @default(now())
 }

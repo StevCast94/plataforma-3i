@@ -91,7 +91,7 @@ export default function GroupDetailPage() {
           </p>
         )}
         {posts.map((p) => (
-          <PostCard key={p.id} post={p} onReact={handleReact} onDelete={remove} />
+          <PostCard key={p.id} post={p} onReact={handleReact} onDelete={remove} onEdit={update} />
         ))}
       </div>
     </div>

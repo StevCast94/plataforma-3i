@@ -124,18 +124,6 @@ export default function ToolsPage() {
           </p>
 
           <div className="mt-4">
-            <p className="text-xs uppercase tracking-wider text-brand-gray">Código</p>
-            <div className="mt-1 flex items-center gap-2">
-              <code className="rounded-lg bg-light px-3 py-2 font-mono text-lg font-bold text-primary">
-                {member.referralCode}
-              </code>
-              <Button size="sm" variant="outline" onClick={() => copy(member.referralCode)}>
-                Copiar
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-4">
             <p className="text-xs uppercase tracking-wider text-brand-gray">Enlace completo</p>
             <div className="mt-1 flex items-center gap-2">
               <input
@@ -144,6 +132,23 @@ export default function ToolsPage() {
                 className="min-w-0 flex-1 rounded-lg bg-light px-3 py-2 text-sm text-primary"
               />
               <Button size="sm" variant="outline" onClick={() => copy(fullUrl)}>
+                Copiar
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-xs uppercase tracking-wider text-brand-gray">Código</p>
+            <p className="mt-0.5 text-xs text-brand-gray">
+              Para cuando invitas de palabra: si alguien va a registrarse por su cuenta, dale este
+              código para que lo escriba en "¿Alguien te invitó?" del registro. Para redes sociales
+              usa tu enlace de arriba.
+            </p>
+            <div className="mt-1.5 flex items-center gap-2">
+              <code className="rounded-lg bg-light px-3 py-2 font-mono text-lg font-bold text-primary">
+                {member.referralCode}
+              </code>
+              <Button size="sm" variant="outline" onClick={() => copy(member.referralCode)}>
                 Copiar
               </Button>
             </div>

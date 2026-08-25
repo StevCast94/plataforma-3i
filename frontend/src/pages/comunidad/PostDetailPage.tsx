@@ -23,11 +23,15 @@ export default function PostDetailPage() {
     setPost({ ...current!, myReaction, reactionCount: current!.reactionCount + delta });
   }
 
+  function handleEdit(_id: string, patch: Partial<FeedPost>) {
+    setPost({ ...current!, ...patch });
+  }
+
   return (
     <div className="mx-auto max-w-[680px] px-4 py-6 sm:px-6">
       <Seo title="Publicación — Comunidad" description={current.content.slice(0, 150)} />
       <Link to="/comunidad" className="mb-4 inline-block text-sm text-accent hover:underline">← Volver al feed</Link>
-      <PostCard post={current} onReact={handleReact} defaultShowComments />
+      <PostCard post={current} onReact={handleReact} onEdit={handleEdit} defaultShowComments />
     </div>
   );
 }

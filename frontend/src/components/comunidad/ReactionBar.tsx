@@ -31,11 +31,20 @@ export function ReactionBar({ postId, myReaction, count, onChange }: ReactionBar
     }
     setOpen(false);
     const wasMine = myReaction;
+    // Optimista: el botón cambia al instante (toggle si repites la misma
+    // reacción) y solo se revierte si el servidor falla — la espera de red
+    // ya no se siente al tocar.
+    const optimistic = wasMine === type ? null : type;
+    const optimisticDelta = (optimistic ? 1 : 0) - (wasMine ? 1 : 0);
+    onChange(optimistic, optimisticDelta);
     try {
       const res = await api.post<{ myReaction: ReactionType | null }>(`/community/posts/${postId}/react`, { type });
-      const delta = (res.myReaction ? 1 : 0) - (wasMine ? 1 : 0);
-      onChange(res.myReaction, delta);
+      if (res.myReaction !== optimistic) {
+        // El servidor no coincidió con lo previsto: corregir sin doble-contar.
+        onChange(res.myReaction, (res.myReaction ? 1 : 0) - (optimistic ? 1 : 0));
+      }
     } catch (err) {
+      onChange(wasMine, -optimisticDelta);
       toast((err as Error).message, 'error');
     }
   }

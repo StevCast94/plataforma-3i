@@ -3,6 +3,15 @@ import { prisma } from '../prisma';
 import { authMember, optionalMember, type MemberRequest } from '../middleware/authMember';
 import { getAuthors } from '../services/socialAuthors';
 import { asyncHandler } from '../lib/asyncHandler';
+import { notify } from '../services/notifications';
+
+const REACTION_EMOJI: Record<string, string> = {
+  like: '👍',
+  love: '❤️',
+  useful: '💡',
+  interesting: '🤔',
+  celebrate: '🎉',
+};
 
 export const communityPostRoutes = Router();
 
@@ -55,6 +64,7 @@ async function shapePosts(
       groupId: p.groupId,
       pinned: p.pinned,
       createdAt: p.createdAt,
+      edited: p.updatedAt.getTime() - p.createdAt.getTime() > 60_000,
       author: authors.get(p.userId) ?? null,
       reactionsByType: byType,
       reactionCount: Object.values(byType).reduce((a, b) => a + b, 0),
@@ -157,6 +167,37 @@ communityPostRoutes.post('/', authMember, async (req: MemberRequest, res) => {
   }
 });
 
+// PUT /api/community/posts/:id — editar (propio, 🔒)
+communityPostRoutes.put('/:id', authMember, asyncHandler(async (req: MemberRequest, res) => {
+  const existing = await prisma.socialPost.findUnique({
+    where: { id: req.params.id },
+    select: { userId: true },
+  });
+  if (!existing) {
+    res.status(404).json({ error: 'Post no encontrado' });
+    return;
+  }
+  if (existing.userId !== req.memberId) {
+    res.status(403).json({ error: 'No puedes editar este post' });
+    return;
+  }
+  const { content, images, linkUrl } = req.body ?? {};
+  if (!content || !String(content).trim()) {
+    res.status(400).json({ error: 'El contenido es requerido' });
+    return;
+  }
+  const post = await prisma.socialPost.update({
+    where: { id: req.params.id },
+    data: {
+      content: String(content).trim(),
+      ...(images !== undefined ? { images: Array.isArray(images) ? images.slice(0, MAX_IMAGES) : [] } : {}),
+      ...(linkUrl !== undefined ? { linkUrl: linkUrl ? String(linkUrl) : null } : {}),
+    },
+  });
+  const [shaped] = await shapePosts([post], req.memberId);
+  res.json(shaped);
+}));
+
 // DELETE /api/community/posts/:id — propio (🔒)
 communityPostRoutes.delete('/:id', authMember, asyncHandler(async (req: MemberRequest, res) => {
   const post = await prisma.socialPost.findUnique({ where: { id: req.params.id }, select: { userId: true } });
@@ -203,15 +244,54 @@ communityPostRoutes.post('/:id/comments', authMember, async (req: MemberRequest,
       res.status(400).json({ error: 'El comentario no puede estar vacío' });
       return;
     }
+    const parentIdStr = parentId ? String(parentId) : null;
     const comment = await prisma.socialComment.create({
       data: {
         postId: req.params.id,
         userId: req.memberId!,
         content: String(content).trim(),
-        parentId: parentId ? String(parentId) : null,
+        parentId: parentIdStr,
       },
     });
     const authors = await getAuthors([comment.userId]);
+    const actorName = authors.get(comment.userId)?.fullName.split(' ')[0] ?? 'Alguien';
+    const link = `/comunidad/post/${req.params.id}`;
+
+    // A quién avisar: si es respuesta, al autor del comentario padre; si es
+    // comentario raíz, al autor del post. Nunca a uno mismo (comentar tu
+    // propio post/respuesta no genera notificación).
+    if (parentIdStr) {
+      const parent = await prisma.socialComment.findUnique({
+        where: { id: parentIdStr },
+        select: { userId: true },
+      });
+      if (parent && parent.userId !== req.memberId) {
+        await notify(
+          parent.userId,
+          'comment_reply',
+          `${actorName} te respondió`,
+          String(content).trim().slice(0, 140),
+          prisma,
+          link,
+        ).catch(() => {});
+      }
+    } else {
+      const post = await prisma.socialPost.findUnique({
+        where: { id: req.params.id },
+        select: { userId: true },
+      });
+      if (post && post.userId !== req.memberId) {
+        await notify(
+          post.userId,
+          'post_comment',
+          `${actorName} comentó tu publicación`,
+          String(content).trim().slice(0, 140),
+          prisma,
+          link,
+        ).catch(() => {});
+      }
+    }
+
     res.status(201).json({
       id: comment.id,
       content: comment.content,
@@ -249,6 +329,28 @@ communityPostRoutes.post('/:id/react', authMember, async (req: MemberRequest, re
       update: { type },
     });
     res.json({ myReaction: type });
+
+    // Solo se notifica la PRIMERA reacción (existing null): cambiar de 👍 a ❤️
+    // en la misma publicación no debe generar una segunda notificación.
+    if (!existing) {
+      const post = await prisma.socialPost.findUnique({
+        where: { id: req.params.id },
+        select: { userId: true },
+      });
+      if (post && post.userId !== req.memberId) {
+        const authors = await getAuthors([req.memberId!]);
+        const actorName = authors.get(req.memberId!)?.fullName.split(' ')[0] ?? 'Alguien';
+        const emoji = REACTION_EMOJI[type] ?? '👍';
+        await notify(
+          post.userId,
+          'post_reaction',
+          `${actorName} reaccionó ${emoji} a tu publicación`,
+          '',
+          prisma,
+          `/comunidad/post/${req.params.id}`,
+        ).catch(() => {});
+      }
+    }
   } catch (err) {
     console.error('POST react', err);
     res.status(400).json({ error: 'Error al reaccionar' });

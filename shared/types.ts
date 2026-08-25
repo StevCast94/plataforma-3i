@@ -216,6 +216,7 @@ export interface Notification {
   type: string;
   title: string;
   body: string;
+  link?: string | null;
   read: boolean;
   createdAt: string;
 }
@@ -267,6 +268,7 @@ export interface FeedPost {
   groupId?: string | null;
   pinned: boolean;
   createdAt: string;
+  edited?: boolean;
   author: SocialAuthor | null;
   reactionsByType: Record<string, number>;
   reactionCount: number;

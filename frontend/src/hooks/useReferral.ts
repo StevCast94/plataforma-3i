@@ -66,3 +66,26 @@ export function getReferralCode(): string | null {
     return null;
   }
 }
+
+/**
+ * Fija el código a mano (form "¿Alguien te invitó?" del registro, para quien
+ * llegó SIN pasar por un enlace /r/:slug — ej. alguien que le dio su código
+ * de palabra en persona). No pisa una cookie de link ya existente: el
+ * registro solo muestra este campo cuando useReferral() todavía es null.
+ */
+export function setManualReferralCode(code: string): void {
+  try {
+    localStorage.setItem(KEY, code);
+  } catch {
+    /* almacenamiento no disponible */
+  }
+}
+
+/** Quita el código guardado a mano (si el visitante lo borra del campo). */
+export function clearManualReferralCode(): void {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    /* noop */
+  }
+}

@@ -9,7 +9,10 @@ export type NotificationType =
   | 'commission_confirmed'
   | 'payout_processed'
   | 'elite_ascension'
-  | 'inactivity_warning';
+  | 'inactivity_warning'
+  | 'post_reaction'
+  | 'post_comment'
+  | 'comment_reply';
 
 /** Crea una notificación para un miembro. Acepta un cliente de transacción. */
 export async function notify(
@@ -18,8 +21,9 @@ export async function notify(
   title: string,
   body: string,
   db: Db = prisma,
+  link?: string,
 ): Promise<void> {
   await db.notification.create({
-    data: { memberId, type, title, body },
+    data: { memberId, type, title, body, link },
   });
 }

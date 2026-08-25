@@ -8,7 +8,7 @@ import { Seo } from '@/components/shared/Seo';
 import { Isotipo } from '@/components/brand/Isotipo';
 import { useAuth } from '@/hooks/useAuth';
 import { type RegisterData } from '@/context/AuthContext';
-import { useReferral } from '@/hooks/useReferral';
+import { useReferral, setManualReferralCode, clearManualReferralCode } from '@/hooks/useReferral';
 import { useToast } from '@/components/shared/Toast';
 
 type StepErrors = Record<string, string>;
@@ -108,7 +108,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        {referralCode && (
+        {referralCode ? (
           <div className="mt-4 flex items-center gap-2">
             <Badge variant="gold">Referido</Badge>
             <span className="text-sm text-brand-gray">
@@ -116,6 +116,8 @@ export default function RegisterPage() {
               <strong className="text-primary">{referrerName ?? 'un socio de Grupo 3i'}</strong>
             </span>
           </div>
+        ) : (
+          <ManualReferralField />
         )}
 
         {/* Barra de progreso */}
@@ -241,6 +243,72 @@ export default function RegisterPage() {
           </Link>
         </p>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Campo "¿Alguien te invitó?" — solo se muestra a quien llegó SIN pasar por un
+ * enlace de referido (si ya hay uno vía /r/:slug, el badge de arriba ya lo
+ * cubre y no debe poder pisarse). Cubre el caso real que hoy se pierde: un
+ * socio da su código de palabra en persona ("regístrate y pon mi código") y
+ * la persona llega directo a grupo3i.com sin ningún enlace.
+ */
+function ManualReferralField() {
+  const [value, setValue] = useState('');
+  const [status, setStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    const code = value.trim();
+    if (!code) {
+      setStatus('idle');
+      clearManualReferralCode();
+      return;
+    }
+    setStatus('checking');
+    const t = setTimeout(() => {
+      api
+        .get<{ firstName: string }>(`/members/${encodeURIComponent(code)}`)
+        .then((r) => {
+          setName(r.firstName);
+          setStatus('valid');
+          setManualReferralCode(code);
+        })
+        .catch(() => {
+          setStatus('invalid');
+          clearManualReferralCode();
+        });
+    }, 450);
+    return () => clearTimeout(t);
+  }, [value]);
+
+  return (
+    <div className="mt-4">
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium text-primary">
+          ¿Alguien te invitó? <span className="font-normal text-brand-gray">(opcional)</span>
+        </span>
+        <input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="Código o nombre de tu invitador"
+          className="w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm uppercase placeholder:normal-case focus:border-secondary focus:outline-none"
+        />
+      </label>
+      {status === 'checking' && (
+        <p className="mt-1.5 text-xs text-brand-gray">Buscando…</p>
+      )}
+      {status === 'valid' && (
+        <p className="mt-1.5 text-xs text-secondary">
+          ✓ Te invitó <strong>{name}</strong>
+        </p>
+      )}
+      {status === 'invalid' && (
+        <p className="mt-1.5 text-xs text-red-600">
+          No encontramos ese código. Revisa que esté bien escrito.
+        </p>
+      )}
     </div>
   );
 }

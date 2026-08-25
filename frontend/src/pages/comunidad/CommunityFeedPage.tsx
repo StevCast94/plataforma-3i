@@ -80,7 +80,7 @@ export default function CommunityFeedPage() {
         {/* Feed */}
         <div className="space-y-4">
           {posts.map((p) => (
-            <PostCard key={p.id} post={p} onReact={handleReact} onDelete={remove} />
+            <PostCard key={p.id} post={p} onReact={handleReact} onDelete={remove} onEdit={update} />
           ))}
           {loading && <p className="py-4 text-center text-sm text-brand-gray">Cargando…</p>}
           {!loading && posts.length === 0 && (
