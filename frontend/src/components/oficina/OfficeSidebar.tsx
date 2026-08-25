@@ -8,6 +8,7 @@ import {
   Link2,
   Calculator,
   ShoppingBag,
+  FileText,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -72,6 +73,16 @@ export function OfficeSidebar() {
           </NavLink>
         ))}
       </nav>
+
+      {/* Utilitario, no una sección más: por eso vive aparte y no en `items`
+          (tampoco debe competir por espacio en el bottom-nav móvil). */}
+      <Link
+        to="/reglamento"
+        className="mt-auto flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-white/60 hover:bg-white/10 hover:text-white/90"
+      >
+        <FileText className="h-4 w-4" strokeWidth={1.8} />
+        Reglamento de Referidos
+      </Link>
     </aside>
   );
 }

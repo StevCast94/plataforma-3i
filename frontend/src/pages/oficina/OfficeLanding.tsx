@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { ClipboardPen, Link2, HandCoins, type LucideIcon } from 'lucide-react';
+import { ClipboardPen, Link2, HandCoins, FileText, type LucideIcon } from 'lucide-react';
 import { estimateMonthly } from '@/lib/referral';
 import { formatCurrency } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -155,6 +155,13 @@ export default function OfficeLanding() {
               </tbody>
             </table>
           </div>
+          <Link
+            to="/reglamento"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+          >
+            <FileText className="h-4 w-4" strokeWidth={1.8} />
+            Ver el reglamento completo del programa
+          </Link>
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, DollarSign, Wallet, Link2, Luggage, Smartphone } from 'lucide-react';
+import { Users, DollarSign, Wallet, Link2, Luggage, Smartphone, FileText } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { ProgressToElite } from '@/components/oficina/ProgressToElite';
@@ -150,12 +150,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Links rápidos */}
-      <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {[
           { to: '/oficina/mi-red', label: 'Mi Red', icon: Users },
           { to: '/oficina/comisiones', label: 'Comisiones', icon: DollarSign },
           { to: '/oficina/pagos', label: 'Pagos', icon: Wallet },
           { to: '/oficina/viajes', label: 'Mis Viajes', icon: Luggage },
+          { to: '/reglamento', label: 'Reglamento', icon: FileText },
         ].map((q) => (
           <Link
             key={q.to}
