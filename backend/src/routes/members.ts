@@ -9,6 +9,8 @@ import { attributeReferral, reconcileClaimedPurchases } from '../services/referr
 import { ascendByPurchase, checkReferralAscension } from '../services/ascendService';
 import { hasTravelAccess } from '../travel/membershipAccess';
 import { refFromRequest } from './referral';
+import { uploadKycDocument } from '../lib/kycStorage';
+import { notify } from '../services/notifications';
 
 export const memberRoutes = Router();
 
@@ -41,6 +43,9 @@ const memberSelect = {
   payoutEmail: true,
   bankInfo: true,
   kycVerified: true,
+  kycStatus: true,
+  kycSubmittedAt: true,
+  kycRejectReason: true,
   bio: true,
   avatarUrl: true,
   location: true,
@@ -334,6 +339,79 @@ memberRoutes.post('/upload-image', authMember, async (req: MemberRequest, res) =
   } catch (err) {
     console.error('POST /api/members/upload-image', err);
     res.status(500).json({ error: 'Error al subir la imagen' });
+  }
+});
+
+// ============================================================
+// KYC — verificación de identidad. Requisito para poder retirar comisiones
+// (ver el gate en POST /api/payouts/request). Documentos = recursos
+// autenticados de Cloudinary (backend/src/lib/kycStorage.ts): NUNCA una URL
+// pública. El socio nunca recibe de vuelta la URL de sus propios documentos
+// subidos — solo la confirmación de que se enviaron.
+// ============================================================
+
+// POST /api/members/kyc/submit — enviar los 3 documentos para revisión.
+// body: { frontDataUri, backDataUri, selfieDataUri } (base64 data URLs)
+memberRoutes.post('/kyc/submit', authMember, async (req: MemberRequest, res) => {
+  try {
+    if (!process.env.CLOUDINARY_URL) {
+      res.status(500).json({ error: 'CLOUDINARY_URL no configurado' });
+      return;
+    }
+    const { frontDataUri, backDataUri, selfieDataUri } = req.body ?? {};
+    if (!frontDataUri || !backDataUri || !selfieDataUri) {
+      res.status(400).json({ error: 'Faltan una o más imágenes (frente, reverso y selfie son obligatorias)' });
+      return;
+    }
+
+    const current = await prisma.referralMember.findUnique({
+      where: { id: req.memberId },
+      select: { kycStatus: true },
+    });
+    if (!current) {
+      res.status(404).json({ error: 'Miembro no encontrado' });
+      return;
+    }
+    if (current.kycStatus === 'PENDING') {
+      res.status(409).json({ error: 'Ya tienes una verificación en revisión. Espera la respuesta antes de reenviar.' });
+      return;
+    }
+    if (current.kycStatus === 'APPROVED') {
+      res.status(409).json({ error: 'Tu identidad ya está verificada.' });
+      return;
+    }
+
+    const memberId = req.memberId!;
+    const [frontId, backId, selfieId] = await Promise.all([
+      uploadKycDocument(String(frontDataUri), memberId, 'front'),
+      uploadKycDocument(String(backDataUri), memberId, 'back'),
+      uploadKycDocument(String(selfieDataUri), memberId, 'selfie'),
+    ]);
+
+    const updated = await prisma.referralMember.update({
+      where: { id: memberId },
+      data: {
+        kycDocFrontId: frontId,
+        kycDocBackId: backId,
+        kycSelfieId: selfieId,
+        kycStatus: 'PENDING',
+        kycSubmittedAt: new Date(),
+        kycRejectReason: null,
+      },
+      select: { kycStatus: true, kycSubmittedAt: true },
+    });
+
+    await notify(
+      memberId,
+      'kyc_submitted',
+      'Verificación enviada ✅',
+      'Recibimos tus documentos. Los revisaremos y te avisaremos apenas se apruebe tu identidad.',
+    ).catch(() => {});
+
+    res.json(updated);
+  } catch (err) {
+    console.error('POST /api/members/kyc/submit', err);
+    res.status(500).json({ error: 'Error al enviar los documentos' });
   }
 });
 

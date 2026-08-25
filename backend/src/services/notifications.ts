@@ -12,7 +12,10 @@ export type NotificationType =
   | 'inactivity_warning'
   | 'post_reaction'
   | 'post_comment'
-  | 'comment_reply';
+  | 'comment_reply'
+  | 'kyc_submitted'
+  | 'kyc_approved'
+  | 'kyc_rejected';
 
 /** Crea una notificación para un miembro. Acepta un cliente de transacción. */
 export async function notify(

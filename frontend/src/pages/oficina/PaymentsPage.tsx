@@ -3,6 +3,7 @@ import { Seo } from '@/components/shared/Seo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { PayoutMethodForm } from '@/components/oficina/PayoutMethodForm';
+import { KycSection } from '@/components/oficina/KycSection';
 import { api } from '@/lib/api';
 import { useToast } from '@/components/shared/Toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -54,6 +55,8 @@ export default function PaymentsPage() {
       <Seo title="Pagos — Oficina Virtual" />
       <h1 className="text-3xl font-bold text-primary">Pagos</h1>
 
+      <KycSection member={member} onUpdated={refresh} />
+
       <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
         <h2 className="text-xl text-primary">Método de pago</h2>
         <p className="mt-1 text-sm text-brand-gray">
@@ -70,6 +73,12 @@ export default function PaymentsPage() {
           Saldo disponible:{' '}
           <strong className="text-secondary">{formatCurrency(balance)}</strong>
         </p>
+        {!member.kycVerified && (
+          <p className="mt-3 rounded-xl bg-white/10 p-3 text-sm text-secondary">
+            Verifica tu identidad para poder retirar — sube tus documentos arriba, en
+            "Verificación de identidad".
+          </p>
+        )}
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="flex-1">
             <Input
@@ -79,9 +88,10 @@ export default function PaymentsPage() {
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
               className="text-primary"
+              disabled={!member.kycVerified}
             />
           </div>
-          <Button onClick={requestPayout} disabled={requesting || balance <= 0}>
+          <Button onClick={requestPayout} disabled={requesting || balance <= 0 || !member.kycVerified}>
             {requesting ? 'Solicitando…' : 'Solicitar retiro'}
           </Button>
         </div>

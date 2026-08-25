@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { deleteKycDocuments } from '../lib/kycStorage';
 
 export interface DeleteMemberResult {
   deleted: boolean;
@@ -85,6 +86,10 @@ export async function deleteMemberCompletely(memberId: string): Promise<DeleteMe
     //    volver a registrarse (ambos son @unique).
     await tx.referralMember.delete({ where: { id: memberId } });
   });
+
+  // Fuera de la transacción (llamada externa a Cloudinary, no es atómica con
+  // la BD): borra la cédula/pasaporte/selfie si había subido alguno.
+  await deleteKycDocuments(memberId);
 
   return { deleted: true };
 }

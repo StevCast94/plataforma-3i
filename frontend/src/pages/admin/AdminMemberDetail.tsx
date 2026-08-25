@@ -16,6 +16,7 @@ import type {
   Payout,
   CommissionStatus,
   TravelMembershipInfo,
+  KycDocuments,
 } from '@shared/types';
 
 interface MemberDetail extends ReferralMember {
@@ -44,6 +45,24 @@ export function AdminMemberDetail({
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [editingReferrer, setEditingReferrer] = useState(false);
   const [newReferrerCode, setNewReferrerCode] = useState('');
+  const [kycDocs, setKycDocs] = useState<KycDocuments | null>(null);
+  const [loadingKycDocs, setLoadingKycDocs] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+
+  async function openKycDocs() {
+    if (!memberId) return;
+    setKycDocs({ status: 'PENDING', submittedAt: null, rejectReason: null, front: null, back: null, selfie: null });
+    setLoadingKycDocs(true);
+    try {
+      const docs = await adminApi.get<KycDocuments>(`/admin/members/${memberId}/kyc-documents`);
+      setKycDocs(docs);
+    } catch (err) {
+      toast((err as Error).message, 'error');
+      setKycDocs(null);
+    } finally {
+      setLoadingKycDocs(false);
+    }
+  }
 
   async function saveReferrer() {
     if (!memberId) return;
@@ -64,13 +83,14 @@ export function AdminMemberDetail({
     }
   }
 
-  async function setKyc(approve: boolean) {
+  async function setKyc(approve: boolean, reason?: string) {
     if (!memberId) return;
-    const reason = approve ? undefined : prompt('Motivo del rechazo (opcional):') ?? undefined;
     setBusy(true);
     try {
       await adminApi.put(`/admin/members/${memberId}/kyc`, { approve, reason });
       toast(approve ? 'KYC aprobado' : 'KYC rechazado', 'success');
+      setKycDocs(null);
+      setRejectReason('');
       reload();
       onChanged();
     } catch (err) {
@@ -136,7 +156,12 @@ export function AdminMemberDetail({
           <div className="flex flex-wrap gap-2">
             <Badge variant={data.status === 'ELITE' ? 'gold' : 'light'}>{statusLabel(data.status)}</Badge>
             <Badge variant={data.kycVerified ? 'gold' : 'light'}>
-              {data.kycVerified ? 'KYC verificado' : 'KYC pendiente'}
+              {{
+                APPROVED: 'KYC verificado',
+                PENDING: 'KYC en revisión',
+                REJECTED: 'KYC rechazado',
+                NOT_SUBMITTED: 'KYC sin enviar',
+              }[data.kycStatus ?? (data.kycVerified ? 'APPROVED' : 'NOT_SUBMITTED')]}
             </Badge>
           </div>
 
@@ -269,7 +294,9 @@ export function AdminMemberDetail({
           {/* Acciones */}
           <div className="flex flex-wrap gap-2 border-t border-black/5 pt-4">
             {!data.kycVerified ? (
-              <Button size="sm" onClick={() => setKyc(true)} disabled={busy}>Aprobar KYC</Button>
+              <Button size="sm" onClick={openKycDocs} disabled={busy}>
+                Ver verificación KYC
+              </Button>
             ) : (
               <Button size="sm" variant="outline" onClick={() => setKyc(false)} disabled={busy}>Revocar KYC</Button>
             )}
@@ -294,6 +321,58 @@ export function AdminMemberDetail({
               </Button>
             )}
           </div>
+        </div>
+      )}
+    </Modal>
+
+    <Modal open={!!kycDocs} onClose={() => { setKycDocs(null); setRejectReason(''); }} title="Verificación de identidad">
+      {loadingKycDocs && <p className="text-brand-gray">Cargando documentos…</p>}
+      {kycDocs && !loadingKycDocs && (
+        <div className="space-y-4">
+          {kycDocs.rejectReason && (
+            <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+              Rechazo anterior: {kycDocs.rejectReason}
+            </p>
+          )}
+          {!kycDocs.front && !kycDocs.back && !kycDocs.selfie ? (
+            <p className="text-sm text-brand-gray">Este socio todavía no envió documentos.</p>
+          ) : (
+            <div className="space-y-3">
+              <KycDocPreview label="Cédula/pasaporte — frente" url={kycDocs.front} />
+              <KycDocPreview label="Cédula/pasaporte — reverso" url={kycDocs.back} />
+              <KycDocPreview label="Selfie con el documento" url={kycDocs.selfie} />
+              <p className="text-xs text-brand-gray">
+                Los enlaces de las imágenes expiran en 10 minutos por seguridad — si no cargan, cierra
+                y vuelve a abrir este panel.
+              </p>
+            </div>
+          )}
+
+          {(kycDocs.front || kycDocs.back || kycDocs.selfie) && (
+            <div className="space-y-2 border-t border-black/5 pt-4">
+              <textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="Motivo del rechazo (opcional, se le muestra al socio)"
+                rows={2}
+                className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm"
+              />
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => setKyc(true)} disabled={busy}>
+                  Aprobar
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-red-600"
+                  onClick={() => setKyc(false, rejectReason.trim() || undefined)}
+                  disabled={busy}
+                >
+                  Rechazar
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </Modal>
@@ -338,5 +417,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h4 className="mb-2 text-sm font-semibold text-primary">{title}</h4>
       {children}
     </div>
+  );
+}
+
+function KycDocPreview({ label, url }: { label: string; url: string | null }) {
+  if (!url) return null;
+  return (
+    <a href={url} target="_blank" rel="noreferrer" className="block">
+      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-brand-gray">{label}</p>
+      <img src={url} alt={label} className="max-h-64 w-full rounded-lg object-contain ring-1 ring-black/10" />
+    </a>
   );
 }

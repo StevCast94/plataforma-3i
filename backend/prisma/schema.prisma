@@ -188,6 +188,13 @@ enum EliteBy {
   REFERRALS
 }
 
+enum KycStatus {
+  NOT_SUBMITTED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum CommissionStatus {
   PENDING
   CONFIRMED
@@ -229,8 +236,22 @@ model ReferralMember {
   bankInfo              Json?
   payoutMethod          String?
   payoutEmail           String?
+  // kycVerified es el flag "corto" que ya usa el resto del sistema (gate de
+  // retiros, filtros de admin, stats) y solo se vuelve true junto con
+  // kycStatus=APPROVED. kycStatus es la máquina de estados de la SOLICITUD:
+  // permite distinguir "nunca envió nada" de "está en revisión" de "lo
+  // rechazamos y debe reintentar", cosa que un booleano no puede expresar.
   kycVerified           Boolean          @default(false)
   kycVerifiedAt         DateTime?
+  kycStatus             KycStatus        @default(NOT_SUBMITTED)
+  kycSubmittedAt        DateTime?
+  kycRejectReason       String?          @db.Text
+  // public_id de Cloudinary (recurso `type: authenticated`, NO accesible por
+  // URL directa — ver backend/src/lib/kycStorage.ts). Documentos sensibles:
+  // nunca se guarda ni se expone una URL pública de estos.
+  kycDocFrontId         String?
+  kycDocBackId          String?
+  kycSelfieId           String?
   // Perfil social (Fase 4)
   bio                   String?
   avatarUrl             String?

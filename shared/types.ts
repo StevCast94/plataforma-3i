@@ -128,6 +128,9 @@ export interface ReferralMember {
   payoutEmail?: string | null;
   bankInfo?: Record<string, unknown> | null;
   kycVerified: boolean;
+  kycStatus?: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
+  kycSubmittedAt?: string | null;
+  kycRejectReason?: string | null;
   // Perfil social (Fase 4)
   bio?: string | null;
   avatarUrl?: string | null;
@@ -506,4 +509,20 @@ export interface TravelMembershipInfo {
   startsAt: string;
   expiresAt?: string | null;
   createdAt: string;
+}
+
+// ============================================================
+// KYC — verificación de identidad
+// ============================================================
+
+export type KycStatus = 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
+
+/** URLs firmadas de corta duración (10 min) — generadas al vuelo, nunca guardadas. */
+export interface KycDocuments {
+  status: KycStatus;
+  submittedAt: string | null;
+  rejectReason: string | null;
+  front: string | null;
+  back: string | null;
+  selfie: string | null;
 }

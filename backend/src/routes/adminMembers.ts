@@ -7,6 +7,7 @@ import { notify } from '../services/notifications';
 import { upgradeToElite } from '../services/tierService';
 import { deleteMemberCompletely } from '../services/memberDeletion';
 import { resolveReferrer } from '../services/referralTracking';
+import { signedKycUrl } from '../lib/kycStorage';
 
 export const adminMemberRoutes = Router();
 adminMemberRoutes.use(requireAdmin);
@@ -19,6 +20,7 @@ const listSelect = {
   referralCode: true,
   status: true,
   kycVerified: true,
+  kycStatus: true,
   totalReferrals: true,
   totalEarned: true,
   createdAt: true,
@@ -27,13 +29,19 @@ const listSelect = {
 
 // GET /api/admin/members — filtros, búsqueda, paginación
 adminMemberRoutes.get('/', async (req, res) => {
-  const { status, kyc, q } = req.query;
+  const { status, kyc, kycStatus, q } = req.query;
   const page = Math.max(1, Number(req.query.page) || 1);
   const pageSize = Math.min(100, Number(req.query.pageSize) || 25);
 
+  const VALID_KYC_STATUS = ['NOT_SUBMITTED', 'PENDING', 'APPROVED', 'REJECTED'];
   const where = {
     ...(status ? { status: status as never } : {}),
+    // kyc=true/false: compat con lo que ya existía. kycStatus: filtro fino
+    // nuevo (ej. "PENDING" para ver solo lo que espera revisión del admin).
     ...(kyc === 'true' ? { kycVerified: true } : kyc === 'false' ? { kycVerified: false } : {}),
+    ...(typeof kycStatus === 'string' && VALID_KYC_STATUS.includes(kycStatus)
+      ? { kycStatus: kycStatus as never }
+      : {}),
     ...(q
       ? {
           OR: [
@@ -81,17 +89,62 @@ adminMemberRoutes.get('/:id', async (req, res) => {
   res.json({ ...safe, travelAccess });
 });
 
+// GET /api/admin/members/:id/kyc-documents — URLs firmadas (10 min) de los
+// documentos que el socio subió, generadas al vuelo. Ruta aparte de GET
+// /:id a propósito: firmar URLs cuesta llamadas a Cloudinary que no tiene
+// sentido pagar cada vez que se abre el detalle de un miembro, solo cuando
+// el admin realmente va a revisar la verificación.
+adminMemberRoutes.get('/:id/kyc-documents', async (req, res) => {
+  try {
+    const member = await prisma.referralMember.findUnique({
+      where: { id: req.params.id },
+      select: {
+        kycStatus: true,
+        kycSubmittedAt: true,
+        kycRejectReason: true,
+        kycDocFrontId: true,
+        kycDocBackId: true,
+        kycSelfieId: true,
+      },
+    });
+    if (!member) {
+      res.status(404).json({ error: 'Miembro no encontrado' });
+      return;
+    }
+    res.json({
+      status: member.kycStatus,
+      submittedAt: member.kycSubmittedAt,
+      rejectReason: member.kycRejectReason,
+      front: member.kycDocFrontId ? signedKycUrl(member.kycDocFrontId) : null,
+      back: member.kycDocBackId ? signedKycUrl(member.kycDocBackId) : null,
+      selfie: member.kycSelfieId ? signedKycUrl(member.kycSelfieId) : null,
+    });
+  } catch (err) {
+    console.error('GET /api/admin/members/:id/kyc-documents', err);
+    res.status(500).json({ error: 'Error al cargar los documentos' });
+  }
+});
+
 // PUT /api/admin/members/:id/kyc — aprobar/rechazar
 adminMemberRoutes.put('/:id/kyc', async (req: AuthedRequest, res) => {
   try {
     const { approve, reason } = req.body ?? {};
     const member = await prisma.referralMember.update({
       where: { id: req.params.id },
-      data: {
-        kycVerified: !!approve,
-        kycVerifiedAt: approve ? new Date() : null,
-      },
-      select: { id: true, kycVerified: true },
+      data: approve
+        ? {
+            kycVerified: true,
+            kycVerifiedAt: new Date(),
+            kycStatus: 'APPROVED',
+            kycRejectReason: null,
+          }
+        : {
+            kycVerified: false,
+            kycVerifiedAt: null,
+            kycStatus: 'REJECTED',
+            kycRejectReason: reason ? String(reason).trim() : null,
+          },
+      select: { id: true, kycVerified: true, kycStatus: true },
     });
     await audit(req.staff?.staffId, approve ? 'confirm' : 'reject', 'member', req.params.id, {
       kyc: !!approve,
@@ -99,11 +152,11 @@ adminMemberRoutes.put('/:id/kyc', async (req: AuthedRequest, res) => {
     });
     await notify(
       req.params.id,
-      'new_referral',
-      approve ? 'KYC aprobado ✅' : 'KYC rechazado',
+      approve ? 'kyc_approved' : 'kyc_rejected',
+      approve ? 'Identidad verificada ✅' : 'Verificación rechazada',
       approve
-        ? 'Tu identidad fue verificada. Ya puedes operar con normalidad.'
-        : `Tu verificación fue rechazada. ${reason ?? ''}`.trim(),
+        ? 'Tu identidad fue verificada. Ya puedes solicitar retiros.'
+        : `Tu verificación fue rechazada. ${reason ?? 'Vuelve a intentarlo con fotos más claras.'}`.trim(),
     );
     res.json(member);
   } catch (err) {

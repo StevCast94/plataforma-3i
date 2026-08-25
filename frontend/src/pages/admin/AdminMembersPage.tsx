@@ -12,13 +12,13 @@ import type { AdminMemberRow, AdminMembersResponse } from '@/lib/adminTypes';
 export default function AdminMembersPage() {
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('');
-  const [kyc, setKyc] = useState('');
+  const [kycStatus, setKycStatus] = useState('');
   const [page, setPage] = useState(1);
 
   const params = new URLSearchParams({
     ...(q ? { q } : {}),
     ...(status ? { status } : {}),
-    ...(kyc ? { kyc } : {}),
+    ...(kycStatus ? { kycStatus } : {}),
     page: String(page),
   });
   const { data, loading, reload } = useAdminGet<AdminMembersResponse>(`/admin/members?${params}`);
@@ -29,7 +29,7 @@ export default function AdminMembersPage() {
     { header: 'Email', cell: (m) => <span className="text-sm text-brand-gray">{m.email}</span> },
     { header: 'WhatsApp', cell: (m) => <WhatsAppButton phone={m.phone} name={m.fullName} variant="icon" /> },
     { header: 'Estatus', cell: (m) => <Badge variant={m.status === 'ELITE' ? 'gold' : 'light'}>{statusLabel(m.status)}</Badge> },
-    { header: 'KYC', cell: (m) => (m.kycVerified ? '✅' : '⏳') },
+    { header: 'KYC', cell: (m) => <KycBadge status={m.kycStatus} /> },
     {
       header: 'Referidor',
       cell: (m) =>
@@ -58,10 +58,12 @@ export default function AdminMembersPage() {
           <option value="ELITE">Elite</option>
           <option value="SUSPENDED">Suspendidos</option>
         </select>
-        <select value={kyc} onChange={(e) => { setKyc(e.target.value); setPage(1); }} className="rounded-lg border border-black/15 px-3 py-2 text-sm">
+        <select value={kycStatus} onChange={(e) => { setKycStatus(e.target.value); setPage(1); }} className="rounded-lg border border-black/15 px-3 py-2 text-sm">
           <option value="">KYC: todos</option>
-          <option value="true">Verificados</option>
-          <option value="false">Pendientes</option>
+          <option value="PENDING">En revisión</option>
+          <option value="APPROVED">Verificados</option>
+          <option value="REJECTED">Rechazados</option>
+          <option value="NOT_SUBMITTED">Sin enviar</option>
         </select>
       </div>
 
@@ -87,4 +89,15 @@ export default function AdminMembersPage() {
       <AdminMemberDetail memberId={selected} onClose={() => setSelected(null)} onChanged={reload} />
     </div>
   );
+}
+
+function KycBadge({ status }: { status: AdminMemberRow['kycStatus'] }) {
+  const map: Record<AdminMemberRow['kycStatus'], { label: string; className: string }> = {
+    APPROVED: { label: '✅ Verificado', className: 'bg-green-100 text-green-700' },
+    PENDING: { label: '⏳ En revisión', className: 'bg-amber-100 text-amber-700' },
+    REJECTED: { label: '✕ Rechazado', className: 'bg-red-100 text-red-700' },
+    NOT_SUBMITTED: { label: 'Sin enviar', className: 'bg-gray-100 text-gray-500' },
+  };
+  const s = map[status] ?? map.NOT_SUBMITTED;
+  return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${s.className}`}>{s.label}</span>;
 }

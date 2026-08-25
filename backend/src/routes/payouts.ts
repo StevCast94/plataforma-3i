@@ -32,10 +32,17 @@ payoutRoutes.post('/request', authMember, async (req: MemberRequest, res) => {
 
     const member = await prisma.referralMember.findUnique({
       where: { id: req.memberId },
-      select: { walletBalance: true, status: true, payoutMethod: true, payoutEmail: true },
+      select: { walletBalance: true, status: true, payoutMethod: true, payoutEmail: true, kycVerified: true },
     });
     if (!member) {
       res.status(404).json({ error: 'Miembro no encontrado' });
+      return;
+    }
+    // Requisito legal/antifraude: nadie retira sin identidad verificada.
+    // El socio siempre puede iniciar la verificación desde Pagos (ver
+    // KycSection.tsx) — este gate es la razón de que exista ese flujo.
+    if (!member.kycVerified) {
+      res.status(403).json({ error: 'Verifica tu identidad (KYC) antes de solicitar un retiro.' });
       return;
     }
     if (!member.payoutMethod) {

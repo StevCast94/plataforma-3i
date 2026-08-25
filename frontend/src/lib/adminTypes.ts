@@ -26,6 +26,7 @@ export interface AdminMemberRow {
   referralCode: string;
   status: MemberStatus;
   kycVerified: boolean;
+  kycStatus: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
   totalReferrals: number;
   totalEarned: number;
   createdAt: string;
