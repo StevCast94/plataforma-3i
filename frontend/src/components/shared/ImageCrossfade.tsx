@@ -43,15 +43,27 @@ export function ImageCrossfade({
     return () => clearInterval(id);
   }, [images.length, interval]);
 
+  const nextIndex = images.length > 1 ? (index + 1) % images.length : index;
+
+  // Solo se montan la imagen activa y la siguiente (para que el fade no
+  // parpadee al llegarle el turno) — NUNCA las N de golpe. Con 6-7 fotos de
+  // hero eso son varios MB descargándose desde el primer render aunque el
+  // usuario solo vea una; así el resto se pide justo antes de necesitarse.
+  const toRender =
+    images.length <= 2
+      ? images.map((src, i) => ({ src, i }))
+      : Array.from(new Set([index, nextIndex])).map((i) => ({ src: images[i], i }));
+
   return (
     <>
-      {images.map((src, i) => (
+      {toRender.map(({ src, i }) => (
         <img
           key={src}
           src={src}
           alt={i === 0 ? alt : ''}
           aria-hidden={i === 0 ? undefined : true}
           className={className}
+          loading={i === 0 ? 'eager' : 'lazy'}
           style={{
             opacity: i === index ? activeOpacity : 0,
             transition: 'opacity 1.8s ease-in-out',

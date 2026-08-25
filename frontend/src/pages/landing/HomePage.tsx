@@ -32,7 +32,10 @@ export default function HomePage() {
       .split(/[\n,]+/)
       .map((u) => u.trim())
       .filter(Boolean)
-      .map((u) => cld(u, { width: 1920 }));
+      // Alto fijo además del ancho: sin esto, una foto vertical subida desde
+      // el celular (más alta que ancha) se transforma solo por ancho y sale
+      // gigante en altura — mucho más peso del que el hero necesita.
+      .map((u) => cld(u, { width: 1600, height: 900, crop: 'fill' }));
     return Array.from(new Set([local, ...cmsUrls]));
   }, [hero.image_url]);
 
