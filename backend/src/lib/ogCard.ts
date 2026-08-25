@@ -1,5 +1,6 @@
 import type { Request } from 'express';
 import type { OgCampaign } from './ogCampaigns';
+import { publicBaseUrl } from './publicUrl';
 
 /**
  * Bots que piden la página SOLO para armar la vista previa del enlace. No son
@@ -14,21 +15,16 @@ export function isSocialCrawler(req: Request): boolean {
   return CRAWLER_UA.test(String(req.get('user-agent') ?? ''));
 }
 
-/** Dominio público oficial. Se usa como base de og:url y og:image. */
-const CANONICAL_ORIGIN = 'https://grupo3i.com';
-
 /**
  * Origen público del sitio.
  *
  * NO se deduce de los headers a propósito: detrás de Cloudflare + Railway,
- * `x-forwarded-host` llega con el dominio interno de Railway
- * (plataforma-3i-production.up.railway.app), así que las tarjetas quedaban
- * apuntando al dominio viejo — justo lo que se acaba de corregir en el
- * index.html. La tarjeta social siempre debe usar el dominio canónico.
- * Para entornos de prueba se puede fijar PUBLIC_BASE_URL.
+ * `x-forwarded-host` llega con el dominio interno de Railway, así que las
+ * tarjetas salían apuntando al dominio viejo. La tarjeta social siempre debe
+ * usar el dominio canónico (ver publicUrl.ts).
  */
 export function publicOrigin(_req: Request): string {
-  return process.env.PUBLIC_BASE_URL?.trim().replace(/\/+$/, '') || CANONICAL_ORIGIN;
+  return publicBaseUrl();
 }
 
 /**

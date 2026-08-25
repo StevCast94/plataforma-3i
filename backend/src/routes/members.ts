@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { v2 as cloudinary } from 'cloudinary';
+import { publicBaseUrl } from '../lib/publicUrl';
 import { prisma } from '../prisma';
 import { authMember, signMemberToken, type MemberRequest } from '../middleware/authMember';
 import { generateReferralCode, generateReferralSlug, PAYOUT_METHODS } from '../lib/referralRules';
@@ -13,11 +14,7 @@ export const memberRoutes = Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function publicBase(): string {
-  return (
-    process.env.PUBLIC_BASE_URL ?? 'https://plataforma-3i-production.up.railway.app'
-  );
-}
+const publicBase = publicBaseUrl;
 
 // Campos seguros para devolver (sin passwordHash).
 const memberSelect = {

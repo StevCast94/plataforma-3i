@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { asyncHandler } from '../lib/asyncHandler';
+import { publicBaseUrl } from '../lib/publicUrl';
 import { optionalMember, authMember, type MemberRequest } from '../middleware/authMember';
 import { searchHotels } from '../travel/searchService';
 import { searchFlights } from '../travel/flightSearchService';
@@ -151,7 +152,7 @@ travelRoutes.get(
   asyncHandler(async (req, res) => {
     const id = req.query.id ? String(req.query.id) : undefined;
     const bookingId = String(req.query.clientTransactionId ?? '').trim();
-    const base = process.env.PUBLIC_BASE_URL ?? 'https://plataforma-3i-production.up.railway.app';
+    const base = publicBaseUrl();
     if (!bookingId) {
       res.redirect(`${base}/#/club/viajes?pago=error`);
       return;

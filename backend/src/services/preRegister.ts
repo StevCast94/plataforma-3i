@@ -1,12 +1,11 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { prisma } from '../prisma';
 import { generateReferralCode, generateReferralSlug } from '../lib/referralRules';
+import { publicBaseUrl } from '../lib/publicUrl';
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
-function publicBase(): string {
-  return process.env.PUBLIC_BASE_URL ?? 'https://plataforma-3i-production.up.railway.app';
-}
+const publicBase = publicBaseUrl;
 
 export interface ProvisionalResult {
   memberId: string;
