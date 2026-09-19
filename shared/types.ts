@@ -76,12 +76,28 @@ export interface PublicLot {
   images: string[];
   /** true = sin levantamiento GEO 3i; el polígono es un placeholder y no se dibuja en el mapa. */
   approximateGeometry?: boolean;
+  /** Clave catastral municipal (dato público). */
+  cadastralCode?: string | null;
+  /** Ficha técnica calculada desde GEO 3i. */
+  details?: LotDetails | null;
+}
+
+export interface LotSide { from: string; to: string; lengthM: number; cardinal: string; colindante: string }
+export interface LotDetails {
+  source: string;
+  perimeterM: number;
+  areaUTM: number;
+  sides: LotSide[];
+  linderos: { cardinal: string; colindante: string; lengthM: number }[];
+  vertices: { name: string; norte: number; este: number }[];
+  centroidUTM: { norte: number; este: number };
+  /** Nota sobre la clave catastral (p. ej. clave del solar matriz). */
+  cadastralNote?: string;
 }
 
 /** Vista de administrador — incluye datos privados y comerciales. */
 export interface AdminLot extends PublicLot {
   projectId: string;
-  cadastralCode?: string | null;
   ownerName?: string | null;
   ownerPhone?: string | null;
   reservedUntil?: string | null;

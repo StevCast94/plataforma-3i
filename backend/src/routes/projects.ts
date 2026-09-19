@@ -38,7 +38,7 @@ projectRoutes.get('/:slug', async (req, res) => {
   }
 });
 
-// Campos públicos de un lote — nunca ownerName/ownerPhone/notes (LOPDP,
+// Campos públicos de un lote (la clave catastral es dato público) — nunca ownerName/ownerPhone/notes (LOPDP,
 // datos privados del comprador/vendedor real que nunca deben salir del panel admin).
 const publicLotSelect = {
   id: true,
@@ -57,6 +57,8 @@ const publicLotSelect = {
   name: true,
   description: true,
   images: true,
+  cadastralCode: true,
+  details: true,
 } as const;
 
 // GET /api/projects/:slug/lots -> mapa de lotes de un proyecto (público)

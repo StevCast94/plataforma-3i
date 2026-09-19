@@ -110,6 +110,8 @@ model Lot {
   description String? @db.Text
   images      String[]
 
+  /// Ficha técnica pública calculada desde GEO 3i: lados, colindantes, perímetro, vértices UTM.
+  details   Json?
   notes     String?  @db.Text // notas internas del equipo
   active    Boolean  @default(true)
   createdAt DateTime @default(now())

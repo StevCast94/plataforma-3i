@@ -252,7 +252,7 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
   }
 
   return (
-    <div className="absolute inset-x-2 bottom-2 z-[1000] max-h-[90%] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:inset-x-auto sm:right-3 sm:top-3 sm:bottom-auto sm:w-80">
+    <div className="absolute inset-x-2 bottom-2 z-[1000] max-h-[90%] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:inset-x-auto sm:right-3 sm:top-3 sm:bottom-3 sm:w-96">
       <button onClick={onClose} aria-label="Cerrar" className="absolute right-3 top-3 text-brand-gray hover:text-primary">
         <X className="h-5 w-5" />
       </button>
@@ -264,15 +264,17 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
       </span>
 
       <dl className="mt-4 space-y-2 text-sm">
-        <Row label="Área" value={fmtArea(lot.areaM2)} />
         {lot.price != null && (
           <>
             <Row label="Precio" value={formatCurrency(lot.price)} strong />
+            {lot.pricePerM2 != null && <Row label="Precio por m²" value={formatCurrency(lot.pricePerM2)} />}
             <Row label="Entrada (30%)" value={formatCurrency(lot.price * DOWN_PAYMENT)} />
-            <Row label={`${INSTALLMENTS} cuotas de`} value={formatCurrency(monthly(lot.price))} />
+            <Row label={`${INSTALLMENTS} cuotas sin interés de`} value={formatCurrency(monthly(lot.price))} />
           </>
         )}
       </dl>
+
+      <LotSheet lot={lot} />
 
       {available && !sent && (
         <form onSubmit={submit} className="mt-4 space-y-2 border-t border-black/5 pt-4">
@@ -299,6 +301,69 @@ function Row({ label, value, strong }: { label: string; value: string; strong?: 
     <div className="flex justify-between">
       <dt className="text-brand-gray">{label}</dt>
       <dd className={strong ? 'font-serif text-lg font-bold text-accent' : 'font-medium text-primary'}>{value}</dd>
+    </div>
+  );
+}
+
+const CARDINAL_SHORT: Record<string, string> = { NORTE: 'Norte', ESTE: 'Este', SUR: 'Sur', OESTE: 'Oeste' };
+const num = (n: number, d = 2) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+/** Ficha técnica del solar: identificación, linderos y coordenadas (fuente GEO 3i). */
+function LotSheet({ lot }: { lot: PublicLot }) {
+  const d = lot.details;
+  return (
+    <div className="mt-4 space-y-3 border-t border-black/5 pt-4 text-sm">
+      <p className="text-xs font-semibold uppercase tracking-wider text-secondary">Ficha técnica</p>
+      <dl className="space-y-2">
+        <Row label="Clave catastral" value={lot.cadastralCode ?? 'Por asignar'} />
+        {d?.cadastralNote && <p className="-mt-1 text-right text-[11px] text-brand-gray">{d.cadastralNote}</p>}
+        <Row label="Área" value={fmtArea(lot.areaM2)} />
+        {d && <Row label="Perímetro" value={`${num(d.perimeterM)} m`} />}
+        {d && <Row label="Lados" value={String(d.sides.length)} />}
+        <Row label="Ubicación" value="Manglaralto, Santa Elena" />
+        {d && <Row label="Centro (UTM 17S)" value={`${num(d.centroidUTM.este, 1)} E · ${num(d.centroidUTM.norte, 1)} N`} />}
+      </dl>
+
+      {d ? (
+        <>
+          <div>
+            <p className="mb-1 font-semibold text-primary">Linderos</p>
+            <ul className="space-y-1">
+              {d.linderos.map((l, i) => (
+                <li key={i} className="flex justify-between gap-3">
+                  <span className="text-brand-gray">
+                    <b className="font-medium text-primary">{CARDINAL_SHORT[l.cardinal] ?? l.cardinal}:</b> {l.colindante}
+                  </span>
+                  <span className="shrink-0 font-medium text-primary">{num(l.lengthM)} m</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <details className="rounded-lg bg-light p-2">
+            <summary className="cursor-pointer text-xs font-medium text-primary">Coordenadas de los vértices (UTM WGS84 zona 17S)</summary>
+            <table className="mt-2 w-full text-xs">
+              <thead className="text-brand-gray">
+                <tr><th className="text-left font-medium">Vértice</th><th className="text-right font-medium">Este (m)</th><th className="text-right font-medium">Norte (m)</th><th className="text-right font-medium">Lado (m)</th></tr>
+              </thead>
+              <tbody>
+                {d.vertices.map((v, i) => (
+                  <tr key={v.name + i} className="border-t border-black/5">
+                    <td>{v.name}</td>
+                    <td className="text-right tabular-nums">{num(v.este)}</td>
+                    <td className="text-right tabular-nums">{num(v.norte)}</td>
+                    <td className="text-right tabular-nums">{d.sides[i] ? num(d.sides[i].lengthM) : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+          <p className="text-[11px] text-brand-gray">Fuente: {d.source}. Datos referenciales; los linderos legales constan en la escritura.</p>
+        </>
+      ) : (
+        <p className="rounded-lg bg-amber-50 p-2 text-xs text-amber-800">
+          Linderos y coordenadas pendientes: este solar aún no está digitalizado en el levantamiento topográfico.
+        </p>
+      )}
     </div>
   );
 }

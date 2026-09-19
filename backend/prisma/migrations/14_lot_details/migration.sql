@@ -1,0 +1,1 @@
+ALTER TABLE "Lot" ADD COLUMN "details" JSONB;
