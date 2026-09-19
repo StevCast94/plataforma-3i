@@ -101,16 +101,16 @@ export default function PropuestaMontanitaPage() {
 
       {/* HERO */}
       <header className="relative isolate overflow-hidden bg-primary text-white">
-        <img src={`${IMG}/terraza-vista-mar.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-50" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/85 to-black/30" />
-        <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
+        <img src={`${IMG}/portada.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover object-center opacity-70" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/45 to-black/5" />
+        <div className="mx-auto max-w-5xl px-4 py-24 sm:px-6 sm:py-32">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
             Propuesta exclusiva · Documento privado
           </p>
           <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">Montañita View</h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">
             Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con
-            título saneado y un complejo hotelero con lobby ya construido. Tres maneras de ser parte.
+            título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Tres maneras de ser parte.
           </p>
           <div className="mt-6 flex flex-wrap gap-6 text-sm">
             <Stat v="88" l="solares disponibles" />
