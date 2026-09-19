@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Building2, Landmark, ChevronRight, Printer, Lock } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
+import { MvStudy } from '@/components/shared/MvStudy';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -48,13 +49,12 @@ const LAND_USE = [
   { uso: 'Área de afectación', m2: 6865.55, pct: 2.66 },
 ];
 
-// Datos de los estudios de factibilidad (Informe Montañita View). TIR = tasa a la que el
-// perfil del VAN de cada estudio cruza cero (el texto del informe traía 24% y 42% para Coral
-// y Manglar, inconsistentes con sus propios perfiles de 17% y 35%).
-const STAGES = [
-  { name: 'Arrecife', units: 18, pre: 279_350, build: 1_326_450, extra: 244_200, total: 1_850_000, van: 150_894.12, tir: 31, bc: '1.46', pri: 11, prid: 15.02, render: 'render-arrecife', chart: 'g-arrecife', pages: '17–19' },
-  { name: 'Coral', units: 39, pre: 825_600, build: 2_906_800, extra: 567_600, total: 4_300_000, van: 206_663.97, tir: 17, bc: '1.38', pri: 16.7, prid: 19.14, render: 'render-coral', chart: 'g-coral', pages: '20–21' },
-  { name: 'Manglar', units: 24, pre: 411_200, build: 1_801_570, extra: 357_230, total: 2_570_000, van: 286_894.92, tir: 35, bc: '2.15', pri: 9.1, prid: 17.06, render: 'render-manglar', chart: 'g-manglar', pages: '22–23' },
+// Etapas de apartamentos (unidades del plan maestro) y sus renders. Las cifras
+// financieras salen del estudio 2026 (lib/mvStudy.ts), no del informe original.
+const STAGE_MEDIA = [
+  { name: 'Arrecife', units: 18, render: 'render-arrecife' },
+  { name: 'Coral', units: 39, render: 'render-coral' },
+  { name: 'Manglar', units: 24, render: 'render-manglar' },
 ];
 
 const IMG = '/images/propuesta-mv';
@@ -120,7 +120,7 @@ export default function PropuestaMontanitaPage() {
                 icon={Building2}
                 tag="$3,634,800"
                 title="Socio del Lobby"
-                body="36,348 m² con lobby, piscinas y eco-hotel ya operando, y proyecto con estudios de factibilidad para hotel y 81 apartamentos."
+                body="36,348 m² con lobby, piscinas y eco-hotel ya operando, y un proyecto listo de 81 apartamentos en tres etapas."
                 href="#lobby"
               />
               <RouteCard
@@ -208,10 +208,10 @@ export default function PropuestaMontanitaPage() {
           {/* ===== B. LOBBY ===== */}
           <Route id="lobby" eyebrow="Ruta B" title="Socio o desarrollador del Lobby">
             <Summary>
-              El Lobby ya opera: área social con dos piscinas, jacuzzi, restaurante, bar y un eco-hotel
-              de seis habitaciones, con vista de 270° al océano y al bosque. Sobre el predio está
-              proyectado un hotel de 104 habitaciones y 81 apartamentos en tres etapas, con estudios de
-              factibilidad completos. Buscamos socios o un desarrollador para ejecutarlo.
+              Un predio con el área social ya construida y operando — lobby, dos piscinas, jacuzzi,
+              restaurante, bar y eco-hotel — y un proyecto listo de 81 apartamentos de 151 m² en tres
+              etapas, con vista de 270° al océano y al bosque. Buscamos socios o un desarrollador para
+              ejecutarlo; el Lobby existente es la amenidad que diferencia cada apartamento.
             </Summary>
             <KV
               rows={[
@@ -281,87 +281,55 @@ export default function PropuestaMontanitaPage() {
               <Source>Informe Montañita View, Grupo 3i (págs. 5–13).</Source>
             </Detail>
 
-            <Detail title="Plan maestro del complejo">
-              <Figure src="masterplan" caption="Plan maestro: hotel, lobby, módulos Arrecife, Coral y Manglar, malecón y garita" />
-              <Table
-                head={['Componente', 'Unidades', 'Área', 'Inversión']}
-                rows={[
-                  ['Hotel', '104 habitaciones', '—', formatCurrency(7_500_000)],
-                  ...STAGES.map((s) => [`Etapa ${s.name}`, `${s.units} apartamentos de 151 m²`, m2(s.units * 151), formatCurrency(s.total)]),
-                  ['Total', '104 hab. + 81 aptos', m2(81 * 151), formatCurrency(7_500_000 + STAGES.reduce((a, s) => a + s.total, 0))],
-                ]}
-              />
-              <p className="mt-3">Montos de construcción del proyecto; no incluyen el valor del predio.</p>
-              <Source>Informe Montañita View, Grupo 3i (págs. 8, 15, 19, 21 y 23).</Source>
-            </Detail>
-
-            <Detail title="Hotel — 104 habitaciones">
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Figure src="render-hotel-torre" caption="Torre del hotel" />
-                <Figure src="render-hotel-acceso" caption="Acceso vehicular al hotel" />
-              </div>
-              <p className="mt-3">
-                92 habitaciones estándar (algunas con hidromasaje; dos camas personales o una
-                matrimonial) y 12 lofts sin divisiones interiores, con zonas comunes y recreativas.
+            <div className="rounded-2xl bg-light p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">Estudio de factibilidad 2026</p>
+              <h3 className="mt-1 font-serif text-2xl font-bold text-primary">81 apartamentos en tres etapas</h3>
+              <p className="mt-2 text-sm text-primary/80">
+                Estudio propio con precios de venta, costos de construcción y tasas de 2026. Cambia de
+                escenario para ver cómo se mueven los resultados.
               </p>
-              <h4 className="mt-4 font-semibold text-primary">Inversión</h4>
-              <KV
-                rows={[
-                  ['Construcción', formatCurrency(6_840_000)],
-                  ['Equipamiento de habitaciones', formatCurrency(460_000)],
-                  ['Otros equipamientos', formatCurrency(200_000)],
-                  ['Total', formatCurrency(7_500_000)],
-                ]}
-              />
-              <h4 className="mt-4 font-semibold text-primary">Indicadores financieros (tasa de descuento 12%)</h4>
-              <KV
-                rows={[
-                  ['VAN', formatCurrency(3_270_307.67)],
-                  ['TIR', '25%'],
-                  ['Razón beneficio / costo', '1.44'],
-                  ['Recuperación de la inversión (descontada)', '4.23 años'],
-                  ['Flujo de caja anual (años 1–4)', formatCurrency(2_144_072)],
-                  ['Flujo del año 5 (incluye valor residual de los activos)', formatCurrency(7_504_072)],
-                ]}
-              />
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <Figure src="g-hotel-recuperacion" caption="Recuperación de la inversión: flujos descontados acumulados" />
-                <Figure src="g-hotel-van" caption="Perfil del VAN: cruza cero en 25% (TIR)" />
+              <div className="mt-5">
+                <MvStudy />
               </div>
-              <Source>Estudio de factibilidad del Hotel, Informe Montañita View (págs. 14–16).</Source>
+            </div>
+
+            <Detail title="Plan maestro del complejo">
+              <Figure src="masterplan" caption="Plan maestro: lobby, módulos Arrecife, Coral y Manglar, hotel (fase futura), malecón y garita" />
+              <Table
+                head={['Componente', 'Unidades', 'Área vendible', 'Estado']}
+                rows={[
+                  ['Lobby y eco-hotel', 'Área social + 6 habitaciones', '—', 'Construido y operando'],
+                  ...STAGE_MEDIA.map((s) => [`Etapa ${s.name}`, `${s.units} apartamentos`, m2(s.units * 151), 'Diseñada, lista para desarrollar']),
+                  ['Hotel', '104 habitaciones', '—', 'Fase futura opcional'],
+                ]}
+              />
+              <Source>Plan maestro del proyecto, Grupo 3i.</Source>
             </Detail>
 
-            {STAGES.map((s) => (
+            {STAGE_MEDIA.map((s) => (
               <Detail key={s.name} title={`Etapa ${s.name} — ${s.units} apartamentos`}>
                 <Figure src={s.render} caption={`Etapa ${s.name}`} />
                 <p className="mt-3">
-                  {s.units} apartamentos de 151 m² en serie de terrazas ({m2(s.units * 151)} en total).
+                  {s.units} apartamentos de 151 m² en serie de terrazas ({m2(s.units * 151)} vendibles).
                   Cada unidad: terraza con jacuzzi privado y BBQ, habitación principal con walk-in
                   closet, habitación estándar, sala, cocina semi-integral, comedor y baño social, con
                   domótica y amoblado.
                 </p>
-                <h4 className="mt-4 font-semibold text-primary">Inversión</h4>
-                <KV
-                  rows={[
-                    ['Inversión preliminar', formatCurrency(s.pre)],
-                    ['Construcción y urbanización', formatCurrency(s.build)],
-                    ['Complementarios', formatCurrency(s.extra)],
-                    ['Total', formatCurrency(s.total)],
-                  ]}
-                />
-                <h4 className="mt-4 font-semibold text-primary">Indicadores financieros (tasa de descuento 12%)</h4>
-                <KV
-                  rows={[
-                    ['VAN', formatCurrency(s.van)],
-                    ['TIR', `${s.tir}%`],
-                    ['Razón beneficio / costo', s.bc],
-                    ['Recuperación de la inversión', `${s.pri} meses (${s.prid} meses descontada)`],
-                  ]}
-                />
-                <Figure src={s.chart} caption="Flujos de caja mensuales, recuperación descontada, razón beneficio/costo y perfil del VAN" />
-                <Source>Estudio de factibilidad de la Etapa {s.name}, Informe Montañita View (págs. {s.pages}).</Source>
+                {s.name === 'Arrecife' && <Figure src="render-apto-arrecife" caption="Terraza de un apartamento tipo" />}
               </Detail>
             ))}
+
+            <Detail title="Fase futura: hotel de 104 habitaciones">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Figure src="render-hotel-torre" caption="Torre del hotel (diseño conceptual)" />
+                <Figure src="render-hotel-acceso" caption="Acceso vehicular (diseño conceptual)" />
+              </div>
+              <p className="mt-3">
+                El plan maestro reserva espacio para un hotel de 92 habitaciones estándar y 12 lofts. Se
+                plantea como fase posterior, una vez consolidadas las etapas de apartamentos; su
+                dimensión y viabilidad se evaluarán con la demanda generada por el complejo.
+              </p>
+            </Detail>
           </Route>
 
           {/* ===== C. COMPRA TOTAL ===== */}
@@ -437,8 +405,8 @@ export default function PropuestaMontanitaPage() {
               </li>
             </ul>
             <p className="mt-4 text-xs text-brand-gray">
-              Documento informativo. Los indicadores financieros provienen de los estudios de factibilidad
-              citados y no constituyen garantía de rentabilidad. Los documentos fuente están disponibles
+              Documento informativo. Los indicadores financieros provienen del estudio de factibilidad 2026,
+              con los supuestos y fuentes indicados, y no constituyen garantía de rentabilidad. Los documentos fuente están disponibles
               para revisión en la reunión con un asesor.
             </p>
           </section>
