@@ -95,6 +95,8 @@ export interface LotDetails {
   cadastralNote?: string;
   /** Aviso cuando el área publicada y la de la geometría difieren. */
   areaNote?: string;
+  /** Afectaciones que el comprador debe conocer (expropiación, servidumbre…). */
+  notice?: string;
 }
 
 /** Vista de administrador — incluye datos privados y comerciales. */

@@ -316,6 +316,7 @@ function LotSheet({ lot }: { lot: PublicLot }) {
   return (
     <div className="mt-4 space-y-3 border-t border-black/5 pt-4 text-sm">
       <p className="text-xs font-semibold uppercase tracking-wider text-secondary">Ficha técnica</p>
+      {lot.details?.notice && <p className="rounded-lg bg-amber-50 p-2 text-xs font-medium text-amber-900">⚠ {lot.details.notice}</p>}
       <dl className="space-y-2">
         <Row label="Clave catastral" value={lot.cadastralCode ?? 'Por asignar'} />
         {note && <p className="-mt-1 text-right text-[11px] text-brand-gray">{note}</p>}
