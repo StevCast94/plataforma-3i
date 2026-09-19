@@ -107,6 +107,9 @@ function MosaicGallery({
 
 /** Gráfico de área animado (SVG puro + framer-motion, sin librerías externas). */
 function GrowthChart({ data, years }: { data: number[]; years: string[] }) {
+  // Con 1 solo punto, stepX = ancho / (length - 1) = división por cero →
+  // coordenadas NaN y un <path> roto. Un punto no tiene pendiente que trazar.
+  if (data.length < 2) return null;
   const w = 600;
   const h = 220;
   const padX = 16;
@@ -360,32 +363,39 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             </div>
           </Reveal>
 
-          {/* Proyección de valor + gráfico animado */}
-          <Reveal delay={0.1}>
-            <div className="rounded-2xl bg-light p-6">
-              <h4 className="mb-4 font-serif text-xl text-primary">Proyección de valor</h4>
-              <div className="space-y-3">
-                {c.valueProjection.map((v) => (
-                  <div key={v.year} className="rounded-xl bg-white p-4">
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-xs uppercase tracking-wider text-brand-gray">
-                        {v.year} · {v.label}
-                      </span>
-                      <span className="font-serif text-xl font-bold text-accent">{fmt(v.value)}</span>
+          {/* Proyección de valor + gráfico animado — solo si hay datos que
+              proyectar. Sin al menos 2 puntos el gráfico no tiene pendiente
+              que dibujar (ver guarda en GrowthChart) y mostrar un único año
+              sin comparables de mercado sería una plusvalía inventada. */}
+          {c.valueProjection.length > 0 && (
+            <Reveal delay={0.1}>
+              <div className="rounded-2xl bg-light p-6">
+                <h4 className="mb-4 font-serif text-xl text-primary">Proyección de valor</h4>
+                <div className="space-y-3">
+                  {c.valueProjection.map((v) => (
+                    <div key={v.year} className="rounded-xl bg-white p-4">
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-xs uppercase tracking-wider text-brand-gray">
+                          {v.year} · {v.label}
+                        </span>
+                        <span className="font-serif text-xl font-bold text-accent">{fmt(v.value)}</span>
+                      </div>
+                      <p className="text-xs text-brand-gray">{v.note}</p>
                     </div>
-                    <p className="text-xs text-brand-gray">{v.note}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
 
-              <div className="mt-6">
-                <p className="mb-1 text-xs uppercase tracking-wider text-brand-gray">
-                  Crecimiento estimado (Año 0 → {c.chart.length - 1})
-                </p>
-                <GrowthChart data={c.chart} years={c.chart.map((_, i) => `A${i}`)} />
+                {c.chart.length > 1 && (
+                  <div className="mt-6">
+                    <p className="mb-1 text-xs uppercase tracking-wider text-brand-gray">
+                      Crecimiento estimado (Año 0 → {c.chart.length - 1})
+                    </p>
+                    <GrowthChart data={c.chart} years={c.chart.map((_, i) => `A${i}`)} />
+                  </div>
+                )}
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          )}
         </div>
 
         {/* Renting */}
@@ -442,17 +452,19 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           })}
         </div>
 
-        {/* Seguros + garantía */}
-        <Reveal>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {c.insurances.map((s) => (
-              <div key={s.label} className="flex items-center justify-between rounded-xl bg-primary px-5 py-4 text-white">
-                <span className="text-sm">{s.label}</span>
-                <span className="font-serif text-lg font-bold text-secondary">{s.value}</span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+        {/* Seguros + garantía — solo si el proyecto los tiene (ver resolveBrochureContent) */}
+        {c.insurances.length > 0 && (
+          <Reveal>
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              {c.insurances.map((s) => (
+                <div key={s.label} className="flex items-center justify-between rounded-xl bg-primary px-5 py-4 text-white">
+                  <span className="text-sm">{s.label}</span>
+                  <span className="font-serif text-lg font-bold text-secondary">{s.value}</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        )}
       </div>
     ),
 
@@ -476,7 +488,8 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
       </Reveal>
     ),
 
-    testimonials: (
+    // Sección entera oculta si no hay testimonios reales (ver resolveBrochureContent).
+    testimonials: c.testimonials.length > 0 && (
       <div className="mt-16">
         <Reveal>
           <SectionTitle>Testimonios</SectionTitle>

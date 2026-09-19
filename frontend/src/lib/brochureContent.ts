@@ -296,7 +296,18 @@ export const DEFAULT_BROCHURE_CONTENT: Required<BrochureContent> = {
   layout: {},
 };
 
-/** Combina el contenido del proyecto con los valores por defecto, campo a campo. */
+/**
+ * Combina el contenido del proyecto con los valores por defecto (los de Ibiza
+ * Condohotel), campo a campo.
+ *
+ * Para los arrays se usa `!== undefined` y NO `?.length` a propósito: antes,
+ * un array vacío `[]` (el proyecto no tiene seguros, o no tiene testimonios
+ * reales que mostrar) caía al fallback y terminaba mostrando los seguros y
+ * testimonios DE IBIZA en cualquier otro proyecto. `undefined` (el campo
+ * nunca se llenó) sigue usando el default; `[]` (se llenó explícitamente
+ * vacío) ahora se respeta como "este proyecto no tiene esto" — el componente
+ * oculta esas secciones cuando llegan vacías.
+ */
 export function resolveBrochureContent(
   raw?: Record<string, unknown> | null,
 ): Required<BrochureContent> {
@@ -305,24 +316,25 @@ export function resolveBrochureContent(
     eyebrow: c.eyebrow ?? DEFAULT_BROCHURE_CONTENT.eyebrow,
     heroTagline: c.heroTagline ?? DEFAULT_BROCHURE_CONTENT.heroTagline,
     heroLocation: c.heroLocation ?? DEFAULT_BROCHURE_CONTENT.heroLocation,
-    keyFacts: c.keyFacts?.length ? c.keyFacts : DEFAULT_BROCHURE_CONTENT.keyFacts,
-    pillars: c.pillars?.length ? c.pillars : DEFAULT_BROCHURE_CONTENT.pillars,
+    keyFacts: c.keyFacts !== undefined ? c.keyFacts : DEFAULT_BROCHURE_CONTENT.keyFacts,
+    pillars: c.pillars !== undefined ? c.pillars : DEFAULT_BROCHURE_CONTENT.pillars,
     overviewText: c.overviewText ?? DEFAULT_BROCHURE_CONTENT.overviewText,
-    overviewStats: c.overviewStats?.length ? c.overviewStats : DEFAULT_BROCHURE_CONTENT.overviewStats,
-    paymentPlan: c.paymentPlan?.length ? c.paymentPlan : DEFAULT_BROCHURE_CONTENT.paymentPlan,
-    valueProjection: c.valueProjection?.length ? c.valueProjection : DEFAULT_BROCHURE_CONTENT.valueProjection,
-    chart: c.chart?.length ? c.chart : DEFAULT_BROCHURE_CONTENT.chart,
-    routeStats: c.routeStats?.length ? c.routeStats : DEFAULT_BROCHURE_CONTENT.routeStats,
-    rentingStats: c.rentingStats?.length ? c.rentingStats : DEFAULT_BROCHURE_CONTENT.rentingStats,
-    amenities: c.amenities?.length ? c.amenities : DEFAULT_BROCHURE_CONTENT.amenities,
-    whyInvest: c.whyInvest?.length ? c.whyInvest : DEFAULT_BROCHURE_CONTENT.whyInvest,
-    insurances: c.insurances?.length ? c.insurances : DEFAULT_BROCHURE_CONTENT.insurances,
-    testimonials: c.testimonials?.length ? c.testimonials : DEFAULT_BROCHURE_CONTENT.testimonials,
+    overviewStats: c.overviewStats !== undefined ? c.overviewStats : DEFAULT_BROCHURE_CONTENT.overviewStats,
+    paymentPlan: c.paymentPlan !== undefined ? c.paymentPlan : DEFAULT_BROCHURE_CONTENT.paymentPlan,
+    valueProjection:
+      c.valueProjection !== undefined ? c.valueProjection : DEFAULT_BROCHURE_CONTENT.valueProjection,
+    chart: c.chart !== undefined ? c.chart : DEFAULT_BROCHURE_CONTENT.chart,
+    routeStats: c.routeStats !== undefined ? c.routeStats : DEFAULT_BROCHURE_CONTENT.routeStats,
+    rentingStats: c.rentingStats !== undefined ? c.rentingStats : DEFAULT_BROCHURE_CONTENT.rentingStats,
+    amenities: c.amenities !== undefined ? c.amenities : DEFAULT_BROCHURE_CONTENT.amenities,
+    whyInvest: c.whyInvest !== undefined ? c.whyInvest : DEFAULT_BROCHURE_CONTENT.whyInvest,
+    insurances: c.insurances !== undefined ? c.insurances : DEFAULT_BROCHURE_CONTENT.insurances,
+    testimonials: c.testimonials !== undefined ? c.testimonials : DEFAULT_BROCHURE_CONTENT.testimonials,
     bannerEyebrow: c.bannerEyebrow ?? DEFAULT_BROCHURE_CONTENT.bannerEyebrow,
     bannerTitle: c.bannerTitle ?? DEFAULT_BROCHURE_CONTENT.bannerTitle,
     bannerBody: c.bannerBody ?? DEFAULT_BROCHURE_CONTENT.bannerBody,
     ctaSubtitle: c.ctaSubtitle ?? DEFAULT_BROCHURE_CONTENT.ctaSubtitle,
-    ctaStats: c.ctaStats?.length ? c.ctaStats : DEFAULT_BROCHURE_CONTENT.ctaStats,
+    ctaStats: c.ctaStats !== undefined ? c.ctaStats : DEFAULT_BROCHURE_CONTENT.ctaStats,
     pdfUrl: c.pdfUrl ?? DEFAULT_BROCHURE_CONTENT.pdfUrl,
     contactLine: c.contactLine ?? DEFAULT_BROCHURE_CONTENT.contactLine,
     layout: c.layout ?? DEFAULT_BROCHURE_CONTENT.layout,
