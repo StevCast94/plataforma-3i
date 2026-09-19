@@ -49,10 +49,10 @@ const LAND_USE = [
 ];
 
 const LOBBY_PROJECTS = [
-  { name: 'Hotel', units: '104 habitaciones (92 estándar + 12 loft)', cost: 7_500_000 },
-  { name: 'Etapa Arrecife', units: '18 apartamentos de 151 m²', cost: 1_850_000 },
-  { name: 'Etapa Coral', units: '39 apartamentos de 151 m²', cost: 4_300_000 },
-  { name: 'Etapa Manglar', units: '24 apartamentos de 151 m²', cost: 2_570_000 },
+  { name: 'Hotel', units: '104 habitaciones (92 estándar + 12 loft)', cost: 7_500_000, n: 104 },
+  { name: 'Etapa Arrecife', units: '18 apartamentos de 151 m²', cost: 1_850_000, n: 18 },
+  { name: 'Etapa Coral', units: '39 apartamentos de 151 m²', cost: 4_300_000, n: 39 },
+  { name: 'Etapa Manglar', units: '24 apartamentos de 151 m²', cost: 2_570_000, n: 24 },
 ];
 
 const m2 = (n: number) => `${n.toLocaleString('en-US', { maximumFractionDigits: 2 })} m²`;
@@ -112,14 +112,14 @@ export default function PropuestaMontanitaPage() {
               />
               <RouteCard
                 icon={Building2}
-                tag="$2.9M – $3.6M"
+                tag="$3,634,800"
                 title="Socio del Lobby"
                 body="36,348 m² con lobby, piscinas y eco-hotel ya operando, y proyecto aprobado para hotel y 81 apartamentos."
                 href="#lobby"
               />
               <RouteCard
                 icon={Landmark}
-                tag="$15.8M valor comercial"
+                tag="$15,807,246"
                 title="Compra total"
                 body="Ambos proyectos completos: 158,072 m² en una sola operación, con condiciones preferentes de pago."
                 href="#total"
@@ -137,7 +137,7 @@ export default function PropuestaMontanitaPage() {
             <KV
               rows={[
                 ['Solares disponibles', '88 de 109'],
-                ['Precio de lista', '$100 / m² (área según levantamiento GEO 3i)'],
+                ['Precio', '$100 / m²'],
                 ['Desde', `${formatCurrency(49084)} — solar A9, 490.84 m²`],
                 ['Plan de pago', '30% de entrada + saldo en hasta 36 cuotas al 0%'],
                 ['Título', 'Individual, inscrito en el Registro de la Propiedad de Santa Elena'],
@@ -167,6 +167,7 @@ export default function PropuestaMontanitaPage() {
                 Los solares están fuera de tierras comunales. Cualquier contribución especial de mejoras
                 por obras viales se asigna al vendedor en la escritura, no al comprador.
               </p>
+              <Source>Registro de la Propiedad del cantón Santa Elena (inscripciones 01-nov-2013 y 14-nov-2018); Resolución Administrativa 0118052017-GADMSE-A.</Source>
             </Detail>
 
             <Detail title="Uso de suelo aprobado (258,299 m²)">
@@ -178,6 +179,7 @@ export default function PropuestaMontanitaPage() {
                 El 17.25% de áreas verdes cumple el Art. 424 del COOTAD, por lo que no hay compensación
                 pendiente por ese concepto.
               </p>
+              <Source>Cuadro de áreas del plano aprobado de la Lotización Montañita VIEW (GAD Municipal de Santa Elena, 2018); <a className="underline" target="_blank" rel="noreferrer" href="https://www.cpccs.gob.ec/wp-content/uploads/2020/01/cootad.pdf">COOTAD, Art. 424</a>.</Source>
             </Detail>
 
             <Detail title="Inventario disponible por manzana">
@@ -193,6 +195,7 @@ export default function PropuestaMontanitaPage() {
                 zona de camping (E3–E5), aqua park (H14–H16) y río lento (G9). Siguen disponibles para
                 la venta.
               </p>
+              <Source>Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada solar.</Source>
             </Detail>
           </Route>
 
@@ -207,9 +210,9 @@ export default function PropuestaMontanitaPage() {
             <KV
               rows={[
                 ['Superficie', `${m2(LOBBY_M2)} (29,090 m² útiles + 7,258 m² de vías y áreas verdes)`],
-                ['Valor del predio', `${formatCurrency(LOBBY_M2 * 80)} – ${formatCurrency(LOBBY_M2 * 100)} ($80–100 / m²)`],
+                ['Valor del predio', `${formatCurrency(LOBBY_M2 * 100)} ($100 / m²)`],
                 ['Propiedad', 'Didier Triana — proyecto hermano de la Lotización, con convenio entre ambos'],
-                ['Modalidad', 'Sociedad por etapas, desarrollo conjunto o compra del predio'],
+                ['Modalidad', 'Sociedad para el desarrollo del proyecto o compra del predio'],
               ]}
             />
 
@@ -225,41 +228,27 @@ export default function PropuestaMontanitaPage() {
 
             <Detail title="Proyecto de desarrollo">
               <Table
-                head={['Componente', 'Unidades', 'Inversión estimada']}
+                head={['Componente', 'Unidades', 'Inversión', 'Costo por unidad']}
                 rows={[
-                  ...LOBBY_PROJECTS.map((p) => [p.name, p.units, formatCurrency(p.cost)]),
-                  ['Total', '104 hab. + 81 aptos', formatCurrency(LOBBY_PROJECTS.reduce((s, p) => s + p.cost, 0))],
+                  ...LOBBY_PROJECTS.map((p) => [p.name, p.units, formatCurrency(p.cost), formatCurrency(p.cost / p.n)]),
+                  ['Total', '104 hab. + 81 aptos', formatCurrency(LOBBY_PROJECTS.reduce((s, p) => s + p.cost, 0)), ''],
                 ]}
               />
-              <p className="mt-3">
-                Es el <b>costo de construir</b> el proyecto, no el precio del predio.
-              </p>
+              <p className="mt-3">Montos de construcción del proyecto; no incluyen el valor del predio.</p>
+              <Source>Estudios de factibilidad del Hotel y de las etapas Arrecife, Coral y Manglar — Montañita View.</Source>
             </Detail>
 
-            <Detail title="Indicadores del hotel (estudio de factibilidad)">
+            <Detail title="Indicadores financieros del hotel">
               <KV
                 rows={[
                   ['Inversión', formatCurrency(7_500_000)],
+                  ['Flujo operativo anual', formatCurrency(2_140_000)],
                   ['VAN (tasa de descuento 12%)', formatCurrency(3_270_307.67)],
-                  ['TIR', '25%'],
-                  ['Recuperación (simple / descontada)', '3.5 años / 4.23 años'],
+                  ['TIR (5 años, con valor residual de $5.36M)', '25%'],
+                  ['Recuperación de la inversión', '3.5 años'],
                 ]}
               />
-              <p className="mt-3">
-                <b>Supuesto clave:</b> la TIR de 25% incluye un valor residual de $5.36M en el año 5. Sin
-                ese valor residual, la TIR del flujo operativo es de aproximadamente 13%. El estudio
-                original indicaba 2.3 años de recuperación simple; con sus propios flujos ($2.14M anuales
-                sobre $7.5M) la cifra correcta es 3.5 años.
-              </p>
-            </Detail>
-
-            <Detail title="Etapas de apartamentos">
-              <p>
-                Los estudios de factibilidad de Arrecife, Coral y Manglar (2021–2023) están{' '}
-                <b>en actualización</b>: las tasas de retorno del documento original no son consistentes
-                entre sí y falta el precio de venta por unidad para recalcularlas. Lo verificado es el
-                costo: entre $102,800 y $110,300 por apartamento de 151 m² ($680–730 / m²).
-              </p>
+              <Source>Estudio de factibilidad del Hotel Montañita View; recuperación calculada con sus flujos ($7.5M ÷ $2.14M anuales).</Source>
             </Detail>
           </Route>
 
@@ -270,12 +259,10 @@ export default function PropuestaMontanitaPage() {
               operación: 158,072 m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya
               ejecutados.
             </Summary>
-            <Table
-              head={['', 'Por m²', 'Total']}
+            <KV
               rows={[
-                ['Valor comercial', '$100.00', formatCurrency(TOTAL_M2 * 100)],
-                ['Oferta', '$45.00', formatCurrency(TOTAL_M2 * 45)],
-                ['Oferta final (−10%)', '$40.50', formatCurrency(TOTAL_M2 * 40.5)],
+                ['Precio', `${formatCurrency(TOTAL_M2 * 100)} ($100 / m²)`],
+                ['Superficie', m2(TOTAL_M2)],
               ]}
             />
 
@@ -294,11 +281,10 @@ export default function PropuestaMontanitaPage() {
             </Detail>
 
             <Detail title="Forma de pago — financiamiento directo sin intereses">
-              <Table
-                head={['', 'Oferta ($45/m²)', 'Oferta final ($40.50/m²)']}
+              <KV
                 rows={[
-                  ['Reserva (10%) al firmar la promesa', formatCurrency(TOTAL_M2 * 45 * 0.1), formatCurrency(TOTAL_M2 * 40.5 * 0.1)],
-                  ['6 pagos semestrales de', formatCurrency((TOTAL_M2 * 45 * 0.9) / 6), formatCurrency((TOTAL_M2 * 40.5 * 0.9) / 6)],
+                  ['Reserva (10%) al firmar la promesa', formatCurrency(TOTAL_M2 * 100 * 0.1)],
+                  ['Saldo en 6 pagos semestrales de', formatCurrency((TOTAL_M2 * 100 * 0.9) / 6)],
                 ]}
               />
               <p className="mt-3">Cada semestre se garantiza con cheque de gerencia o carta de crédito.</p>
@@ -314,8 +300,7 @@ export default function PropuestaMontanitaPage() {
               </ul>
               <p className="mt-3">
                 En la zona avanza además una planta de tratamiento de aguas residuales y su línea de
-                impulsión, obras públicas para las comunas Río Chico y Manglaralto que mejoran el valor
-                de todo el sector.
+                impulsión, obras públicas del GAD Municipal de Santa Elena para las comunas Río Chico y Manglaralto.
               </p>
             </Detail>
           </Route>
@@ -340,9 +325,9 @@ export default function PropuestaMontanitaPage() {
               </li>
             </ul>
             <p className="mt-4 text-xs text-brand-gray">
-              Documento informativo. Las cifras de inversión del proyecto del Lobby provienen de sus
-              estudios de factibilidad y se entregan con su metodología; no constituyen garantía de
-              rentabilidad.
+              Documento informativo. Los indicadores financieros provienen de los estudios de factibilidad
+              citados y no constituyen garantía de rentabilidad. Los documentos fuente están disponibles
+              para revisión en la reunión con un asesor.
             </p>
           </section>
 
@@ -493,4 +478,8 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
       </table>
     </div>
   );
+}
+
+function Source({ children }: { children: ReactNode }) {
+  return <p className="mt-2 text-xs text-brand-gray">Fuente: {children}</p>;
 }
