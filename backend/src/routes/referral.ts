@@ -90,7 +90,7 @@ export const referralRedirect = asyncHandler(async (req: Request, res: Response)
         campaign,
         referrerName: member?.fullName.split(' ')[0] ?? null,
         canonicalUrl: `${origin}${req.originalUrl}`,
-        redirectTo: `${origin}/#${to}`,
+        redirectTo: `${origin}${to}`,
         origin,
       }),
     );
@@ -101,7 +101,7 @@ export const referralRedirect = asyncHandler(async (req: Request, res: Response)
     setRefCookieIfAbsent(req, res, code);
     await recordClick(code).catch(() => {});
   }
-  res.redirect(302, `/#${to}`);
+  res.redirect(302, to);
 });
 
 export const referralApiRoutes = Router();

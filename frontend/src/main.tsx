@@ -3,7 +3,14 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-// IMPORTANTE: el Router vive solo en App.tsx (HashRouter).
+// Enlaces antiguos con HashRouter (grupo3i.com/#/ruta?x=1) siguen circulando en
+// WhatsApp, redes y comprobantes: se convierten a la URL limpia (grupo3i.com/ruta?x=1)
+// antes de montar el router. Los anclas internas (#solar) no empiezan con "#/".
+if (window.location.hash.startsWith('#/')) {
+  window.history.replaceState(null, '', window.location.hash.slice(1));
+}
+
+// IMPORTANTE: el Router vive solo en App.tsx (BrowserRouter).
 // No envolver aquí para evitar el bug de doble Router con React 19.
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

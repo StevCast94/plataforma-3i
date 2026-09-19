@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
@@ -73,7 +73,7 @@ export default function App() {
         <AuthProvider>
           <AdminAuthProvider>
           <div className="print:hidden"><InstallAppBanner /></div>
-          <HashRouter>
+          <BrowserRouter>
             <Routes>
               {/* Sitio público con navbar/footer */}
               <Route element={<Layout />}>
@@ -145,7 +145,7 @@ export default function App() {
                 <Route path="mensajes/:code" element={<MessageConversation />} />
               </Route>
             </Routes>
-          </HashRouter>
+          </BrowserRouter>
           </AdminAuthProvider>
         </AuthProvider>
       </ToastProvider>

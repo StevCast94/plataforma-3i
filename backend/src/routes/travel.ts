@@ -154,15 +154,15 @@ travelRoutes.get(
     const bookingId = String(req.query.clientTransactionId ?? '').trim();
     const base = publicBaseUrl();
     if (!bookingId) {
-      res.redirect(`${base}/#/club/viajes?pago=error`);
+      res.redirect(`${base}/club/viajes?pago=error`);
       return;
     }
     try {
       await confirmBooking(bookingId, id);
-      res.redirect(`${base}/#/club/viajes?pago=ok&reserva=${encodeURIComponent(bookingId)}`);
+      res.redirect(`${base}/club/viajes?pago=ok&reserva=${encodeURIComponent(bookingId)}`);
     } catch (err) {
       console.error('payphone callback', err);
-      res.redirect(`${base}/#/club/viajes?pago=fallido&reserva=${encodeURIComponent(bookingId)}`);
+      res.redirect(`${base}/club/viajes?pago=fallido&reserva=${encodeURIComponent(bookingId)}`);
     }
   }),
 );

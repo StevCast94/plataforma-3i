@@ -2,7 +2,7 @@
   "name": "Grupo 3i — Oficina Virtual",
   "short_name": "Grupo 3i",
   "description": "Tu oficina virtual: enlaces de referido, comisiones, red y viajes.",
-  "start_url": "/#/oficina/dashboard",
+  "start_url": "/oficina/dashboard",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",

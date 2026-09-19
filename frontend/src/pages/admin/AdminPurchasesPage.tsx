@@ -88,7 +88,7 @@ export default function AdminPurchasesPage() {
               phone={p.customerPhone}
               name={p.customerName}
               variant="icon"
-              message={`Hola ${p.customerName.split(' ')[0]}, tu compra de "${p.product?.name ?? ''}" con Grupo 3i quedó confirmada. Aquí tienes tu comprobante: ${window.location.origin}/#/confirmacion/${p.id}`}
+              message={`Hola ${p.customerName.split(' ')[0]}, tu compra de "${p.product?.name ?? ''}" con Grupo 3i quedó confirmada. Aquí tienes tu comprobante: ${window.location.origin}/confirmacion/${p.id}`}
             />
           )}
           {isSuperadmin && (

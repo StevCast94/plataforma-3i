@@ -5,12 +5,8 @@ import { prisma } from '../prisma';
 //
 // WhatsApp/Facebook/X no ejecutan JavaScript: la tarjeta que ven al pegar un
 // enlace sale de los <meta property="og:*"> del HTML que responde el servidor.
-// Como el sitio usa HashRouter (grupo3i.com/#/ruta) y el fragmento "#" NUNCA
-// llega al servidor, NINGUNA ruta del SPA puede tener tarjeta propia.
-//
-// /r/:code sí es una ruta real de Express, así que es el único punto del
-// sistema donde esto es posible — y justo es el enlace que comparten los
-// socios. Cada campaña (?c=slug) define su propia tarjeta y su propio mensaje.
+// /r/:code es la ruta que comparten los socios: el servidor responde ahí la
+// tarjeta de la campaña a los crawlers y redirige a los humanos. Cada campaña (?c=slug) define su propia tarjeta y su propio mensaje.
 //
 // El formato es 1080x1080 (cuadrado), no 1.91:1: WhatsApp respeta el alto
 // declarado en og:image:width/height y le da una tarjeta mucho más grande y

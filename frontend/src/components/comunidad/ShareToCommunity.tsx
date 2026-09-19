@@ -28,7 +28,7 @@ export function ShareToCommunity({ title, path, image, description }: ShareToCom
       return;
     }
     setSharing(true);
-    const url = `${window.location.origin}/#${path}`;
+    const url = `${window.location.origin}${path}`;
     try {
       await api.post('/community/posts', {
         content: `¡Miren esta oportunidad en Grupo 3i! 🏡 ${title}${description ? ` — ${description}` : ''}`,
