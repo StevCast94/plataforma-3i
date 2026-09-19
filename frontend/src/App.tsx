@@ -14,6 +14,7 @@ import { InstallAppBanner } from '@/components/shared/InstallAppBanner';
 const HomePage = lazy(() => import('@/pages/landing/HomePage'));
 const ProjectsPage = lazy(() => import('@/pages/landing/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('@/pages/landing/ProjectDetailPage'));
+const PropuestaMontanitaPage = lazy(() => import('@/pages/landing/PropuestaMontanitaPage'));
 const AboutPage = lazy(() => import('@/pages/landing/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
 const ShopPage = lazy(() => import('@/pages/tienda/ShopPage'));
@@ -79,6 +80,7 @@ export default function App() {
                 <Route index element={<HomePage />} />
                 <Route path="proyectos" element={<ProjectsPage />} />
                 <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
+                <Route path="propuesta/montanita-view" element={<PropuestaMontanitaPage />} />
                 <Route path="tienda" element={<ShopPage />} />
                 <Route path="tienda/:slug" element={<ProductDetailPage />} />
                 <Route path="club" element={<ClubPage />} />
