@@ -8,6 +8,8 @@ import {
   STAGE_BASE,
   npvProfile,
   stageModel,
+  type AptAssumption,
+  type AptAssumptions,
   type Scenario,
 } from '@/lib/mvStudy';
 import { formatCurrency } from '@/lib/utils';
@@ -20,14 +22,17 @@ const pct = (n: number | null) => (n == null ? '—' : `${(n * 100).toFixed(1)}%
 const money = (n: number) => formatCurrency(Math.round(n));
 const short = (n: number) => `${n < 0 ? '−' : ''}$${(Math.abs(n) / 1e6).toFixed(1)}M`;
 
-export function MvStudy() {
+export function MvStudy({
+  assumptions = APT_ASSUMPTIONS,
+  discount = DISCOUNT,
+}: { assumptions?: AptAssumptions; discount?: number }) {
   const [sc, setSc] = useState<Scenario>('base');
   const all = useMemo(
-    () => Object.fromEntries(SCENARIOS.map((s) => [s, STAGE_BASE.map((st) => stageModel(st, s))])) as Record<Scenario, ReturnType<typeof stageModel>[]>,
-    [],
+    () => Object.fromEntries(SCENARIOS.map((s) => [s, STAGE_BASE.map((st) => stageModel(st, s, assumptions[s], discount))])) as Record<Scenario, ReturnType<typeof stageModel>[]>,
+    [assumptions, discount],
   );
   const stages = all[sc];
-  const a = APT_ASSUMPTIONS[sc];
+  const a = assumptions[sc];
   const tot = stages.reduce(
     (acc, s) => ({ revenue: acc.revenue + s.revenue, cost: acc.cost + s.cost, npv: acc.npv + s.npv }),
     { revenue: 0, cost: 0, npv: 0 },
@@ -54,7 +59,7 @@ export function MvStudy() {
         <Kpi l="Ventas totales" v={short(tot.revenue)} />
         <Kpi l="Costo total" v={short(tot.cost)} />
         <Kpi l="Margen" v={pct((tot.revenue - tot.cost) / tot.revenue)} />
-        <Kpi l={`VAN al ${Math.round(DISCOUNT * 100)}%`} v={short(tot.npv)} />
+        <Kpi l={`VAN al ${Math.round(discount * 100)}%`} v={short(tot.npv)} />
       </div>
 
       <div className="overflow-x-auto rounded-xl ring-1 ring-black/5">
@@ -99,7 +104,7 @@ export function MvStudy() {
           <tbody>
             {SCENARIOS.map((s) => {
               const r = all[s].reduce((acc, x) => ({ rev: acc.rev + x.revenue, cost: acc.cost + x.cost, npv: acc.npv + x.npv }), { rev: 0, cost: 0, npv: 0 });
-              const as = APT_ASSUMPTIONS[s];
+              const as = assumptions[s];
               return (
                 <tr key={s} className="border-t border-black/5 capitalize">
                   <td className="px-2 py-1.5 font-semibold">{s}</td>
@@ -137,7 +142,7 @@ export function MvStudy() {
       </div>
 
       <ChartCard title="Sensibilidad: VAN total de las tres etapas">
-        <SensitivityTable />
+        <SensitivityTable base={assumptions.base} discount={discount} />
       </ChartCard>
 
       <div>
@@ -146,7 +151,7 @@ export function MvStudy() {
           <Assumption l="Precio de venta" v={`$${a.price.toLocaleString('en-US')} / m² (${money(a.price * APT_M2)} por apto de ${APT_M2} m²)`} src={[MV_SOURCES.plusvalia, MV_SOURCES.mls]} />
           <Assumption l="Costo de construcción" v={`$${a.cost} / m²`} src={[MV_SOURCES.costo]} />
           <Assumption l="Ritmo de ventas" v={`${a.unitsPerQuarter} apartamentos por trimestre`} src={[MV_SOURCES.plusvalia]} />
-          <Assumption l="Tasa de descuento" v={`${Math.round(DISCOUNT * 100)}% anual (bono EE.UU. + riesgo país + prima del proyecto)`} src={[MV_SOURCES.riesgo]} />
+          <Assumption l="Tasa de descuento" v={`${Math.round(discount * 100)}% anual (bono EE.UU. + riesgo país + prima del proyecto)`} src={[MV_SOURCES.riesgo]} />
           <Assumption l="Estudios, diseño, permisos y complementarios" v="Montos del informe original actualizados +20% por inflación de construcción 2020–2026" src={[MV_SOURCES.costo]} />
           <Assumption l="Forma de pago del comprador" v="30% de entrada al reservar y 70% a la entrega; obra de 6 trimestres" src={[]} />
         </div>
@@ -160,16 +165,12 @@ function cumulative(flows: number[]) {
   return flows.map((f) => (acc += f));
 }
 
-function SensitivityTable() {
-  const prices = [1_300, 1_450, 1_650];
-  const costs = [950, 850, 760];
-  const npvAt = (price: number, cost: number) => {
-    const saved = { ...APT_ASSUMPTIONS.base };
-    APT_ASSUMPTIONS.base = { ...saved, price, cost };
-    const v = STAGE_BASE.reduce((acc, st) => acc + stageModel(st, 'base').npv, 0);
-    APT_ASSUMPTIONS.base = saved;
-    return v;
-  };
+function SensitivityTable({ base, discount }: { base: AptAssumption; discount: number }) {
+  // Filas y columnas: ±10% alrededor del escenario base.
+  const prices = [0.9, 1, 1.1].map((f) => Math.round((base.price * f) / 10) * 10);
+  const costs = [1.1, 1, 0.9].map((f) => Math.round((base.cost * f) / 10) * 10);
+  const npvAt = (price: number, cost: number) =>
+    STAGE_BASE.reduce((acc, st) => acc + stageModel(st, 'base', { ...base, price, cost }, discount).npv, 0);
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-center text-sm">
@@ -195,7 +196,7 @@ function SensitivityTable() {
           ))}
         </tbody>
       </table>
-      <p className="mt-2 text-xs text-brand-gray">Ritmo de ventas del escenario base (3 aptos por trimestre).</p>
+      <p className="mt-2 text-xs text-brand-gray">Precio y costo ±10% sobre el escenario base; ritmo de ventas del escenario base ({base.unitsPerQuarter} aptos por trimestre).</p>
     </div>
   );
 }

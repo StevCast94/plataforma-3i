@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Building2, Landmark, ChevronRight, Printer, Lock } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { useToast } from '@/components/shared/Toast';
+import { useSectionContent } from '@/hooks/useSiteContent';
+import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta } from '@/lib/propuestaContent';
 
 // ============================================================
 // PROPUESTA EXCLUSIVA — Montañita View (privada: noindex, sin enlace en el
@@ -70,6 +72,16 @@ export default function PropuestaMontanitaPage() {
     }
   });
 
+  // Contenido editable desde /admin/propuesta (F4); sin datos guardados usa los valores por defecto.
+  const { data: saved } = useSectionContent(PROPUESTA_SECTION);
+  const c = useMemo(() => {
+    try {
+      return resolvePropuesta(saved?.[PROPUESTA_KEY] ? JSON.parse(saved[PROPUESTA_KEY]) : undefined);
+    } catch {
+      return resolvePropuesta();
+    }
+  }, [saved]);
+
   // Al imprimir (botón o Ctrl+P) se despliegan todos los detalles técnicos y
   // al terminar se restaura lo que el usuario tenía abierto.
   useEffect(() => {
@@ -104,14 +116,9 @@ export default function PropuestaMontanitaPage() {
         <img src={`${IMG}/portada.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover object-center opacity-70" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/45 to-black/5" />
         <div className="mx-auto max-w-5xl px-4 py-24 sm:px-6 sm:py-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
-            Propuesta exclusiva · Documento privado
-          </p>
-          <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">Montañita View</h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/80">
-            Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con
-            título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Tres maneras de ser parte.
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{c.heroEyebrow}</p>
+          <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">{c.heroTitle}</h1>
+          <p className="mt-4 max-w-2xl text-lg text-white/80">{c.heroSubtitle}</p>
           <div className="mt-6 flex flex-wrap gap-6 text-sm">
             <Stat v="88" l="solares disponibles" />
             <Stat v={m2(TOTAL_M2)} l="en oferta" />
@@ -132,23 +139,23 @@ export default function PropuestaMontanitaPage() {
             <div className="grid gap-5 md:grid-cols-3">
               <RouteCard
                 icon={MapPin}
-                tag="Desde $49,084"
+                tag={c.solar.tag}
                 title="Comprar un solar"
-                body="Tu terreno propio, con título individual y financiamiento directo: 30% de entrada y 36 cuotas sin intereses."
+                body={c.solar.card}
                 href="#solar"
               />
               <RouteCard
                 icon={Building2}
-                tag="$3,634,800"
+                tag={c.lobby.tag}
                 title="Socio del Lobby"
-                body="36,348 m² con lobby, piscinas y eco-hotel ya operando, y un proyecto listo de 81 apartamentos en tres etapas."
+                body={c.lobby.card}
                 href="#lobby"
               />
               <RouteCard
                 icon={Landmark}
-                tag="$15,807,246"
+                tag={c.total.tag}
                 title="Compra total"
-                body="Ambos proyectos completos: 158,072 m² en una sola operación, con condiciones preferentes de pago."
+                body={c.total.card}
                 href="#total"
               />
             </div>
@@ -156,20 +163,8 @@ export default function PropuestaMontanitaPage() {
 
           {/* ===== A. SOLAR ===== */}
           <Route id="solar" eyebrow="Ruta A" title="Comprar un solar en la Lotización">
-            <Summary>
-              Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de
-              dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 36 cuotas sin
-              intereses.
-            </Summary>
-            <KV
-              rows={[
-                ['Solares disponibles', '88 de 109'],
-                ['Precio', '$100 / m²'],
-                ['Desde', `${formatCurrency(49084)} — solar A9, 490.84 m²`],
-                ['Plan de pago', '30% de entrada + saldo en hasta 36 cuotas al 0%'],
-                ['Título', 'Individual, inscrito en el Registro de la Propiedad de Santa Elena'],
-              ]}
-            />
+            <Summary>{c.solar.summary}</Summary>
+            <KV rows={c.solar.rows} />
             <Link to="/proyectos/montanita-view" className="mt-4 inline-block">
               <Button>Ver el mapa de solares</Button>
             </Link>
@@ -228,20 +223,8 @@ export default function PropuestaMontanitaPage() {
 
           {/* ===== B. LOBBY ===== */}
           <Route id="lobby" printBreak eyebrow="Ruta B" title="Socio o desarrollador del Lobby">
-            <Summary>
-              Un predio con el área social ya construida y operando — lobby, dos piscinas, jacuzzi,
-              restaurante, bar y eco-hotel — y un proyecto listo de 81 apartamentos de 151 m² en tres
-              etapas, con vista de 270° al océano y al bosque. Buscamos socios o un desarrollador para
-              ejecutarlo; el Lobby existente es la amenidad que diferencia cada apartamento.
-            </Summary>
-            <KV
-              rows={[
-                ['Superficie', `${m2(LOBBY_M2)} (29,090 m² útiles + 7,258 m² de vías y áreas verdes)`],
-                ['Valor del predio', `${formatCurrency(LOBBY_M2 * 100)} ($100 / m²)`],
-                ['Propiedad', 'Didier Triana — proyecto hermano de la Lotización, con convenio entre ambos'],
-                ['Modalidad', 'Sociedad para el desarrollo del proyecto o compra del predio'],
-              ]}
-            />
+            <Summary>{c.lobby.summary}</Summary>
+            <KV rows={c.lobby.rows} />
             <Gallery
               items={[
                 ['lobby-fachada', 'Lobby, fachada y piscina'],
@@ -310,7 +293,7 @@ export default function PropuestaMontanitaPage() {
                 escenario para ver cómo se mueven los resultados.
               </p>
               <div className="mt-5">
-                <MvStudy />
+                <MvStudy assumptions={c.study.scenarios} discount={c.study.discount} />
               </div>
             </div>
 
@@ -355,17 +338,8 @@ export default function PropuestaMontanitaPage() {
 
           {/* ===== C. COMPRA TOTAL ===== */}
           <Route id="total" printBreak eyebrow="Ruta C" title="Compra total de ambos proyectos">
-            <Summary>
-              La Lotización completa con sus 88 solares disponibles y el predio del Lobby, en una sola
-              operación: 158,072 m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya
-              ejecutados.
-            </Summary>
-            <KV
-              rows={[
-                ['Precio', `${formatCurrency(TOTAL_M2 * 100)} ($100 / m²)`],
-                ['Superficie', m2(TOTAL_M2)],
-              ]}
-            />
+            <Summary>{c.total.summary}</Summary>
+            <KV rows={c.total.rows} />
 
             <Detail title="Superficie incluida">
               <KV
@@ -382,13 +356,8 @@ export default function PropuestaMontanitaPage() {
             </Detail>
 
             <Detail title="Forma de pago — financiamiento directo sin intereses">
-              <KV
-                rows={[
-                  ['Reserva (10%) al firmar la promesa', formatCurrency(TOTAL_M2 * 100 * 0.1)],
-                  ['Saldo en 6 pagos semestrales de', formatCurrency((TOTAL_M2 * 100 * 0.9) / 6)],
-                ]}
-              />
-              <p className="mt-3">Cada semestre se garantiza con cheque de gerencia o carta de crédito.</p>
+              <KV rows={c.total.paymentRows} />
+              <p className="mt-3">{c.total.paymentNote}</p>
             </Detail>
 
             <Detail title="Infraestructura y estudios ya ejecutados">
@@ -410,30 +379,25 @@ export default function PropuestaMontanitaPage() {
           <section className="rounded-2xl bg-white p-6 ring-1 ring-black/5">
             <h2 className="font-serif text-2xl font-bold text-primary">El destino</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-primary/80">
-              <li>
-                80% de ocupación hotelera en Montañita en el feriado de mayo de 2026, según la Cámara de
-                Turismo de Santa Elena (
-                <a className="text-accent underline" target="_blank" rel="noreferrer" href="https://www.eluniverso.com/noticias/ecuador/intenso-sol-acompana-a-banistas-en-segundo-dia-de-feriado-en-santa-elena-50-de-ocupacion-en-salinas-y-80-en-montanita-nota/">El Universo</a>).
-              </li>
-              <li>
-                80% de ocupación hotelera provincial en el feriado de octubre de 2025 (
-                <a className="text-accent underline" target="_blank" rel="noreferrer" href="https://www.primicias.ec/sociedad/provincia-santa-elena-feriado-octubre-ocupacion-hotelera-paro-conaie-107098/">Primicias</a>).
-              </li>
-              <li>
-                Llegadas internacionales a Ecuador +17% en el primer semestre de 2025 frente a 2024, tras
-                una caída de 11.5% en 2024 (
-                <a className="text-accent underline" target="_blank" rel="noreferrer" href="https://www.eldiario.ec/ecuador/por-que-ecuador-no-atrae-mas-turistas-las-cifras-de-2025-que-explican-el-rezago-regional-04112025/">El Diario</a>).
-              </li>
+              {c.destination.map((d) => (
+                <li key={d.text}>
+                  {d.text}
+                  {d.url && (
+                    <>
+                      {' ('}
+                      <a className="text-accent underline" target="_blank" rel="noreferrer" href={d.url}>{d.source || 'fuente'}</a>
+                      {')'}
+                    </>
+                  )}
+                  .
+                </li>
+              ))}
             </ul>
-            <p className="mt-4 text-xs text-brand-gray">
-              Documento informativo. Los indicadores financieros provienen del estudio de factibilidad 2026,
-              con los supuestos y fuentes indicados, y no constituyen garantía de rentabilidad. Los documentos fuente están disponibles
-              para revisión en la reunión con un asesor.
-            </p>
+            <p className="mt-4 text-xs text-brand-gray">{c.disclaimer}</p>
           </section>
 
           <div className="flex flex-wrap justify-center gap-3 print:hidden">
-            <a href="https://wa.me/593997331251" target="_blank" rel="noreferrer">
+            <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noreferrer">
               <Button size="lg">Agendar una reunión</Button>
             </a>
             <Button size="lg" variant="outline" onClick={() => window.print()}>

@@ -150,7 +150,11 @@ export const STAGE_BASE = [
   { name: 'Manglar', units: 24, soft: (411_200 + 357_230) * 1.2 },
 ];
 
-export const APT_ASSUMPTIONS: Record<Scenario, { price: number; cost: number; unitsPerQuarter: number }> = {
+export interface AptAssumption { price: number; cost: number; unitsPerQuarter: number }
+export type AptAssumptions = Record<Scenario, AptAssumption>;
+
+/** Supuestos por defecto; el súper admin puede sobrescribirlos (SiteContent propuesta_mv). */
+export const APT_ASSUMPTIONS: AptAssumptions = {
   //         precio venta $/m²   costo construcción $/m²   ventas por trimestre
   pesimista: { price: 1_300, cost: 950, unitsPerQuarter: 2 },
   base: { price: 1_450, cost: 850, unitsPerQuarter: 3 },
@@ -161,8 +165,14 @@ export const APT_ASSUMPTIONS: Record<Scenario, { price: number; cost: number; un
 const BUILD_Q = 6;
 const ENTRY = 0.3;
 
-export function stageModel(stage: (typeof STAGE_BASE)[number], s: Scenario) {
-  const a = APT_ASSUMPTIONS[s];
+export function stageModel(
+  stage: (typeof STAGE_BASE)[number],
+  s: Scenario,
+  a: AptAssumption = APT_ASSUMPTIONS[s],
+  discount: number = DISCOUNT,
+) {
+  // Valores inválidos (0, vacío) desde el editor no deben romper el cálculo.
+  a = { price: a.price || 1, cost: a.cost || 0, unitsPerQuarter: Math.max(1, Math.round(a.unitsPerQuarter) || 1) };
   const unitPrice = APT_M2 * a.price;
   const build = stage.units * APT_M2 * a.cost;
   const quarters = Math.max(BUILD_Q + 1, Math.ceil(stage.units / a.unitsPerQuarter)) + 1;
@@ -178,7 +188,7 @@ export function stageModel(stage: (typeof STAGE_BASE)[number], s: Scenario) {
     // Saldo al entregar: en la entrega si ya vendida, o al firmar si se vende después.
     flows[Math.max(q, BUILD_Q + 1)] += n * unitPrice * (1 - ENTRY);
   }
-  const rq = perPeriod(DISCOUNT, 4);
+  const rq = perPeriod(discount, 4);
   const revenue = stage.units * unitPrice;
   const cost = build + stage.soft;
   const qIrr = irr(flows);
