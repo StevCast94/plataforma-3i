@@ -54,7 +54,7 @@ export function MvStudy() {
         <Kpi l="Ventas totales" v={short(tot.revenue)} />
         <Kpi l="Costo total" v={short(tot.cost)} />
         <Kpi l="Margen" v={pct((tot.revenue - tot.cost) / tot.revenue)} />
-        <Kpi l={`VAN al ${DISCOUNT * 100}%`} v={short(tot.npv)} />
+        <Kpi l={`VAN al ${Math.round(DISCOUNT * 100)}%`} v={short(tot.npv)} />
       </div>
 
       <div className="overflow-x-auto rounded-xl ring-1 ring-black/5">
@@ -118,7 +118,7 @@ export function MvStudy() {
           <Assumption l="Precio de venta" v={`$${a.price.toLocaleString('en-US')} / m² (${money(a.price * APT_M2)} por apto de ${APT_M2} m²)`} src={[MV_SOURCES.plusvalia, MV_SOURCES.mls]} />
           <Assumption l="Costo de construcción" v={`$${a.cost} / m²`} src={[MV_SOURCES.costo]} />
           <Assumption l="Ritmo de ventas" v={`${a.unitsPerQuarter} apartamentos por trimestre`} src={[MV_SOURCES.plusvalia]} />
-          <Assumption l="Tasa de descuento" v={`${DISCOUNT * 100}% anual (bono EE.UU. + riesgo país + prima del proyecto)`} src={[MV_SOURCES.riesgo]} />
+          <Assumption l="Tasa de descuento" v={`${Math.round(DISCOUNT * 100)}% anual (bono EE.UU. + riesgo país + prima del proyecto)`} src={[MV_SOURCES.riesgo]} />
           <Assumption l="Estudios, diseño, permisos y complementarios" v="Montos del informe original actualizados +20% por inflación de construcción 2020–2026" src={[MV_SOURCES.costo]} />
           <Assumption l="Forma de pago del comprador" v="30% de entrada al reservar y 70% a la entrega; obra de 6 trimestres" src={[]} />
         </div>
