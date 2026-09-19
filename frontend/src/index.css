@@ -149,3 +149,18 @@ h1, h2, h3, h4 {
   );
   animation: g3i-shimmer 1.6s infinite;
 }
+
+/* ---------- Impresión / Guardar como PDF (A4) ---------- */
+@media print {
+  @page { size: A4; margin: 16mm 14mm 18mm; }
+  html, body { background: #fff !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .print-doc main { padding-top: 0 !important; }
+  .print-doc section, .print-doc details { box-shadow: none !important; }
+  .print-doc details > summary span { display: none !important; }
+  .print-doc h2, .print-doc h3, .print-doc h4, .print-doc summary { break-after: avoid; }
+  .print-doc figure, .print-doc table, .print-doc tr, .print-doc dl > div, .print-doc svg, .print-doc .avoid-break { break-inside: avoid; }
+  .print-doc img { max-height: 120mm; object-fit: contain; }
+  .print-doc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; word-break: break-all; color: #555; }
+  .print-doc .print-break { break-before: page; }
+}

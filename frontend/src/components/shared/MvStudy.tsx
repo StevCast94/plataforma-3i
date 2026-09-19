@@ -36,8 +36,8 @@ export function MvStudy() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-brand-gray">Escenario</p>
-        <div className="inline-flex rounded-full bg-light p-1 ring-1 ring-black/10">
+        <p className="text-sm text-brand-gray">Escenario<span className="hidden font-semibold capitalize text-primary print:inline">: {sc}</span></p>
+        <div className="inline-flex rounded-full bg-light p-1 ring-1 ring-black/10 print:hidden">
           {SCENARIOS.map((s) => (
             <button
               key={s}
@@ -89,7 +89,35 @@ export function MvStudy() {
         requiere cada etapa antes de recuperarse.
       </p>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      {/* Solo al imprimir: comparativo de los tres escenarios */}
+      <div className="hidden print:block">
+        <p className="mb-2 text-sm font-semibold text-primary">Comparativo de escenarios</p>
+        <table className="w-full text-left text-sm">
+          <thead className="bg-primary/5 text-primary">
+            <tr>{['Escenario', 'Precio / m²', 'Costo / m²', 'Ventas/trim.', 'Ventas', 'Costo', 'Margen', 'VAN'].map((h) => <th key={h} className="px-2 py-1.5 font-semibold">{h}</th>)}</tr>
+          </thead>
+          <tbody>
+            {SCENARIOS.map((s) => {
+              const r = all[s].reduce((acc, x) => ({ rev: acc.rev + x.revenue, cost: acc.cost + x.cost, npv: acc.npv + x.npv }), { rev: 0, cost: 0, npv: 0 });
+              const as = APT_ASSUMPTIONS[s];
+              return (
+                <tr key={s} className="border-t border-black/5 capitalize">
+                  <td className="px-2 py-1.5 font-semibold">{s}</td>
+                  <td className="px-2 py-1.5">${as.price.toLocaleString('en-US')}</td>
+                  <td className="px-2 py-1.5">${as.cost}</td>
+                  <td className="px-2 py-1.5">{as.unitsPerQuarter}</td>
+                  <td className="px-2 py-1.5">{short(r.rev)}</td>
+                  <td className="px-2 py-1.5">{short(r.cost)}</td>
+                  <td className="px-2 py-1.5">{pct((r.rev - r.cost) / r.rev)}</td>
+                  <td className="px-2 py-1.5">{short(r.npv)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2 print:grid-cols-1">
         <ChartCard title="Flujo de caja acumulado por etapa (trimestres)">
           <LineChart
             series={stages.map((s, i) => ({ name: s.name, color: COLORS[i], points: cumulative(s.flows) }))}

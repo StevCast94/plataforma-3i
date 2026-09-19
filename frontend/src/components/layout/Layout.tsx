@@ -24,15 +24,19 @@ export function Layout() {
   return (
     <div className="flex min-h-screen flex-col">
       <ScrollToTop />
-      <ReferralBanner />
-      <Navbar />
+      <div className="print:hidden">
+        <ReferralBanner />
+        <Navbar />
+      </div>
       <main className="flex-1">
         <Suspense fallback={<BrandLoader />}>
           <Outlet />
         </Suspense>
       </main>
-      <Footer />
-      <WhatsAppFloat />
+      <div className="print:hidden">
+        <Footer />
+        <WhatsAppFloat />
+      </div>
     </div>
   );
 }

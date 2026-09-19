@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Building2, Landmark, ChevronRight, Printer, Lock } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
@@ -70,8 +70,29 @@ export default function PropuestaMontanitaPage() {
     }
   });
 
+  // Al imprimir (botón o Ctrl+P) se despliegan todos los detalles técnicos y
+  // al terminar se restaura lo que el usuario tenía abierto.
+  useEffect(() => {
+    let prev: boolean[] = [];
+    const before = () => {
+      const all = [...document.querySelectorAll('.print-doc details')] as HTMLDetailsElement[];
+      prev = all.map((d) => d.open);
+      all.forEach((d) => (d.open = true));
+    };
+    const after = () => {
+      const all = [...document.querySelectorAll('.print-doc details')] as HTMLDetailsElement[];
+      all.forEach((d, i) => (d.open = prev[i] ?? false));
+    };
+    window.addEventListener('beforeprint', before);
+    window.addEventListener('afterprint', after);
+    return () => {
+      window.removeEventListener('beforeprint', before);
+      window.removeEventListener('afterprint', after);
+    };
+  }, []);
+
   return (
-    <div className="bg-light">
+    <div className="print-doc bg-light">
       <Seo
         title="Propuesta exclusiva — Montañita View"
         description="Tres formas de invertir en Montañita View: un solar, sociedad en el Lobby o la compra total."
@@ -206,7 +227,7 @@ export default function PropuestaMontanitaPage() {
           </Route>
 
           {/* ===== B. LOBBY ===== */}
-          <Route id="lobby" eyebrow="Ruta B" title="Socio o desarrollador del Lobby">
+          <Route id="lobby" printBreak eyebrow="Ruta B" title="Socio o desarrollador del Lobby">
             <Summary>
               Un predio con el área social ya construida y operando — lobby, dos piscinas, jacuzzi,
               restaurante, bar y eco-hotel — y un proyecto listo de 81 apartamentos de 151 m² en tres
@@ -333,7 +354,7 @@ export default function PropuestaMontanitaPage() {
           </Route>
 
           {/* ===== C. COMPRA TOTAL ===== */}
-          <Route id="total" eyebrow="Ruta C" title="Compra total de ambos proyectos">
+          <Route id="total" printBreak eyebrow="Ruta C" title="Compra total de ambos proyectos">
             <Summary>
               La Lotización completa con sus 88 solares disponibles y el predio del Lobby, en una sola
               operación: 158,072 m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya
@@ -499,9 +520,9 @@ function RouteCard({ icon: Icon, tag, title, body, href }: { icon: typeof MapPin
   );
 }
 
-function Route({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: ReactNode }) {
+function Route({ id, eyebrow, title, children, printBreak }: { id: string; eyebrow: string; title: string; children: ReactNode; printBreak?: boolean }) {
   return (
-    <section id={id} className="scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-10">
+    <section id={id} className={`${printBreak ? 'print-break ' : ''}scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-10`}>
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{eyebrow}</p>
       <h2 className="mt-2 font-serif text-3xl font-bold text-primary">{title}</h2>
       <div className="mt-5 space-y-4">{children}</div>
