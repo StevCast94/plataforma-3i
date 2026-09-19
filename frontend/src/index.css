@@ -151,27 +151,28 @@ h1, h2, h3, h4 {
 }
 
 /* ---------- Impresión / Guardar como PDF (A4) ---------- */
+/* Conserva la identidad visual (fondo crema, tarjetas blancas, dorado y azul);
+   solo ajusta tamaños, saltos de página y lo que no tiene sentido en papel. */
 @media print {
-  @page { size: A4; margin: 16mm 14mm 18mm; }
-  html, body { background: #fff !important; }
+  /* @page background pinta también los márgenes de cada hoja (Chrome/Edge). */
+  @page { size: A4; margin: 14mm 13mm 16mm; background: #f5f0e8; }
+  @page :first { margin-top: 0; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .print-doc main { padding-top: 0 !important; }
-  .print-doc section, .print-doc details { box-shadow: none !important; }
+  html, body { background: var(--color-light) !important; }
+  .print-doc main { max-width: none !important; padding: 8mm 0 0 !important; }
+  .print-doc header { margin: 0 -13mm; }
+  .print-doc header > div { padding: 22mm 13mm 16mm !important; }
+  .print-doc section[id] { padding: 9mm !important; box-shadow: none !important; border-radius: 14px !important; }
+  .print-doc .print-break { break-before: page; }
+  .print-doc details { box-shadow: none !important; }
   .print-doc details > summary span { display: none !important; }
   .print-doc h2, .print-doc h3, .print-doc h4, .print-doc summary { break-after: avoid; }
   .print-doc figure, .print-doc table, .print-doc tr, .print-doc dl > div, .print-doc svg, .print-doc .avoid-break { break-inside: avoid; }
-  .print-doc img { max-height: 120mm; object-fit: contain; }
-  .print-doc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; word-break: break-all; color: #555; }
-  .print-doc .print-break { break-before: page; }
-  /* Página limpia: fondo blanco, sin márgenes laterales extra ni sombras */
-  .print-doc, .print-doc .bg-light { background: #fff !important; }
-  .print-doc main { padding-left: 0 !important; padding-right: 0 !important; max-width: none !important; }
-  .print-doc main > section, .print-doc section[id] { padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; --tw-ring-shadow: 0 0 #0000 !important; }
-  .print-doc details { background: #fff !important; border: 1px solid #e5e5e5; }
+  .print-doc img { max-height: 120mm; }
   /* Tablas completas, sin scroll horizontal */
   .print-doc .overflow-x-auto { overflow: visible !important; }
   .print-doc table { font-size: 8pt; width: 100%; }
   .print-doc th, .print-doc td { white-space: normal !important; padding: 3px 5px !important; }
-  .print-doc a[href^="http"]::after { font-size: 7pt; }
-  .print-doc .fixed { display: none !important; }
+  /* Fuentes verificables: la URL completa junto al enlace */
+  .print-doc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 7pt; word-break: break-all; color: #666; }
 }

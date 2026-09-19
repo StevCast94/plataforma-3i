@@ -90,6 +90,7 @@ export default function PropuestaMontanitaPage() {
       const all = [...document.querySelectorAll('.print-doc details')] as HTMLDetailsElement[];
       prev = all.map((d) => d.open);
       all.forEach((d) => (d.open = true));
+      document.querySelectorAll<HTMLImageElement>('.print-doc img').forEach((i) => (i.loading = 'eager'));
     };
     const after = () => {
       const all = [...document.querySelectorAll('.print-doc details')] as HTMLDetailsElement[];
@@ -102,6 +103,27 @@ export default function PropuestaMontanitaPage() {
       window.removeEventListener('afterprint', after);
     };
   }, []);
+
+  // "Guardar como PDF": despliega todo y espera a que carguen TODAS las fotos
+  // (las de los bloques cerrados son diferidas) antes de abrir la impresión.
+  async function printPdf() {
+    document.querySelectorAll<HTMLDetailsElement>('.print-doc details').forEach((d) => (d.open = true));
+    const imgs = [...document.querySelectorAll<HTMLImageElement>('.print-doc img')];
+    imgs.forEach((i) => (i.loading = 'eager'));
+    await Promise.all(
+      imgs.map((i) =>
+        i.complete && i.naturalWidth > 0
+          ? Promise.resolve()
+          : new Promise<void>((r) => {
+              i.addEventListener('load', () => r(), { once: true });
+              i.addEventListener('error', () => r(), { once: true });
+              setTimeout(r, 8000);
+            }),
+      ),
+    );
+    await Promise.all(imgs.map((i) => i.decode?.().catch(() => {})));
+    window.print();
+  }
 
   return (
     <div className="print-doc bg-light">
@@ -400,7 +422,7 @@ export default function PropuestaMontanitaPage() {
             <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noreferrer">
               <Button size="lg">Agendar una reunión</Button>
             </a>
-            <Button size="lg" variant="outline" onClick={() => window.print()}>
+            <Button size="lg" variant="outline" onClick={printPdf}>
               <Printer className="h-4 w-4" /> Guardar como PDF
             </Button>
           </div>
