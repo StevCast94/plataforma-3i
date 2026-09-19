@@ -362,7 +362,7 @@ export default function PropuestaMontanitaPage() {
 
 function Gate({ onUnlock }: { onUnlock: () => void }) {
   const { toast } = useToast();
-  const [form, setForm] = useState({ name: '', email: '', phone: '', interest: 'Comprar un solar' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [sending, setSending] = useState(false);
 
   async function submit(e: React.FormEvent) {
@@ -374,7 +374,7 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
         email: form.email,
         phone: form.phone,
         source: 'propuesta:montanita-view',
-        message: `Solicitó la propuesta exclusiva de Montañita View. Interés: ${form.interest}.`,
+        message: `Solicitó la propuesta exclusiva de Montañita View.`,
       });
       try {
         localStorage.setItem(UNLOCK_KEY, '1');
@@ -403,11 +403,6 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
         <input required placeholder="Nombre completo" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
         <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
         <input required placeholder="WhatsApp" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-        <select value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm">
-          <option>Comprar un solar</option>
-          <option>Socio del Lobby</option>
-          <option>Compra total</option>
-        </select>
         <Button type="submit" className="w-full" disabled={sending}>
           {sending ? 'Enviando…' : 'Ver la propuesta'}
         </Button>
