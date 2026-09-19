@@ -62,7 +62,10 @@ export default function ProjectDetailPage() {
   // "Quiero invertir" lleva directo a solicitar la compra en vez de abrir el formulario genérico.
   const investProduct = project.products?.[0];
   const goInvest = () => {
-    if (investProduct) navigate(`/tienda/${investProduct.slug}`);
+    // Si hay mapa de solares, el precio real está ahí (por solar), no en un producto genérico.
+    const map = document.getElementById('mapa-solares');
+    if (map) map.scrollIntoView({ behavior: 'smooth' });
+    else if (investProduct) navigate(`/tienda/${investProduct.slug}`);
     else setOpen(true);
   };
 
@@ -236,11 +239,6 @@ export default function ProjectDetailPage() {
         </div>
       </section>
 
-      {/* 4.5 BROCHURE DIGITAL — proyectos con showBrochure activo desde el admin */}
-      {project.showBrochure && (
-        <BrochureDigital project={project} onRequestInfo={() => setOpen(true)} />
-      )}
-
       {/* 4.6 MAPA DE SOLARES — solo aparece si el proyecto tiene lotes cargados */}
       <LotMap projectSlug={project.slug} projectName={project.name} />
 
@@ -253,6 +251,11 @@ export default function ProjectDetailPage() {
             Ver la propuesta completa de inversión →
           </Link>
         </div>
+      )}
+
+      {/* 4.5 BROCHURE DIGITAL — proyectos con showBrochure activo desde el admin */}
+      {project.showBrochure && (
+        <BrochureDigital project={project} onRequestInfo={() => setOpen(true)} />
       )}
 
       {/* 5. CTA */}
