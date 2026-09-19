@@ -72,7 +72,7 @@ export default function App() {
       <ToastProvider>
         <AuthProvider>
           <AdminAuthProvider>
-          <InstallAppBanner />
+          <div className="print:hidden"><InstallAppBanner /></div>
           <HashRouter>
             <Routes>
               {/* Sitio público con navbar/footer */}

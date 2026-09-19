@@ -163,4 +163,15 @@ h1, h2, h3, h4 {
   .print-doc img { max-height: 120mm; object-fit: contain; }
   .print-doc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; word-break: break-all; color: #555; }
   .print-doc .print-break { break-before: page; }
+  /* Página limpia: fondo blanco, sin márgenes laterales extra ni sombras */
+  .print-doc, .print-doc .bg-light { background: #fff !important; }
+  .print-doc main { padding-left: 0 !important; padding-right: 0 !important; max-width: none !important; }
+  .print-doc main > section, .print-doc section[id] { padding: 0 !important; border-radius: 0 !important; box-shadow: none !important; --tw-ring-shadow: 0 0 #0000 !important; }
+  .print-doc details { background: #fff !important; border: 1px solid #e5e5e5; }
+  /* Tablas completas, sin scroll horizontal */
+  .print-doc .overflow-x-auto { overflow: visible !important; }
+  .print-doc table { font-size: 8pt; width: 100%; }
+  .print-doc th, .print-doc td { white-space: normal !important; padding: 3px 5px !important; }
+  .print-doc a[href^="http"]::after { font-size: 7pt; }
+  .print-doc .fixed { display: none !important; }
 }
