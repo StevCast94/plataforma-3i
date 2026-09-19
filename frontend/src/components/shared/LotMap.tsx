@@ -310,13 +310,15 @@ const num = (n: number, d = 2) => n.toLocaleString('en-US', { minimumFractionDig
 
 /** Ficha técnica del solar: identificación, linderos y coordenadas (fuente GEO 3i). */
 function LotSheet({ lot }: { lot: PublicLot }) {
-  const d = lot.details;
+  const note = lot.details?.cadastralNote;
+  // Solo hay geometría cuando el solar está digitalizado en GEO 3i.
+  const d = lot.details?.linderos ? lot.details : null;
   return (
     <div className="mt-4 space-y-3 border-t border-black/5 pt-4 text-sm">
       <p className="text-xs font-semibold uppercase tracking-wider text-secondary">Ficha técnica</p>
       <dl className="space-y-2">
         <Row label="Clave catastral" value={lot.cadastralCode ?? 'Por asignar'} />
-        {d?.cadastralNote && <p className="-mt-1 text-right text-[11px] text-brand-gray">{d.cadastralNote}</p>}
+        {note && <p className="-mt-1 text-right text-[11px] text-brand-gray">{note}</p>}
         <Row label="Área" value={fmtArea(lot.areaM2)} />
         {d && <Row label="Perímetro" value={`${num(d.perimeterM)} m`} />}
         {d && <Row label="Lados" value={String(d.sides.length)} />}
