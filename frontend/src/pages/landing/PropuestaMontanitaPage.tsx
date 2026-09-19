@@ -48,12 +48,16 @@ const LAND_USE = [
   { uso: 'Área de afectación', m2: 6865.55, pct: 2.66 },
 ];
 
-const LOBBY_PROJECTS = [
-  { name: 'Hotel', units: '104 habitaciones (92 estándar + 12 loft)', cost: 7_500_000, n: 104 },
-  { name: 'Etapa Arrecife', units: '18 apartamentos de 151 m²', cost: 1_850_000, n: 18 },
-  { name: 'Etapa Coral', units: '39 apartamentos de 151 m²', cost: 4_300_000, n: 39 },
-  { name: 'Etapa Manglar', units: '24 apartamentos de 151 m²', cost: 2_570_000, n: 24 },
+// Datos de los estudios de factibilidad (Informe Montañita View). TIR = tasa a la que el
+// perfil del VAN de cada estudio cruza cero (el texto del informe traía 24% y 42% para Coral
+// y Manglar, inconsistentes con sus propios perfiles de 17% y 35%).
+const STAGES = [
+  { name: 'Arrecife', units: 18, pre: 279_350, build: 1_326_450, extra: 244_200, total: 1_850_000, van: 150_894.12, tir: 31, bc: '1.46', pri: 11, prid: 15.02, render: 'render-arrecife', chart: 'g-arrecife', pages: '17–19' },
+  { name: 'Coral', units: 39, pre: 825_600, build: 2_906_800, extra: 567_600, total: 4_300_000, van: 206_663.97, tir: 17, bc: '1.38', pri: 16.7, prid: 19.14, render: 'render-coral', chart: 'g-coral', pages: '20–21' },
+  { name: 'Manglar', units: 24, pre: 411_200, build: 1_801_570, extra: 357_230, total: 2_570_000, van: 286_894.92, tir: 35, bc: '2.15', pri: 9.1, prid: 17.06, render: 'render-manglar', chart: 'g-manglar', pages: '22–23' },
 ];
+
+const IMG = '/images/propuesta-mv';
 
 const m2 = (n: number) => `${n.toLocaleString('en-US', { maximumFractionDigits: 2 })} m²`;
 
@@ -75,8 +79,10 @@ export default function PropuestaMontanitaPage() {
       />
 
       {/* HERO */}
-      <header className="bg-primary text-white">
-        <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+      <header className="relative isolate overflow-hidden bg-primary text-white">
+        <img src={`${IMG}/terraza-vista-mar.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-50" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/85 to-black/30" />
+        <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
             Propuesta exclusiva · Documento privado
           </p>
@@ -114,7 +120,7 @@ export default function PropuestaMontanitaPage() {
                 icon={Building2}
                 tag="$3,634,800"
                 title="Socio del Lobby"
-                body="36,348 m² con lobby, piscinas y eco-hotel ya operando, y proyecto aprobado para hotel y 81 apartamentos."
+                body="36,348 m² con lobby, piscinas y eco-hotel ya operando, y proyecto con estudios de factibilidad para hotel y 81 apartamentos."
                 href="#lobby"
               />
               <RouteCard
@@ -202,10 +208,10 @@ export default function PropuestaMontanitaPage() {
           {/* ===== B. LOBBY ===== */}
           <Route id="lobby" eyebrow="Ruta B" title="Socio o desarrollador del Lobby">
             <Summary>
-              El predio del Lobby ya tiene operando un área social con piscinas, jacuzzi, bar y un
-              eco-hotel de seis habitaciones en buses reciclados. Sobre él hay un proyecto completo para
-              un hotel de 104 habitaciones y 81 apartamentos en tres etapas. Buscamos socios o un
-              desarrollador para llevarlo a término.
+              El Lobby ya opera: área social con dos piscinas, jacuzzi, restaurante, bar y un eco-hotel
+              de seis habitaciones, con vista de 270° al océano y al bosque. Sobre el predio está
+              proyectado un hotel de 104 habitaciones y 81 apartamentos en tres etapas, con estudios de
+              factibilidad completos. Buscamos socios o un desarrollador para ejecutarlo.
             </Summary>
             <KV
               rows={[
@@ -215,41 +221,147 @@ export default function PropuestaMontanitaPage() {
                 ['Modalidad', 'Sociedad para el desarrollo del proyecto o compra del predio'],
               ]}
             />
+            <Gallery
+              items={[
+                ['lobby-fachada', 'Lobby, fachada y piscina'],
+                ['vista-desde-lobby', 'Vista desde el Lobby hacia Manglaralto y Montañita'],
+                ['lobby-sala', 'Sala del Lobby'],
+                ['restaurante', 'Restaurante con vista al bosque'],
+                ['terraza-vista-mar', 'Terraza con vista al mar'],
+                ['lobby-pergola', 'Acceso con pérgola'],
+              ]}
+            />
+
+            <Detail title="Ubicación">
+              <p>
+                Sector alto de la parroquia Manglaralto, sobre la Ruta del Spondylus, a 3 km del centro
+                de Montañita. El entorno combina el filo costero con un interior rural; el bosque
+                protector cubre cerca del 40% del territorio.
+              </p>
+              <Figure src="ubicacion-lobby" caption="Polígono del predio del Lobby (Google Earth, 27-sep-2023)" />
+              <p className="mt-3">
+                Servicios en el sector: energía y alumbrado público, agua potable, Ruta del Spondylus
+                asfaltada y vía Manglaralto–Dos Mangas. A pocos minutos: Hospital de Manglaralto,
+                gasolinera, reservorios de la Junta de Agua y hosterías de Montañita.
+              </p>
+              <Source>Informe Montañita View, Grupo 3i (págs. 4–5); imagen satelital Google Earth.</Source>
+            </Detail>
 
             <Detail title="Lo que ya está construido">
               <ul className="list-disc space-y-1 pl-5">
-                <li>Lobby en dos plantas: vestíbulo, restaurante con cocina y bodega, terraza con bar, solárium y oficina.</li>
-                <li>Dos piscinas y un jacuzzi con vista al mar y al bosque.</li>
-                <li>Eco-hotel: seis buses reciclados adaptados como habitaciones, cada una con terraza y baño.</li>
-                <li>Garita de acceso, alumbrado privado, red de agua potable y red eléctrica.</li>
-                <li>Transformador trifásico de 75 kVA y monofásico de 50 kVA.</li>
+                <li>
+                  <b>Lobby en dos plantas.</b> Planta baja: jardín, vestíbulo, área de comidas con dos
+                  baños, cocina abierta con bodega, dos piscinas y un jacuzzi. Planta alta: terraza
+                  cubierta con dos baños, bar, oficina administrativa y solárium.
+                </li>
+                <li>
+                  <b>Eco-hotel:</b> seis buses reciclados adaptados como habitaciones, cada uno con
+                  terraza y baño completo, cubiertos con caña y policarbonato.
+                </li>
+                <li>
+                  <b>Infraestructura:</b> garita de acceso, alumbrado privado, red de agua potable, red
+                  eléctrica, transformador trifásico de 75 kVA y monofásico de 50 kVA.
+                </li>
+                <li>
+                  <b>Construcción:</b> estructura mixta de hormigón y caña, cisterna de hormigón armado
+                  impermeabilizada, muros de contención en mampostería estructural, piscinas de hormigón
+                  armado con lámina de PVC y pisos exteriores de hormigón y adoquín.
+                </li>
               </ul>
+              <Gallery
+                items={[
+                  ['eco-hotel-buses', 'Eco-hotel: habitaciones en buses reciclados'],
+                  ['eco-hotel-habitacion', 'Habitación del eco-hotel'],
+                  ['eco-hotel-hamaca', 'Terraza de habitación'],
+                  ['eco-hotel-bano', 'Baño de habitación'],
+                  ['vista-eco-hotel', 'Vista desde el eco-hotel'],
+                  ['bar', 'Bar del Lobby'],
+                ]}
+              />
+              <Source>Informe Montañita View, Grupo 3i (págs. 5–13).</Source>
             </Detail>
 
-            <Detail title="Proyecto de desarrollo">
+            <Detail title="Plan maestro del complejo">
+              <Figure src="masterplan" caption="Plan maestro: hotel, lobby, módulos Arrecife, Coral y Manglar, malecón y garita" />
               <Table
-                head={['Componente', 'Unidades', 'Inversión', 'Costo por unidad']}
+                head={['Componente', 'Unidades', 'Área', 'Inversión']}
                 rows={[
-                  ...LOBBY_PROJECTS.map((p) => [p.name, p.units, formatCurrency(p.cost), formatCurrency(p.cost / p.n)]),
-                  ['Total', '104 hab. + 81 aptos', formatCurrency(LOBBY_PROJECTS.reduce((s, p) => s + p.cost, 0)), ''],
+                  ['Hotel', '104 habitaciones', '—', formatCurrency(7_500_000)],
+                  ...STAGES.map((s) => [`Etapa ${s.name}`, `${s.units} apartamentos de 151 m²`, m2(s.units * 151), formatCurrency(s.total)]),
+                  ['Total', '104 hab. + 81 aptos', m2(81 * 151), formatCurrency(7_500_000 + STAGES.reduce((a, s) => a + s.total, 0))],
                 ]}
               />
               <p className="mt-3">Montos de construcción del proyecto; no incluyen el valor del predio.</p>
-              <Source>Estudios de factibilidad del Hotel y de las etapas Arrecife, Coral y Manglar — Montañita View.</Source>
+              <Source>Informe Montañita View, Grupo 3i (págs. 8, 15, 19, 21 y 23).</Source>
             </Detail>
 
-            <Detail title="Indicadores financieros del hotel">
+            <Detail title="Hotel — 104 habitaciones">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Figure src="render-hotel-torre" caption="Torre del hotel" />
+                <Figure src="render-hotel-acceso" caption="Acceso vehicular al hotel" />
+              </div>
+              <p className="mt-3">
+                92 habitaciones estándar (algunas con hidromasaje; dos camas personales o una
+                matrimonial) y 12 lofts sin divisiones interiores, con zonas comunes y recreativas.
+              </p>
+              <h4 className="mt-4 font-semibold text-primary">Inversión</h4>
               <KV
                 rows={[
-                  ['Inversión', formatCurrency(7_500_000)],
-                  ['Flujo operativo anual', formatCurrency(2_140_000)],
-                  ['VAN (tasa de descuento 12%)', formatCurrency(3_270_307.67)],
-                  ['TIR (5 años, con valor residual de $5.36M)', '25%'],
-                  ['Recuperación de la inversión', '3.5 años'],
+                  ['Construcción', formatCurrency(6_840_000)],
+                  ['Equipamiento de habitaciones', formatCurrency(460_000)],
+                  ['Otros equipamientos', formatCurrency(200_000)],
+                  ['Total', formatCurrency(7_500_000)],
                 ]}
               />
-              <Source>Estudio de factibilidad del Hotel Montañita View; recuperación calculada con sus flujos ($7.5M ÷ $2.14M anuales).</Source>
+              <h4 className="mt-4 font-semibold text-primary">Indicadores financieros (tasa de descuento 12%)</h4>
+              <KV
+                rows={[
+                  ['VAN', formatCurrency(3_270_307.67)],
+                  ['TIR', '25%'],
+                  ['Razón beneficio / costo', '1.44'],
+                  ['Recuperación de la inversión (descontada)', '4.23 años'],
+                  ['Flujo de caja anual (años 1–4)', formatCurrency(2_144_072)],
+                  ['Flujo del año 5 (incluye valor residual de los activos)', formatCurrency(7_504_072)],
+                ]}
+              />
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <Figure src="g-hotel-recuperacion" caption="Recuperación de la inversión: flujos descontados acumulados" />
+                <Figure src="g-hotel-van" caption="Perfil del VAN: cruza cero en 25% (TIR)" />
+              </div>
+              <Source>Estudio de factibilidad del Hotel, Informe Montañita View (págs. 14–16).</Source>
             </Detail>
+
+            {STAGES.map((s) => (
+              <Detail key={s.name} title={`Etapa ${s.name} — ${s.units} apartamentos`}>
+                <Figure src={s.render} caption={`Etapa ${s.name}`} />
+                <p className="mt-3">
+                  {s.units} apartamentos de 151 m² en serie de terrazas ({m2(s.units * 151)} en total).
+                  Cada unidad: terraza con jacuzzi privado y BBQ, habitación principal con walk-in
+                  closet, habitación estándar, sala, cocina semi-integral, comedor y baño social, con
+                  domótica y amoblado.
+                </p>
+                <h4 className="mt-4 font-semibold text-primary">Inversión</h4>
+                <KV
+                  rows={[
+                    ['Inversión preliminar', formatCurrency(s.pre)],
+                    ['Construcción y urbanización', formatCurrency(s.build)],
+                    ['Complementarios', formatCurrency(s.extra)],
+                    ['Total', formatCurrency(s.total)],
+                  ]}
+                />
+                <h4 className="mt-4 font-semibold text-primary">Indicadores financieros (tasa de descuento 12%)</h4>
+                <KV
+                  rows={[
+                    ['VAN', formatCurrency(s.van)],
+                    ['TIR', `${s.tir}%`],
+                    ['Razón beneficio / costo', s.bc],
+                    ['Recuperación de la inversión', `${s.pri} meses (${s.prid} meses descontada)`],
+                  ]}
+                />
+                <Figure src={s.chart} caption="Flujos de caja mensuales, recuperación descontada, razón beneficio/costo y perfil del VAN" />
+                <Source>Estudio de factibilidad de la Etapa {s.name}, Informe Montañita View (págs. {s.pages}).</Source>
+              </Detail>
+            ))}
           </Route>
 
           {/* ===== C. COMPRA TOTAL ===== */}
@@ -482,4 +594,29 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
 
 function Source({ children }: { children: ReactNode }) {
   return <p className="mt-2 text-xs text-brand-gray">Fuente: {children}</p>;
+}
+
+function Figure({ src, caption }: { src: string; caption: string }) {
+  const url = `${IMG}/${src}.jpg`;
+  return (
+    <figure className="mt-3">
+      <a href={url} target="_blank" rel="noreferrer">
+        <img src={url} alt={caption} loading="lazy" className="w-full rounded-xl bg-white object-cover ring-1 ring-black/5" />
+      </a>
+      <figcaption className="mt-1 text-xs text-brand-gray">{caption}</figcaption>
+    </figure>
+  );
+}
+
+function Gallery({ items }: { items: [string, string][] }) {
+  return (
+    <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+      {items.map(([src, caption]) => (
+        <a key={src} href={`${IMG}/${src}.jpg`} target="_blank" rel="noreferrer" className="group relative block aspect-[4/3] overflow-hidden rounded-xl">
+          <img src={`${IMG}/${src}.jpg`} alt={caption} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
+          <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-[11px] text-white">{caption}</span>
+        </a>
+      ))}
+    </div>
+  );
 }
