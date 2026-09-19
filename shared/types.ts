@@ -93,6 +93,8 @@ export interface LotDetails {
   centroidUTM: { norte: number; este: number };
   /** Nota sobre la clave catastral (p. ej. clave del solar matriz). */
   cadastralNote?: string;
+  /** Aviso cuando el área publicada y la de la geometría difieren. */
+  areaNote?: string;
 }
 
 /** Vista de administrador — incluye datos privados y comerciales. */
