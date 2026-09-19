@@ -72,10 +72,17 @@ projectRoutes.get('/:slug/lots', async (req, res) => {
     }
     const lots = await prisma.lot.findMany({
       where: { projectId: project.id, active: true },
-      select: publicLotSelect,
+      select: { ...publicLotSelect, notes: true },
       orderBy: [{ block: 'asc' }, { code: 'asc' }],
     });
-    res.json(lots);
+    // `notes` es privado: solo se usa aquí para derivar si la geometría es
+    // aproximada (lote sin levantamiento en GEO 3i) y NO se envía al cliente.
+    res.json(
+      lots.map(({ notes, ...lot }) => ({
+        ...lot,
+        approximateGeometry: !!notes?.includes('Geometría aproximada'),
+      })),
+    );
   } catch (err) {
     console.error('GET /api/projects/:slug/lots', err);
     res.status(500).json({ error: 'Error al obtener los lotes' });

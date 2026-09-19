@@ -11,6 +11,7 @@ import { ProjectCard } from '@/components/shared/ProjectCard';
 import { ContactForm } from '@/components/shared/ContactForm';
 import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { BrochureDigital } from '@/components/shared/BrochureDigital';
+import { LotMap } from '@/components/shared/LotMap';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { DetailSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -224,7 +225,11 @@ export default function ProjectDetailPage() {
                   : (project.priceLabel ?? 'Consultar')
               }
             />
-            <DataCard label="Retorno estimado" value="9% anual*" />
+            {/* Antes era un '9% anual*' fijo para TODOS los proyectos (incluida una
+                lotización, que no genera renta). Solo se muestra si el proyecto lo define. */}
+            {typeof project.features?.retorno === 'string' && (
+              <DataCard label="Retorno estimado" value={project.features.retorno} />
+            )}
             <DataCard label="Ubicación" value={project.location ?? 'Ecuador'} />
             <DataCard label="Estado" value={project.active ? 'Disponible' : 'No disponible'} />
           </div>
@@ -235,6 +240,9 @@ export default function ProjectDetailPage() {
       {project.showBrochure && (
         <BrochureDigital project={project} onRequestInfo={() => setOpen(true)} />
       )}
+
+      {/* 4.6 MAPA DE SOLARES — solo aparece si el proyecto tiene lotes cargados */}
+      <LotMap projectSlug={project.slug} projectName={project.name} />
 
       {/* 5. CTA */}
       <section className="bg-primary text-white">

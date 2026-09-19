@@ -74,6 +74,8 @@ export interface PublicLot {
   name?: string | null;
   description?: string | null;
   images: string[];
+  /** true = sin levantamiento GEO 3i; el polígono es un placeholder y no se dibuja en el mapa. */
+  approximateGeometry?: boolean;
 }
 
 /** Vista de administrador — incluye datos privados y comerciales. */
