@@ -47,6 +47,48 @@ export interface Project {
   updatedAt: string;
 }
 
+export type LotKind = 'LOT' | 'AMENITY' | 'GREEN_AREA' | 'ROAD' | 'BLOCK';
+export type LotStatus = 'AVAILABLE' | 'RESERVED' | 'SOLD' | 'NOT_FOR_SALE';
+
+/** Polígono GeoJSON en lon/lat WGS84 — [[ [lon,lat], [lon,lat], ... ]]. */
+export interface LotGeometry {
+  type: 'Polygon';
+  coordinates: number[][][];
+}
+
+/** Vista pública de un lote — nunca incluye ownerName/ownerPhone/notes (LOPDP). */
+export interface PublicLot {
+  id: string;
+  code: string;
+  block?: string | null;
+  kind: LotKind;
+  status: LotStatus;
+  geometry: LotGeometry;
+  centroidLat: number;
+  centroidLng: number;
+  areaM2?: number | null;
+  frontM?: number | null;
+  depthM?: number | null;
+  price?: number | null;
+  pricePerM2?: number | null;
+  name?: string | null;
+  description?: string | null;
+  images: string[];
+}
+
+/** Vista de administrador — incluye datos privados y comerciales. */
+export interface AdminLot extends PublicLot {
+  projectId: string;
+  cadastralCode?: string | null;
+  ownerName?: string | null;
+  ownerPhone?: string | null;
+  reservedUntil?: string | null;
+  notes?: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Product {
   id: string;
   slug: string;

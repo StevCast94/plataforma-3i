@@ -38,6 +38,50 @@ projectRoutes.get('/:slug', async (req, res) => {
   }
 });
 
+// Campos públicos de un lote — nunca ownerName/ownerPhone/notes (LOPDP,
+// datos privados del comprador/vendedor real que nunca deben salir del panel admin).
+const publicLotSelect = {
+  id: true,
+  code: true,
+  block: true,
+  kind: true,
+  status: true,
+  geometry: true,
+  centroidLat: true,
+  centroidLng: true,
+  areaM2: true,
+  frontM: true,
+  depthM: true,
+  price: true,
+  pricePerM2: true,
+  name: true,
+  description: true,
+  images: true,
+} as const;
+
+// GET /api/projects/:slug/lots -> mapa de lotes de un proyecto (público)
+projectRoutes.get('/:slug/lots', async (req, res) => {
+  try {
+    const project = await prisma.project.findUnique({
+      where: { slug: req.params.slug },
+      select: { id: true },
+    });
+    if (!project) {
+      res.status(404).json({ error: 'Proyecto no encontrado' });
+      return;
+    }
+    const lots = await prisma.lot.findMany({
+      where: { projectId: project.id, active: true },
+      select: publicLotSelect,
+      orderBy: [{ block: 'asc' }, { code: 'asc' }],
+    });
+    res.json(lots);
+  } catch (err) {
+    console.error('GET /api/projects/:slug/lots', err);
+    res.status(500).json({ error: 'Error al obtener los lotes' });
+  }
+});
+
 // POST /api/projects (admin)
 projectRoutes.post('/', requireAdmin, async (req, res) => {
   try {

@@ -1,0 +1,1 @@
+import{H as t,k as u}from"./index-s3Sf9Ucv.js";function o(){return t(()=>u.get("/community/groups"),[])}function r(e){return t(()=>u.get(`/community/groups/${e}`),[e])}function s(){return t(()=>u.get("/community/events"),[])}export{s as a,r as b,o as u};

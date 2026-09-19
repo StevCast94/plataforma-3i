@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTable, type Column } from '@/components/admin/DataTable';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';
 import { Button } from '@/components/ui/Button';
@@ -11,6 +12,7 @@ import type { AdminProject } from '@/lib/adminTypes';
 
 export default function AdminProjectsPage() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [q, setQ] = useState('');
   const query = `/admin/projects?${new URLSearchParams(q ? { q } : {})}`;
   const { data, loading, reload } = useAdminGet<AdminProject[]>(query);
@@ -41,6 +43,7 @@ export default function AdminProjectsPage() {
       header: '',
       cell: (p) => (
         <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/admin/proyectos/${p.id}/lotes`); }}>Lotes</Button>
           <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setEditing(p); setFormOpen(true); }}>Editar</Button>
           <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setToDelete(p); }} className="text-red-600">Eliminar</Button>
         </div>
