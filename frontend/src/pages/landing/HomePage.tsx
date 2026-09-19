@@ -100,6 +100,26 @@ export default function HomePage() {
             <Button variant="outline">Ver todos los proyectos</Button>
           </Link>
         </div>
+
+        {/* Propuesta de inversión Montañita View */}
+        <Link
+          to="/propuesta/montanita-view"
+          className="group mt-12 flex flex-col gap-4 rounded-3xl bg-primary p-8 text-white shadow-lg transition hover:shadow-xl sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
+              Oportunidad de inversión
+            </p>
+            <h3 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">Propuesta Montañita View</h3>
+            <p className="mt-2 max-w-2xl text-white/75">
+              Un solar desde $49,084, sociedad en el Lobby o la compra total de ambos proyectos.
+              Revisa las cifras, el dossier técnico y las condiciones de pago.
+            </p>
+          </div>
+          <span className="shrink-0 rounded-full bg-secondary px-6 py-3 text-center font-semibold text-primary transition group-hover:brightness-110">
+            Ver la propuesta →
+          </span>
+        </Link>
       </section>
 
       {/* MEMBRESÍA / PRODUCTOS */}

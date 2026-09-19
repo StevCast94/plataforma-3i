@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Building2, ArrowRight, ChevronDown } from 'lucide-react';
 import { useProject, useProjects } from '@/hooks/useProjects';
@@ -243,6 +243,17 @@ export default function ProjectDetailPage() {
 
       {/* 4.6 MAPA DE SOLARES — solo aparece si el proyecto tiene lotes cargados */}
       <LotMap projectSlug={project.slug} projectName={project.name} />
+
+      {project.slug === 'montanita-view' && (
+        <div className="mx-auto max-w-5xl px-4 pb-12 text-center sm:px-6">
+          <Link
+            to="/propuesta/montanita-view"
+            className="inline-block rounded-full bg-primary px-8 py-3 font-semibold text-white transition hover:brightness-110"
+          >
+            Ver la propuesta completa de inversión →
+          </Link>
+        </div>
+      )}
 
       {/* 5. CTA */}
       <section className="bg-primary text-white">
