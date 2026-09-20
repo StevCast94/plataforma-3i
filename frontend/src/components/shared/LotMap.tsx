@@ -41,24 +41,18 @@ type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
 const LOT_LABEL_ZOOM = 18;
 
 /**
- * Rotula el solar: acercado, el código y su uso (o la disponibilidad) dentro del
- * polígono; alejado, un globo al pasar el cursor.
+ * Rotula el solar: acercado, solo su código dentro del polígono — el uso y la
+ * disponibilidad llenaban el mapa de texto y ya se ven al pasar el cursor.
  */
 function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoomed: boolean) {
   poly.lotData = lot;
-  const uso = lot.name || STATUS_STYLE[lot.status].label;
   if (!zoomed) {
-    poly.unbindTooltip().bindTooltip(`${lot.code} · ${uso}`, { sticky: true });
+    poly.unbindTooltip().bindTooltip(`${lot.code} · ${lot.name || STATUS_STYLE[lot.status].label}`, { sticky: true });
     return;
   }
   poly
     .unbindTooltip()
-    .bindTooltip(`<b>${lot.code}</b><br>${uso}`, {
-      permanent: true,
-      direction: 'center',
-      className: 'lot-label',
-      opacity: 1,
-    })
+    .bindTooltip(lot.code, { permanent: true, direction: 'center', className: 'lot-label', opacity: 1 })
     .openTooltip();
 }
 
