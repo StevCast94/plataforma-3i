@@ -363,9 +363,9 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
 
 function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
-    <div className="flex justify-between">
-      <dt className="text-brand-gray">{label}</dt>
-      <dd className={strong ? 'font-serif text-lg font-bold text-accent' : 'font-medium text-primary'}>{value}</dd>
+    <div className="flex justify-between gap-3">
+      <dt className="shrink-0 text-brand-gray">{label}</dt>
+      <dd className={`text-right ${strong ? 'font-serif text-lg font-bold text-accent' : 'font-medium text-primary'}`}>{value}</dd>
     </div>
   );
 }
