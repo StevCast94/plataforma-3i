@@ -61,16 +61,25 @@ function drawUrbanism(map: L.Map) {
       .bindTooltip(`${z.nombre} · ${fmtArea(z.areaM2)}`, { sticky: true })
       .addTo(base);
   }
+  const labels: L.Polyline[] = [];
   for (const v of ZONAS.vias) {
-    L.polyline(v.path as [number, number][], {
+    const line = L.polyline(v.path as [number, number][], {
       color: ZONE_STYLE.via.color,
       weight: 3,
       opacity: 0.75,
       dashArray: '6 6',
     })
-      .bindTooltip(v.nombre, { sticky: true })
+      .bindTooltip(v.nombre, { permanent: true, direction: 'center', className: 'via-label' })
       .addTo(base);
+    labels.push(line);
   }
+  // El nombre de la calle solo cabe cuando el mapa está acercado.
+  const toggleLabels = () => {
+    const show = map.getZoom() >= 17;
+    labels.forEach((l) => (show ? l.openTooltip() : l.closeTooltip()));
+  };
+  map.on('zoomend', toggleLabels);
+  toggleLabels();
 }
 
 export function LotMap({ projectSlug, projectName }: { projectSlug: string; projectName: string }) {
