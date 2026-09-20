@@ -45,10 +45,10 @@ export interface PropuestaContent {
   study: { discount: number; scenarios: AptAssumptions };
 }
 
-// Superficies de la compra total. Los solares en venta individual (88) más los
+// Superficies de la compra total. Los solares en venta individual (89) más los
 // dos que solo entran en la operación completa (B-12 y A-2), el equipamiento
 // urbano de la lotización y el predio del Lobby.
-const LOTS_M2 = 121567.49;
+const LOTS_M2 = 122290.33;
 const EXTRA_LOTS_M2 = 906.44 + 125.14;
 const EQUIPMENT_M2 = 13364.2;
 const LOBBY_M2 = 36348;
@@ -67,7 +67,7 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     summary:
       'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 36 cuotas sin intereses.',
     rows: [
-      ['Solares disponibles', '88 de 110'],
+      ['Solares disponibles', '89 de 111'],
       ['Precio', '$100 / m²'],
       ['Desde', '$49,084 — solar A9, 490.84 m²'],
       ['Plan de pago', '30% de entrada + saldo en hasta 36 cuotas al 0%'],
@@ -93,7 +93,7 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     rows: [
       ['Precio', `${usd(TOTAL_M2 * 100)} ($100 / m²)`],
       ['Superficie', m2(TOTAL_M2)],
-      ['Qué incluye', `Los 88 solares en venta más el B-12 y el A-2 (${m2(LOTS_M2 + EXTRA_LOTS_M2)}), el equipamiento urbano de la lotización (${m2(EQUIPMENT_M2)}) y el predio del Lobby (${m2(LOBBY_M2)})`],
+      ['Qué incluye', `Los 89 solares en venta más el B-12 y el A-2 (${m2(LOTS_M2 + EXTRA_LOTS_M2)}), el equipamiento urbano de la lotización (${m2(EQUIPMENT_M2)}) y el predio del Lobby (${m2(LOBBY_M2)})`],
     ],
     paymentRows: [
       ['Reserva (10%) al firmar la promesa', usd(TOTAL_M2 * 100 * 0.1)],

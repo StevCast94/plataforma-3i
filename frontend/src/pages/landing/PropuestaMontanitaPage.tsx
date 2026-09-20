@@ -29,7 +29,7 @@ import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta } from '@/lib/propue
 const UNLOCK_KEY = 'g3i_propuesta_mv';
 
 const LOT_BLOCKS = [
-  { mz: 'A', n: 15, m2: 16554.92 },
+  { mz: 'A', n: 16, m2: 17277.76 },
   { mz: 'B', n: 8, m2: 10714.3 },
   { mz: 'C', n: 10, m2: 18327.63 },
   { mz: 'D', n: 4, m2: 4063.7 },
@@ -39,7 +39,7 @@ const LOT_BLOCKS = [
   { mz: 'H', n: 16, m2: 25154.24 },
   { mz: 'I', n: 9, m2: 12325.19 },
 ];
-const LOTS_M2 = 121567.49;
+const LOTS_M2 = 122290.33;
 // Solo entran en la compra total: el B-12 y el A-2 no se venden por separado.
 const EXTRA_LOTS_M2 = 906.44 + 125.14;
 const EQUIPMENT_M2 = 13364.2;
@@ -145,7 +145,7 @@ export default function PropuestaMontanitaPage() {
           <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">{c.heroTitle}</h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">{c.heroSubtitle}</p>
           <div className="mt-6 flex flex-wrap gap-6 text-sm">
-            <Stat v="88" l="solares disponibles" />
+            <Stat v="89" l="solares disponibles" />
             <Stat v={m2(TOTAL_M2)} l="en oferta" />
             <Stat v="2018" l="lotización inscrita" />
           </div>
@@ -234,7 +234,7 @@ export default function PropuestaMontanitaPage() {
                 head={['Manzana', 'Solares', 'Área', 'Valor a $100/m²']}
                 rows={[
                   ...LOT_BLOCKS.map((b) => [b.mz, String(b.n), m2(b.m2), formatCurrency(b.m2 * 100)]),
-                  ['Total', '88', m2(LOTS_M2), formatCurrency(LOTS_M2 * 100)],
+                  ['Total', '89', m2(LOTS_M2), formatCurrency(LOTS_M2 * 100)],
                 ]}
               />
               <p className="mt-3">
@@ -369,7 +369,7 @@ export default function PropuestaMontanitaPage() {
             <Detail title="Superficie incluida">
               <KV
                 rows={[
-                  ['Solares en venta de la Lotización (88)', m2(LOTS_M2)],
+                  ['Solares en venta de la Lotización (89)', m2(LOTS_M2)],
                   ['Solares B-12 y A-2, solo en la compra total', m2(EXTRA_LOTS_M2)],
                   ['Equipamiento urbano de la Lotización', m2(EQUIPMENT_M2)],
                   ['Predio del Lobby', m2(LOBBY_M2)],
