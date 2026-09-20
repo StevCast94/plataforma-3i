@@ -152,6 +152,7 @@ export function LotMap({
   const wrapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const tileRef = useRef<L.TileLayer | null>(null);
   const [full, setFull] = useState(false);
 
   /**
@@ -197,12 +198,28 @@ export function LotMap({
   }, []);
 
   useEffect(() => {
-    const t = setTimeout(() => mapRef.current?.invalidateSize(), 120);
+    const map = mapRef.current;
+    if (!map) return;
     // La rueda del ratón solo hace zoom en pantalla completa: dentro de la página
     // secuestraría el desplazamiento de quien solo pasaba por encima.
-    if (full) mapRef.current?.scrollWheelZoom.enable();
-    else mapRef.current?.scrollWheelZoom.disable();
-    return () => clearTimeout(t);
+    if (full) map.scrollWheelZoom.enable();
+    else map.scrollWheelZoom.disable();
+    // Al cambiar de tamaño hay un instante en que el contenedor mide 0 y la capa
+    // de imagen satelital se queda sin teselas (fondo negro/blanco). Se refresca
+    // dos veces: al terminar la transición y una más por si aún no había medida.
+    const refresh = () => {
+      map.invalidateSize();
+      const c = map.getCenter();
+      const z = map.getZoom();
+      tileRef.current?.redraw();
+      map.setView(c, z, { animate: false });
+    };
+    const t1 = setTimeout(refresh, 150);
+    const t2 = setTimeout(refresh, 600);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, [full]);
 
   useEffect(() => {
@@ -251,7 +268,7 @@ export function LotMap({
   useEffect(() => {
     if (!mapEl.current || mapRef.current || !lots?.length) return;
     const map = L.map(mapEl.current, { scrollWheelZoom: false, attributionControl: true });
-    L.tileLayer(
+    tileRef.current = L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       // Esri solo tiene imagen hasta z18 en Manglaralto: más allá devuelve el
       // mosaico gris "Map data not yet available". Con maxNativeZoom 18 Leaflet
@@ -325,6 +342,53 @@ export function LotMap({
           ).toFixed(6)}`
         : null;
 
+  // Filtros y leyenda: sobre el mapa en la página, flotando sobre él en pantalla completa.
+  const filterBar = (
+    <div className="mb-4 flex flex-wrap items-center gap-3 last:mb-0">
+      <select
+        value={block}
+        onChange={(e) => setBlock(e.target.value)}
+        className="rounded-lg border border-black/15 px-3 py-2 text-sm"
+      >
+        <option value="">Todas las manzanas</option>
+        {blocks.map((b) => (
+          <option key={b} value={b}>
+            {b.replace('MZ-', 'Manzana ')}
+          </option>
+        ))}
+      </select>
+      <select
+        value={size}
+        onChange={(e) => setSize(e.target.value as SizeFilter)}
+        className="rounded-lg border border-black/15 px-3 py-2 text-sm"
+      >
+        <option value="">Cualquier tamaño</option>
+        <option value="lt800">Menos de 800 m²</option>
+        <option value="800to1500">800 – 1,500 m²</option>
+        <option value="gt1500">Más de 1,500 m²</option>
+      </select>
+      <label className="flex items-center gap-2 text-sm text-primary">
+        <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
+        Solo disponibles
+      </label>
+      <div className="ml-auto flex flex-wrap gap-3 text-xs text-brand-gray">
+        {(Object.keys(STATUS_STYLE) as LotStatus[]).map((s) => (
+          <span key={s} className="flex items-center gap-1.5">
+            <span className="h-3 w-3 rounded-sm" style={{ background: STATUS_STYLE[s].fill }} />
+            {STATUS_STYLE[s].label}
+          </span>
+        ))}
+        {projectSlug === 'montanita-view' &&
+          Object.values(ZONE_STYLE).map((z) => (
+            <span key={z.label} className="flex items-center gap-1.5">
+              <span className="h-3 w-3 rounded-sm opacity-60" style={{ background: z.color }} />
+              {z.label}
+            </span>
+          ))}
+      </div>
+    </div>
+  );
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8" id="mapa-solares">
       <div className="mb-6 text-center">
@@ -347,54 +411,36 @@ export function LotMap({
         )}
       </div>
 
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <select value={block} onChange={(e) => setBlock(e.target.value)} className="rounded-lg border border-black/15 px-3 py-2 text-sm">
-          <option value="">Todas las manzanas</option>
-          {blocks.map((b) => (
-            <option key={b} value={b}>{b.replace('MZ-', 'Manzana ')}</option>
-          ))}
-        </select>
-        <select value={size} onChange={(e) => setSize(e.target.value as SizeFilter)} className="rounded-lg border border-black/15 px-3 py-2 text-sm">
-          <option value="">Cualquier tamaño</option>
-          <option value="lt800">Menos de 800 m²</option>
-          <option value="800to1500">800 – 1,500 m²</option>
-          <option value="gt1500">Más de 1,500 m²</option>
-        </select>
-        <label className="flex items-center gap-2 text-sm text-primary">
-          <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
-          Solo disponibles
-        </label>
-        <div className="ml-auto flex flex-wrap gap-3 text-xs text-brand-gray">
-          {(Object.keys(STATUS_STYLE) as LotStatus[]).map((s) => (
-            <span key={s} className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-sm" style={{ background: STATUS_STYLE[s].fill }} />
-              {STATUS_STYLE[s].label}
-            </span>
-          ))}
-          {projectSlug === 'montanita-view' &&
-            Object.values(ZONE_STYLE).map((z) => (
-              <span key={z.label} className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-sm opacity-60" style={{ background: z.color }} />
-                {z.label}
-              </span>
-            ))}
-        </div>
-      </div>
+      {!full && filterBar}
 
       <div
         ref={wrapEl}
         className={
           full
-            ? 'fixed inset-0 z-[3000] bg-black'
+            ? 'fixed inset-0 z-[3000] bg-primary'
             : 'relative overflow-hidden rounded-2xl ring-1 ring-black/10'
         }
       >
         <div ref={mapEl} className={full ? 'h-full w-full' : 'h-[480px] w-full sm:h-[560px]'} />
+        {/* En pantalla completa los filtros flotan sobre el mapa, como en un buscador. */}
+        {full && (
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-[1001] p-3">
+            <div className="pointer-events-auto mx-auto max-w-3xl rounded-2xl bg-white/95 p-3 shadow-lg ring-1 ring-black/10 backdrop-blur">
+              <p className="mb-2 px-1 text-sm font-medium text-primary">
+                {visible.length} solares en pantalla · {available.length} disponibles
+                {Number.isFinite(minPrice) && <> · desde {formatCurrency(minPrice)}</>}
+              </p>
+              {filterBar}
+            </div>
+          </div>
+        )}
         <button
           onClick={toggleFull}
           title={full ? 'Salir de pantalla completa (Esc)' : 'Ver el mapa en pantalla completa'}
           aria-label={full ? 'Salir de pantalla completa' : 'Ver el mapa en pantalla completa'}
-          className="absolute right-3 top-3 z-[1001] rounded-lg bg-white/95 p-2 text-primary shadow-md ring-1 ring-black/10 hover:bg-white"
+          className={`absolute z-[1002] rounded-lg bg-white/95 p-2 text-primary shadow-md ring-1 ring-black/10 hover:bg-white ${
+            full ? 'bottom-4 right-4' : 'right-3 top-3'
+          }`}
         >
           {full ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
         </button>
@@ -402,6 +448,7 @@ export function LotMap({
           <LotPanel lot={selected} projectName={projectName} onClose={() => setSelected(null)} />
         )}
       </div>
+
 
       {/* Tabla con la misma información (accesible sin mapa, y para comparar) */}
       <div className="mt-6 overflow-x-auto rounded-2xl bg-white ring-1 ring-black/5">
@@ -536,7 +583,10 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
   }
 
   return (
-    <div className="absolute inset-x-2 bottom-2 z-[1000] max-h-[90%] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:inset-x-auto sm:right-3 sm:top-3 sm:bottom-3 sm:w-96">
+    // En el teléfono es una hoja que sube desde abajo hasta media pantalla: se
+    // sigue viendo el mapa mientras se lee la ficha. En pantallas grandes, panel lateral.
+    <div className="absolute inset-x-0 bottom-0 z-[1000] max-h-[62%] overflow-y-auto rounded-t-2xl bg-white p-5 pt-3 shadow-2xl sm:inset-x-auto sm:bottom-3 sm:right-3 sm:top-3 sm:max-h-none sm:w-96 sm:rounded-2xl sm:pt-5">
+      <span className="mx-auto mb-3 block h-1 w-10 rounded-full bg-black/15 sm:hidden" />
       <button onClick={onClose} aria-label="Cerrar" className="absolute right-3 top-3 text-brand-gray hover:text-primary">
         <X className="h-5 w-5" />
       </button>
