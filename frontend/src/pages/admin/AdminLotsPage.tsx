@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
+import { CloudinaryUpload } from '@/components/admin/CloudinaryUpload';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
@@ -44,6 +45,8 @@ export default function AdminLotsPage() {
     ...(q ? { q } : {}),
   });
   const { data, loading, reload } = useAdminGet<AdminLot[]>(projectId ? `/admin/lots?${params}` : null);
+  const { data: projects } = useAdminGet<{ id: string; slug: string }[]>('/admin/projects');
+  const slug = projects?.find((p) => p.id === projectId)?.slug;
   const [editing, setEditing] = useState<AdminLot | null>(null);
 
   const lots = data ?? [];
@@ -60,9 +63,22 @@ export default function AdminLotsPage() {
     {
       header: '',
       cell: (l) => (
-        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setEditing(l); }}>
-          Editar
-        </Button>
+        <div className="flex justify-end gap-2">
+          {slug && (
+            <a
+              href={`/proyectos/${slug}?lote=${encodeURIComponent(l.code)}`}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="rounded-lg border border-black/15 px-2.5 py-1 text-xs font-medium text-primary hover:bg-light"
+            >
+              Ver ficha
+            </a>
+          )}
+          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setEditing(l); }}>
+            Editar
+          </Button>
+        </div>
       ),
     },
   ];
@@ -118,6 +134,7 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
         ownerPhone: form.ownerPhone || null,
         notes: form.notes || null,
         name: form.name || null,
+        images: form.images ?? [],
       });
       onSaved();
       onClose();
@@ -176,6 +193,18 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
             value={form.cadastralCode ?? ''}
             onChange={(e) => setForm((f) => ({ ...f, cadastralCode: e.target.value }))}
           />
+
+          <div>
+            <span className="mb-1.5 block text-sm font-medium text-primary">Fotos del solar</span>
+            <p className="mb-2 text-xs text-brand-gray">
+              Se muestran en la ficha pública del mapa. La primera es la principal; arrástralas con las
+              flechas para reordenarlas.
+            </p>
+            <CloudinaryUpload
+              value={form.images ?? []}
+              onChange={(images) => setForm((f) => ({ ...f, images }))}
+            />
+          </div>
 
           <div className="rounded-xl bg-light p-3">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-brand-gray">

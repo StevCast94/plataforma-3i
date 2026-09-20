@@ -145,6 +145,25 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
     api.get<PublicLot[]>(`/projects/${projectSlug}/lots`).then(setLots).catch(() => setLots([]));
   }, [projectSlug]);
 
+  // ?lote=A9 abre directamente la ficha de ese solar y centra el mapa en él:
+  // así el enlace "Ver ficha" del panel de administración lleva a su ficha pública.
+  const wanted = new URLSearchParams(window.location.search).get('lote');
+  useEffect(() => {
+    if (!wanted || !lots?.length) return;
+    const lot = lots.find((l) => l.code.toUpperCase() === wanted.toUpperCase());
+    if (!lot) return;
+    setSelected(lot);
+    // Se centra después del encuadre inicial, que se dispara al dibujar los polígonos.
+    const t = setTimeout(() => {
+      const map = mapRef.current;
+      if (map && lot.centroidLat != null && lot.centroidLng != null) {
+        map.setView([lot.centroidLat, lot.centroidLng], 19);
+        mapEl.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [wanted, lots]);
+
   const visible = useMemo(() => {
     return [...(lots ?? [])].sort(byCode).filter((l) => {
       if (l.kind !== 'LOT') return false;
@@ -354,6 +373,40 @@ function monthly(price: number) {
   return (price * (1 - DOWN_PAYMENT)) / INSTALLMENTS;
 }
 
+/** Fotos del solar cargadas desde el panel de administración. */
+function LotPhotos({ images, code }: { images: string[]; code: string }) {
+  const [open, setOpen] = useState<number | null>(null);
+  if (!images.length) return null;
+  return (
+    <>
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        {images.map((src, i) => (
+          <button
+            key={src}
+            onClick={() => setOpen(i)}
+            className="shrink-0 overflow-hidden rounded-lg ring-1 ring-black/10"
+            aria-label={`Ver foto ${i + 1} del solar ${code}`}
+          >
+            <img src={src} alt={`Solar ${code}, foto ${i + 1}`} loading="lazy" className="h-20 w-28 object-cover" />
+          </button>
+        ))}
+      </div>
+      {open !== null && (
+        <div
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/85 p-4"
+          onClick={() => setOpen(null)}
+          role="dialog"
+        >
+          <img src={images[open]} alt={`Solar ${code}`} className="max-h-full max-w-full rounded-lg object-contain" />
+          <button onClick={() => setOpen(null)} aria-label="Cerrar" className="absolute right-4 top-4 text-white">
+            <X className="h-7 w-7" />
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
 function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: string; onClose: () => void }) {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
@@ -391,6 +444,8 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
       <span className="mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ background: STATUS_STYLE[lot.status].fill }}>
         {STATUS_STYLE[lot.status].label}
       </span>
+
+      <LotPhotos images={lot.images ?? []} code={lot.code} />
 
       <dl className="mt-4 space-y-2 text-sm">
         {lot.price != null && (
