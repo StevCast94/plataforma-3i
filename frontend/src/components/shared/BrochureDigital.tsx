@@ -1,6 +1,6 @@
-import { Fragment, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { FileText } from 'lucide-react';
+import { FileText, Navigation, Map as MapIcon } from 'lucide-react';
 import { cld } from '@/lib/cloudinary';
 import { Button } from '@/components/ui/Button';
 import { AmenityIcon } from '@/lib/amenityIcons';
@@ -174,47 +174,58 @@ function GrowthChart({ data, years }: { data: number[]; years: string[] }) {
   );
 }
 
-/** Mapa satelital real (Google Maps embed, sin API key) + marcador con pulso sobre el proyecto. */
-function LocationMap({
+/**
+ * Distancias del proyecto y accesos al mapa.
+ *
+ * Antes había aquí un segundo mapa satelital (Google Maps embed) que repetía el
+ * mapa interactivo de solares de más arriba. Se quitó: lo que aportaba —dónde
+ * está y cómo se llega— queda en las distancias, el botón de indicaciones y el
+ * enlace al mapa de solares, que es el que sí deja elegir.
+ */
+function LocationInfo({
   lat,
   lng,
-  label,
   routeStats,
 }: {
   lat: number;
   lng: number;
-  label: string;
   routeStats: { v: string; l: string }[];
 }) {
-  return (
-    <div className="overflow-hidden rounded-2xl bg-primary p-4 sm:p-6">
-      <div className="relative overflow-hidden rounded-xl">
-        <iframe
-          title={`Ubicación de ${label}`}
-          src={`https://www.google.com/maps?q=${lat},${lng}&t=k&z=15&output=embed`}
-          className="h-72 w-full border-0 sm:h-96"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <span className="relative flex h-4 w-4">
-            <motion.span
-              className="absolute inline-flex h-full w-full rounded-full bg-secondary"
-              animate={{ scale: [1, 2.6], opacity: [0.8, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-            />
-            <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-secondary" />
-          </span>
-        </div>
-      </div>
+  // El enlace al mapa de solares solo tiene sentido si la página lo incluye
+  // (los proyectos sin lotización no lo tienen).
+  const [hasLotMap, setHasLotMap] = useState(false);
+  useEffect(() => setHasLotMap(!!document.getElementById('mapa-solares')), []);
 
-      <div className="mt-6 grid grid-cols-2 gap-4 text-center text-white sm:grid-cols-4">
+  return (
+    <div className="overflow-hidden rounded-2xl bg-primary p-6 sm:p-8">
+      <div className="grid gap-6 text-center text-white sm:grid-cols-2 lg:grid-cols-4">
         {routeStats.map((s) => (
           <div key={s.l}>
-            <p className="font-serif text-xl font-bold text-secondary">{s.v}</p>
+            <p className="font-serif text-2xl font-bold text-secondary">{s.v}</p>
             <p className="text-xs text-white/70">{s.l}</p>
           </div>
         ))}
+      </div>
+
+      <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <a
+          href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-secondary px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-white"
+        >
+          <Navigation className="h-4 w-4" strokeWidth={1.8} />
+          Cómo llegar
+        </a>
+        {hasLotMap && (
+          <a
+            href="#mapa-solares"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+          >
+            <MapIcon className="h-4 w-4" strokeWidth={1.8} />
+            Ver el mapa de solares
+          </a>
+        )}
       </div>
     </div>
   );
@@ -332,10 +343,9 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           <SectionTitle eyebrow="A pasos del mar">Ubicación privilegiada</SectionTitle>
         </Reveal>
         <Reveal>
-          <LocationMap
+          <LocationInfo
             lat={project.mapLat ?? DEFAULT_MAP_LAT}
             lng={project.mapLng ?? DEFAULT_MAP_LNG}
-            label={project.name}
             routeStats={c.routeStats}
           />
         </Reveal>

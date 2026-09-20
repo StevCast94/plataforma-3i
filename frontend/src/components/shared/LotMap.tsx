@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { X } from 'lucide-react';
+import { X, Maximize2, Minimize2, Navigation } from 'lucide-react';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -130,7 +130,18 @@ function drawUrbanism(map: L.Map) {
   map.whenReady(toggleLabels);
 }
 
-export function LotMap({ projectSlug, projectName }: { projectSlug: string; projectName: string }) {
+export function LotMap({
+  projectSlug,
+  projectName,
+  mapLat,
+  mapLng,
+}: {
+  projectSlug: string;
+  projectName: string;
+  /** Punto de llegada del proyecto, para el botón "Cómo llegar". */
+  mapLat?: number | null;
+  mapLng?: number | null;
+}) {
   const [lots, setLots] = useState<PublicLot[] | null>(null);
   const [selected, setSelected] = useState<PublicLot | null>(null);
   const [block, setBlock] = useState('');
@@ -138,8 +149,57 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const mapEl = useRef<HTMLDivElement>(null);
+  const wrapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const [full, setFull] = useState(false);
+
+  /**
+   * Pantalla completa. Se usa la API nativa cuando existe (el mapa ocupa toda la
+   * pantalla del equipo, con el gesto de salida del sistema) y, cuando no —Safari
+   * de iPhone no la admite en un div—, se recurre a fijar el contenedor sobre la
+   * página, que da el mismo resultado visual.
+   */
+  const toggleFull = () => {
+    const el = wrapEl.current;
+    if (!el) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => setFull(false));
+      return;
+    }
+    if (full) {
+      setFull(false);
+      return;
+    }
+    if (el.requestFullscreen) {
+      el.requestFullscreen()
+        .then(() => setFull(true))
+        .catch(() => setFull(true)); // bloqueada por el navegador: se usa el modo fijo
+    } else {
+      setFull(true);
+    }
+  };
+
+  // El mapa debe recalcular su tamaño al entrar y al salir; Esc cierra el modo fijo.
+  useEffect(() => {
+    const sync = () => {
+      if (!document.fullscreenElement && document.fullscreenEnabled) setFull(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !document.fullscreenElement) setFull(false);
+    };
+    document.addEventListener('fullscreenchange', sync);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('fullscreenchange', sync);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => mapRef.current?.invalidateSize(), 120);
+    return () => clearTimeout(t);
+  }, [full]);
 
   useEffect(() => {
     api.get<PublicLot[]>(`/projects/${projectSlug}/lots`).then(setLots).catch(() => setLots([]));
@@ -249,6 +309,18 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
 
   const minPrice = Math.min(...available.map((l) => l.price ?? Infinity));
 
+  // Destino del botón "Cómo llegar": el que fije el proyecto o, si no, el centro
+  // de los solares ya dibujados — siempre cae dentro de la lotización.
+  const center = lots.filter((l) => l.centroidLat != null && l.centroidLng != null);
+  const destination =
+    mapLat != null && mapLng != null
+      ? `${mapLat},${mapLng}`
+      : center.length
+        ? `${(center.reduce((s, l) => s + (l.centroidLat ?? 0), 0) / center.length).toFixed(6)},${(
+            center.reduce((s, l) => s + (l.centroidLng ?? 0), 0) / center.length
+          ).toFixed(6)}`
+        : null;
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8" id="mapa-solares">
       <div className="mb-6 text-center">
@@ -258,6 +330,17 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
           {Number.isFinite(minPrice) && <> · desde {formatCurrency(minPrice)}</>} · toca uno para ver su
           precio y tu cuota
         </p>
+        {destination && (
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${destination}`}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex items-center gap-2 rounded-lg border border-black/15 px-3 py-2 text-sm font-medium text-primary hover:bg-light"
+          >
+            <Navigation className="h-4 w-4" strokeWidth={1.8} />
+            Cómo llegar
+          </a>
+        )}
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -294,8 +377,23 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl ring-1 ring-black/10">
-        <div ref={mapEl} className="h-[480px] w-full sm:h-[560px]" />
+      <div
+        ref={wrapEl}
+        className={
+          full
+            ? 'fixed inset-0 z-[3000] bg-black'
+            : 'relative overflow-hidden rounded-2xl ring-1 ring-black/10'
+        }
+      >
+        <div ref={mapEl} className={full ? 'h-full w-full' : 'h-[480px] w-full sm:h-[560px]'} />
+        <button
+          onClick={toggleFull}
+          title={full ? 'Salir de pantalla completa (Esc)' : 'Ver el mapa en pantalla completa'}
+          aria-label={full ? 'Salir de pantalla completa' : 'Ver el mapa en pantalla completa'}
+          className="absolute right-3 top-3 z-[1001] rounded-lg bg-white/95 p-2 text-primary shadow-md ring-1 ring-black/10 hover:bg-white"
+        >
+          {full ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+        </button>
         {selected && (
           <LotPanel lot={selected} projectName={projectName} onClose={() => setSelected(null)} />
         )}

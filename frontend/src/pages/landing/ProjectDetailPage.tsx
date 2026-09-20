@@ -240,7 +240,7 @@ export default function ProjectDetailPage() {
       </section>
 
       {/* 4.6 MAPA DE SOLARES — solo aparece si el proyecto tiene lotes cargados */}
-      <LotMap projectSlug={project.slug} projectName={project.name} />
+      <LotMap projectSlug={project.slug} projectName={project.name} mapLat={project.mapLat} mapLng={project.mapLng} />
 
       {project.slug === 'montanita-view' && (
         <div className="mx-auto max-w-5xl px-4 pb-12 text-center sm:px-6">
