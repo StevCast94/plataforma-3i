@@ -418,10 +418,15 @@ export function LotMap({
         className={
           full
             ? 'fixed inset-0 z-[3000] bg-primary'
-            : 'relative overflow-hidden rounded-2xl ring-1 ring-black/10'
+            : 'relative h-[480px] overflow-hidden rounded-2xl ring-1 ring-black/10 sm:h-[560px]'
         }
       >
-        <div ref={mapEl} className={full ? 'h-full w-full' : 'h-[480px] w-full sm:h-[560px]'} />
+        {/*
+          El alto lo manda el contenedor, nunca este div: Leaflet añade sus
+          propias clases al montarse y, si React reescribe su className al
+          cambiar de modo, se las lleva por delante y el mapa se queda en negro.
+        */}
+        <div ref={mapEl} className="h-full w-full" />
         {/* En pantalla completa los filtros flotan sobre el mapa, como en un buscador. */}
         {full && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-[1001] p-3">
