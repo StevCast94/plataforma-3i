@@ -198,6 +198,10 @@ export function LotMap({
 
   useEffect(() => {
     const t = setTimeout(() => mapRef.current?.invalidateSize(), 120);
+    // La rueda del ratón solo hace zoom en pantalla completa: dentro de la página
+    // secuestraría el desplazamiento de quien solo pasaba por encima.
+    if (full) mapRef.current?.scrollWheelZoom.enable();
+    else mapRef.current?.scrollWheelZoom.disable();
     return () => clearTimeout(t);
   }, [full]);
 
