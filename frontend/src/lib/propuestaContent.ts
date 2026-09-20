@@ -45,9 +45,14 @@ export interface PropuestaContent {
   study: { discount: number; scenarios: AptAssumptions };
 }
 
-const LOTS_M2 = 121724.46;
+// Superficies de la compra total. Los solares en venta individual (88) más los
+// dos que solo entran en la operación completa (B-12 y A-2), el equipamiento
+// urbano de la lotización y el predio del Lobby.
+const LOTS_M2 = 121567.49;
+const EXTRA_LOTS_M2 = 906.44 + 125.14;
+const EQUIPMENT_M2 = 13364.2;
 const LOBBY_M2 = 36348;
-const TOTAL_M2 = LOTS_M2 + LOBBY_M2;
+const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + EQUIPMENT_M2 + LOBBY_M2;
 const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 const m2 = (n: number) => `${n.toLocaleString('en-US', { maximumFractionDigits: 2 })} m²`;
 
@@ -62,7 +67,7 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     summary:
       'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 36 cuotas sin intereses.',
     rows: [
-      ['Solares disponibles', '88 de 109'],
+      ['Solares disponibles', '88 de 110'],
       ['Precio', '$100 / m²'],
       ['Desde', '$49,084 — solar A9, 490.84 m²'],
       ['Plan de pago', '30% de entrada + saldo en hasta 36 cuotas al 0%'],
@@ -84,10 +89,11 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
   total: {
     tag: usd(TOTAL_M2 * 100),
     card: `Ambos proyectos completos: ${Math.round(TOTAL_M2).toLocaleString('en-US')} m² en una sola operación, con condiciones preferentes de pago.`,
-    summary: `La Lotización completa con sus 88 solares disponibles y el predio del Lobby, en una sola operación: ${Math.round(TOTAL_M2).toLocaleString('en-US')} m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya ejecutados.`,
+    summary: `La Lotización y el predio del Lobby en una sola operación: ${Math.round(TOTAL_M2).toLocaleString('en-US')} m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya ejecutados.`,
     rows: [
       ['Precio', `${usd(TOTAL_M2 * 100)} ($100 / m²)`],
       ['Superficie', m2(TOTAL_M2)],
+      ['Qué incluye', `Los 88 solares en venta más el B-12 y el A-2 (${m2(LOTS_M2 + EXTRA_LOTS_M2)}), el equipamiento urbano de la lotización (${m2(EQUIPMENT_M2)}) y el predio del Lobby (${m2(LOBBY_M2)})`],
     ],
     paymentRows: [
       ['Reserva (10%) al firmar la promesa', usd(TOTAL_M2 * 100 * 0.1)],

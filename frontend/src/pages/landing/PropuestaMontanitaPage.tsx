@@ -29,7 +29,7 @@ import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta } from '@/lib/propue
 const UNLOCK_KEY = 'g3i_propuesta_mv';
 
 const LOT_BLOCKS = [
-  { mz: 'A', n: 15, m2: 16711.89 },
+  { mz: 'A', n: 15, m2: 16554.92 },
   { mz: 'B', n: 8, m2: 10714.3 },
   { mz: 'C', n: 10, m2: 18327.63 },
   { mz: 'D', n: 4, m2: 4063.7 },
@@ -39,9 +39,12 @@ const LOT_BLOCKS = [
   { mz: 'H', n: 16, m2: 25154.24 },
   { mz: 'I', n: 9, m2: 12325.19 },
 ];
-const LOTS_M2 = 121724.46;
+const LOTS_M2 = 121567.49;
+// Solo entran en la compra total: el B-12 y el A-2 no se venden por separado.
+const EXTRA_LOTS_M2 = 906.44 + 125.14;
+const EQUIPMENT_M2 = 13364.2;
 const LOBBY_M2 = 36348;
-const TOTAL_M2 = LOTS_M2 + LOBBY_M2;
+const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + EQUIPMENT_M2 + LOBBY_M2;
 
 const LAND_USE = [
   { uso: 'Residencial (solares)', m2: 141583, pct: 54.81 },
@@ -366,14 +369,17 @@ export default function PropuestaMontanitaPage() {
             <Detail title="Superficie incluida">
               <KV
                 rows={[
-                  ['Solares disponibles de la Lotización', m2(LOTS_M2)],
+                  ['Solares en venta de la Lotización (88)', m2(LOTS_M2)],
+                  ['Solares B-12 y A-2, solo en la compra total', m2(EXTRA_LOTS_M2)],
+                  ['Equipamiento urbano de la Lotización', m2(EQUIPMENT_M2)],
                   ['Predio del Lobby', m2(LOBBY_M2)],
                   ['Total', m2(TOTAL_M2)],
                 ]}
               />
               <p className="mt-3">
                 No incluye los solares ya vendidos o comprometidos, ni el lote "La Estación", que se
-                negocia por separado.
+                negocia por separado. Tampoco las vías ni las áreas verdes, que son de uso público
+                según la Resolución 0118052017-GADMSE-A.
               </p>
             </Detail>
 
