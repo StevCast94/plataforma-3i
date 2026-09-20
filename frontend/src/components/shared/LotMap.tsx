@@ -7,6 +7,7 @@ import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/shared/Toast';
 import type { PublicLot, LotStatus } from '@shared/types';
+import ZONAS from '@/data/montanita-zonas.json';
 
 // ============================================================
 // Mapa interactivo de solares. Geometría real de GEO 3i (reproyectada a
@@ -23,10 +24,52 @@ const STATUS_STYLE: Record<LotStatus, { fill: string; label: string }> = {
   NOT_FOR_SALE: { fill: '#9ca3af', label: 'No disponible' },
 };
 
+// Urbanismo aprobado (Resolución 0118052017-GADMSE-A), dibujado en GEO 3i.
+const ZONE_STYLE = {
+  verde: { color: '#16a34a', label: 'Área verde' },
+  equipamiento: { color: '#2563eb', label: 'Equipamiento urbano' },
+  via: { color: '#facc15', label: 'Vías' },
+};
+
 const DOWN_PAYMENT = 0.3;
 const INSTALLMENTS = 36;
 
 type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
+
+
+/**
+ * Dibuja bajo los solares el urbanismo de Montañita View: áreas verdes,
+ * equipamiento y el eje de cada calle, tal como constan en el plano de
+ * implantación aprobado y en el levantamiento de GEO 3i.
+ */
+function drawUrbanism(map: L.Map) {
+  const base = L.layerGroup().addTo(map);
+  const zonas = [
+    ...ZONAS.verdes.map((z) => ({ ...z, style: ZONE_STYLE.verde })),
+    ...ZONAS.equipamiento.map((z) => ({ ...z, style: ZONE_STYLE.equipamiento })),
+  ];
+  for (const z of zonas) {
+    L.polygon(z.path as [number, number][], {
+      color: z.style.color,
+      weight: 1,
+      fillColor: z.style.color,
+      fillOpacity: 0.3,
+      interactive: true,
+    })
+      .bindTooltip(`${z.nombre} · ${fmtArea(z.areaM2)}`, { sticky: true })
+      .addTo(base);
+  }
+  for (const v of ZONAS.vias) {
+    L.polyline(v.path as [number, number][], {
+      color: ZONE_STYLE.via.color,
+      weight: 3,
+      opacity: 0.75,
+      dashArray: '6 6',
+    })
+      .bindTooltip(v.nombre, { sticky: true })
+      .addTo(base);
+  }
+}
 
 export function LotMap({ projectSlug, projectName }: { projectSlug: string; projectName: string }) {
   const [lots, setLots] = useState<PublicLot[] | null>(null);
@@ -70,13 +113,14 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
       'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       { maxZoom: 20, maxNativeZoom: 19, attribution: 'Imágenes © Esri' },
     ).addTo(map);
+    if (projectSlug === 'montanita-view') drawUrbanism(map);
     layerRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
     return () => {
       map.remove();
       mapRef.current = null;
     };
-  }, [lots]);
+  }, [lots, projectSlug]);
 
   // Redibujar polígonos al cambiar filtros.
   useEffect(() => {
@@ -143,6 +187,13 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
               {STATUS_STYLE[s].label}
             </span>
           ))}
+          {projectSlug === 'montanita-view' &&
+            Object.values(ZONE_STYLE).map((z) => (
+              <span key={z.label} className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded-sm opacity-60" style={{ background: z.color }} />
+                {z.label}
+              </span>
+            ))}
         </div>
       </div>
 
