@@ -38,6 +38,7 @@ import { metricsRoutes } from './routes/metrics';
 import { travelRoutes } from './routes/travel';
 import { adminTravelRoutes } from './routes/adminTravel';
 import { referralApiRoutes, referralRedirect } from './routes/referral';
+import { projectOgHandler } from './lib/ogProject';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -112,6 +113,10 @@ const hasBuild = fs.existsSync(path.join(frontendPath, 'index.html'));
 
 if (hasBuild) {
   app.use(express.static(frontendPath));
+
+  // Tarjeta social por proyecto: WhatsApp y Facebook no ejecutan JS, así que las
+  // meta tags se escriben en el HTML antes de enviarlo (ver lib/ogProject.ts).
+  app.get('/proyectos/:slug', projectOgHandler(frontendPath));
 
   // SPA fallback -> todas las rutas no-API devuelven index.html
   app.get(/^(?!\/api).*/, (_req, res) => {
