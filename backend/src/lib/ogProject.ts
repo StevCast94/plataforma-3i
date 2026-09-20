@@ -77,6 +77,8 @@ export function projectOgHandler(frontendPath: string) {
       html = setMeta(html, 'property', 'og:title', title);
       html = setMeta(html, 'property', 'og:description', description);
       html = setMeta(html, 'property', 'og:image', image);
+      html = setMeta(html, 'property', 'og:image:secure_url', image);
+      html = setMeta(html, 'property', 'og:image:type', /\.png($|\?)/i.test(image) ? 'image/png' : 'image/jpeg');
       html = setMeta(html, 'property', 'og:image:alt', title);
       html = setMeta(html, 'name', 'twitter:title', title);
       html = setMeta(html, 'name', 'twitter:description', description);
