@@ -49,12 +49,14 @@ function drawUrbanism(map: L.Map) {
     ...ZONAS.equipamiento.map((z) => ({ ...z, style: ZONE_STYLE.equipamiento })),
   ];
   for (const z of zonas) {
+    // Relleno tenue y borde punteado: las zonas se leen sin competir con los
+    // solares (el verde "disponible" es el mismo verde del área verde).
     L.polygon(z.path as [number, number][], {
       color: z.style.color,
-      weight: 1,
+      weight: 2,
+      dashArray: '5 5',
       fillColor: z.style.color,
-      fillOpacity: 0.3,
-      interactive: true,
+      fillOpacity: 0.18,
     })
       .bindTooltip(`${z.nombre} · ${fmtArea(z.areaM2)}`, { sticky: true })
       .addTo(base);
