@@ -87,6 +87,10 @@ export interface LotDetails {
   source: string;
   perimeterM: number;
   areaUTM: number;
+  /** Longitud de frente hacia cada calle (la primera es el frente principal). */
+  frentes?: { calle: string; lengthM: number }[];
+  /** Profundidad medida perpendicular al frente principal. */
+  fondoM?: number | null;
   sides: LotSide[];
   linderos: { cardinal: string; colindante: string; lengthM: number }[];
   vertices: { name: string; norte: number; este: number }[];

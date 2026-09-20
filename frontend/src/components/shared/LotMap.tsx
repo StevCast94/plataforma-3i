@@ -322,6 +322,8 @@ function LotSheet({ lot }: { lot: PublicLot }) {
         {note && <p className="-mt-1 text-right text-[11px] text-brand-gray">{note}</p>}
         <Row label="Área" value={fmtArea(lot.areaM2)} />
         {d && <Row label="Perímetro" value={`${num(d.perimeterM)} m`} />}
+        {d?.frentes?.length ? <Row label={d.frentes.length > 1 ? 'Frentes' : 'Frente'} value={d.frentes.map((f) => `${num(f.lengthM)} m a ${f.calle}`).join(' · ')} /> : null}
+        {d?.fondoM ? <Row label="Fondo" value={`${num(d.fondoM)} m`} /> : null}
         {lot.details?.areaNote && <p className="-mt-1 text-right text-[11px] text-amber-700">{lot.details.areaNote}</p>}
         {d && <Row label="Lados" value={String(d.sides.length)} />}
         <Row label="Ubicación" value="Manglaralto, Santa Elena" />
