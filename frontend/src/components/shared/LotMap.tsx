@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { X, Maximize2, Minimize2, Navigation } from 'lucide-react';
+import { X, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -154,6 +154,9 @@ export function LotMap({
   const layerRef = useRef<L.LayerGroup | null>(null);
   const tileRef = useRef<L.TileLayer | null>(null);
   const [full, setFull] = useState(false);
+  // En el teléfono el panel de búsqueda tapaba un tercio del mapa: entra plegado
+  // y deja solo la leyenda; en pantallas grandes sobra espacio y entra abierto.
+  const [panel, setPanel] = useState(true);
 
   /**
    * Pantalla completa. Se usa la API nativa cuando existe (el mapa ocupa toda la
@@ -172,6 +175,7 @@ export function LotMap({
       setFull(false);
       return;
     }
+    setPanel(window.innerWidth >= 640);
     if (el.requestFullscreen) {
       el.requestFullscreen()
         .then(() => setFull(true))
@@ -342,9 +346,27 @@ export function LotMap({
           ).toFixed(6)}`
         : null;
 
-  // Filtros y leyenda: sobre el mapa en la página, flotando sobre él en pantalla completa.
-  const filterBar = (
-    <div className="mb-4 flex flex-wrap items-center gap-3 last:mb-0">
+  // Leyenda de colores: se muestra siempre, también con los filtros plegados.
+  const legend = (
+    <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-brand-gray">
+      {(Object.keys(STATUS_STYLE) as LotStatus[]).map((s) => (
+        <span key={s} className="flex items-center gap-1.5">
+          <span className="h-3 w-3 rounded-sm" style={{ background: STATUS_STYLE[s].fill }} />
+          {STATUS_STYLE[s].label}
+        </span>
+      ))}
+      {projectSlug === 'montanita-view' &&
+        Object.values(ZONE_STYLE).map((z) => (
+          <span key={z.label} className="flex items-center gap-1.5">
+            <span className="h-3 w-3 rounded-sm opacity-60" style={{ background: z.color }} />
+            {z.label}
+          </span>
+        ))}
+    </div>
+  );
+
+  const controls = (
+    <div className="flex flex-wrap items-center gap-3">
       <select
         value={block}
         onChange={(e) => setBlock(e.target.value)}
@@ -371,21 +393,7 @@ export function LotMap({
         <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
         Solo disponibles
       </label>
-      <div className="ml-auto flex flex-wrap gap-3 text-xs text-brand-gray">
-        {(Object.keys(STATUS_STYLE) as LotStatus[]).map((s) => (
-          <span key={s} className="flex items-center gap-1.5">
-            <span className="h-3 w-3 rounded-sm" style={{ background: STATUS_STYLE[s].fill }} />
-            {STATUS_STYLE[s].label}
-          </span>
-        ))}
-        {projectSlug === 'montanita-view' &&
-          Object.values(ZONE_STYLE).map((z) => (
-            <span key={z.label} className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-sm opacity-60" style={{ background: z.color }} />
-              {z.label}
-            </span>
-          ))}
-      </div>
+      <div className="ml-auto">{legend}</div>
     </div>
   );
 
@@ -411,7 +419,7 @@ export function LotMap({
         )}
       </div>
 
-      {!full && filterBar}
+      {!full && <div className="mb-4">{controls}</div>}
 
       <div
         ref={wrapEl}
@@ -431,11 +439,28 @@ export function LotMap({
         {full && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-[1001] p-3">
             <div className="pointer-events-auto mx-auto max-w-3xl rounded-2xl bg-white/95 p-3 shadow-lg ring-1 ring-black/10 backdrop-blur">
-              <p className="mb-2 px-1 text-sm font-medium text-primary">
-                {visible.length} solares en pantalla · {available.length} disponibles
-                {Number.isFinite(minPrice) && <> · desde {formatCurrency(minPrice)}</>}
-              </p>
-              {filterBar}
+              <div className="flex items-start justify-between gap-3">
+                {panel ? (
+                  <p className="px-1 text-sm font-medium text-primary">
+                    {visible.length} solares en pantalla · {available.length} disponibles
+                    {Number.isFinite(minPrice) && <> · desde {formatCurrency(minPrice)}</>}
+                  </p>
+                ) : (
+                  legend
+                )}
+                <button
+                  onClick={() => setPanel((p) => !p)}
+                  aria-label={panel ? 'Ocultar los filtros' : 'Mostrar los filtros'}
+                  className="-mr-1 -mt-1 shrink-0 rounded-lg p-1.5 text-primary hover:bg-light"
+                >
+                  {panel ? <ChevronUp className="h-5 w-5" /> : <SlidersHorizontal className="h-5 w-5" />}
+                </button>
+              </div>
+              {panel && (
+                <>
+                  <div className="mt-2">{controls}</div>
+                </>
+              )}
             </div>
           </div>
         )}
