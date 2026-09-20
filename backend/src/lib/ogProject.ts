@@ -43,7 +43,9 @@ function summarize(text: string | null, max = 200): string {
  */
 function setMeta(html: string, attr: 'property' | 'name', key: string, value: string): string {
   const re = new RegExp(`(<meta\\s+${attr}="${key}"\\s+content=")[^"]*(")`, 'i');
-  return html.replace(re, `$1${esc(value)}$2`);
+  // Reemplazo por función, no por cadena: un precio como "$100" dentro del texto
+  // se interpretaría como la referencia $1 al grupo capturado.
+  return html.replace(re, (_m, open: string, close: string) => `${open}${esc(value)}${close}`);
 }
 
 export function projectOgHandler(frontendPath: string) {
