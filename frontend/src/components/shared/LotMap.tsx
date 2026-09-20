@@ -44,6 +44,7 @@ type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
  */
 function drawUrbanism(map: L.Map) {
   const base = L.layerGroup().addTo(map);
+  const uid = Math.random().toString(36).slice(2, 8); // ids únicos si hay dos mapas en la página
   const zonas = [
     ...ZONAS.verdes.map((z) => ({ ...z, style: ZONE_STYLE.verde })),
     ...ZONAS.equipamiento.map((z) => ({ ...z, style: ZONE_STYLE.equipamiento })),
@@ -61,22 +62,42 @@ function drawUrbanism(map: L.Map) {
       .bindTooltip(`${z.nombre} · ${fmtArea(z.areaM2)}`, { sticky: true })
       .addTo(base);
   }
-  const labels: L.Polyline[] = [];
-  for (const v of ZONAS.vias) {
-    const line = L.polyline(v.path as [number, number][], {
+  const labels: SVGTextElement[] = [];
+  ZONAS.vias.forEach((v, i) => {
+    // De oeste a este, para que el rótulo nunca salga cabeza abajo.
+    const path = v.path[0][1] > v.path[v.path.length - 1][1] ? [...v.path].reverse() : v.path;
+    const line = L.polyline(path as [number, number][], {
       color: ZONE_STYLE.via.color,
       weight: 3,
       opacity: 0.75,
       dashArray: '6 6',
     })
-      .bindTooltip(v.nombre, { permanent: true, direction: 'center', className: 'via-label' })
+      .bindTooltip(v.nombre, { sticky: true })
       .addTo(base);
-    labels.push(line);
-  }
-  // El nombre de la calle solo cabe cuando el mapa está acercado.
+    // Rótulo sobre el trazado de la calle, como en Google Maps: un <textPath>
+    // que referencia el mismo <path> del eje, así sigue sus curvas y se
+    // reacomoda solo en cada zoom.
+    const el = line.getElement() as SVGPathElement | null;
+    if (!el?.parentNode) return;
+    const id = `via-${uid}-${i}`;
+    el.setAttribute('id', id);
+    const NS = 'http://www.w3.org/2000/svg';
+    const text = document.createElementNS(NS, 'text');
+    text.setAttribute('class', 'via-label');
+    text.setAttribute('dy', '-5');
+    const tp = document.createElementNS(NS, 'textPath');
+    tp.setAttribute('href', `#${id}`);
+    tp.setAttribute('startOffset', '50%');
+    tp.setAttribute('text-anchor', 'middle');
+    tp.textContent = v.nombre;
+    text.appendChild(tp);
+    el.parentNode.appendChild(text);
+    labels.push(text);
+  });
+  // En la vista general los rótulos estorban: aparecen al acercarse.
   const toggleLabels = () => {
-    const show = map.getZoom() >= 17;
-    labels.forEach((l) => (show ? l.openTooltip() : l.closeTooltip()));
+    const show = map.getZoom() >= 18;
+    labels.forEach((t) => t.setAttribute('visibility', show ? 'visible' : 'hidden'));
   };
   map.on('zoomend', toggleLabels);
   toggleLabels();

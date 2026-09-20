@@ -29,9 +29,9 @@ import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta } from '@/lib/propue
 const UNLOCK_KEY = 'g3i_propuesta_mv';
 
 const LOT_BLOCKS = [
-  { mz: 'A', n: 16, m2: 17277.76 },
+  { mz: 'A', n: 15, m2: 16320.55 },
   { mz: 'B', n: 8, m2: 10714.3 },
-  { mz: 'C', n: 10, m2: 18327.63 },
+  { mz: 'C', n: 11, m2: 19298.49 },
   { mz: 'D', n: 4, m2: 4063.7 },
   { mz: 'E', n: 10, m2: 11157.33 },
   { mz: 'F', n: 7, m2: 9808.97 },
@@ -39,12 +39,11 @@ const LOT_BLOCKS = [
   { mz: 'H', n: 16, m2: 25154.24 },
   { mz: 'I', n: 9, m2: 12325.19 },
 ];
-const LOTS_M2 = 122290.33;
+const LOTS_M2 = 122303.98;
 // Solo entran en la compra total: el B-12 y el A-2 no se venden por separado.
 const EXTRA_LOTS_M2 = 906.44 + 125.14;
-const EQUIPMENT_M2 = 13364.2;
 const LOBBY_M2 = 36348;
-const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + EQUIPMENT_M2 + LOBBY_M2;
+const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + LOBBY_M2;
 
 const LAND_USE = [
   { uso: 'Residencial (solares)', m2: 141583, pct: 54.81 },
@@ -373,7 +372,6 @@ export default function PropuestaMontanitaPage() {
                 rows={[
                   ['Solares en venta de la Lotización (89)', m2(LOTS_M2)],
                   ['Solares B-12 y A-2, solo en la compra total', m2(EXTRA_LOTS_M2)],
-                  ['Equipamiento urbano de la Lotización', m2(EQUIPMENT_M2)],
                   ['Predio del Lobby', m2(LOBBY_M2)],
                   ['Total', m2(TOTAL_M2)],
                 ]}

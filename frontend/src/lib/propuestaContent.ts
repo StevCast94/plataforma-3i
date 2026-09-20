@@ -46,13 +46,13 @@ export interface PropuestaContent {
 }
 
 // Superficies de la compra total. Los solares en venta individual (89) más los
-// dos que solo entran en la operación completa (B-12 y A-2), el equipamiento
-// urbano de la lotización y el predio del Lobby.
-const LOTS_M2 = 122290.33;
+// dos que solo entran en la operación completa (B-12 y A-2) y el predio del
+// Lobby. El equipamiento urbano y las áreas verdes no se valoran: son cargas
+// de la lotización, no superficie vendible.
+const LOTS_M2 = 122303.98;
 const EXTRA_LOTS_M2 = 906.44 + 125.14;
-const EQUIPMENT_M2 = 13364.2;
 const LOBBY_M2 = 36348;
-const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + EQUIPMENT_M2 + LOBBY_M2;
+const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + LOBBY_M2;
 const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 const m2 = (n: number) => `${n.toLocaleString('en-US', { maximumFractionDigits: 2 })} m²`;
 
@@ -93,7 +93,7 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     rows: [
       ['Precio', `${usd(TOTAL_M2 * 100)} ($100 / m²)`],
       ['Superficie', m2(TOTAL_M2)],
-      ['Qué incluye', `Los 89 solares en venta más el B-12 y el A-2 (${m2(LOTS_M2 + EXTRA_LOTS_M2)}), el equipamiento urbano de la lotización (${m2(EQUIPMENT_M2)}) y el predio del Lobby (${m2(LOBBY_M2)})`],
+      ['Qué incluye', `Los 89 solares en venta más el B-12 y el A-2 (${m2(LOTS_M2 + EXTRA_LOTS_M2)}) y el predio del Lobby (${m2(LOBBY_M2)})`],
     ],
     paymentRows: [
       ['Reserva (10%) al firmar la promesa', usd(TOTAL_M2 * 100 * 0.1)],

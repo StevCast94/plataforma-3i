@@ -177,15 +177,14 @@ h1, h2, h3, h4 {
   .print-doc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 7pt; word-break: break-all; color: #666; }
 }
 
-/* Nombre de calle sobre el eje de vía en el mapa de solares. */
-.leaflet-tooltip.via-label {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-  color: #fde047;
+/* Nombre de calle rotulado sobre el eje de la vía, siguiendo su trazado. */
+text.via-label {
+  fill: #fde047;
   font-size: 11px;
   font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.75);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  pointer-events: none;
 }
-.leaflet-tooltip.via-label::before { display: none; }
