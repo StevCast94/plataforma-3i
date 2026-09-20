@@ -122,7 +122,10 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
     const map = L.map(mapEl.current, { scrollWheelZoom: false, attributionControl: true });
     L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 20, maxNativeZoom: 19, attribution: 'Imágenes © Esri' },
+      // Esri solo tiene imagen hasta z18 en Manglaralto: más allá devuelve el
+      // mosaico gris "Map data not yet available". Con maxNativeZoom 18 Leaflet
+      // amplía la última imagen real y el mapa sigue acercándose hasta z21.
+      { maxZoom: 21, maxNativeZoom: 18, attribution: 'Imágenes © Esri' },
     ).addTo(map);
     if (projectSlug === 'montanita-view') drawUrbanism(map);
     layerRef.current = L.layerGroup().addTo(map);
