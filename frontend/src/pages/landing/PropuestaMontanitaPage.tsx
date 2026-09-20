@@ -238,9 +238,11 @@ export default function PropuestaMontanitaPage() {
                 ]}
               />
               <p className="mt-3">
-                Tres manzanas tienen solares asignados a proyectos de negocio dentro del macroproyecto:
-                zona de camping (E3–E5), aqua park (H14–H16) y río lento (G9). Siguen disponibles para
-                la venta.
+                Tres manzanas tienen solares asignados a proyectos de negocio dentro del macroproyecto
+                y siguen disponibles para la venta: zona de camping (E3–E5), aqua park (H14–H16) y río
+                lento (G9). Fuera de esta oferta quedan los solares ya destinados: Santorini Condohotel
+                (A-17 y A-18), Ibiza Condohotel (A-19 y A-20) y la planta de tratamiento de aguas
+                residuales (B-9, B-10 y B-11).
               </p>
               <Source>Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada solar.</Source>
             </Detail>
