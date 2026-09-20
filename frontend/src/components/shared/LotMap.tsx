@@ -37,6 +37,31 @@ const INSTALLMENTS = 36;
 type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
 
 
+/** Desde este zoom cabe el rótulo dentro del solar. */
+const LOT_LABEL_ZOOM = 18;
+
+/**
+ * Rotula el solar: acercado, el código y su uso (o la disponibilidad) dentro del
+ * polígono; alejado, un globo al pasar el cursor.
+ */
+function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoomed: boolean) {
+  poly.lotData = lot;
+  const uso = lot.name || STATUS_STYLE[lot.status].label;
+  if (!zoomed) {
+    poly.unbindTooltip().bindTooltip(`${lot.code} · ${uso}`, { sticky: true });
+    return;
+  }
+  poly
+    .unbindTooltip()
+    .bindTooltip(`<b>${lot.code}</b><br>${uso}`, {
+      permanent: true,
+      direction: 'center',
+      className: 'lot-label',
+      opacity: 1,
+    })
+    .openTooltip();
+}
+
 /**
  * Dibuja bajo los solares el urbanismo de Montañita View: áreas verdes,
  * equipamiento y el eje de cada calle, tal como constan en el plano de
@@ -182,15 +207,28 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
         fillColor: style.fill,
         fillOpacity: 0.55,
       });
-      poly.bindTooltip(`${lot.code}${lot.name ? ` · ${lot.name}` : ''}`, { sticky: true });
       poly.on('click', () => setSelected(lot));
       poly.addTo(layer);
+      labelLot(poly, lot, map.getZoom() >= LOT_LABEL_ZOOM);
       ring.forEach((c) => bounds.extend(c));
     }
+    // Acercado, el código y el uso van rotulados dentro de cada solar; en la
+    // vista general estorban y basta el globo al pasar el cursor.
+    const onZoom = () => {
+      const zoomed = map.getZoom() >= LOT_LABEL_ZOOM;
+      layer.eachLayer((l) => {
+        const poly = l as L.Polygon & { lotData?: PublicLot };
+        if (poly.lotData) labelLot(poly, poly.lotData, zoomed);
+      });
+    };
+    map.on('zoomend', onZoom);
     // invalidateSize: si el contenedor aún no tiene tamaño, fitBounds se iría al
     // zoom máximo. maxZoom 18 mantiene la vista general aunque quede un solo solar.
     map.invalidateSize();
     if (bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 18 });
+    return () => {
+      map.off('zoomend', onZoom);
+    };
   }, [visible]);
 
   if (lots === null) return <p className="py-10 text-center text-brand-gray">Cargando mapa de solares…</p>;

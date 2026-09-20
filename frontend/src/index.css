@@ -188,3 +188,21 @@ text.via-label {
   stroke-linejoin: round;
   pointer-events: none;
 }
+
+/* Código y uso del solar, rotulados dentro de su polígono al acercar el mapa. */
+.leaflet-tooltip.lot-label {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1.15;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  white-space: normal;
+  width: 74px;
+  pointer-events: none;
+}
+.leaflet-tooltip.lot-label::before { display: none; }
