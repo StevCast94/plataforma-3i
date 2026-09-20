@@ -187,7 +187,10 @@ export function LotMap({ projectSlug, projectName }: { projectSlug: string; proj
       poly.addTo(layer);
       ring.forEach((c) => bounds.extend(c));
     }
-    if (bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20] });
+    // invalidateSize: si el contenedor aún no tiene tamaño, fitBounds se iría al
+    // zoom máximo. maxZoom 18 mantiene la vista general aunque quede un solo solar.
+    map.invalidateSize();
+    if (bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 18 });
   }, [visible]);
 
   if (lots === null) return <p className="py-10 text-center text-brand-gray">Cargando mapa de solares…</p>;
