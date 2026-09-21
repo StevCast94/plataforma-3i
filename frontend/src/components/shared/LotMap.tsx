@@ -7,6 +7,7 @@ import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/shared/Toast';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
+import { PhoneField } from '@/components/shared/PhoneField';
 import { useVisualViewport } from '@/hooks/useVisualViewport';
 import type { PublicLot, LotStatus } from '@shared/types';
 import ZONAS from '@/data/montanita-zonas.json';
@@ -422,9 +423,9 @@ export function LotMap({
         <WhatsAppCTA
           variant="outline"
           className="ml-2 mt-3"
-          message={`Hola 👋 Estoy viendo el mapa de solares de ${projectName} y quiero información.`}
+          message={`Hola, estoy viendo el mapa de solares de ${projectName} y quiero información.`}
         >
-          Preguntar por WhatsApp
+          Contactar un asesor
         </WhatsAppCTA>
       </div>
 
@@ -622,7 +623,7 @@ function LotPanel({
   const vv = useVisualViewport();
 
   const precio = lot.price != null ? `, ${formatCurrency(lot.price)}` : '';
-  const waMsg = `Hola 👋 Me interesa el *solar ${lot.code}* de ${projectName} (${fmtArea(lot.areaM2)}${precio}). Quiero más información.`;
+  const waMsg = `Hola, me interesa el *solar ${lot.code}* de ${projectName} (${fmtArea(lot.areaM2)}${precio}). Quiero más información.`;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -678,7 +679,7 @@ function LotPanel({
 
       {/* Vía más rápida: abre WhatsApp con el solar ya escrito, sin llenar nada. */}
       <WhatsAppCTA message={waMsg} className="mt-4 w-full">
-        Consultar el solar {lot.code}
+        Contactar un asesor
       </WhatsAppCTA>
 
       <LotSheet lot={lot} />
@@ -688,7 +689,7 @@ function LotPanel({
           <p className="text-sm font-semibold text-primary">O déjanos tus datos y te escribimos</p>
           <input required placeholder="Nombre" onFocus={keepVisible} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
           <input required type="email" placeholder="Email" onFocus={keepVisible} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-          <input required type="tel" placeholder="WhatsApp (obligatorio)" onFocus={keepVisible} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+          <PhoneField required onFocus={keepVisible} onChange={(phone) => setForm({ ...form, phone })} />
           <Button type="submit" className="w-full" disabled={sending}>
             {sending ? 'Enviando…' : 'Quiero que me contacten'}
           </Button>

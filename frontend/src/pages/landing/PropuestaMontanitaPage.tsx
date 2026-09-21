@@ -10,6 +10,7 @@ import { useToast } from '@/components/shared/Toast';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta, type PropuestaContent } from '@/lib/propuestaContent';
 import { WhatsAppCTA, useWhatsAppHref } from '@/components/shared/WhatsAppCTA';
+import { PhoneField } from '@/components/shared/PhoneField';
 
 // ============================================================
 // PROPUESTA EXCLUSIVA — Montañita View (privada: noindex, sin enlace en el
@@ -86,7 +87,7 @@ export default function PropuestaMontanitaPage() {
 
   // Reunión por WhatsApp, con el contexto de la propuesta ya escrito.
   const meetHref = useWhatsAppHref(
-    'Hola 👋 Vi la propuesta de Montañita View y quiero *agendar una reunión* con un asesor.',
+    'Hola, vi la propuesta de Montañita View y quiero *agendar una reunión* con un asesor.',
   );
 
   // Al imprimir (botón o Ctrl+P) se despliegan todos los detalles técnicos y
@@ -203,9 +204,9 @@ export default function PropuestaMontanitaPage() {
                 <Button>Ver el mapa de solares</Button>
               </Link>
               <WhatsAppCTA
-                message="Hola 👋 Vi la propuesta de Montañita View y me interesa *comprar un solar* (Ruta A). Quiero más información."
+                message="Hola, vi la propuesta de Montañita View y me interesa *comprar un solar* (Ruta A). Quiero más información."
               >
-                Consultar por WhatsApp
+                Contactar un asesor
               </WhatsAppCTA>
             </div>
 
@@ -269,9 +270,9 @@ export default function PropuestaMontanitaPage() {
             <KV rows={c.lobby.rows} />
             <WhatsAppCTA
               className="mt-4"
-              message="Hola 👋 Vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Ruta B). Quiero más información."
+              message="Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Ruta B). Quiero más información."
             >
-              Consultar por WhatsApp
+              Contactar un asesor
             </WhatsAppCTA>
             <Gallery
               items={[
@@ -410,9 +411,9 @@ export default function PropuestaMontanitaPage() {
 
             <WhatsAppCTA
               className="mt-4"
-              message={`Hola 👋 Vi la propuesta de Montañita View y me interesa *la compra total* (Ruta C, ${c.total.tag}). Quiero más información.`}
+              message={`Hola, vi la propuesta de Montañita View y me interesa *la compra total* (Ruta C, ${c.total.tag}). Quiero más información.`}
             >
-              Consultar por WhatsApp
+              Contactar un asesor
             </WhatsAppCTA>
 
             <Detail title="Infraestructura y estudios ya ejecutados">
@@ -511,7 +512,7 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
         </p>
         <input required placeholder="Nombre completo" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
         <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-        <input required type="tel" placeholder="WhatsApp (obligatorio)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+        <PhoneField required onChange={(phone) => setForm({ ...form, phone })} />
         <p className="text-xs text-brand-gray">El WhatsApp es obligatorio: es por donde te responde el asesor.</p>
         <Button type="submit" className="w-full" disabled={sending}>
           {sending ? 'Enviando…' : 'Ver la propuesta'}

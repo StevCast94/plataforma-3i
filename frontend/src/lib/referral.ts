@@ -47,7 +47,7 @@ export const COMMISSION_BADGE: Record<CommissionStatus, { label: string; classNa
 export function whatsappShareUrl(fullUrl: string, message?: string): string {
   const msg = message
     ? `${message} ${fullUrl}`
-    : `¡Únete al Club 3i conmigo! 🌍 Viaja con descuentos de hasta 70% y gana ingresos por referir. Regístrate aquí: ${fullUrl}`;
+    : `¡Únete al Club 3i conmigo! Viaja con descuentos de hasta 70% y gana ingresos por referir. Regístrate aquí: ${fullUrl}`;
   return `https://wa.me/?text=${encodeURIComponent(msg)}`;
 }
 

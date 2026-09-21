@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { Input, Textarea } from '@/components/ui/Input';
+import { PhoneField } from '@/components/shared/PhoneField';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { api } from '@/lib/api';
@@ -173,7 +174,7 @@ export function ContactForm({
           </div>
 
           <div>
-            <Input name="phone" type="tel" label="WhatsApp" placeholder="+593 ..." />
+            <PhoneField name="phone" label="WhatsApp" />
             {errors.phone ? (
               <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
             ) : (

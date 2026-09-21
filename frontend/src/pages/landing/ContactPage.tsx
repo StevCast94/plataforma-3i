@@ -39,9 +39,9 @@ export default function ContactPage() {
 
           <WhatsAppCTA
             className="mt-6"
-            message="Hola 👋 Estoy en la web de Grupo 3i y quiero información."
+            message="Hola, estoy en la web de Grupo 3i y quiero información."
           >
-            Escribir por WhatsApp
+            Contactar un asesor
           </WhatsAppCTA>
         </div>
 

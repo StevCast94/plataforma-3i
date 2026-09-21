@@ -271,10 +271,10 @@ export default function ProjectDetailPage() {
               Solicitar información
             </Button>
             <WhatsAppCTA
-              message={`Hola 👋 Me interesa el proyecto *${project.name}* y quiero información.`}
+              message={`Hola, me interesa el proyecto *${project.name}* y quiero información.`}
               className="px-7 py-3.5 text-base"
             >
-              Escribir por WhatsApp
+              Contactar un asesor
             </WhatsAppCTA>
             <ShareToCommunity
               title={project.name}

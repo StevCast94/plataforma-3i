@@ -51,7 +51,7 @@ export function ProductCTAs({ product }: { product: Product }) {
   const endpoint = `/products/${product.id}/inquiry`;
   const ref = getReferralCode();
   const phoneDigits = (contact?.whatsapp ?? '').replace(/\D/g, '');
-  const waMsg = `Hola 👋 Me interesa *${product.name}* que vi en la web de Grupo 3i.${ref ? ` (Ref: ${ref})` : ''}`;
+  const waMsg = `Hola, me interesa *${product.name}* que vi en la web de Grupo 3i.${ref ? ` (Ref: ${ref})` : ''}`;
   const waHref = phoneDigits
     ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(waMsg)}`
     : null;

@@ -541,10 +541,10 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <WhatsAppCTA
-              message={`Hola 👋 Me interesa el proyecto *${project.name}* y quiero información.`}
+              message={`Hola, me interesa el proyecto *${project.name}* y quiero información.`}
               className="px-7 py-3.5 text-base"
             >
-              Escribir por WhatsApp
+              Contactar un asesor
             </WhatsAppCTA>
             <Button size="lg" variant="outline" onClick={onRequestInfo}>
               Solicitar información

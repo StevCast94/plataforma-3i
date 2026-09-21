@@ -5,9 +5,10 @@ import { getReferralCode } from '@/hooks/useReferral';
 // ============================================================
 // Botón de WhatsApp al número oficial de la página (SiteContent contact.whatsapp).
 //
-// El mensaje se arma en el punto donde se toca el botón: incluye la referencia
-// de lo que la persona está viendo (el solar, la propuesta, el proyecto) y la
-// URL exacta, para que el asesor no tenga que preguntar "¿cuál solar?".
+// El mensaje se arma en el punto donde se toca el botón: nombra lo que la
+// persona está viendo (el solar, la propuesta, el proyecto) para que el asesor
+// no tenga que preguntar "¿cuál solar?". Sin emojis: WhatsApp Web los recibe
+// rotos cuando vienen en el texto prellenado del enlace.
 // ============================================================
 
 export const WA_ICON = (
@@ -26,8 +27,7 @@ export function useWhatsAppHref(message: string, override?: string): string | nu
   if (!digits) return null;
 
   const ref = getReferralCode();
-  const url = typeof window !== 'undefined' ? window.location.href : '';
-  const text = [message, url, ref ? `(Ref: ${ref})` : ''].filter(Boolean).join('\n\n');
+  const text = ref ? `${message}\n\n(Ref: ${ref})` : message;
   return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
 }
 
@@ -45,7 +45,7 @@ interface Props {
 
 export function WhatsAppCTA({
   message,
-  children = 'Consultar por WhatsApp',
+  children = 'Contactar un asesor',
   whatsapp,
   variant = 'solid',
   size = 'md',
