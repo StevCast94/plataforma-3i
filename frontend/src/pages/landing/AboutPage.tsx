@@ -1,4 +1,5 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { useLang } from '@/hooks/useLang';
 import { CTASection } from '@/components/shared/CTASection';
 import { useSectionContent } from '@/hooks/useSiteContent';
 
@@ -21,20 +22,23 @@ const pillars = [
 ];
 
 export default function AboutPage() {
+  const { t } = useLang();
   const { data } = useSectionContent('about');
 
   return (
     <>
       <PageHeader
-        title={data?.title ?? 'Sobre Grupo 3i'}
-        subtitle="Inversión inmobiliaria inteligente."
+        title={t(data?.title ?? 'Sobre Grupo 3i')}
+        subtitle={t('Inversión inmobiliaria inteligente.')}
         image="/images/secciones/header-nosotros.jpg"
       />
 
       <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
         <p className="text-lg leading-relaxed text-primary/80">
-          {data?.body ??
-            'Somos un grupo inmobiliario enfocado en democratizar la inversión a través de propiedades fraccionadas, membresías de viaje y proyectos de alto nivel en Ecuador.'}
+          {t(
+            data?.body ??
+              'Somos un grupo inmobiliario enfocado en democratizar la inversión a través de propiedades fraccionadas, membresías de viaje y proyectos de alto nivel en Ecuador.',
+          )}
         </p>
       </section>
 
@@ -43,16 +47,15 @@ export default function AboutPage() {
         <div className="grid items-center gap-10 md:grid-cols-2">
           <img
             src="/images/secciones/nosotros-historia.jpg"
-            alt="Construcción de uno de nuestros proyectos en la costa"
+            alt={t('Construcción de uno de nuestros proyectos en la costa')}
             className="aspect-[4/3] w-full rounded-2xl object-cover shadow-lg"
           />
           <div>
-            <h2 className="text-3xl text-primary sm:text-4xl">Nuestra historia</h2>
+            <h2 className="text-3xl text-primary sm:text-4xl">{t('Nuestra historia')}</h2>
             <p className="mt-4 text-brand-gray">
-              Empezamos con una convicción simple: la inversión inmobiliaria de alto nivel no
-              debería estar reservada para unos pocos. Fraccionamos proyectos premium en la costa
-              ecuatoriana para que más personas puedan construir patrimonio real, con la misma
-              calidad y transparencia que exigiríamos para nuestra propia inversión.
+              {t(
+                'Empezamos con una convicción simple: la inversión inmobiliaria de alto nivel no debería estar reservada para unos pocos. Fraccionamos proyectos premium en la costa ecuatoriana para que más personas puedan construir patrimonio real, con la misma calidad y transparencia que exigiríamos para nuestra propia inversión.',
+              )}
             </p>
           </div>
         </div>
@@ -64,8 +67,8 @@ export default function AboutPage() {
             <div key={p.title} className="overflow-hidden rounded-2xl bg-white shadow-sm">
               <img src={p.image} alt="" className="h-40 w-full object-cover" />
               <div className="p-8">
-                <h3 className="text-xl text-primary">{p.title}</h3>
-                <p className="mt-3 text-sm text-brand-gray">{p.body}</p>
+                <h3 className="text-xl text-primary">{t(p.title)}</h3>
+                <p className="mt-3 text-sm text-brand-gray">{t(p.body)}</p>
               </div>
             </div>
           ))}
@@ -73,9 +76,9 @@ export default function AboutPage() {
       </section>
 
       <CTASection
-        title="¿Listo para invertir con nosotros?"
-        subtitle="Conversemos sobre la oportunidad ideal para ti."
-        ctaText="Contáctanos"
+        title={t('¿Listo para invertir con nosotros?')}
+        subtitle={t('Conversemos sobre la oportunidad ideal para ti.')}
+        ctaText={t('Contáctanos')}
         ctaTo="/contacto"
         image="/images/secciones/cta-invertir.jpg"
       />

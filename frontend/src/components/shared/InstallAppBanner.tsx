@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLang } from '@/hooks/useLang';
 import { Download, Share, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Isotipo } from '@/components/brand/Isotipo';
@@ -31,6 +32,7 @@ function isIos(): boolean {
  * el bottom-nav de la Oficina (ambos viven a la derecha / full-width abajo).
  */
 export function InstallAppBanner() {
+  const { t } = useLang();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [iosHint, setIosHint] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -74,7 +76,7 @@ export function InstallAppBanner() {
   return (
     <div
       role="dialog"
-      aria-label="Instalar la app de Grupo 3i"
+      aria-label={t('Instalar la app de Grupo 3i')}
       className="fixed bottom-24 left-4 right-4 z-50 flex max-w-sm items-start gap-3 rounded-2xl bg-primary p-4 text-white shadow-2xl ring-1 ring-white/10 md:bottom-6 md:left-6 md:right-auto"
     >
       <Isotipo className="h-9 w-9 flex-none" tone="light" />
@@ -98,7 +100,7 @@ export function InstallAppBanner() {
       </div>
       <button
         onClick={dismiss}
-        aria-label="Cerrar"
+        aria-label={t('Cerrar')}
         className="flex-none cursor-pointer rounded-full p-1 text-white/50 hover:bg-white/10 hover:text-white"
       >
         <X className="h-4 w-4" strokeWidth={1.8} />

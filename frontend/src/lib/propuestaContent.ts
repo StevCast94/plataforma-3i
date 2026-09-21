@@ -84,7 +84,7 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     rows: [
       ['Superficie', `${m2(LOBBY_M2)} (29,090 m² útiles + 7,258 m² de vías y áreas verdes)`],
       ['Valor del predio', `${usd(LOBBY_M2 * LOBBY_PRICE_M2)} ($${LOBBY_PRICE_M2} / m²)`],
-      ['Propiedad', 'Didier Triana — proyecto hermano de la Lotización, con convenio entre ambos'],
+      ['Propietario', 'Didier Triana — proyecto hermano de la Lotización, con convenio entre ambos'],
       ['Modalidad', 'Sociedad para el desarrollo del proyecto o compra del predio'],
     ],
   },

@@ -1,4 +1,5 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { motion } from 'framer-motion';
 import { Check, Sparkle, ShoppingBag } from 'lucide-react';
 import { useProduct, useProducts } from '@/hooks/useProducts';
@@ -26,6 +27,7 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function ProductDetailPage() {
+  const { t } = useLang();
   const { slug } = useParams();
   const { data: product, loading, error } = useProduct(slug);
   const { data: allProducts } = useProducts();
@@ -35,9 +37,9 @@ export default function ProductDetailPage() {
   if (!product)
     return (
       <EmptyState
-        title="Producto no encontrado"
-        message="Es posible que ya no esté disponible."
-        ctaText="Volver a la tienda"
+        title={t('Producto no encontrado')}
+        message={t('Es posible que ya no esté disponible.')}
+        ctaText={t('Volver a la tienda')}
         ctaTo="/tienda"
         icon={<ShoppingBag className="h-12 w-12 text-secondary" strokeWidth={1.4} />}
       />
@@ -58,8 +60,8 @@ export default function ProductDetailPage() {
         <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
           <Breadcrumbs
             items={[
-              { label: 'Inicio', to: '/' },
-              { label: 'Tienda', to: '/tienda' },
+              { label: t('Inicio'), to: '/' },
+              { label: t('Tienda'), to: '/tienda' },
               { label: product.name },
             ]}
           />
@@ -81,7 +83,7 @@ export default function ProductDetailPage() {
           </motion.div>
 
           <div className="lg:col-span-2">
-            <Badge>{typeLabels[product.type] ?? product.type}</Badge>
+            <Badge>{t(typeLabels[product.type] ?? product.type)}</Badge>
             <h1 className="mt-3 text-4xl font-bold text-primary">{product.name}</h1>
             <div className="mt-4">
               <PriceDisplay price={product.price} promoPrice={product.promoPrice} />
@@ -93,7 +95,7 @@ export default function ProductDetailPage() {
                 {features.slice(0, 5).map((f) => (
                   <li key={f} className="flex items-start gap-3 text-primary/90">
                     <Check className="mt-0.5 h-4 w-4 flex-none text-accent" strokeWidth={2.2} />
-                    <span>{f}</span>
+                    <span>{t(f)}</span>
                   </li>
                 ))}
               </ul>
@@ -114,7 +116,7 @@ export default function ProductDetailPage() {
       {/* 4. GALERÍA */}
       {gallery.length > 1 && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-          <h2 className="mb-8 text-center text-3xl font-bold text-primary">Galería</h2>
+          <h2 className="mb-8 text-center text-3xl font-bold text-primary">{t('Galería')}</h2>
           <ImageGallery images={gallery} alt={product.name} />
         </section>
       )}
@@ -133,7 +135,7 @@ export default function ProductDetailPage() {
       {related.length > 0 && (
         <section className="bg-light">
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-2xl font-bold text-primary">También te puede interesar</h2>
+            <h2 className="mb-8 text-2xl font-bold text-primary">{t('También te puede interesar')}</h2>
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
@@ -162,17 +164,18 @@ function MembershipSections({
   product: Product;
   features: string[];
 }) {
+  const { t } = useLang();
   return (
     <>
       {product.promoPrice && (
         <section className="bg-primary text-white">
           <div className="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6">
-            <Badge variant="gold" className="mb-4">Precio de lanzamiento</Badge>
+            <Badge variant="gold" className="mb-4">{t('Precio de lanzamiento')}</Badge>
             <h2 className="text-2xl font-bold sm:text-3xl">
-              Aprovecha el precio especial de lanzamiento
+              {t('Aprovecha el precio especial de lanzamiento')}
             </h2>
             <p className="mt-2 text-white/70">
-              Disponible solo durante la preventa. Asegura tu membresía hoy.
+              {t('Disponible solo durante la preventa. Asegura tu membresía hoy.')}
             </p>
           </div>
         </section>
@@ -181,7 +184,7 @@ function MembershipSections({
       {features.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <h2 className="mb-10 text-center text-3xl font-bold text-primary sm:text-4xl">
-            Beneficios
+            {t('Beneficios')}
           </h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => (
@@ -190,7 +193,7 @@ function MembershipSections({
                 className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5"
               >
                 <Sparkle className="h-6 w-6 text-secondary" strokeWidth={1.6} />
-                <p className="mt-3 font-medium text-primary">{f}</p>
+                <p className="mt-3 font-medium text-primary">{t(f)}</p>
               </div>
             ))}
           </div>
@@ -201,17 +204,17 @@ function MembershipSections({
       <section className="bg-light">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <h2 className="mb-10 text-center text-3xl font-bold text-primary">
-            Lo que dicen nuestros miembros
+            {t('Lo que dicen nuestros miembros')}
           </h2>
           <div className="grid gap-6 md:grid-cols-3">
-            {testimonials.map((t) => (
+            {testimonials.map((tm) => (
               <figure
-                key={t.name}
+                key={tm.name}
                 className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5"
               >
-                <blockquote className="text-primary/80">“{t.text}”</blockquote>
+                <blockquote className="text-primary/80">“{t(tm.text)}”</blockquote>
                 <figcaption className="mt-4 text-sm font-semibold text-accent">
-                  — {t.name}
+                  — {tm.name}
                 </figcaption>
               </figure>
             ))}
@@ -225,6 +228,7 @@ function MembershipSections({
 /* ============ PROPIEDADES ============ */
 
 function PropertySections({ product }: { product: Product }) {
+  const { t } = useLang();
   return (
     <>
       <section className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 lg:px-8">
@@ -246,14 +250,14 @@ function PropertySections({ product }: { product: Product }) {
             )}
             <div>
               <p className="text-xs uppercase tracking-wider text-brand-gray">
-                Parte del proyecto
+                {t('Parte del proyecto')}
               </p>
               <p className="text-xl font-bold text-primary">{product.project.name}</p>
               {product.project.location && (
                 <p className="text-sm text-brand-gray">{product.project.location}</p>
               )}
               <span className="mt-1 inline-block text-sm font-medium text-accent">
-                Ver proyecto →
+                {t('Ver proyecto')} →
               </span>
             </div>
           </Link>

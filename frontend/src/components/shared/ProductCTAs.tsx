@@ -6,6 +6,7 @@ import { ContactForm } from './ContactForm';
 import { CheckoutModal } from './CheckoutModal';
 import { PriceDisplay } from './PriceDisplay';
 import { useSectionContent } from '@/hooks/useSiteContent';
+import { useLang } from '@/hooks/useLang';
 import { getReferralCode } from '@/hooks/useReferral';
 import type { Product } from '@shared/types';
 
@@ -25,6 +26,7 @@ const ICONS = {
 };
 
 export function ProductCTAs({ product }: { product: Product }) {
+  const { t } = useLang();
   const { data: contact } = useSectionContent('contact');
   const [modal, setModal] = useState<null | 'visit' | 'meet'>(null);
   const [checkout, setCheckout] = useState(false);
@@ -43,15 +45,17 @@ export function ProductCTAs({ product }: { product: Product }) {
   const isMembership = product.type === 'TRAVEL_MEMBERSHIP';
   const isFractional = product.type === 'FRACTIONAL_PROPERTY';
   const buyLabel = isMembership
-    ? 'Obtener mi membresía'
+    ? t('Obtener mi membresía')
     : isFractional
-      ? 'Obtener mi fracción'
-      : 'Comprar ahora';
+      ? t('Obtener mi fracción')
+      : t('Comprar ahora');
 
   const endpoint = `/products/${product.id}/inquiry`;
   const ref = getReferralCode();
   const phoneDigits = (contact?.whatsapp ?? '').replace(/\D/g, '');
-  const waMsg = `Hola, me interesa *${product.name}* que vi en la web de Grupo 3i.${ref ? ` (Ref: ${ref})` : ''}`;
+  const waMsg = `${t('Hola, me interesa *{p}* que vi en la web de Grupo 3i.', { p: product.name })}${
+    ref ? ` (Ref: ${ref})` : ''
+  }`;
   const waHref = phoneDigits
     ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(waMsg)}`
     : null;
@@ -71,7 +75,7 @@ export function ProductCTAs({ product }: { product: Product }) {
           <a href={waHref} target="_blank" rel="noreferrer" className="block">
             <Button size="lg" variant="outline" className="w-full">
               <span className="text-[#25D366]">{ICONS.whatsapp}</span>
-              Hablar con un asesor
+              {t('Hablar con un asesor')}
             </Button>
           </a>
         ) : (
@@ -96,7 +100,7 @@ export function ProductCTAs({ product }: { product: Product }) {
             className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-brand-gray underline-offset-4 transition-colors hover:text-accent hover:underline"
           >
             <Video className="h-4 w-4" strokeWidth={1.8} />
-            {isMembership ? 'Agendar una llamada' : 'Meet personalizado'}
+            {isMembership ? t('Agendar una llamada') : t('Meet personalizado')}
           </button>
         </div>
 

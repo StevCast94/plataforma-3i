@@ -12,6 +12,7 @@ import { ContactForm } from '@/components/shared/ContactForm';
 import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { BrochureDigital } from '@/components/shared/BrochureDigital';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
+import { useLang } from '@/hooks/useLang';
 import { LotMap } from '@/components/shared/LotMap';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorState } from '@/components/shared/ErrorState';
@@ -22,6 +23,7 @@ import { cld } from '@/lib/cloudinary';
 import { formatCurrency } from '@/lib/utils';
 
 export default function ProjectDetailPage() {
+  const { t } = useLang();
   const { slug } = useParams();
   const navigate = useNavigate();
   const { data: project, loading, error } = useProject(slug);
@@ -33,9 +35,9 @@ export default function ProjectDetailPage() {
   if (!project)
     return (
       <EmptyState
-        title="Proyecto no encontrado"
-        message="Es posible que ya no esté disponible."
-        ctaText="Ver todos los proyectos"
+        title={t('Proyecto no encontrado')}
+        message={t('Es posible que ya no esté disponible.')}
+        ctaText={t('Ver todos los proyectos')}
         ctaTo="/proyectos"
         icon={<Building2 className="h-10 w-10" strokeWidth={1.4} />}
       />
@@ -55,9 +57,9 @@ export default function ProjectDetailPage() {
   // Metadatos del hero: hasta 2 datos duros junto al precio, para dar sustancia
   // sin recargar. Salen de las características ya cargadas del proyecto.
   const heroMeta: { label: string; value: string }[] = [];
-  if (project.features?.tipo) heroMeta.push({ label: 'Tipo', value: String(project.features.tipo) });
+  if (project.features?.tipo) heroMeta.push({ label: t('Tipo'), value: String(project.features.tipo) });
   if (project.features?.unidades != null)
-    heroMeta.push({ label: 'Unidades', value: String(project.features.unidades) });
+    heroMeta.push({ label: t('Unidades'), value: String(project.features.unidades) });
 
   // Producto de tienda vinculado a este proyecto (ej. la fracción de Ibiza) — si existe,
   // "Quiero invertir" lleva directo a solicitar la compra en vez de abrir el formulario genérico.
@@ -98,8 +100,8 @@ export default function ProjectDetailPage() {
         <div className="mx-auto w-full max-w-7xl px-4 pb-20 pt-28 sm:px-6 lg:px-8">
           <Breadcrumbs
             items={[
-              { label: 'Inicio', to: '/' },
-              { label: 'Proyectos', to: '/proyectos' },
+              { label: t('Inicio'), to: '/' },
+              { label: t('Proyectos'), to: '/proyectos' },
               { label: project.name },
             ]}
           />
@@ -135,7 +137,7 @@ export default function ProjectDetailPage() {
               {(project.priceFrom != null || project.priceLabel) && (
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/50">
-                    Inversión desde
+                    {t('Inversión desde')}
                   </p>
                   <p className="mt-1 font-serif text-3xl font-bold text-secondary sm:text-4xl">
                     {project.priceFrom != null
@@ -165,7 +167,7 @@ export default function ProjectDetailPage() {
                 onClick={goInvest}
                 className="group px-9 text-xs font-semibold uppercase tracking-[0.2em] shadow-[0_8px_30px_rgba(201,169,110,0.35)] hover:shadow-[0_10px_40px_rgba(201,169,110,0.5)] sm:text-sm"
               >
-                Quiero invertir
+                {t('Quiero invertir')}
                 <ArrowRight
                   className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
                   strokeWidth={2}
@@ -175,7 +177,7 @@ export default function ProjectDetailPage() {
                 onClick={() => setOpen(true)}
                 className="cursor-pointer border border-white/40 px-9 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm transition-colors duration-200 hover:border-white hover:bg-white hover:text-primary sm:text-sm"
               >
-                Solicitar información
+                {t('Solicitar información')}
               </button>
             </div>
           </motion.div>
@@ -188,7 +190,7 @@ export default function ProjectDetailPage() {
           transition={{ delay: 1.2, duration: 0.6 }}
           className="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex"
         >
-          <span className="text-[10px] uppercase tracking-[0.3em] text-white/50">Descubre</span>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-white/50">{t('Descubre')}</span>
           <motion.span
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -205,7 +207,7 @@ export default function ProjectDetailPage() {
       {gallery.length > 0 && !project.showBrochure && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <h2 className="mb-8 text-center text-3xl font-bold text-primary sm:text-4xl">
-            Galería
+            {t('Galería')}
           </h2>
           <ImageGallery images={gallery} alt={project.name} />
         </section>
@@ -216,26 +218,26 @@ export default function ProjectDetailPage() {
         <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <h2 className="text-3xl font-bold text-primary sm:text-4xl">
-              Oportunidad de Inversión
+              {t('Oportunidad de Inversión')}
             </h2>
             <p className="mt-5 leading-relaxed text-primary/80">{project.description}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <DataCard
-              label="Precio desde"
+              label={t('Precio desde')}
               value={
                 project.priceFrom != null
                   ? formatCurrency(project.priceFrom)
-                  : (project.priceLabel ?? 'Consultar')
+                  : (project.priceLabel ?? t('Consultar'))
               }
             />
             {/* Antes era un '9% anual*' fijo para TODOS los proyectos (incluida una
                 lotización, que no genera renta). Solo se muestra si el proyecto lo define. */}
             {typeof project.features?.retorno === 'string' && (
-              <DataCard label="Retorno estimado" value={project.features.retorno} />
+              <DataCard label={t('Retorno estimado')} value={project.features.retorno} />
             )}
-            <DataCard label="Ubicación" value={project.location ?? 'Ecuador'} />
-            <DataCard label="Estado" value={project.active ? 'Disponible' : 'No disponible'} />
+            <DataCard label={t('Ubicación')} value={project.location ?? 'Ecuador'} />
+            <DataCard label={t('Estado')} value={project.active ? t('Disponible') : t('No disponible')} />
           </div>
         </div>
       </section>
@@ -249,7 +251,7 @@ export default function ProjectDetailPage() {
             to="/propuesta/montanita-view"
             className="inline-block rounded-full bg-primary px-8 py-3 font-semibold text-white transition hover:brightness-110"
           >
-            Ver la propuesta completa de inversión →
+            {t('Ver la propuesta completa de inversión')} →
           </Link>
         </div>
       )}
@@ -262,20 +264,18 @@ export default function ProjectDetailPage() {
       {/* 5. CTA */}
       <section className="bg-primary text-white">
         <div className="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
-          <h2 className="text-3xl font-bold sm:text-4xl">¿Te interesa este proyecto?</h2>
+          <h2 className="text-3xl font-bold sm:text-4xl">{t('¿Te interesa este proyecto?')}</h2>
           <p className="mt-3 text-white/70">
-            Un asesor te explicará el plan de inversión a tu medida.
+            {t('Un asesor te explicará el plan de inversión a tu medida.')}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button size="lg" onClick={() => setOpen(true)}>
-              Solicitar información
+              {t('Solicitar información')}
             </Button>
             <WhatsAppCTA
-              message={`Hola, me interesa el proyecto *${project.name}* y quiero información.`}
+              message={t('Hola, me interesa el proyecto *{p}* y quiero información.', { p: project.name })}
               className="px-7 py-3.5 text-base"
-            >
-              Contactar un asesor
-            </WhatsAppCTA>
+            />
             <ShareToCommunity
               title={project.name}
               path={`/proyectos/${project.slug}`}
@@ -289,7 +289,7 @@ export default function ProjectDetailPage() {
       {/* 6. RELACIONADOS */}
       {related.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <h2 className="mb-8 text-2xl font-bold text-primary">Otros proyectos</h2>
+          <h2 className="mb-8 text-2xl font-bold text-primary">{t('Otros proyectos')}</h2>
           <div className="grid gap-8 md:grid-cols-2">
             {related.map((p) => (
               <ProjectCard key={p.id} project={p} />

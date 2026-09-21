@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -7,6 +7,7 @@ import { useSectionContent } from '@/hooks/useSiteContent';
 import { useProducts } from '@/hooks/useProducts';
 
 export default function ClubPage() {
+  const { t } = useLang();
   const { data: club } = useSectionContent('club');
   const { data: products } = useProducts();
 
@@ -33,15 +34,17 @@ export default function ClubPage() {
             transition={{ duration: 0.6 }}
             className="text-4xl font-bold sm:text-6xl"
           >
-            {club?.title ?? 'Únete al Club 3i'}
+            {t(club?.title ?? 'Únete al Club 3i')}
           </motion.h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-white/80">
-            {club?.subtitle ??
-              'Viaja por el mundo con descuentos de hasta 70% y accede a beneficios exclusivos.'}
+            {t(
+              club?.subtitle ??
+                'Viaja por el mundo con descuentos de hasta 70% y accede a beneficios exclusivos.',
+            )}
           </p>
           <div className="mt-8">
             <Link to="/club/viajes">
-              <Button size="lg">Explorar viajes</Button>
+              <Button size="lg">{t('Explorar viajes')}</Button>
             </Link>
           </div>
         </div>
@@ -58,7 +61,7 @@ export default function ClubPage() {
               </div>
               {membership.promoPrice && (
                 <p className="mt-2 text-sm font-medium text-accent">
-                  Precio de lanzamiento por tiempo limitado
+                  {t('Precio de lanzamiento por tiempo limitado')}
                 </p>
               )}
             </div>
@@ -68,14 +71,14 @@ export default function ClubPage() {
                 {features.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-primary/90">
                     <span className="mt-1 text-secondary">✓</span>
-                    <span>{f}</span>
+                    <span>{t(f)}</span>
                   </li>
                 ))}
               </ul>
 
               <div className="mt-10 text-center">
                 <Link to={`/tienda/${membership.slug}`}>
-                  <Button size="lg">Quiero mi membresía</Button>
+                  <Button size="lg">{t('Quiero mi membresía')}</Button>
                 </Link>
               </div>
             </div>
@@ -86,10 +89,10 @@ export default function ClubPage() {
       {!membership && (
         <section className="mx-auto max-w-3xl px-4 py-20 text-center">
           <p className="text-brand-gray">
-            Pronto tendrás disponible la información de la membresía.
+            {t('Pronto tendrás disponible la información de la membresía.')}
           </p>
           <Link to="/contacto" className="mt-6 inline-block">
-            <Button variant="outline">Déjanos tus datos</Button>
+            <Button variant="outline">{t('Déjanos tus datos')}</Button>
           </Link>
         </section>
       )}

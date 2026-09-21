@@ -95,8 +95,9 @@ export default function App() {
       <ToastProvider>
         <AuthProvider>
           <AdminAuthProvider>
-          <div className="print:hidden"><InstallAppBanner /></div>
           <BrowserRouter>
+            {/* Dentro del Router: el banner lee el idioma de la URL. */}
+            <div className="print:hidden"><InstallAppBanner /></div>
             <Routes>
               {/* Sitio público con navbar/footer, en español (/) y en inglés (/en). */}
               <Route element={<Layout />}>{publicRoutes()}</Route>

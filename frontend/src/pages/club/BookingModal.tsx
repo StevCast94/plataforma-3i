@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useLang } from '@/hooks/useLang';
 import { Badge } from '@/components/ui/Badge';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -32,6 +33,7 @@ export function BookingModal({
   query: TravelHotelSearch | null;
   onClose: () => void;
 }) {
+  const { t } = useLang();
   const [step, setStep] = useState<Step>('form');
   const [customer, setCustomer] = useState({ name: '', email: '', phone: '' });
   const [booking, setBooking] = useState<TravelBooking | null>(null);
@@ -49,7 +51,7 @@ export function BookingModal({
     e.preventDefault();
     if (!offer || !query) return;
     if (!customer.name.trim() || !customer.email.trim()) {
-      setError('Nombre y email son requeridos');
+      setError(t('Nombre y email son requeridos'));
       return;
     }
     setStep('processing');
@@ -79,7 +81,7 @@ export function BookingModal({
   const priceCents = offer?.priceCents ?? 0;
 
   return (
-    <Modal open={open} onClose={close} title={step === 'done' ? '¡Reserva confirmada!' : 'Reservar'}>
+    <Modal open={open} onClose={close} title={step === 'done' ? t('¡Reserva confirmada!') : t('Reservar')}>
       {!offer ? null : step === 'done' && booking ? (
         <div className="space-y-4">
           <div className="flex flex-col items-center rounded-xl bg-secondary/15 p-5 text-center">
@@ -91,12 +93,12 @@ export function BookingModal({
             <Badge variant="gold" className="mt-2">{booking.status}</Badge>
           </div>
           <dl className="space-y-1.5 text-sm">
-            <Row label="Hotel" value={booking.details.name} />
-            <Row label="Destino" value={booking.details.city} />
-            <Row label="Fechas" value={`${booking.details.checkIn} → ${booking.details.checkOut}`} />
-            <Row label="Huéspedes" value={String(booking.details.guests)} />
-            <Row label="Huésped" value={booking.customerName} />
-            <Row label="Total pagado" value={money(booking.totalCents)} bold />
+            <Row label={t('Hotel')} value={booking.details.name} />
+            <Row label={t('Destino')} value={booking.details.city} />
+            <Row label={t('Fechas')} value={`${booking.details.checkIn} → ${booking.details.checkOut}`} />
+            <Row label={t('Huéspedes')} value={String(booking.details.guests)} />
+            <Row label={t('Huésped')} value={booking.customerName} />
+            <Row label={t('Total pagado')} value={money(booking.totalCents)} bold />
           </dl>
           <p className="text-xs text-brand-gray">
             Enviamos la confirmación a {booking.customerEmail}. Guarda tu voucher.
@@ -116,13 +118,13 @@ export function BookingModal({
               </p>
               <p className="mt-1 text-sm">
                 <span className="font-bold text-primary">{money(priceCents)}</span>{' '}
-                {offer.isMemberPrice && <Badge variant="gold">Precio socio</Badge>}
+                {offer.isMemberPrice && <Badge variant="gold">{t('Precio socio')}</Badge>}
               </p>
             </div>
           </div>
 
           <Input
-            label="Nombre del huésped"
+            label={t('Nombre del huésped')}
             value={customer.name}
             onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
           />
@@ -133,7 +135,7 @@ export function BookingModal({
             onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
           />
           <Input
-            label="Teléfono (opcional)"
+            label={t('Teléfono (opcional)')}
             value={customer.phone}
             onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
           />

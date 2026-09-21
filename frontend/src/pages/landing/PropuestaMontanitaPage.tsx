@@ -11,6 +11,7 @@ import { useSectionContent } from '@/hooks/useSiteContent';
 import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta, type PropuestaContent } from '@/lib/propuestaContent';
 import { WhatsAppCTA, useWhatsAppHref } from '@/components/shared/WhatsAppCTA';
 import { PhoneField } from '@/components/shared/PhoneField';
+import { useLang } from '@/hooks/useLang';
 
 // ============================================================
 // PROPUESTA EXCLUSIVA — Montañita View (privada: noindex, sin enlace en el
@@ -66,6 +67,7 @@ const IMG = '/images/propuesta-mv';
 const m2 = (n: number) => `${n.toLocaleString('en-US', { maximumFractionDigits: 2 })} m²`;
 
 export default function PropuestaMontanitaPage() {
+  const { t } = useLang();
   const [unlocked, setUnlocked] = useState(() => {
     try {
       return !!localStorage.getItem(UNLOCK_KEY);
@@ -87,7 +89,7 @@ export default function PropuestaMontanitaPage() {
 
   // Reunión por WhatsApp, con el contexto de la propuesta ya escrito.
   const meetHref = useWhatsAppHref(
-    'Hola, vi la propuesta de Montañita View y quiero *agendar una reunión* con un asesor.',
+    t('Hola, vi la propuesta de Montañita View y quiero *agendar una reunión* con un asesor.'),
   );
 
   // Al imprimir (botón o Ctrl+P) se despliegan todos los detalles técnicos y
@@ -136,8 +138,8 @@ export default function PropuestaMontanitaPage() {
   return (
     <div className="print-doc bg-light">
       <Seo
-        title="Propuesta exclusiva — Montañita View"
-        description="Tres formas de invertir en Montañita View: un solar, sociedad en el Lobby o la compra total."
+        title={t('Propuesta exclusiva — Montañita View')}
+        description={t('Tres formas de invertir en Montañita View: un solar, sociedad en el Lobby o la compra total.')}
         noindex
       />
 
@@ -150,13 +152,13 @@ export default function PropuestaMontanitaPage() {
         <img src={`${IMG}/portada.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover object-center opacity-70" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/45 to-black/5" />
         <div className="mx-auto max-w-5xl px-4 py-24 sm:px-6 sm:py-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{c.heroEyebrow}</p>
-          <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">{c.heroTitle}</h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/80">{c.heroSubtitle}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{t(c.heroEyebrow)}</p>
+          <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">{t(c.heroTitle)}</h1>
+          <p className="mt-4 max-w-2xl text-lg text-white/80">{t(c.heroSubtitle)}</p>
           <div className="mt-6 flex flex-wrap gap-6 text-sm">
-            <Stat v="89" l="solares disponibles" />
-            <Stat v={m2(TOTAL_M2)} l="en oferta" />
-            <Stat v="2018" l="lotización inscrita" />
+            <Stat v="89" l={t('solares disponibles')} />
+            <Stat v={m2(TOTAL_M2)} l={t('en oferta')} />
+            <Stat v="2018" l={t('lotización inscrita')} />
           </div>
         </div>
       </header>
@@ -168,7 +170,7 @@ export default function PropuestaMontanitaPage() {
           {/* LAS TRES RUTAS */}
           <section>
             <h2 className="mb-6 text-center font-serif text-3xl font-bold text-primary">
-              Elige cómo participar
+              {t('Elige cómo participar')}
             </h2>
             <div className="grid gap-5 md:grid-cols-3">
               <RouteCard
@@ -197,55 +199,48 @@ export default function PropuestaMontanitaPage() {
 
           {/* ===== A. SOLAR ===== */}
           <Route id="solar" eyebrow="Ruta A" title="Comprar un solar en la Lotización">
-            <Summary>{c.solar.summary}</Summary>
+            <Summary>{t(c.solar.summary)}</Summary>
             <KV rows={c.solar.rows} />
             <div className="mt-4 flex flex-wrap items-center gap-3 print:hidden">
               <Link to="/proyectos/montanita-view">
-                <Button>Ver el mapa de solares</Button>
+                <Button>{t('Ver el mapa de solares')}</Button>
               </Link>
               <WhatsAppCTA
-                message="Hola, vi la propuesta de Montañita View y me interesa *comprar un solar* (Ruta A). Quiero más información."
-              >
-                Contactar un asesor
-              </WhatsAppCTA>
+                message={t('Hola, vi la propuesta de Montañita View y me interesa *comprar un solar* (Ruta A). Quiero más información.')}
+              />
             </div>
 
-            <Detail title="Cadena de dominio">
+            <Detail title={t('Cadena de dominio')}>
               <ol className="list-decimal space-y-2 pl-5">
                 <li>
-                  <b>2013 —</b> DIWILDI S.A. compra al GAD Municipal de Santa Elena el macrolote de 26.37
-                  ha en el recinto Río Chico (escritura del 10-oct-2013, inscrita el 01-nov-2013).
+                  <b>2013 —</b>{' '}
+                  {t('DIWILDI S.A. compra al GAD Municipal de Santa Elena el macrolote de 26.37 ha en el recinto Río Chico (escritura del 10-oct-2013, inscrita el 01-nov-2013).')}
                 </li>
                 <li>
-                  <b>2014 —</b> Fraccionamiento aprobado por el Concejo Municipal (Lotización "Altos de
-                  Manglar"), protocolizado e inscrito en febrero de 2014.
+                  <b>2014 —</b> {t('Fraccionamiento aprobado por el Concejo Municipal (Lotización "Altos de Manglar"), protocolizado e inscrito en febrero de 2014.')}
                 </li>
                 <li>
-                  <b>2018 —</b> Reestructuración como Lotización Montañita VIEW (Resolución
-                  Administrativa 0118052017-GADMSE-A), protocolizada el 18-oct-2018 e inscrita el
-                  14-nov-2018.
+                  <b>2018 —</b> {t('Reestructuración como Lotización Montañita VIEW (Resolución Administrativa 0118052017-GADMSE-A), protocolizada el 18-oct-2018 e inscrita el 14-nov-2018.')}
                 </li>
               </ol>
               <p className="mt-3">
-                Los solares están fuera de tierras comunales. Cualquier contribución especial de mejoras
-                por obras viales se asigna al vendedor en la escritura, no al comprador.
+                {t('Los solares están fuera de tierras comunales. Cualquier contribución especial de mejoras por obras viales se asigna al vendedor en la escritura, no al comprador.')}
               </p>
-              <Source>Registro de la Propiedad del cantón Santa Elena (inscripciones 01-nov-2013 y 14-nov-2018); Resolución Administrativa 0118052017-GADMSE-A.</Source>
+              <Source>{t('Registro de la Propiedad del cantón Santa Elena (inscripciones 01-nov-2013 y 14-nov-2018); Resolución Administrativa 0118052017-GADMSE-A.')}</Source>
             </Detail>
 
-            <Detail title="Uso de suelo aprobado (258,299 m²)">
+            <Detail title={t('Uso de suelo aprobado (258,299 m²)')}>
               <Table
                 head={['Uso', 'm²', '%']}
                 rows={LAND_USE.map((u) => [u.uso, m2(u.m2), `${u.pct}%`])}
               />
               <p className="mt-3">
-                El 17.25% de áreas verdes cumple el Art. 424 del COOTAD, por lo que no hay compensación
-                pendiente por ese concepto.
+                {t('El 17.25% de áreas verdes cumple el Art. 424 del COOTAD, por lo que no hay compensación pendiente por ese concepto.')}
               </p>
               <Source>Cuadro de áreas del plano aprobado de la Lotización Montañita VIEW (GAD Municipal de Santa Elena, 2018); <a className="underline" target="_blank" rel="noreferrer" href="https://www.cpccs.gob.ec/wp-content/uploads/2020/01/cootad.pdf">COOTAD, Art. 424</a>.</Source>
             </Detail>
 
-            <Detail title="Inventario disponible por manzana">
+            <Detail title={t('Inventario disponible por manzana')}>
               <Table
                 head={['Manzana', 'Solares', 'Área', 'Valor a $100/m²']}
                 rows={[
@@ -254,26 +249,20 @@ export default function PropuestaMontanitaPage() {
                 ]}
               />
               <p className="mt-3">
-                Tres manzanas tienen solares asignados a proyectos de negocio dentro del macroproyecto
-                y siguen disponibles para la venta: zona de camping (E3–E5), aqua park (H14–H16) y río
-                lento (G9). Fuera de esta oferta quedan los solares ya destinados: Santorini Condohotel
-                (A-17 y A-18), Ibiza Condohotel (A-19 y A-20) y la planta de tratamiento de aguas
-                residuales (B-9, B-10 y B-11).
+                {t('Tres manzanas tienen solares asignados a proyectos de negocio dentro del macroproyecto y siguen disponibles para la venta: zona de camping (E3–E5), aqua park (H14–H16) y río lento (G9). Fuera de esta oferta quedan los solares ya destinados: Santorini Condohotel (A-17 y A-18), Ibiza Condohotel (A-19 y A-20) y la planta de tratamiento de aguas residuales (B-9, B-10 y B-11).')}
               </p>
-              <Source>Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada solar.</Source>
+              <Source>{t('Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada solar.')}</Source>
             </Detail>
           </Route>
 
           {/* ===== B. LOBBY ===== */}
           <Route id="lobby" printBreak eyebrow="Ruta B" title="Montañita View Lobby">
-            <Summary>{c.lobby.summary}</Summary>
+            <Summary>{t(c.lobby.summary)}</Summary>
             <KV rows={c.lobby.rows} />
             <WhatsAppCTA
               className="mt-4"
-              message="Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Ruta B). Quiero más información."
-            >
-              Contactar un asesor
-            </WhatsAppCTA>
+              message={t('Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Ruta B). Quiero más información.')}
+            />
             <Gallery
               items={[
                 ['lobby-fachada', 'Lobby, fachada y piscina'],
@@ -285,40 +274,30 @@ export default function PropuestaMontanitaPage() {
               ]}
             />
 
-            <Detail title="Ubicación">
+            <Detail title={t('Ubicación')}>
               <p>
-                Sector alto de la parroquia Manglaralto, sobre la Ruta del Spondylus, a 3 km del centro
-                de Montañita. El entorno combina el filo costero con un interior rural; el bosque
-                protector cubre cerca del 40% del territorio.
+                {t('Sector alto de la parroquia Manglaralto, sobre la Ruta del Spondylus, a 3 km del centro de Montañita. El entorno combina el filo costero con un interior rural; el bosque protector cubre cerca del 40% del territorio.')}
               </p>
               <Figure src="ubicacion-lobby" caption="Polígono del predio del Lobby (Google Earth, 27-sep-2023)" />
               <p className="mt-3">
-                Servicios en el sector: energía y alumbrado público, agua potable, Ruta del Spondylus
-                asfaltada y vía Manglaralto–Dos Mangas. A pocos minutos: Hospital de Manglaralto,
-                gasolinera, reservorios de la Junta de Agua y hosterías de Montañita.
+                {t('Servicios en el sector: energía y alumbrado público, agua potable, Ruta del Spondylus asfaltada y vía Manglaralto–Dos Mangas. A pocos minutos: Hospital de Manglaralto, gasolinera, reservorios de la Junta de Agua y hosterías de Montañita.')}
               </p>
-              <Source>Informe Montañita View, Grupo 3i (págs. 4–5); imagen satelital Google Earth.</Source>
+              <Source>{t('Informe Montañita View, Grupo 3i (págs. 4–5); imagen satelital Google Earth.')}</Source>
             </Detail>
 
-            <Detail title="Lo que ya está construido">
+            <Detail title={t('Lo que ya está construido')}>
               <ul className="list-disc space-y-1 pl-5">
                 <li>
-                  <b>Lobby en dos plantas.</b> Planta baja: jardín, vestíbulo, área de comidas con dos
-                  baños, cocina abierta con bodega, dos piscinas y un jacuzzi. Planta alta: terraza
-                  cubierta con dos baños, bar, oficina administrativa y solárium.
+                  <b>{t('Lobby en dos plantas.')}</b> {t('Planta baja: jardín, vestíbulo, área de comidas con dos baños, cocina abierta con bodega, dos piscinas y un jacuzzi. Planta alta: terraza cubierta con dos baños, bar, oficina administrativa y solárium.')}
                 </li>
                 <li>
-                  <b>Eco-hotel:</b> seis buses reciclados adaptados como habitaciones, cada uno con
-                  terraza y baño completo, cubiertos con caña y policarbonato.
+                  <b>{t('Eco-hotel:')}</b> {t('seis buses reciclados adaptados como habitaciones, cada uno con terraza y baño completo, cubiertos con caña y policarbonato.')}
                 </li>
                 <li>
-                  <b>Infraestructura:</b> garita de acceso, alumbrado privado, red de agua potable, red
-                  eléctrica, transformador trifásico de 75 kVA y monofásico de 50 kVA.
+                  <b>{t('Infraestructura:')}</b> {t('garita de acceso, alumbrado privado, red de agua potable, red eléctrica, transformador trifásico de 75 kVA y monofásico de 50 kVA.')}
                 </li>
                 <li>
-                  <b>Construcción:</b> estructura mixta de hormigón y caña, cisterna de hormigón armado
-                  impermeabilizada, muros de contención en mampostería estructural, piscinas de hormigón
-                  armado con lámina de PVC y pisos exteriores de hormigón y adoquín.
+                  <b>{t('Construcción:')}</b> {t('estructura mixta de hormigón y caña, cisterna de hormigón armado impermeabilizada, muros de contención en mampostería estructural, piscinas de hormigón armado con lámina de PVC y pisos exteriores de hormigón y adoquín.')}
                 </li>
               </ul>
               <Gallery
@@ -331,22 +310,21 @@ export default function PropuestaMontanitaPage() {
                   ['bar', 'Bar del Lobby'],
                 ]}
               />
-              <Source>Informe Montañita View, Grupo 3i (págs. 5–13).</Source>
+              <Source>{t('Informe Montañita View, Grupo 3i (págs. 5–13).')}</Source>
             </Detail>
 
             <div className="rounded-2xl bg-light p-5 sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">Estudio de factibilidad 2026</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">{t('Estudio de factibilidad 2026')}</p>
               <h3 className="mt-1 font-serif text-2xl font-bold text-primary">81 apartamentos en tres etapas</h3>
               <p className="mt-2 text-sm text-primary/80">
-                Estudio propio con precios de venta, costos de construcción y tasas de 2026. Cambia de
-                escenario para ver cómo se mueven los resultados.
+                {t('Estudio propio con precios de venta, costos de construcción y tasas de 2026. Cambia de escenario para ver cómo se mueven los resultados.')}
               </p>
               <div className="mt-5">
                 <MvStudy assumptions={c.study.scenarios} discount={c.study.discount} />
               </div>
             </div>
 
-            <Detail title="Plan maestro del complejo">
+            <Detail title={t('Plan maestro del complejo')}>
               <Figure src="masterplan" caption="Plan maestro: lobby, módulos Arrecife, Coral y Manglar, hotel (fase futura), malecón y garita" />
               <Table
                 head={['Componente', 'Unidades', 'Área vendible', 'Estado']}
@@ -356,7 +334,7 @@ export default function PropuestaMontanitaPage() {
                   ['Hotel', '104 habitaciones', '—', 'Fase futura opcional'],
                 ]}
               />
-              <Source>Plan maestro del proyecto, Grupo 3i.</Source>
+              <Source>{t('Plan maestro del proyecto, Grupo 3i.')}</Source>
             </Detail>
 
             {STAGE_MEDIA.map((s) => (
@@ -372,25 +350,23 @@ export default function PropuestaMontanitaPage() {
               </Detail>
             ))}
 
-            <Detail title="Fase futura: hotel de 104 habitaciones">
+            <Detail title={t('Fase futura: hotel de 104 habitaciones')}>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Figure src="render-hotel-torre" caption="Torre del hotel (diseño conceptual)" />
                 <Figure src="render-hotel-acceso" caption="Acceso vehicular (diseño conceptual)" />
               </div>
               <p className="mt-3">
-                El plan maestro reserva espacio para un hotel de 92 habitaciones estándar y 12 lofts. Se
-                plantea como fase posterior, una vez consolidadas las etapas de apartamentos; su
-                dimensión y viabilidad se evaluarán con la demanda generada por el complejo.
+                {t('El plan maestro reserva espacio para un hotel de 92 habitaciones estándar y 12 lofts. Se plantea como fase posterior, una vez consolidadas las etapas de apartamentos; su dimensión y viabilidad se evaluarán con la demanda generada por el complejo.')}
               </p>
             </Detail>
           </Route>
 
           {/* ===== C. COMPRA TOTAL ===== */}
           <Route id="total" printBreak eyebrow="Ruta C" title="Compra total de ambos proyectos">
-            <Summary>{c.total.summary}</Summary>
+            <Summary>{t(c.total.summary)}</Summary>
             <KV rows={c.total.rows} />
 
-            <Detail title="Superficie incluida">
+            <Detail title={t('Superficie incluida')}>
               <KV
                 rows={[
                   ['Montañita View Lotes — 89 solares en venta', m2(LOTS_M2)],
@@ -399,49 +375,47 @@ export default function PropuestaMontanitaPage() {
                 ]}
               />
               <p className="mt-3">
-                No incluye los solares ya vendidos o comprometidos. Tampoco las vías ni las áreas
-                verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.
+                {t('No incluye los solares ya vendidos o comprometidos. Tampoco las vías ni las áreas verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.')}
               </p>
             </Detail>
 
-            <Detail title="Forma de pago">
+            <Detail title={t('Forma de pago')}>
               <KV rows={c.total.paymentRows} />
               <p className="mt-3">{c.total.paymentNote}</p>
             </Detail>
 
             <WhatsAppCTA
               className="mt-4"
-              message={`Hola, vi la propuesta de Montañita View y me interesa *la compra total* (Ruta C, ${c.total.tag}). Quiero más información.`}
-            >
-              Contactar un asesor
-            </WhatsAppCTA>
+              message={t('Hola, vi la propuesta de Montañita View y me interesa *la compra total* (Ruta C, {precio}). Quiero más información.', {
+                precio: c.total.tag,
+              })}
+            />
 
-            <Detail title="Infraestructura y estudios ya ejecutados">
+            <Detail title={t('Infraestructura y estudios ya ejecutados')}>
               <ul className="list-disc space-y-1 pl-5">
-                <li>Estudio topográfico y de suelos.</li>
-                <li>Vías internas demarcadas y compactadas.</li>
-                <li>Desbroce y limpieza del terreno.</li>
-                <li>Linderación y georreferenciación de cada solar con hitos y coordenadas UTM.</li>
-                <li>Obra civil del Lobby: garita, lobby, cimentación y departamentos modelo.</li>
+                <li>{t('Estudio topográfico y de suelos.')}</li>
+                <li>{t('Vías internas demarcadas y compactadas.')}</li>
+                <li>{t('Desbroce y limpieza del terreno.')}</li>
+                <li>{t('Linderación y georreferenciación de cada solar con hitos y coordenadas UTM.')}</li>
+                <li>{t('Obra civil del Lobby: garita, lobby, cimentación y departamentos modelo.')}</li>
               </ul>
               <p className="mt-3">
-                En la zona avanza además una planta de tratamiento de aguas residuales y su línea de
-                impulsión, obras públicas del GAD Municipal de Santa Elena para las comunas Río Chico y Manglaralto.
+                {t('En la zona avanza además una planta de tratamiento de aguas residuales y su línea de impulsión, obras públicas del GAD Municipal de Santa Elena para las comunas Río Chico y Manglaralto.')}
               </p>
             </Detail>
           </Route>
 
           {/* CONTEXTO Y FUENTES */}
           <section className="rounded-2xl bg-white p-6 ring-1 ring-black/5">
-            <h2 className="font-serif text-2xl font-bold text-primary">El destino</h2>
+            <h2 className="font-serif text-2xl font-bold text-primary">{t('El destino')}</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-primary/80">
               {c.destination.map((d) => (
                 <li key={d.text}>
-                  {d.text}
+                  {t(d.text)}
                   {d.url && (
                     <>
                       {' ('}
-                      <a className="text-accent underline" target="_blank" rel="noreferrer" href={d.url}>{d.source || 'fuente'}</a>
+                      <a className="text-accent underline" target="_blank" rel="noreferrer" href={d.url}>{t(d.source || 'fuente')}</a>
                       {')'}
                     </>
                   )}
@@ -449,7 +423,7 @@ export default function PropuestaMontanitaPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs text-brand-gray">{c.disclaimer}</p>
+            <p className="mt-4 text-xs text-brand-gray">{t(c.disclaimer)}</p>
           </section>
 
           <PrintClosing contact={contact} />
@@ -457,11 +431,11 @@ export default function PropuestaMontanitaPage() {
           <div className="flex flex-wrap justify-center gap-3 print:hidden">
             {meetHref && (
               <a href={meetHref} target="_blank" rel="noreferrer">
-                <Button size="lg">Agendar una reunión</Button>
+                <Button size="lg">{t('Agendar una reunión')}</Button>
               </a>
             )}
             <Button size="lg" variant="outline" onClick={printPdf}>
-              <Printer className="h-4 w-4" /> Guardar como PDF
+              <Printer className="h-4 w-4" /> {t('Guardar como PDF')}
             </Button>
           </div>
         </main>
@@ -471,6 +445,7 @@ export default function PropuestaMontanitaPage() {
 }
 
 function Gate({ onUnlock }: { onUnlock: () => void }) {
+  const { t } = useLang();
   const { toast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [sending, setSending] = useState(false);
@@ -504,18 +479,17 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
       <form onSubmit={submit} className="space-y-3 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
         <div className="flex items-center gap-2 text-primary">
           <Lock className="h-4 w-4 text-accent" />
-          <h2 className="font-serif text-xl font-bold">Accede a la propuesta completa</h2>
+          <h2 className="font-serif text-xl font-bold">{t('Accede a la propuesta completa')}</h2>
         </div>
         <p className="text-sm text-brand-gray">
-          Déjanos tus datos para ver el dossier con cifras, planos de uso de suelo y condiciones. Un
-          asesor te contactará.
+          {t('Déjanos tus datos para ver el dossier con cifras, planos de uso de suelo y condiciones. Un asesor te contactará.')}
         </p>
-        <input required placeholder="Nombre completo" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-        <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+        <input required placeholder={t('Nombre completo')} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+        <input required type="email" placeholder={t('Email')} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
         <PhoneField required onChange={(phone) => setForm({ ...form, phone })} />
-        <p className="text-xs text-brand-gray">El WhatsApp es obligatorio: es por donde te responde el asesor.</p>
+        <p className="text-xs text-brand-gray">{t('El WhatsApp es obligatorio: es por donde te responde el asesor.')}</p>
         <Button type="submit" className="w-full" disabled={sending}>
-          {sending ? 'Enviando…' : 'Ver la propuesta'}
+          {sending ? t('Enviando…') : t('Ver la propuesta')}
         </Button>
       </form>
     </section>
@@ -532,24 +506,26 @@ function Stat({ v, l }: { v: string; l: string }) {
 }
 
 function RouteCard({ icon: Icon, tag, title, body, href }: { icon: typeof MapPin; tag: string; title: string; body: string; href: string }) {
+  const { t } = useLang();
   return (
     <a href={href} onClick={(e) => { e.preventDefault(); document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' }); }} className="group flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 transition hover:shadow-md">
       <Icon className="h-7 w-7 text-accent" strokeWidth={1.6} />
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-secondary">{tag}</p>
-      <h3 className="mt-1 font-serif text-xl font-bold text-primary">{title}</h3>
-      <p className="mt-2 flex-1 text-sm text-brand-gray">{body}</p>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-secondary">{t(tag)}</p>
+      <h3 className="mt-1 font-serif text-xl font-bold text-primary">{t(title)}</h3>
+      <p className="mt-2 flex-1 text-sm text-brand-gray">{t(body)}</p>
       <span className="mt-4 flex items-center gap-1 text-sm font-medium text-accent print:hidden">
-        Ver detalle <ChevronRight className="h-4 w-4 transition group-hover:translate-x-1" />
+        {t('Ver detalle')} <ChevronRight className="h-4 w-4 transition group-hover:translate-x-1" />
       </span>
     </a>
   );
 }
 
 function Route({ id, eyebrow, title, children, printBreak }: { id: string; eyebrow: string; title: string; children: ReactNode; printBreak?: boolean }) {
+  const { t } = useLang();
   return (
     <section id={id} className={`${printBreak ? 'print-break ' : ''}scroll-mt-24 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-10`}>
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{eyebrow}</p>
-      <h2 className="mt-2 font-serif text-3xl font-bold text-primary">{title}</h2>
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{t(eyebrow)}</p>
+      <h2 className="mt-2 font-serif text-3xl font-bold text-primary">{t(title)}</h2>
       <div className="mt-5 space-y-4">{children}</div>
     </section>
   );
@@ -561,12 +537,13 @@ function Summary({ children }: { children: ReactNode }) {
 
 /** Detalle técnico plegable ("Ver detalle técnico →"). Se despliega al imprimir. */
 function Detail({ title, children }: { title: string; children: ReactNode }) {
+  const { t } = useLang();
   return (
     <details className="group rounded-xl bg-light p-4 open:pb-5 print:[&:not([open])]:block">
       <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-primary">
-        {title}
+        {t(title)}
         <span className="flex items-center gap-1 text-sm font-medium text-accent print:hidden">
-          Ver detalle técnico <ChevronRight className="h-4 w-4 transition group-open:rotate-90" />
+          {t('Ver detalle técnico')} <ChevronRight className="h-4 w-4 transition group-open:rotate-90" />
         </span>
       </summary>
       <div className="mt-3 text-sm leading-relaxed text-primary/80">{children}</div>
@@ -575,12 +552,13 @@ function Detail({ title, children }: { title: string; children: ReactNode }) {
 }
 
 function KV({ rows }: { rows: [string, string][] }) {
+  const { t } = useLang();
   return (
     <dl className="divide-y divide-black/5 rounded-xl ring-1 ring-black/5">
       {rows.map(([k, v]) => (
         <div key={k} className="flex flex-col gap-0.5 px-4 py-2.5 sm:flex-row sm:justify-between sm:gap-4">
-          <dt className="text-sm text-brand-gray">{k}</dt>
-          <dd className="text-sm font-semibold text-primary sm:text-right">{v}</dd>
+          <dt className="text-sm text-brand-gray">{t(k)}</dt>
+          <dd className="text-sm font-semibold text-primary sm:text-right">{t(v)}</dd>
         </div>
       ))}
     </dl>
@@ -588,16 +566,17 @@ function KV({ rows }: { rows: [string, string][] }) {
 }
 
 function Table({ head, rows }: { head: string[]; rows: string[][] }) {
+  const { t } = useLang();
   return (
     <div className="overflow-x-auto rounded-xl ring-1 ring-black/5">
       <table className="w-full text-left text-sm">
         <thead className="bg-primary/5 text-primary">
-          <tr>{head.map((h, i) => <th key={i} className="px-3 py-2 font-semibold">{h}</th>)}</tr>
+          <tr>{head.map((h, i) => <th key={i} className="px-3 py-2 font-semibold">{t(h)}</th>)}</tr>
         </thead>
         <tbody>
           {rows.map((r, i) => (
             <tr key={i} className={`border-t border-black/5 ${i === rows.length - 1 && r[0] === 'Total' ? 'font-semibold' : ''}`}>
-              {r.map((c, j) => <td key={j} className="px-3 py-2">{c}</td>)}
+              {r.map((c, j) => <td key={j} className="px-3 py-2">{t(c)}</td>)}
             </tr>
           ))}
         </tbody>
@@ -607,28 +586,35 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
 }
 
 function Source({ children }: { children: ReactNode }) {
-  return <p className="mt-2 text-xs text-brand-gray">Fuente: {children}</p>;
+  const { t } = useLang();
+  return (
+    <p className="mt-2 text-xs text-brand-gray">
+      {t('Fuente')}: {typeof children === 'string' ? t(children) : children}
+    </p>
+  );
 }
 
 function Figure({ src, caption }: { src: string; caption: string }) {
+  const { t } = useLang();
   const url = `${IMG}/${src}.jpg`;
   return (
     <figure className="mt-3">
       <a href={url} target="_blank" rel="noreferrer">
-        <img src={url} alt={caption} loading="lazy" className="w-full rounded-xl bg-white object-cover ring-1 ring-black/5" />
+        <img src={url} alt={t(caption)} loading="lazy" className="w-full rounded-xl bg-white object-cover ring-1 ring-black/5" />
       </a>
-      <figcaption className="mt-1 text-xs text-brand-gray">{caption}</figcaption>
+      <figcaption className="mt-1 text-xs text-brand-gray">{t(caption)}</figcaption>
     </figure>
   );
 }
 
 function Gallery({ items }: { items: [string, string][] }) {
+  const { t } = useLang();
   return (
     <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
       {items.map(([src, caption]) => (
         <a key={src} href={`${IMG}/${src}.jpg`} target="_blank" rel="noreferrer" className="group relative block aspect-[4/3] overflow-hidden rounded-xl">
-          <img src={`${IMG}/${src}.jpg`} alt={caption} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
-          <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-[11px] text-white">{caption}</span>
+          <img src={`${IMG}/${src}.jpg`} alt={t(caption)} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
+          <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-[11px] text-white">{t(caption)}</span>
         </a>
       ))}
     </div>
@@ -651,6 +637,7 @@ const periodo = () =>
     .replace(/^./, (m) => m.toUpperCase());
 
 function PrintCover() {
+  const { t } = useLang();
   return (
     <div className="pd-cover hidden print:flex">
       <img src={`${IMG}/portada.jpg`} alt="" className="pd-cover-bg" />
@@ -659,13 +646,13 @@ function PrintCover() {
         <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="pd-logo" />
       </div>
       <div className="pd-cover-main">
-        <p className="pd-eyebrow">Propuesta de inversión · Documento confidencial</p>
-        <h1 className="pd-cover-title">Montañita View</h1>
+        <p className="pd-eyebrow">{t('Propuesta de inversión · Documento confidencial')}</p>
+        <h1 className="pd-cover-title">{t('Montañita View')}</h1>
         <div className="pd-rule" />
         <p className="pd-cover-sub">
           Lotización de 25.8 hectáreas con título saneado y complejo turístico en operación.
           <br />
-          Manglaralto · Ruta del Spondylus · Santa Elena, Ecuador
+          {t('Manglaralto · Ruta del Spondylus · Santa Elena, Ecuador')}
         </p>
         <div className="pd-cover-stats">
           <div>
@@ -683,7 +670,7 @@ function PrintCover() {
         </div>
       </div>
       <div className="pd-cover-foot">
-        <span>Preparado por Grupo 3i · Inversión Inmobiliaria Inteligente</span>
+        <span>{t('Preparado por Grupo 3i · Inversión Inmobiliaria Inteligente')}</span>
         <span>{periodo()}</span>
       </div>
     </div>
@@ -691,62 +678,52 @@ function PrintCover() {
 }
 
 function PrintFrontMatter({ c }: { c: PropuestaContent }) {
+  const { t } = useLang();
   return (
     <div className="hidden print:block">
       <div className="pd-nda">
-        <h2>Aviso de confidencialidad</h2>
+        <h2>{t('Aviso de confidencialidad')}</h2>
         <p>
-          Este documento se entrega en forma reservada a un destinatario identificado, con el único
-          fin de evaluar la operación que describe. Su contenido —cifras, planos, estudios y
-          condiciones comerciales— es información privada de Grupo 3i y de los propietarios del
-          proyecto, y no puede reproducirse, distribuirse ni compartirse con terceros sin
-          autorización escrita. Si usted no es el destinatario, le pedimos devolverlo y eliminar
-          cualquier copia.
+          {t('Este documento se entrega en forma reservada a un destinatario identificado, con el único fin de evaluar la operación que describe. Su contenido —cifras, planos, estudios y condiciones comerciales— es información privada de Grupo 3i y de los propietarios del proyecto, y no puede reproducirse, distribuirse ni compartirse con terceros sin autorización escrita. Si usted no es el destinatario, le pedimos devolverlo y eliminar cualquier copia.')}
         </p>
       </div>
 
-      <h2 className="pd-h2">Contenido</h2>
+      <h2 className="pd-h2">{t('Contenido')}</h2>
       <ol className="pd-toc">
-        <li><span>Resumen ejecutivo</span></li>
-        <li><span>Las tres maneras de participar</span></li>
-        <li><span>Ruta A — Comprar un solar en la Lotización</span></li>
-        <li><span>Ruta B — Montañita View Lobby</span></li>
-        <li><span>Ruta C — Compra total de ambos proyectos</span></li>
-        <li><span>El destino: Montañita y la Ruta del Spondylus</span></li>
-        <li><span>Próximos pasos y contacto</span></li>
+        <li><span>{t('Resumen ejecutivo')}</span></li>
+        <li><span>{t('Las tres maneras de participar')}</span></li>
+        <li><span>{t('Ruta A — Comprar un solar en la Lotización')}</span></li>
+        <li><span>{t('Ruta B — Montañita View Lobby')}</span></li>
+        <li><span>{t('Ruta C — Compra total de ambos proyectos')}</span></li>
+        <li><span>{t('El destino: Montañita y la Ruta del Spondylus')}</span></li>
+        <li><span>{t('Próximos pasos y contacto')}</span></li>
       </ol>
 
-      <h2 className="pd-h2">Resumen ejecutivo</h2>
+      <h2 className="pd-h2">{t('Resumen ejecutivo')}</h2>
       <p className="pd-lead">
-        Dos proyectos hermanos en la misma loma sobre Manglaralto, a 300 metros de la playa: una
-        lotización de 25.8 hectáreas con la cadena de dominio completa e inscrita, y un complejo con
-        el área social ya construida y operando. Se ofrecen juntos o por separado.
+        {t('Dos proyectos hermanos en la misma loma sobre Manglaralto, a 300 metros de la playa: una lotización de 25.8 hectáreas con la cadena de dominio completa e inscrita, y un complejo con el área social ya construida y operando. Se ofrecen juntos o por separado.')}
       </p>
       <ul className="pd-bullets">
         <li>
-          <b>Título saneado e inscrito.</b> Compra al GAD Municipal de Santa Elena en 2013,
-          urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada solar se
-          escritura individualmente.
+          <b>{t('Título saneado e inscrito.')}</b> {t('Compra al GAD Municipal de Santa Elena en 2013, urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada solar se escritura individualmente.')}
         </li>
         <li>
-          <b>111 solares levantados uno por uno.</b> 89 disponibles, {m2(LOTS_M2)} de superficie
-          vendible, con linderos, hitos y coordenadas UTM verificados en campo.
+          <b>{t('111 solares levantados uno por uno.')}</b>{' '}
+          {t('89 disponibles, {area} de superficie vendible, con linderos, hitos y coordenadas UTM verificados en campo.', { area: m2(LOTS_M2) })}
         </li>
         <li>
-          <b>Obra civil ejecutada.</b> Vías internas demarcadas y compactadas, desbroce, estudio
-          topográfico y de suelos, linderación y georreferenciación completas.
+          <b>{t('Obra civil ejecutada.')}</b> {t('Vías internas demarcadas y compactadas, desbroce, estudio topográfico y de suelos, linderación y georreferenciación completas.')}
         </li>
         <li>
-          <b>El Lobby ya opera.</b> Área social construida —lobby, dos piscinas, jacuzzi,
-          restaurante, bar y eco-hotel— con un proyecto listo de 81 apartamentos en tres etapas.
+          <b>{t('El Lobby ya opera.')}</b> {t('Área social construida —lobby, dos piscinas, jacuzzi, restaurante, bar y eco-hotel— con un proyecto listo de 81 apartamentos en tres etapas.')}
         </li>
         <li>
-          <b>La operación completa: {c.total.tag}.</b> {m2(TOTAL_M2)} en una sola transacción, con
-          10% al firmar la promesa y el saldo a convenir entre las partes.
+          <b>{t('La operación completa')}: {c.total.tag}.</b>{' '}
+          {t('{area} en una sola transacción, con 10% al firmar la promesa y el saldo a convenir entre las partes.', { area: m2(TOTAL_M2) })}
         </li>
         <li>
-          <b>Venta individual con financiamiento propio.</b> 30% de entrada y el saldo en hasta 24
-          cuotas mensuales sin intereses, sin banco de por medio.
+          <b>{t('Venta individual con financiamiento propio.')}</b>{' '}
+          {t('30% de entrada y el saldo en hasta 24 cuotas mensuales sin intereses, sin banco de por medio.')}
         </li>
       </ul>
     </div>
@@ -754,33 +731,29 @@ function PrintFrontMatter({ c }: { c: PropuestaContent }) {
 }
 
 function PrintClosing({ contact }: { contact?: Record<string, string> | null }) {
+  const { t } = useLang();
   const wa = (contact?.whatsapp ?? '').replace(/\D/g, '');
   return (
     <div className="pd-closing hidden print:block">
-      <h2 className="pd-h2">Próximos pasos</h2>
+      <h2 className="pd-h2">{t('Próximos pasos')}</h2>
       <ol className="pd-steps">
         <li>
-          <b>Reunión con un asesor.</b> Revisamos la ruta que le interesa, resolvemos dudas y
-          ponemos a disposición los documentos fuente: escrituras, resolución de urbanización,
-          levantamiento topográfico y estudio de factibilidad.
+          <b>{t('Reunión con un asesor.')}</b> {t('Revisamos la ruta que le interesa, resolvemos dudas y ponemos a disposición los documentos fuente: escrituras, resolución de urbanización, levantamiento topográfico y estudio de factibilidad.')}
         </li>
         <li>
-          <b>Visita al sitio.</b> Recorrido por la lotización y el complejo, con los hitos de cada
-          solar en terreno.
+          <b>{t('Visita al sitio.')}</b> {t('Recorrido por la lotización y el complejo, con los hitos de cada solar en terreno.')}
         </li>
         <li>
-          <b>Promesa de compraventa.</b> Se firma ante notario con el 10% de reserva; ahí quedan
-          escritos el precio, los plazos y las obligaciones de cada parte.
+          <b>{t('Promesa de compraventa.')}</b> {t('Se firma ante notario con el 10% de reserva; ahí quedan escritos el precio, los plazos y las obligaciones de cada parte.')}
         </li>
         <li>
-          <b>Escrituración.</b> Inscripción en el Registro de la Propiedad de Santa Elena a nombre
-          del comprador.
+          <b>{t('Escrituración.')}</b> {t('Inscripción en el Registro de la Propiedad de Santa Elena a nombre del comprador.')}
         </li>
       </ol>
 
       <div className="pd-contact">
-        <p className="pd-eyebrow-dark">Hablemos</p>
-        <p className="pd-contact-name">Grupo 3i · Inversión Inmobiliaria Inteligente</p>
+        <p className="pd-eyebrow-dark">{t('Hablemos')}</p>
+        <p className="pd-contact-name">{t('Grupo 3i · Inversión Inmobiliaria Inteligente')}</p>
         <p className="pd-contact-rows">
           {wa && <>WhatsApp +{wa}<br /></>}
           {contact?.email && <>{contact.email}<br /></>}

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -42,27 +42,30 @@ function durationLabel(min: number): string {
 }
 
 function MembershipBanner({ isMember }: { isMember: boolean }) {
+  const { t } = useLang();
   if (isMember) {
     return (
       <div className="mb-6 flex items-center justify-center gap-2 rounded-xl bg-secondary/15 px-5 py-3 text-center text-sm font-medium text-accent">
         <IconSparkle className="h-4 w-4" />
-        Estás viendo precios de socio del Club 3i.
+        {t('Estás viendo precios de socio del Club 3i.')}
       </div>
     );
   }
   return (
     <div className="mb-6 flex flex-col items-center justify-between gap-3 rounded-xl bg-light px-5 py-4 text-center sm:flex-row sm:text-left">
       <p className="text-sm text-primary">
-        Estás viendo precios públicos. <strong>Hazte socio del Club 3i</strong> y paga la tarifa de socio.
+        {t('Estás viendo precios públicos.')} <strong>{t('Hazte socio del Club 3i')}</strong>{' '}
+        {t('y paga la tarifa de socio.')}
       </p>
       <Link to="/club">
-        <Button size="sm">Quiero ser socio</Button>
+        <Button size="sm">{t('Quiero ser socio')}</Button>
       </Link>
     </div>
   );
 }
 
 function OfferCard({ offer, onReserve }: { offer: TravelHotelOffer; onReserve: (o: TravelHotelOffer) => void }) {
+  const { t } = useLang();
   const perNight = Math.round(offer.priceCents / Math.max(1, offer.nights));
   return (
     <Card className="flex flex-col">
@@ -70,7 +73,7 @@ function OfferCard({ offer, onReserve }: { offer: TravelHotelOffer; onReserve: (
         <img src={offer.image} alt={offer.name} loading="lazy" className="h-full w-full object-cover" />
         {offer.savingsCents > 0 && (
           <span className="absolute left-3 top-3">
-            <Badge variant="gold">Ahorra {money(offer.savingsCents)}</Badge>
+            <Badge variant="gold">{t('Ahorra')} {money(offer.savingsCents)}</Badge>
           </span>
         )}
       </div>
@@ -83,7 +86,7 @@ function OfferCard({ offer, onReserve }: { offer: TravelHotelOffer; onReserve: (
             <span key={a} className="rounded-full bg-light px-2.5 py-1 text-xs text-primary/80">{a}</span>
           ))}
           <span className={`rounded-full px-2.5 py-1 text-xs ${offer.refundable ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}`}>
-            {offer.refundable ? 'Cancelación gratis' : 'No reembolsable'}
+            {offer.refundable ? t('Cancelación gratis') : t('No reembolsable')}
           </span>
         </div>
         <div className="mt-auto pt-5">
@@ -92,24 +95,24 @@ function OfferCard({ offer, onReserve }: { offer: TravelHotelOffer; onReserve: (
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold text-primary">{money(offer.priceCents)}</span>
                 <span className="text-sm text-brand-gray line-through">{money(offer.publicCents)}</span>
-                <Badge variant="gold">Socio</Badge>
+                <Badge variant="gold">{t('Socio')}</Badge>
               </div>
               <p className="text-xs text-brand-gray">
-                {money(perNight)} / noche · {offer.nights} {offer.nights === 1 ? 'noche' : 'noches'}
+                {money(perNight)} / {t('noche')} · {offer.nights} {offer.nights === 1 ? t('noche') : t('noches')}
               </p>
             </>
           ) : (
             <>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold text-primary">{money(offer.publicCents)}</span>
-                <span className="text-xs text-brand-gray">· {offer.nights} {offer.nights === 1 ? 'noche' : 'noches'}</span>
+                <span className="text-xs text-brand-gray">· {offer.nights} {offer.nights === 1 ? t('noche') : t('noches')}</span>
               </div>
               <p className="mt-1 text-sm font-medium text-accent">
-                Precio socio: {money(offer.memberCents)} · ahorras {money(offer.savingsCents)}
+                {t('Precio socio')}: {money(offer.memberCents)} · {t('ahorras')} {money(offer.savingsCents)}
               </p>
             </>
           )}
-          <Button size="sm" className="mt-3 w-full" onClick={() => onReserve(offer)}>Reservar</Button>
+          <Button size="sm" className="mt-3 w-full" onClick={() => onReserve(offer)}>{t('Reservar')}</Button>
         </div>
       </div>
     </Card>
@@ -117,6 +120,7 @@ function OfferCard({ offer, onReserve }: { offer: TravelHotelOffer; onReserve: (
 }
 
 function FlightCard({ offer }: { offer: TravelFlightOffer }) {
+  const { t } = useLang();
   return (
     <Card className="flex flex-col p-5">
       <div className="flex items-center justify-between">
@@ -124,7 +128,7 @@ function FlightCard({ offer }: { offer: TravelFlightOffer }) {
           <p className="font-semibold text-primary">{offer.airline}</p>
           <p className="text-xs text-brand-gray">{offer.flightNumber} · {offer.cabin}</p>
         </div>
-        {offer.savingsCents > 0 && <Badge variant="gold">Ahorra {money(offer.savingsCents)}</Badge>}
+        {offer.savingsCents > 0 && <Badge variant="gold">{t('Ahorra')} {money(offer.savingsCents)}</Badge>}
       </div>
 
       <div className="mt-4 flex items-center justify-between text-sm">
@@ -135,7 +139,12 @@ function FlightCard({ offer }: { offer: TravelFlightOffer }) {
         <div className="flex-1 px-3 text-center text-xs text-brand-gray">
           <p>{durationLabel(offer.durationMin)}</p>
           <div className="my-1 border-t border-dashed border-black/20" />
-          <p>{offer.stops === 0 ? 'Directo' : `${offer.stops} escala${offer.stops > 1 ? 's' : ''}`}{offer.roundTrip ? ' · ida y vuelta' : ''}</p>
+          <p>
+            {offer.stops === 0
+              ? t('Directo')
+              : t('{n} escalas', { n: offer.stops })}
+            {offer.roundTrip ? ` · ${t('ida y vuelta')}` : ''}
+          </p>
         </div>
         <div className="text-center">
           <p className="font-bold text-primary">{offer.destination}</p>
@@ -148,18 +157,18 @@ function FlightCard({ offer }: { offer: TravelFlightOffer }) {
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-primary">{money(offer.priceCents)}</span>
             <span className="text-sm text-brand-gray line-through">{money(offer.publicCents)}</span>
-            <Badge variant="gold">Socio</Badge>
+            <Badge variant="gold">{t('Socio')}</Badge>
           </div>
         ) : (
           <>
             <span className="text-2xl font-bold text-primary">{money(offer.publicCents)}</span>
             <p className="mt-1 text-sm font-medium text-accent">
-              Precio socio: {money(offer.memberCents)} · ahorras {money(offer.savingsCents)}
+              {t('Precio socio')}: {money(offer.memberCents)} · {t('ahorras')} {money(offer.savingsCents)}
             </p>
           </>
         )}
-        <Button size="sm" variant="outline" className="mt-3 w-full" disabled title="Reserva de vuelos disponible con la integración de Duffel">
-          Reservar (próximamente)
+        <Button size="sm" variant="outline" className="mt-3 w-full" disabled title={t('Reserva de vuelos disponible con la integración de Duffel')}>
+          {t('Reservar (próximamente)')}
         </Button>
       </div>
     </Card>
@@ -169,6 +178,7 @@ function FlightCard({ offer }: { offer: TravelFlightOffer }) {
 type Tab = 'hoteles' | 'vuelos';
 
 export default function ViajesPage() {
+  const { t } = useLang();
   const [tab, setTab] = useState<Tab>('hoteles');
 
   // Hoteles
@@ -185,7 +195,7 @@ export default function ViajesPage() {
 
   async function searchHotels(e: FormEvent) {
     e.preventDefault();
-    if (!hForm.destination.trim()) return setError('Escribe un destino');
+    if (!hForm.destination.trim()) return setError(t('Escribe un destino'));
     setLoading(true); setError(null);
     try {
       const qs = new URLSearchParams({ destination: hForm.destination.trim(), checkIn: hForm.checkIn, checkOut: hForm.checkOut, guests: String(hForm.guests) });
@@ -196,7 +206,7 @@ export default function ViajesPage() {
 
   async function searchFlights(e: FormEvent) {
     e.preventDefault();
-    if (!fForm.origin.trim() || !fForm.destination.trim()) return setError('Escribe origen y destino');
+    if (!fForm.origin.trim() || !fForm.destination.trim()) return setError(t('Escribe origen y destino'));
     setLoading(true); setError(null);
     try {
       const qs = new URLSearchParams({ origin: fForm.origin.trim(), destination: fForm.destination.trim(), departDate: fForm.departDate, passengers: String(fForm.passengers) });
@@ -215,7 +225,10 @@ export default function ViajesPage() {
 
   return (
     <>
-      <Seo title="Club de Viajes 3i" description="Busca hoteles y vuelos con precios de socio. Beneficio exclusivo de la comunidad Grupo 3i." />
+      <Seo
+        title={t('Club de Viajes 3i')}
+        description={t('Busca hoteles y vuelos con precios de socio. Beneficio exclusivo de la comunidad Grupo 3i.')}
+      />
 
       <section className="relative isolate overflow-hidden bg-primary text-white">
         <img
@@ -240,17 +253,17 @@ export default function ViajesPage() {
         <div className="rounded-2xl bg-white p-4 shadow-xl ring-1 ring-black/5">
           {/* Tabs */}
           <div className="mb-4 flex gap-2">
-            {(['hoteles', 'vuelos'] as Tab[]).map((t) => (
+            {(['hoteles', 'vuelos'] as Tab[]).map((tb) => (
               <button
-                key={t}
-                onClick={() => switchTab(t)}
+                key={tb}
+                onClick={() => switchTab(tb)}
                 className={cn(
                   'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors',
-                  tab === t ? 'bg-primary text-white' : 'bg-light text-primary hover:bg-secondary/20',
+                  tab === tb ? 'bg-primary text-white' : 'bg-light text-primary hover:bg-secondary/20',
                 )}
               >
-                {t === 'hoteles' ? <IconHotel className="h-4 w-4" /> : <IconPlane className="h-4 w-4" />}
-                {t === 'hoteles' ? 'Hoteles' : 'Vuelos'}
+                {tb === 'hoteles' ? <IconHotel className="h-4 w-4" /> : <IconPlane className="h-4 w-4" />}
+                {tb === 'hoteles' ? t('Hoteles') : t('Vuelos')}
               </button>
             ))}
           </div>
@@ -258,24 +271,24 @@ export default function ViajesPage() {
           {tab === 'hoteles' ? (
             <form onSubmit={searchHotels} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
               <div className="lg:col-span-2">
-                <Input label="Destino" placeholder="Ej. Montañita, Cuenca…" value={hForm.destination} onChange={(e) => setHForm({ ...hForm, destination: e.target.value })} />
+                <Input label={t('Destino')} placeholder={t('Ej. Montañita, Cuenca…')} value={hForm.destination} onChange={(e) => setHForm({ ...hForm, destination: e.target.value })} />
               </div>
-              <Input label="Entrada" type="date" value={hForm.checkIn} onChange={(e) => setHForm({ ...hForm, checkIn: e.target.value })} />
-              <Input label="Salida" type="date" value={hForm.checkOut} onChange={(e) => setHForm({ ...hForm, checkOut: e.target.value })} />
-              <Input label="Huéspedes" type="number" min={1} max={12} value={hForm.guests} onChange={(e) => setHForm({ ...hForm, guests: Number(e.target.value) })} />
+              <Input label={t('Entrada')} type="date" value={hForm.checkIn} onChange={(e) => setHForm({ ...hForm, checkIn: e.target.value })} />
+              <Input label={t('Salida')} type="date" value={hForm.checkOut} onChange={(e) => setHForm({ ...hForm, checkOut: e.target.value })} />
+              <Input label={t('Huéspedes')} type="number" min={1} max={12} value={hForm.guests} onChange={(e) => setHForm({ ...hForm, guests: Number(e.target.value) })} />
               <div className="lg:col-span-5">
-                <Button type="submit" size="lg" className="w-full" disabled={loading}>{loading ? 'Buscando…' : 'Buscar hoteles'}</Button>
+                <Button type="submit" size="lg" className="w-full" disabled={loading}>{loading ? t('Buscando…') : t('Buscar hoteles')}</Button>
               </div>
             </form>
           ) : (
             <form onSubmit={searchFlights} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              <Input label="Origen" placeholder="UIO" value={fForm.origin} onChange={(e) => setFForm({ ...fForm, origin: e.target.value })} />
-              <Input label="Destino" placeholder="GYE" value={fForm.destination} onChange={(e) => setFForm({ ...fForm, destination: e.target.value })} />
-              <Input label="Salida" type="date" value={fForm.departDate} onChange={(e) => setFForm({ ...fForm, departDate: e.target.value })} />
-              <Input label="Regreso (opcional)" type="date" value={fForm.returnDate} onChange={(e) => setFForm({ ...fForm, returnDate: e.target.value })} />
-              <Input label="Pasajeros" type="number" min={1} max={9} value={fForm.passengers} onChange={(e) => setFForm({ ...fForm, passengers: Number(e.target.value) })} />
+              <Input label={t('Origen')} placeholder="UIO" value={fForm.origin} onChange={(e) => setFForm({ ...fForm, origin: e.target.value })} />
+              <Input label={t('Destino')} placeholder="GYE" value={fForm.destination} onChange={(e) => setFForm({ ...fForm, destination: e.target.value })} />
+              <Input label={t('Salida')} type="date" value={fForm.departDate} onChange={(e) => setFForm({ ...fForm, departDate: e.target.value })} />
+              <Input label={t('Regreso (opcional)')} type="date" value={fForm.returnDate} onChange={(e) => setFForm({ ...fForm, returnDate: e.target.value })} />
+              <Input label={t('Pasajeros')} type="number" min={1} max={9} value={fForm.passengers} onChange={(e) => setFForm({ ...fForm, passengers: Number(e.target.value) })} />
               <div className="lg:col-span-5">
-                <Button type="submit" size="lg" className="w-full" disabled={loading}>{loading ? 'Buscando…' : 'Buscar vuelos'}</Button>
+                <Button type="submit" size="lg" className="w-full" disabled={loading}>{loading ? t('Buscando…') : t('Buscar vuelos')}</Button>
               </div>
             </form>
           )}
@@ -295,7 +308,7 @@ export default function ViajesPage() {
           <>
             <MembershipBanner isMember={result.isMember} />
             {result.offers.length === 0 ? (
-              <p className="py-10 text-center text-brand-gray">No encontramos resultados. Prueba otras fechas o destino.</p>
+              <p className="py-10 text-center text-brand-gray">{t('No encontramos resultados. Prueba otras fechas o destino.')}</p>
             ) : tab === 'hoteles' ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {hResult!.offers.map((o) => <OfferCard key={o.rateKey} offer={o} onReserve={setBookingOffer} />)}
@@ -315,8 +328,8 @@ export default function ViajesPage() {
             </IconMedallion>
             <p className="mt-6 max-w-sm text-brand-gray">
               {tab === 'hoteles'
-                ? 'Escribe un destino y fechas para descubrir las tarifas exclusivas del club.'
-                : 'Escribe origen, destino y fecha para encontrar tu próximo vuelo.'}
+                ? t('Escribe un destino y fechas para descubrir las tarifas exclusivas del club.')
+                : t('Escribe origen, destino y fecha para encontrar tu próximo vuelo.')}
             </p>
             <img src="/images/isotipo.svg" alt="" aria-hidden="true" className="mt-6 h-6 w-auto opacity-40" />
           </div>

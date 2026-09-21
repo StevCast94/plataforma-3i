@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useLang } from '@/hooks/useLang';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cld } from '@/lib/cloudinary';
 
@@ -17,6 +18,7 @@ export function Lightbox({
   onClose,
   onNavigate,
 }: LightboxProps) {
+  const { t } = useLang();
   const open = index !== null;
 
   const prev = useCallback(() => {
@@ -55,7 +57,7 @@ export function Lightbox({
           onClick={onClose}
         >
           <button
-            aria-label="Cerrar"
+            aria-label={t('Cerrar')}
             onClick={onClose}
             className="absolute right-5 top-5 cursor-pointer text-3xl leading-none text-white/80 hover:text-white"
           >
@@ -64,7 +66,7 @@ export function Lightbox({
 
           {images.length > 1 && (
             <button
-              aria-label="Anterior"
+              aria-label={t('Anterior')}
               onClick={(e) => {
                 e.stopPropagation();
                 prev();
@@ -87,7 +89,7 @@ export function Lightbox({
 
           {images.length > 1 && (
             <button
-              aria-label="Siguiente"
+              aria-label={t('Siguiente')}
               onClick={(e) => {
                 e.stopPropagation();
                 next();

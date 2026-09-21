@@ -24,6 +24,16 @@ const OVERRIDES: Record<string, { title: string; description: string; image: str
   },
 };
 
+/** Lo mismo en inglés, para los enlaces /en/proyectos/:slug. */
+const OVERRIDES_EN: Record<string, { title: string; description: string; image: string }> = {
+  'montanita-view': {
+    title: 'Montañita View — interactive lot map',
+    description:
+      'Explore the 89 available lots on the satellite map: tap any one to see its price, monthly payment, cadastral reference, boundaries and street frontage. Manglaralto, Ruta del Spondylus, from $100/m².',
+    image: '/images/og/montanita-view-mapa.jpg',
+  },
+};
+
 const esc = (s: string) =>
   String(s ?? '')
     .replace(/&/g, '&amp;')
@@ -63,12 +73,14 @@ export function projectOgHandler(frontendPath: string) {
         return;
       }
       const origin = publicBaseUrl();
-      const ov = OVERRIDES[slug];
+      // El idioma lo marca el prefijo de la ruta (/en/proyectos/...).
+      const lang = req.path.startsWith('/en/') ? 'en' : 'es';
+      const ov = lang === 'en' ? OVERRIDES_EN[slug] : OVERRIDES[slug];
       const title = ov?.title ?? `${project.name} — Grupo 3i`;
       const description = ov?.description ?? summarize(project.description);
       const rawImage = ov?.image ?? project.coverImage ?? '/images/og-cover.png';
       const image = /^https?:\/\//i.test(rawImage) ? rawImage : `${origin}${rawImage}`;
-      const url = `${origin}/proyectos/${slug}`;
+      const url = `${origin}${lang === 'en' ? '/en' : ''}/proyectos/${slug}`;
 
       let html = fs.readFileSync(indexPath, 'utf8');
       html = html.replace(/<title>[^<]*<\/title>/i, `<title>${esc(title)}</title>`);
@@ -80,6 +92,7 @@ export function projectOgHandler(frontendPath: string) {
       html = setMeta(html, 'property', 'og:image:secure_url', image);
       html = setMeta(html, 'property', 'og:image:type', /\.png($|\?)/i.test(image) ? 'image/png' : 'image/jpeg');
       html = setMeta(html, 'property', 'og:image:alt', title);
+      html = setMeta(html, 'property', 'og:locale', lang === 'en' ? 'en_US' : 'es_EC');
       html = setMeta(html, 'name', 'twitter:title', title);
       html = setMeta(html, 'name', 'twitter:description', description);
       html = setMeta(html, 'name', 'twitter:image', image);

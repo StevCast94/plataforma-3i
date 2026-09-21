@@ -1,16 +1,18 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { useLang } from '@/hooks/useLang';
 import { ProductCard } from '@/components/shared/ProductCard';
 import { CardSkeleton } from '@/components/ui/Skeleton';
 import { useProducts } from '@/hooks/useProducts';
 
 export default function ShopPage() {
+  const { t } = useLang();
   const { data, loading, error } = useProducts();
 
   return (
     <>
       <PageHeader
-        title="Tienda"
-        subtitle="Membresías, propiedades fraccionadas y oportunidades de inversión."
+        title={t('Tienda')}
+        subtitle={t('Membresías, propiedades fraccionadas y oportunidades de inversión.')}
         image="/images/secciones/header-tienda.jpg"
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -21,7 +23,7 @@ export default function ShopPage() {
             : (data ?? []).map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
         {!loading && (data?.length ?? 0) === 0 && (
-          <p className="text-center text-brand-gray">No hay productos disponibles aún.</p>
+          <p className="text-center text-brand-gray">{t('No hay productos disponibles aún.')}</p>
         )}
       </section>
     </>

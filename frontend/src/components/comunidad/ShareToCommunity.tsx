@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/shared/Toast';
+import { useLang } from '@/hooks/useLang';
 
 interface ShareToCommunityProps {
   /** Nombre de la propiedad/producto. */
@@ -17,6 +18,7 @@ interface ShareToCommunityProps {
 
 /** Botón "Compartir en la comunidad" → crea un post pre-armado. */
 export function ShareToCommunity({ title, path, image, description }: ShareToCommunityProps) {
+  const { t } = useLang();
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ export function ShareToCommunity({ title, path, image, description }: ShareToCom
   return (
     <Button variant="outline" onClick={share} disabled={sharing}>
       <Megaphone className="h-4 w-4" strokeWidth={1.8} />
-      {sharing ? 'Compartiendo…' : 'Compartir en la comunidad'}
+      {sharing ? t('Compartiendo…') : t('Compartir en la comunidad')}
     </Button>
   );
 }
