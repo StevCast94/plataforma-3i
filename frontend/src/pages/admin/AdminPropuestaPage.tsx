@@ -25,7 +25,7 @@ import {
 type RouteKey = 'solar' | 'lobby' | 'total';
 const ROUTES: { key: RouteKey; label: string }[] = [
   { key: 'solar', label: 'Ruta A — Comprar un solar' },
-  { key: 'lobby', label: 'Ruta B — Socio del Lobby' },
+  { key: 'lobby', label: 'Ruta B — Montañita View Lobby' },
   { key: 'total', label: 'Ruta C — Compra total' },
 ];
 

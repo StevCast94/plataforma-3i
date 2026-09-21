@@ -112,7 +112,7 @@ export default function HomePage() {
             </p>
             <h3 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">Propuesta Montañita View</h3>
             <p className="mt-2 max-w-2xl text-white/75">
-              Un solar desde $49,084, sociedad en el Lobby o la compra total de ambos proyectos.
+              Un solar desde $49,084, sociedad en Montañita View Lobby o la compra total de ambos proyectos.
               Revisa las cifras, el dossier técnico y las condiciones de pago.
             </p>
           </div>

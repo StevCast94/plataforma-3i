@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "p3i-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 5173,
+      "cwd": "frontend"
+    },
+    {
+      "name": "p3i-prodproxy",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "vite.prodproxy.config.ts"
+      ],
+      "port": 5199,
+      "cwd": "frontend"
+    }
+  ]
+}

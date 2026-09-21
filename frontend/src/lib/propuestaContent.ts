@@ -45,14 +45,16 @@ export interface PropuestaContent {
   study: { discount: number; scenarios: AptAssumptions };
 }
 
-// Superficies de la compra total. Los solares en venta individual (89) más los
-// dos que solo entran en la operación completa (B-12 y A-2) y el predio del
-// Lobby. El equipamiento urbano y las áreas verdes no se valoran: son cargas
-// de la lotización, no superficie vendible.
+// Superficies y precios de la compra total: los 89 solares en venta de
+// Montañita View Lotes a $55/m² y el predio de Montañita View Lobby a $100/m².
+// El equipamiento urbano y las áreas verdes no se valoran: son cargas de la
+// lotización, no superficie vendible.
 const LOTS_M2 = 122303.98;
-const EXTRA_LOTS_M2 = 906.44 + 125.14;
 const LOBBY_M2 = 36348;
-const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + LOBBY_M2;
+const TOTAL_M2 = LOTS_M2 + LOBBY_M2;
+const LOTS_PRICE_M2 = 55;
+const LOBBY_PRICE_M2 = 100;
+const TOTAL_USD = LOTS_M2 * LOTS_PRICE_M2 + LOBBY_M2 * LOBBY_PRICE_M2;
 const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 const m2 = (n: number) => `${n.toLocaleString('en-US', { maximumFractionDigits: 2 })} m²`;
 
@@ -75,29 +77,30 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     ],
   },
   lobby: {
-    tag: usd(LOBBY_M2 * 100),
+    tag: usd(LOBBY_M2 * LOBBY_PRICE_M2),
     card: '36,348 m² con lobby, piscinas y eco-hotel ya operando, y un proyecto listo de 81 apartamentos en tres etapas.',
     summary:
       'Un predio con el área social ya construida y operando — lobby, dos piscinas, jacuzzi, restaurante, bar y eco-hotel — y un proyecto listo de 81 apartamentos de 151 m² en tres etapas, con vista de 270° al océano y al bosque. Buscamos socios o un desarrollador para ejecutarlo; el Lobby existente es la amenidad que diferencia cada apartamento.',
     rows: [
       ['Superficie', `${m2(LOBBY_M2)} (29,090 m² útiles + 7,258 m² de vías y áreas verdes)`],
-      ['Valor del predio', `${usd(LOBBY_M2 * 100)} ($100 / m²)`],
+      ['Valor del predio', `${usd(LOBBY_M2 * LOBBY_PRICE_M2)} ($${LOBBY_PRICE_M2} / m²)`],
       ['Propiedad', 'Didier Triana — proyecto hermano de la Lotización, con convenio entre ambos'],
       ['Modalidad', 'Sociedad para el desarrollo del proyecto o compra del predio'],
     ],
   },
   total: {
-    tag: usd(TOTAL_M2 * 100),
+    tag: usd(TOTAL_USD),
     card: `Ambos proyectos completos: ${Math.round(TOTAL_M2).toLocaleString('en-US')} m² en una sola operación, con condiciones preferentes de pago.`,
     summary: `La Lotización y el predio del Lobby en una sola operación: ${Math.round(TOTAL_M2).toLocaleString('en-US')} m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya ejecutados.`,
     rows: [
-      ['Precio', `${usd(TOTAL_M2 * 100)} ($100 / m²)`],
+      ['Precio', usd(TOTAL_USD)],
+      ['Cómo se calcula', `Montañita View Lotes ${m2(LOTS_M2)} a $${LOTS_PRICE_M2}/m² (${usd(LOTS_M2 * LOTS_PRICE_M2)}) + Montañita View Lobby ${m2(LOBBY_M2)} a $${LOBBY_PRICE_M2}/m² (${usd(LOBBY_M2 * LOBBY_PRICE_M2)})`],
       ['Superficie', m2(TOTAL_M2)],
-      ['Qué incluye', `Los 89 solares en venta más el B-12 y el A-2 (${m2(LOTS_M2 + EXTRA_LOTS_M2)}) y el predio del Lobby (${m2(LOBBY_M2)})`],
+      ['Qué incluye', `Los 89 solares en venta de Montañita View Lotes (${m2(LOTS_M2)}) y el predio de Montañita View Lobby (${m2(LOBBY_M2)})`],
     ],
     paymentRows: [
-      ['Reserva (10%) al firmar la promesa', usd(TOTAL_M2 * 100 * 0.1)],
-      ['Saldo en 6 pagos semestrales de', usd((TOTAL_M2 * 100 * 0.9) / 6)],
+      ['Reserva (10%) al firmar la promesa', usd(TOTAL_USD * 0.1)],
+      ['Saldo en 6 pagos semestrales de', usd((TOTAL_USD * 0.9) / 6)],
     ],
     paymentNote: 'Cada semestre se garantiza con cheque de gerencia o carta de crédito.',
   },

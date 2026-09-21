@@ -17,7 +17,7 @@ import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta } from '@/lib/propue
 // Tres rutas, cada una con un resumen persuasivo y enlaces "Ver detalle
 // técnico" al dossier completo de la misma página:
 //   A. Comprar un solar (Lotización, DIWILDI S.A.)
-//   B. Socio del Lobby (predio de 36,348 m², propiedad de Didier Triana)
+//   B. Montañita View Lobby (predio de 36,348 m², propiedad de Didier Triana)
 //   C. Compra total de ambos proyectos
 //
 // Todas las cifras están conciliadas (ver conversación del 19-sep-2026):
@@ -40,10 +40,8 @@ const LOT_BLOCKS = [
   { mz: 'I', n: 9, m2: 12325.19 },
 ];
 const LOTS_M2 = 122303.98;
-// Solo entran en la compra total: el B-12 y el A-2 no se venden por separado.
-const EXTRA_LOTS_M2 = 906.44 + 125.14;
 const LOBBY_M2 = 36348;
-const TOTAL_M2 = LOTS_M2 + EXTRA_LOTS_M2 + LOBBY_M2;
+const TOTAL_M2 = LOTS_M2 + LOBBY_M2;
 
 const LAND_USE = [
   { uso: 'Residencial (solares)', m2: 141583, pct: 54.81 },
@@ -171,7 +169,7 @@ export default function PropuestaMontanitaPage() {
               <RouteCard
                 icon={Building2}
                 tag={c.lobby.tag}
-                title="Socio del Lobby"
+                title="Montañita View Lobby"
                 body={c.lobby.card}
                 href="#lobby"
               />
@@ -248,7 +246,7 @@ export default function PropuestaMontanitaPage() {
           </Route>
 
           {/* ===== B. LOBBY ===== */}
-          <Route id="lobby" printBreak eyebrow="Ruta B" title="Socio o desarrollador del Lobby">
+          <Route id="lobby" printBreak eyebrow="Ruta B" title="Montañita View Lobby">
             <Summary>{c.lobby.summary}</Summary>
             <KV rows={c.lobby.rows} />
             <Gallery
@@ -370,9 +368,8 @@ export default function PropuestaMontanitaPage() {
             <Detail title="Superficie incluida">
               <KV
                 rows={[
-                  ['Solares en venta de la Lotización (89)', m2(LOTS_M2)],
-                  ['Solares B-12 y A-2, solo en la compra total', m2(EXTRA_LOTS_M2)],
-                  ['Predio del Lobby', m2(LOBBY_M2)],
+                  ['Montañita View Lotes — 89 solares en venta', m2(LOTS_M2)],
+                  ['Montañita View Lobby — predio', m2(LOBBY_M2)],
                   ['Total', m2(TOTAL_M2)],
                 ]}
               />
