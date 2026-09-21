@@ -409,24 +409,6 @@ export function LotMap({
           {Number.isFinite(minPrice) && <> · desde {formatCurrency(minPrice)}</>} · toca uno para ver su
           precio y tu cuota
         </p>
-        {destination && (
-          <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${destination}`}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-flex items-center gap-2 rounded-lg border border-black/15 px-3 py-2 text-sm font-medium text-primary hover:bg-light"
-          >
-            <Navigation className="h-4 w-4" strokeWidth={1.8} />
-            Cómo llegar
-          </a>
-        )}
-        <WhatsAppCTA
-          variant="outline"
-          className="ml-2 mt-3"
-          message={`Hola, estoy viendo el mapa de solares de ${projectName} y quiero información.`}
-        >
-          Contactar un asesor
-        </WhatsAppCTA>
       </div>
 
       {!full && <div className="mb-4">{controls}</div>}
@@ -494,6 +476,26 @@ export function LotMap({
         )}
       </div>
 
+      {/* Acciones del proyecto: debajo del mapa, donde se toman tras mirarlo. */}
+      <div className="mt-4 flex flex-wrap justify-center gap-3">
+        {destination && (
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${destination}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg border border-black/15 px-3 py-2 text-sm font-medium text-primary hover:bg-light"
+          >
+            <Navigation className="h-4 w-4" strokeWidth={1.8} />
+            Cómo llegar
+          </a>
+        )}
+        <WhatsAppCTA
+          variant="outline"
+          message={`Hola, estoy viendo el mapa de solares de ${projectName} y quiero información.`}
+        >
+          Contactar un asesor
+        </WhatsAppCTA>
+      </div>
 
       {/* Tabla con la misma información (accesible sin mapa, y para comparar) */}
       <div className="mt-6 overflow-x-auto rounded-2xl bg-white ring-1 ring-black/5">
