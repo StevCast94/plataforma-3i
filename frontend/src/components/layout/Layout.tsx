@@ -3,7 +3,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
-import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
 import { ReferralBanner } from '@/components/shared/ReferralBanner';
 import { useReferral } from '@/hooks/useReferral';
 import { BrandLoader } from '@/components/brand/Isotipo';
@@ -35,7 +34,6 @@ export function Layout() {
       </main>
       <div className="print:hidden">
         <Footer />
-        <WhatsAppFloat />
       </div>
     </div>
   );

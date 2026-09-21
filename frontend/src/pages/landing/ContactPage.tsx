@@ -1,4 +1,5 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { ContactForm } from '@/components/shared/ContactForm';
 import { useSectionContent } from '@/hooks/useSiteContent';
 
@@ -35,6 +36,13 @@ export default function ContactPage() {
               <span className="font-semibold">Web:</span> grupo3i.com · club3i.com
             </li>
           </ul>
+
+          <WhatsAppCTA
+            className="mt-6"
+            message="Hola 👋 Estoy en la web de Grupo 3i y quiero información."
+          >
+            Escribir por WhatsApp
+          </WhatsAppCTA>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-8">

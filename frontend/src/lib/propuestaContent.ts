@@ -40,7 +40,7 @@ export interface PropuestaContent {
   total: RouteText & { paymentRows: Row[]; paymentNote: string };
   destination: DestinationItem[];
   disclaimer: string;
-  /** Número de WhatsApp para "Agendar una reunión", solo dígitos con código de país. */
+  /** WhatsApp propio de la propuesta, solo dígitos. Vacío = el número oficial del sitio (contact.whatsapp). */
   whatsapp: string;
   study: { discount: number; scenarios: AptAssumptions };
 }
@@ -123,7 +123,7 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
   ],
   disclaimer:
     'Documento informativo. Los indicadores financieros provienen del estudio de factibilidad 2026, con los supuestos y fuentes indicados, y no constituyen garantía de rentabilidad. Los documentos fuente están disponibles para revisión en la reunión con un asesor.',
-  whatsapp: '593997331251',
+  whatsapp: '',
   study: { discount: DISCOUNT, scenarios: APT_ASSUMPTIONS },
 };
 

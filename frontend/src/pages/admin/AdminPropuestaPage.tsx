@@ -196,7 +196,7 @@ export default function AdminPropuestaPage() {
 
       <Section title="Cierre">
         <Field label="Aviso legal" multiline value={c.disclaimer} onChange={(v) => update((d) => (d.disclaimer = v))} />
-        <Field label="WhatsApp para agendar reunión (con código de país, solo números)" value={c.whatsapp} onChange={(v) => update((d) => (d.whatsapp = v.replace(/\D/g, '')))} />
+        <Field label="WhatsApp de la propuesta (vacío = el número oficial del sitio)" value={c.whatsapp} onChange={(v) => update((d) => (d.whatsapp = v.replace(/\D/g, '')))} />
       </Section>
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-black/10 bg-white/95 px-4 py-3 backdrop-blur md:pl-60">

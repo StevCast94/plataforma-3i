@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
+import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { motion } from 'framer-motion';
 import { FileText, Navigation, Map as MapIcon } from 'lucide-react';
 import { cld } from '@/lib/cloudinary';
@@ -539,7 +540,13 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           </div>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button size="lg" onClick={onRequestInfo}>
+            <WhatsAppCTA
+              message={`Hola 👋 Me interesa el proyecto *${project.name}* y quiero información.`}
+              className="px-7 py-3.5 text-base"
+            >
+              Escribir por WhatsApp
+            </WhatsAppCTA>
+            <Button size="lg" variant="outline" onClick={onRequestInfo}>
               Solicitar información
             </Button>
             {c.pdfUrl && (

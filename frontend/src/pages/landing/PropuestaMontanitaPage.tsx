@@ -9,6 +9,7 @@ import { formatCurrency } from '@/lib/utils';
 import { useToast } from '@/components/shared/Toast';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta } from '@/lib/propuestaContent';
+import { WhatsAppCTA, useWhatsAppHref } from '@/components/shared/WhatsAppCTA';
 
 // ============================================================
 // PROPUESTA EXCLUSIVA — Montañita View (privada: noindex, sin enlace en el
@@ -81,6 +82,12 @@ export default function PropuestaMontanitaPage() {
       return resolvePropuesta();
     }
   }, [saved]);
+
+  // Reunión por WhatsApp, con el contexto de la propuesta ya escrito.
+  const meetHref = useWhatsAppHref(
+    'Hola 👋 Vi la propuesta de Montañita View y quiero *agendar una reunión* con un asesor.',
+    c.whatsapp,
+  );
 
   // Al imprimir (botón o Ctrl+P) se despliegan todos los detalles técnicos y
   // al terminar se restaura lo que el usuario tenía abierto.
@@ -187,9 +194,17 @@ export default function PropuestaMontanitaPage() {
           <Route id="solar" eyebrow="Ruta A" title="Comprar un solar en la Lotización">
             <Summary>{c.solar.summary}</Summary>
             <KV rows={c.solar.rows} />
-            <Link to="/proyectos/montanita-view" className="mt-4 inline-block">
-              <Button>Ver el mapa de solares</Button>
-            </Link>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <Link to="/proyectos/montanita-view">
+                <Button>Ver el mapa de solares</Button>
+              </Link>
+              <WhatsAppCTA
+                whatsapp={c.whatsapp}
+                message="Hola 👋 Vi la propuesta de Montañita View y me interesa *comprar un solar* (Ruta A). Quiero más información."
+              >
+                Consultar por WhatsApp
+              </WhatsAppCTA>
+            </div>
 
             <Detail title="Cadena de dominio">
               <ol className="list-decimal space-y-2 pl-5">
@@ -249,6 +264,13 @@ export default function PropuestaMontanitaPage() {
           <Route id="lobby" printBreak eyebrow="Ruta B" title="Montañita View Lobby">
             <Summary>{c.lobby.summary}</Summary>
             <KV rows={c.lobby.rows} />
+            <WhatsAppCTA
+              className="mt-4"
+              whatsapp={c.whatsapp}
+              message="Hola 👋 Vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Ruta B). Quiero más información."
+            >
+              Consultar por WhatsApp
+            </WhatsAppCTA>
             <Gallery
               items={[
                 ['lobby-fachada', 'Lobby, fachada y piscina'],
@@ -384,6 +406,14 @@ export default function PropuestaMontanitaPage() {
               <p className="mt-3">{c.total.paymentNote}</p>
             </Detail>
 
+            <WhatsAppCTA
+              className="mt-4"
+              whatsapp={c.whatsapp}
+              message={`Hola 👋 Vi la propuesta de Montañita View y me interesa *la compra total* (Ruta C, ${c.total.tag}). Quiero más información.`}
+            >
+              Consultar por WhatsApp
+            </WhatsAppCTA>
+
             <Detail title="Infraestructura y estudios ya ejecutados">
               <ul className="list-disc space-y-1 pl-5">
                 <li>Estudio topográfico y de suelos.</li>
@@ -421,9 +451,11 @@ export default function PropuestaMontanitaPage() {
           </section>
 
           <div className="flex flex-wrap justify-center gap-3 print:hidden">
-            <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noreferrer">
-              <Button size="lg">Agendar una reunión</Button>
-            </a>
+            {meetHref && (
+              <a href={meetHref} target="_blank" rel="noreferrer">
+                <Button size="lg">Agendar una reunión</Button>
+              </a>
+            )}
             <Button size="lg" variant="outline" onClick={printPdf}>
               <Printer className="h-4 w-4" /> Guardar como PDF
             </Button>
@@ -476,7 +508,8 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
         </p>
         <input required placeholder="Nombre completo" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
         <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-        <input required placeholder="WhatsApp" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+        <input required type="tel" placeholder="WhatsApp (obligatorio)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+        <p className="text-xs text-brand-gray">El WhatsApp es obligatorio: es por donde te responde el asesor.</p>
         <Button type="submit" className="w-full" disabled={sending}>
           {sending ? 'Enviando…' : 'Ver la propuesta'}
         </Button>

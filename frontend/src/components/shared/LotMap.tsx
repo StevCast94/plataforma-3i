@@ -6,6 +6,8 @@ import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/shared/Toast';
+import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
+import { useVisualViewport } from '@/hooks/useVisualViewport';
 import type { PublicLot, LotStatus } from '@shared/types';
 import ZONAS from '@/data/montanita-zonas.json';
 
@@ -417,6 +419,13 @@ export function LotMap({
             Cómo llegar
           </a>
         )}
+        <WhatsAppCTA
+          variant="outline"
+          className="ml-2 mt-3"
+          message={`Hola 👋 Estoy viendo el mapa de solares de ${projectName} y quiero información.`}
+        >
+          Preguntar por WhatsApp
+        </WhatsAppCTA>
       </div>
 
       {!full && <div className="mb-4">{controls}</div>}
@@ -475,7 +484,12 @@ export function LotMap({
           {full ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
         </button>
         {selected && (
-          <LotPanel lot={selected} projectName={projectName} onClose={() => setSelected(null)} />
+          <LotPanel
+            lot={selected}
+            projectName={projectName}
+            modal={full}
+            onClose={() => setSelected(null)}
+          />
         )}
       </div>
 
@@ -586,12 +600,29 @@ function LotPhotos({ images, code }: { images: string[]; code: string }) {
   );
 }
 
-function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: string; onClose: () => void }) {
+function LotPanel({
+  lot,
+  projectName,
+  modal,
+  onClose,
+}: {
+  lot: PublicLot;
+  projectName: string;
+  /** En pantalla completa la ficha es una ventana emergente sobre el mapa. */
+  modal?: boolean;
+  onClose: () => void;
+}) {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const available = lot.status === 'AVAILABLE';
+  // El teclado del teléfono no encoge la ventana: sin esto, el campo que se
+  // escribe queda debajo del teclado en la ventana emergente.
+  const vv = useVisualViewport();
+
+  const precio = lot.price != null ? `, ${formatCurrency(lot.price)}` : '';
+  const waMsg = `Hola 👋 Me interesa el *solar ${lot.code}* de ${projectName} (${fmtArea(lot.areaM2)}${precio}). Quiero más información.`;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -600,9 +631,7 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
       await api.post('/contact', {
         ...form,
         source: `lote:${projectName}:${lot.code}`,
-        message: `Interés en el solar ${lot.code} (${fmtArea(lot.areaM2)}${
-          lot.price != null ? `, ${formatCurrency(lot.price)}` : ''
-        }) de ${projectName}.`,
+        message: `Interés en el solar ${lot.code} (${fmtArea(lot.areaM2)}${precio}) de ${projectName}.`,
       });
       setSent(true);
     } catch (err) {
@@ -612,14 +641,21 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
     }
   }
 
-  return (
-    // En el teléfono es una hoja que sube desde abajo hasta media pantalla: se
-    // sigue viendo el mapa mientras se lee la ficha. En pantallas grandes, panel lateral.
-    <div className="absolute inset-x-0 bottom-0 z-[1000] max-h-[62%] overflow-y-auto rounded-t-2xl bg-white p-5 pt-3 shadow-2xl sm:inset-x-auto sm:bottom-3 sm:right-3 sm:top-3 sm:max-h-none sm:w-96 sm:rounded-2xl sm:pt-5">
-      <span className="mx-auto mb-3 block h-1 w-10 rounded-full bg-black/15 sm:hidden" />
-      <button onClick={onClose} aria-label="Cerrar" className="absolute right-3 top-3 text-brand-gray hover:text-primary">
-        <X className="h-5 w-5" />
-      </button>
+  // Al enfocar un campo, el navegador móvil abre el teclado y encoge el área
+  // visible: subimos el campo al centro de lo que queda a la vista.
+  const keepVisible = (e: React.FocusEvent<HTMLInputElement>) => {
+    const el = e.currentTarget;
+    setTimeout(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }), 250);
+  };
+
+  const closeButton = (
+    <button onClick={onClose} aria-label="Cerrar" className="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-1 text-brand-gray hover:text-primary">
+      <X className="h-5 w-5" />
+    </button>
+  );
+
+  const body = (
+    <>
       <p className="text-xs uppercase tracking-wider text-brand-gray">{lot.block?.replace('MZ-', 'Manzana ')}</p>
       <h3 className="font-serif text-2xl font-bold text-primary">Solar {lot.code}</h3>
       {lot.name && <p className="text-sm text-accent">Uso proyectado: {lot.name}</p>}
@@ -640,24 +676,64 @@ function LotPanel({ lot, projectName, onClose }: { lot: PublicLot; projectName: 
         )}
       </dl>
 
+      {/* Vía más rápida: abre WhatsApp con el solar ya escrito, sin llenar nada. */}
+      <WhatsAppCTA message={waMsg} className="mt-4 w-full">
+        Consultar el solar {lot.code}
+      </WhatsAppCTA>
+
       <LotSheet lot={lot} />
 
       {available && !sent && (
         <form onSubmit={submit} className="mt-4 space-y-2 border-t border-black/5 pt-4">
-          <p className="text-sm font-semibold text-primary">Me interesa este solar</p>
-          <input required placeholder="Nombre" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-          <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-          <input placeholder="WhatsApp" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+          <p className="text-sm font-semibold text-primary">O déjanos tus datos y te escribimos</p>
+          <input required placeholder="Nombre" onFocus={keepVisible} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+          <input required type="email" placeholder="Email" onFocus={keepVisible} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+          <input required type="tel" placeholder="WhatsApp (obligatorio)" onFocus={keepVisible} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
           <Button type="submit" className="w-full" disabled={sending}>
             {sending ? 'Enviando…' : 'Quiero que me contacten'}
           </Button>
+          <p className="text-xs text-brand-gray">
+            El WhatsApp es obligatorio: es por donde te responde el asesor.
+          </p>
         </form>
       )}
       {sent && (
         <p className="mt-4 rounded-lg bg-green-50 p-3 text-sm text-green-800">
-          ¡Listo! Un asesor te contactará sobre el solar {lot.code}.
+          ¡Listo! Un asesor te contactará por WhatsApp sobre el solar {lot.code}.
         </p>
       )}
+    </>
+  );
+
+  // Pantalla completa: ventana emergente centrada sobre el mapa, dimensionada
+  // con el área visible real para que el teclado nunca tape el formulario.
+  if (modal) {
+    return (
+      <div
+        className="fixed inset-x-0 z-[3100] flex items-center justify-center p-3"
+        style={{ top: vv.offsetTop, height: vv.height }}
+      >
+        <button className="absolute inset-0 cursor-default bg-black/50" onClick={onClose} aria-label="Cerrar la ficha" />
+        <div
+          role="dialog"
+          aria-label={`Ficha del solar ${lot.code}`}
+          className="relative w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl bg-white p-5 shadow-2xl"
+          style={{ maxHeight: '100%' }}
+        >
+          {closeButton}
+          {body}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    // En el teléfono es una hoja que sube desde abajo hasta media pantalla: se
+    // sigue viendo el mapa mientras se lee la ficha. En pantallas grandes, panel lateral.
+    <div className="absolute inset-x-0 bottom-0 z-[1000] max-h-[62%] overflow-y-auto rounded-t-2xl bg-white p-5 pt-3 shadow-2xl sm:inset-x-auto sm:bottom-3 sm:right-3 sm:top-3 sm:max-h-none sm:w-96 sm:rounded-2xl sm:pt-5">
+      <span className="mx-auto mb-3 block h-1 w-10 rounded-full bg-black/15 sm:hidden" />
+      {closeButton}
+      {body}
     </div>
   );
 }

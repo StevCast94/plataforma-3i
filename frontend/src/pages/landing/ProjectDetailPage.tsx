@@ -11,6 +11,7 @@ import { ProjectCard } from '@/components/shared/ProjectCard';
 import { ContactForm } from '@/components/shared/ContactForm';
 import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { BrochureDigital } from '@/components/shared/BrochureDigital';
+import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { LotMap } from '@/components/shared/LotMap';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorState } from '@/components/shared/ErrorState';
@@ -269,6 +270,12 @@ export default function ProjectDetailPage() {
             <Button size="lg" onClick={() => setOpen(true)}>
               Solicitar información
             </Button>
+            <WhatsAppCTA
+              message={`Hola 👋 Me interesa el proyecto *${project.name}* y quiero información.`}
+              className="px-7 py-3.5 text-base"
+            >
+              Escribir por WhatsApp
+            </WhatsAppCTA>
             <ShareToCommunity
               title={project.name}
               path={`/proyectos/${project.slug}`}

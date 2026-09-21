@@ -26,6 +26,7 @@ interface ContactFormProps {
 interface Errors {
   name?: string;
   email?: string;
+  phone?: string;
   message?: string;
 }
 
@@ -55,6 +56,9 @@ export function ContactForm({
       if (!data.name.trim()) e.name = 'Ingresa tu nombre';
       if (!data.email.trim()) e.email = 'Ingresa tu email';
       else if (!EMAIL_RE.test(data.email)) e.email = 'Email inválido';
+      // El WhatsApp es el canal por el que responde el asesor: sin él, el lead
+      // se queda esperando un correo que casi nadie abre.
+      if (data.phone.replace(/D/g, '').length < 7) e.phone = 'Ingresa tu WhatsApp';
     }
     if (isContact && withMessage && !data.message.trim())
       e.message = 'Cuéntanos qué necesitas';
@@ -168,7 +172,14 @@ export function ContactForm({
             </div>
           </div>
 
-          <Input name="phone" label="Teléfono (opcional)" placeholder="+593 ..." />
+          <div>
+            <Input name="phone" type="tel" label="WhatsApp" placeholder="+593 ..." />
+            {errors.phone ? (
+              <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+            ) : (
+              <p className="mt-1 text-xs text-brand-gray">Obligatorio: es por donde te responde el asesor.</p>
+            )}
+          </div>
         </>
       )}
 

@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CommunitySubNav } from './CommunitySubNav';
-import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
 import { BrandLoader } from '@/components/brand/Isotipo';
 
 function ScrollToTop() {
@@ -27,7 +26,6 @@ export function CommunityLayout() {
         </Suspense>
       </main>
       <Footer />
-      <WhatsAppFloat />
     </div>
   );
 }
