@@ -10,30 +10,39 @@ import { useLang } from '@/hooks/useLang';
 // vacío, para que las validaciones de campo obligatorio sigan funcionando.
 // ============================================================
 
-/** Países desde donde llegan las consultas, Ecuador primero. */
-const CODES: [string, string][] = [
-  ['+593', 'Ecuador'],
-  ['+1', 'EE.UU. / Canadá'],
-  ['+34', 'España'],
-  ['+57', 'Colombia'],
-  ['+51', 'Perú'],
-  ['+56', 'Chile'],
-  ['+54', 'Argentina'],
-  ['+52', 'México'],
-  ['+55', 'Brasil'],
-  ['+58', 'Venezuela'],
-  ['+591', 'Bolivia'],
-  ['+598', 'Uruguay'],
-  ['+595', 'Paraguay'],
-  ['+507', 'Panamá'],
-  ['+506', 'Costa Rica'],
-  ['+39', 'Italia'],
-  ['+49', 'Alemania'],
-  ['+33', 'Francia'],
-  ['+44', 'Reino Unido'],
-  ['+41', 'Suiza'],
-  ['+31', 'Países Bajos'],
+/** Países desde donde llegan las consultas, Ecuador primero: [prefijo, ISO, nombre]. */
+const CODES: [string, string, string][] = [
+  ['+593', 'EC', 'Ecuador'],
+  ['+1', 'US', 'EE.UU. / Canadá'],
+  ['+34', 'ES', 'España'],
+  ['+57', 'CO', 'Colombia'],
+  ['+51', 'PE', 'Perú'],
+  ['+56', 'CL', 'Chile'],
+  ['+54', 'AR', 'Argentina'],
+  ['+52', 'MX', 'México'],
+  ['+55', 'BR', 'Brasil'],
+  ['+58', 'VE', 'Venezuela'],
+  ['+591', 'BO', 'Bolivia'],
+  ['+598', 'UY', 'Uruguay'],
+  ['+595', 'PY', 'Paraguay'],
+  ['+507', 'PA', 'Panamá'],
+  ['+506', 'CR', 'Costa Rica'],
+  ['+39', 'IT', 'Italia'],
+  ['+49', 'DE', 'Alemania'],
+  ['+33', 'FR', 'Francia'],
+  ['+44', 'GB', 'Reino Unido'],
+  ['+41', 'CH', 'Suiza'],
+  ['+31', 'NL', 'Países Bajos'],
 ];
+
+/**
+ * Bandera del país a partir de su código ISO, con los caracteres indicadores
+ * regionales. Windows de escritorio no dibuja banderas y muestra las dos
+ * letras del país ("EC"), que en un desplegable de prefijos se lee igual de
+ * bien; en el teléfono, que es de donde llega casi todo, sí sale la bandera.
+ */
+const flag = (iso: string) =>
+  String.fromCodePoint(...[...iso].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
 
 interface Props {
   /** Si se define, publica el valor en un input oculto para FormData. */
@@ -67,11 +76,11 @@ export function PhoneField({ name, label, hint, required, onChange, onFocus, cla
             setCode(e.target.value);
             emit(e.target.value, num);
           }}
-          className="w-28 shrink-0 rounded-lg border border-black/15 bg-white px-2 py-2 text-sm text-primary"
+          className="w-24 shrink-0 rounded-lg border border-black/15 bg-white px-2 py-2 text-sm text-primary"
         >
-          {CODES.map(([dial, país]) => (
-            <option key={dial + país} value={dial}>
-              {dial} {t(país)}
+          {CODES.map(([dial, iso, país]) => (
+            <option key={iso} value={dial} title={t(país)}>
+              {flag(iso)} {dial}
             </option>
           ))}
         </select>
