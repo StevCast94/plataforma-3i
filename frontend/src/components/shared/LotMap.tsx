@@ -48,10 +48,10 @@ const LOT_LABEL_ZOOM = 18;
  * Rotula el solar: acercado, solo su código dentro del polígono — el uso y la
  * disponibilidad llenaban el mapa de texto y ya se ven al pasar el cursor.
  */
-function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoomed: boolean) {
+function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoomed: boolean, t: (s: string) => string) {
   poly.lotData = lot;
   if (!zoomed) {
-    poly.unbindTooltip().bindTooltip(`${lot.code} · ${lot.name || STATUS_STYLE[lot.status].label}`, { sticky: true });
+    poly.unbindTooltip().bindTooltip(`${lot.code} · ${t(lot.name || STATUS_STYLE[lot.status].label)}`, { sticky: true });
     return;
   }
   poly
@@ -65,7 +65,7 @@ function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoo
  * equipamiento y el eje de cada calle, tal como constan en el plano de
  * implantación aprobado y en el levantamiento de GEO 3i.
  */
-function drawUrbanism(map: L.Map) {
+function drawUrbanism(map: L.Map, t: (s: string) => string) {
   const base = L.layerGroup().addTo(map);
   const uid = Math.random().toString(36).slice(2, 8); // ids únicos si hay dos mapas en la página
   const zonas = [
@@ -82,7 +82,7 @@ function drawUrbanism(map: L.Map) {
       fillColor: z.style.color,
       fillOpacity: 0.18,
     })
-      .bindTooltip(`${z.nombre} · ${fmtArea(z.areaM2)}`, { sticky: true })
+      .bindTooltip(`${t(z.nombre)} · ${fmtArea(z.areaM2)}`, { sticky: true })
       .addTo(base);
   }
   const vias = ZONAS.vias.map((v) => {
@@ -282,9 +282,9 @@ export function LotMap({
       // Esri solo tiene imagen hasta z18 en Manglaralto: más allá devuelve el
       // mosaico gris "Map data not yet available". Con maxNativeZoom 18 Leaflet
       // amplía la última imagen real y el mapa sigue acercándose hasta z21.
-      { maxZoom: 21, maxNativeZoom: 18, attribution: 'Imágenes © Esri' },
+      { maxZoom: 21, maxNativeZoom: 18, attribution: '© Esri' },
     ).addTo(map);
-    if (projectSlug === 'montanita-view') drawUrbanism(map);
+    if (projectSlug === 'montanita-view') drawUrbanism(map, t);
     layerRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
     return () => {
@@ -312,7 +312,7 @@ export function LotMap({
       });
       poly.on('click', () => setSelected(lot));
       poly.addTo(layer);
-      labelLot(poly, lot, map.getZoom() >= LOT_LABEL_ZOOM);
+      labelLot(poly, lot, map.getZoom() >= LOT_LABEL_ZOOM, t);
       ring.forEach((c) => bounds.extend(c));
     }
     // Acercado, el código y el uso van rotulados dentro de cada solar; en la
@@ -321,7 +321,7 @@ export function LotMap({
       const zoomed = map.getZoom() >= LOT_LABEL_ZOOM;
       layer.eachLayer((l) => {
         const poly = l as L.Polygon & { lotData?: PublicLot };
-        if (poly.lotData) labelLot(poly, poly.lotData, zoomed);
+        if (poly.lotData) labelLot(poly, poly.lotData, zoomed, t);
       });
     };
     map.on('zoomend', onZoom);
@@ -756,8 +756,22 @@ function Row({ label, value, strong }: { label: string; value: string; strong?: 
  * El nombre de la calle no se traduce: es el rótulo que está en el terreno.
  */
 function colindante(t: (s: string) => string, texto: string): string {
-  const m = /^(Solar|Calle)\s+(.+)$/.exec(texto);
-  return m ? `${t(m[1])} ${m[2]}` : t(texto);
+  const entero = t(texto);
+  if (entero !== texto) return entero;
+  const m = /^Solar\s+(.+)$/.exec(texto);
+  return m ? `${t('Solar')} ${m[1]}` : texto;
+}
+
+/**
+ * Notas de un solar (vienen de GEO 3i). Las que llevan cifras siguen dos
+ * plantillas fijas y se traducen rellenando los números; el resto, por diccionario.
+ */
+function nota(t: (s: string, v?: Record<string, string | number>) => string, texto: string): string {
+  let m = /^Área publicada \(inventario\): (.+?)\. Área según el plano georreferenciado: (.+?) \((.+?)\)\. Confirmar con levantamiento de campo\.$/.exec(texto);
+  if (m) return t('Área publicada (inventario): {a}. Área según el plano georreferenciado: {b} ({c}). Confirmar con levantamiento de campo.', { a: m[1], b: m[2], c: m[3] });
+  m = /^Clave del solar matriz (.+?), antes de su división en (.+?) y (.+?)\.$/.exec(texto);
+  if (m) return t('Clave del solar matriz {a}, antes de su división en {b} y {c}.', { a: m[1], b: m[2], c: m[3] });
+  return t(texto);
 }
 
 const CARDINAL_SHORT: Record<string, string> = { NORTE: 'Norte', ESTE: 'Este', SUR: 'Sur', OESTE: 'Oeste' };
@@ -772,15 +786,15 @@ function LotSheet({ lot }: { lot: PublicLot }) {
   return (
     <div className="mt-4 space-y-3 border-t border-black/5 pt-4 text-sm">
       <p className="text-xs font-semibold uppercase tracking-wider text-secondary">{t('Ficha técnica')}</p>
-      {lot.details?.notice && <p className="rounded-lg bg-amber-50 p-2 text-xs font-medium text-amber-900">⚠ {lot.details.notice}</p>}
+      {lot.details?.notice && <p className="rounded-lg bg-amber-50 p-2 text-xs font-medium text-amber-900">⚠ {nota(t, lot.details.notice)}</p>}
       <dl className="space-y-2">
         <Row label={t('Clave catastral')} value={lot.cadastralCode ?? t('Por asignar')} />
-        {note && <p className="-mt-1 text-right text-[11px] text-brand-gray">{note}</p>}
+        {note && <p className="-mt-1 text-right text-[11px] text-brand-gray">{nota(t, note)}</p>}
         <Row label={t('Área')} value={fmtArea(lot.areaM2)} />
         {d && <Row label={t('Perímetro')} value={`${num(d.perimeterM)} m`} />}
         {d?.frentes?.length ? <Row label={d.frentes.length > 1 ? t('Frentes') : t('Frente')} value={d.frentes.map((f) => `${num(f.lengthM)} m ${t('a')} ${f.calle}`).join(' · ')} /> : null}
         {d?.fondoM ? <Row label={t('Fondo')} value={`${num(d.fondoM)} m`} /> : null}
-        {lot.details?.areaNote && <p className="-mt-1 text-right text-[11px] text-amber-700">{lot.details.areaNote}</p>}
+        {lot.details?.areaNote && <p className="-mt-1 text-right text-[11px] text-amber-700">{nota(t, lot.details.areaNote)}</p>}
         {d && <Row label={t('Lados')} value={String(d.sides.length)} />}
         <Row label={t('Ubicación')} value="Manglaralto, Santa Elena" />
         {d && <Row label={t('Centro (UTM 17S)')} value={`${num(d.centroidUTM.este, 1)} E · ${num(d.centroidUTM.norte, 1)} N`} />}
@@ -819,7 +833,7 @@ function LotSheet({ lot }: { lot: PublicLot }) {
               </tbody>
             </table>
           </details>
-          <p className="text-[11px] text-brand-gray">{t('Fuente')}: {d.source}. {t('Datos referenciales; los linderos legales constan en la escritura.')}</p>
+          <p className="text-[11px] text-brand-gray">{t('Fuente')}: {nota(t, d.source)}. {t('Datos referenciales; los linderos legales constan en la escritura.')}</p>
         </>
       ) : (
         <p className="rounded-lg bg-amber-50 p-2 text-xs text-amber-800">

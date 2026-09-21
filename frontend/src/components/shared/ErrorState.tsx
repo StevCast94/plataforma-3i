@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/Button';
+import { useLang } from '@/hooks/useLang';
 
 interface ErrorStateProps {
   title?: string;
@@ -11,6 +12,7 @@ export function ErrorState({
   message,
   onRetry,
 }: ErrorStateProps) {
+  const { t } = useLang();
   return (
     <div className="mx-auto flex min-h-[40vh] max-w-xl flex-col items-center justify-center px-4 text-center">
       <span className="text-5xl">⚠️</span>
@@ -18,7 +20,7 @@ export function ErrorState({
       {message && <p className="mt-2 text-brand-gray">{message}</p>}
       {onRetry && (
         <Button variant="outline" className="mt-6" onClick={onRetry}>
-          Reintentar
+          {t('Reintentar')}
         </Button>
       )}
     </div>

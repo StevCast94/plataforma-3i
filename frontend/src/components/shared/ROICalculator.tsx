@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useLang } from '@/hooks/useLang';
 import { formatCurrency } from '@/lib/utils';
 
 interface ROICalculatorProps {
@@ -15,6 +16,7 @@ export function ROICalculator({
   annualReturnPct = 9,
   max,
 }: ROICalculatorProps) {
+  const { t } = useLang();
   const minAmount = Math.max(fractionPrice, 1000);
   const maxAmount = max ?? Math.max(minAmount * 10, 50000);
   const [amount, setAmount] = useState(minAmount);
@@ -33,17 +35,17 @@ export function ROICalculator({
     <section className="bg-primary text-white">
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
         <h2 className="text-center text-3xl font-bold sm:text-4xl">
-          Calculadora de inversión
+          {t('Calculadora de inversión')}
         </h2>
         <p className="mt-2 text-center text-white/70">
-          Estima tu retorno. Cifras referenciales, no constituyen garantía.
+          {t('Estima tu retorno. Cifras referenciales, no constituyen garantía.')}
         </p>
 
         <div className="mt-10 rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 sm:p-10">
           <label className="block">
             <div className="flex items-baseline justify-between">
               <span className="text-sm uppercase tracking-wider text-white/60">
-                Monto a invertir
+                {t('Monto a invertir')}
               </span>
               <span className="font-serif text-3xl font-bold text-secondary">
                 {formatCurrency(amount)}
@@ -66,14 +68,14 @@ export function ROICalculator({
 
           <div className="mt-8 grid gap-5 sm:grid-cols-3">
             <Stat
-              label="Fracciones"
+              label={t('Fracciones')}
               value={fractions.toLocaleString('en-US', { maximumFractionDigits: 2 })}
             />
             <Stat
-              label={`Retorno anual (${annualReturnPct}%)`}
+              label={t('Retorno anual ({n}%)', { n: annualReturnPct })}
               value={formatCurrency(annualGain)}
             />
-            <Stat label="Proyección 5 años" value={formatCurrency(fiveYearGain)} />
+            <Stat label={t('Proyección 5 años')} value={formatCurrency(fiveYearGain)} />
           </div>
         </div>
       </div>

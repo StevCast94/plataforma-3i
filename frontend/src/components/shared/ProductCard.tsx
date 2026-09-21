@@ -13,7 +13,7 @@ const typeLabels: Record<string, string> = {
 };
 
 export function ProductCard({ product }: { product: Product }) {
-  const { t } = useLang();
+  const { t, tb } = useLang();
   return (
     <Link to={`/tienda/${product.slug}`}>
       <Card className="group flex h-full flex-col">
@@ -29,9 +29,9 @@ export function ProductCard({ product }: { product: Product }) {
           </Badge>
         </div>
         <div className="flex flex-1 flex-col p-6">
-          <h3 className="text-xl text-primary">{product.name}</h3>
+          <h3 className="text-xl text-primary">{t(product.name)}</h3>
           <p className="mt-2 line-clamp-2 flex-1 text-sm text-brand-gray">
-            {product.description}
+            {tb(product.description)}
           </p>
           <div className="mt-4">
             <PriceDisplay price={product.price} promoPrice={product.promoPrice} compact />

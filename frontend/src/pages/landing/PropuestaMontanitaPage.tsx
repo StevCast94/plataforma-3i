@@ -237,7 +237,7 @@ export default function PropuestaMontanitaPage() {
               <p className="mt-3">
                 {t('El 17.25% de áreas verdes cumple el Art. 424 del COOTAD, por lo que no hay compensación pendiente por ese concepto.')}
               </p>
-              <Source>Cuadro de áreas del plano aprobado de la Lotización Montañita VIEW (GAD Municipal de Santa Elena, 2018); <a className="underline" target="_blank" rel="noreferrer" href="https://www.cpccs.gob.ec/wp-content/uploads/2020/01/cootad.pdf">COOTAD, Art. 424</a>.</Source>
+              <Source>{t('Cuadro de áreas del plano aprobado de la Lotización Montañita VIEW (GAD Municipal de Santa Elena, 2018);')}{' '}<a className="underline" target="_blank" rel="noreferrer" href="https://www.cpccs.gob.ec/wp-content/uploads/2020/01/cootad.pdf">COOTAD, Art. 424</a>.</Source>
             </Detail>
 
             <Detail title={t('Inventario disponible por manzana')}>
@@ -315,7 +315,7 @@ export default function PropuestaMontanitaPage() {
 
             <div className="rounded-2xl bg-light p-5 sm:p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">{t('Estudio de factibilidad 2026')}</p>
-              <h3 className="mt-1 font-serif text-2xl font-bold text-primary">81 apartamentos en tres etapas</h3>
+              <h3 className="mt-1 font-serif text-2xl font-bold text-primary">{t('81 apartamentos en tres etapas')}</h3>
               <p className="mt-2 text-sm text-primary/80">
                 {t('Estudio propio con precios de venta, costos de construcción y tasas de 2026. Cambia de escenario para ver cómo se mueven los resultados.')}
               </p>
@@ -330,7 +330,7 @@ export default function PropuestaMontanitaPage() {
                 head={['Componente', 'Unidades', 'Área vendible', 'Estado']}
                 rows={[
                   ['Lobby y eco-hotel', 'Área social + 6 habitaciones', '—', 'Construido y operando'],
-                  ...STAGE_MEDIA.map((s) => [`Etapa ${s.name}`, `${s.units} apartamentos`, m2(s.units * 151), 'Diseñada, lista para desarrollar']),
+                  ...STAGE_MEDIA.map((s) => [t('Etapa {n}', { n: s.name }), t('{n} apartamentos', { n: s.units }), m2(s.units * 151), 'Diseñada, lista para desarrollar']),
                   ['Hotel', '104 habitaciones', '—', 'Fase futura opcional'],
                 ]}
               />
@@ -338,13 +338,11 @@ export default function PropuestaMontanitaPage() {
             </Detail>
 
             {STAGE_MEDIA.map((s) => (
-              <Detail key={s.name} title={`Etapa ${s.name} — ${s.units} apartamentos`}>
-                <Figure src={s.render} caption={`Etapa ${s.name}`} />
+              <Detail key={s.name} title={t('Etapa {n} — {u} apartamentos', { n: s.name, u: s.units })}>
+                <Figure src={s.render} caption={t('Etapa {n}', { n: s.name })} />
                 <p className="mt-3">
-                  {s.units} apartamentos de 151 m² en serie de terrazas ({m2(s.units * 151)} vendibles).
-                  Cada unidad: terraza con jacuzzi privado y BBQ, habitación principal con walk-in
-                  closet, habitación estándar, sala, cocina semi-integral, comedor y baño social, con
-                  domótica y amoblado.
+                  {t('{u} apartamentos de 151 m² en serie de terrazas ({area} vendibles).', { u: s.units, area: m2(s.units * 151) })}{' '}
+                  {t('Cada unidad: terraza con jacuzzi privado y BBQ, habitación principal con walk-in closet, habitación estándar, sala, cocina semi-integral, comedor y baño social, con domótica y amoblado.')}
                 </p>
                 {s.name === 'Arrecife' && <Figure src="render-apto-arrecife" caption="Terraza de un apartamento tipo" />}
               </Detail>
@@ -381,7 +379,7 @@ export default function PropuestaMontanitaPage() {
 
             <Detail title={t('Forma de pago')}>
               <KV rows={c.total.paymentRows} />
-              <p className="mt-3">{c.total.paymentNote}</p>
+              <p className="mt-3">{t(c.total.paymentNote)}</p>
             </Detail>
 
             <WhatsAppCTA

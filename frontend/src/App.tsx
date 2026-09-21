@@ -109,6 +109,9 @@ export default function App() {
               <Route path="oficina" element={<OfficeLanding />} />
               <Route path="oficina/login" element={<LoginPage />} />
               <Route path="oficina/registro" element={<RegisterPage />} />
+              <Route path="en/oficina" element={<OfficeLanding />} />
+              <Route path="en/oficina/login" element={<LoginPage />} />
+              <Route path="en/oficina/registro" element={<RegisterPage />} />
 
               {/* Oficina — páginas protegidas (con sidebar + header) */}
               <Route path="oficina" element={<OfficeLayout />}>

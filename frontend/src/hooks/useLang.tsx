@@ -30,6 +30,15 @@ export function useLang() {
       lang,
       /** Traduce un texto escrito en español. */
       t: (text: string, vars?: Record<string, string | number>) => translate(lang, text, vars),
+      /**
+       * Traduce un texto de varios párrafos línea por línea (descripciones del
+       * admin): cada párrafo es una entrada del diccionario.
+       */
+      tb: (text: string | null | undefined) =>
+        (text ?? '')
+          .split('\n')
+          .map((l) => (l.trim() ? translate(lang, l.trim()) : l))
+          .join('\n'),
       /** Añade el prefijo de idioma a una ruta interna. */
       path: (p: string) => localizePath(p, lang),
       /** La misma página en el otro idioma. */

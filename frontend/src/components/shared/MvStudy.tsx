@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useLang } from '@/hooks/useLang';
 import {
   APT_ASSUMPTIONS,
   APT_M2,
@@ -26,6 +27,7 @@ export function MvStudy({
   assumptions = APT_ASSUMPTIONS,
   discount = DISCOUNT,
 }: { assumptions?: AptAssumptions; discount?: number }) {
+  const { t } = useLang();
   const [sc, setSc] = useState<Scenario>('base');
   const all = useMemo(
     () => Object.fromEntries(SCENARIOS.map((s) => [s, STAGE_BASE.map((st) => stageModel(st, s, assumptions[s], discount))])) as Record<Scenario, ReturnType<typeof stageModel>[]>,
@@ -41,7 +43,7 @@ export function MvStudy({
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-brand-gray">Escenario<span className="hidden font-semibold capitalize text-primary print:inline">: {sc}</span></p>
+        <p className="text-sm text-brand-gray">{t('Escenario')}<span className="hidden font-semibold capitalize text-primary print:inline">: {t(sc)}</span></p>
         <div className="inline-flex rounded-full bg-light p-1 ring-1 ring-black/10 print:hidden">
           {SCENARIOS.map((s) => (
             <button
@@ -49,17 +51,17 @@ export function MvStudy({
               onClick={() => setSc(s)}
               className={`rounded-full px-4 py-1.5 text-sm font-medium capitalize transition ${sc === s ? 'bg-primary text-white' : 'text-primary/70 hover:text-primary'}`}
             >
-              {s}
+              {t(s)}
             </button>
           ))}
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-4">
-        <Kpi l="Ventas totales" v={short(tot.revenue)} />
-        <Kpi l="Costo total" v={short(tot.cost)} />
-        <Kpi l="Margen" v={pct((tot.revenue - tot.cost) / tot.revenue)} />
-        <Kpi l={`VAN al ${Math.round(discount * 100)}%`} v={short(tot.npv)} />
+        <Kpi l={t('Ventas totales')} v={short(tot.revenue)} />
+        <Kpi l={t('Costo total')} v={short(tot.cost)} />
+        <Kpi l={t('Margen')} v={pct((tot.revenue - tot.cost) / tot.revenue)} />
+        <Kpi l={t('VAN al {n}%', { n: Math.round(discount * 100) })} v={short(tot.npv)} />
       </div>
 
       <div className="overflow-x-auto rounded-xl ring-1 ring-black/5">
@@ -67,7 +69,7 @@ export function MvStudy({
           <thead className="bg-primary/5 text-primary">
             <tr>
               {['Etapa', 'Aptos', 'Precio por apto', 'Ventas', 'Costo', 'Margen', 'VAN', 'TIR', 'Capital máximo'].map((h) => (
-                <th key={h} className="whitespace-nowrap px-3 py-2 font-semibold">{h}</th>
+                <th key={h} className="whitespace-nowrap px-3 py-2 font-semibold">{t(h)}</th>
               ))}
             </tr>
           </thead>
@@ -89,9 +91,7 @@ export function MvStudy({
         </table>
       </div>
       <p className="text-xs text-brand-gray">
-        La TIR es alta porque la entrada del 30% de las ventas en planos financia parte de la obra; los
-        indicadores principales son el margen y el VAN. Capital máximo: aporte acumulado más alto que
-        requiere cada etapa antes de recuperarse.
+        {t('La TIR es alta porque la entrada del 30% de las ventas en planos financia parte de la obra; los indicadores principales son el margen y el VAN. Capital máximo: aporte acumulado más alto que requiere cada etapa antes de recuperarse.')}
       </p>
 
       {/* Solo al imprimir: comparativo de los tres escenarios */}
@@ -99,7 +99,7 @@ export function MvStudy({
         <p className="mb-2 text-sm font-semibold text-primary">Comparativo de escenarios</p>
         <table className="w-full text-left text-sm">
           <thead className="bg-primary/5 text-primary">
-            <tr>{['Escenario', 'Precio / m²', 'Costo / m²', 'Ventas/trim.', 'Ventas', 'Costo', 'Margen', 'VAN'].map((h) => <th key={h} className="px-2 py-1.5 font-semibold">{h}</th>)}</tr>
+            <tr>{['Escenario', 'Precio / m²', 'Costo / m²', 'Ventas/trim.', 'Ventas', 'Costo', 'Margen', 'VAN'].map((h) => <th key={h} className="px-2 py-1.5 font-semibold">{t(h)}</th>)}</tr>
           </thead>
           <tbody>
             {SCENARIOS.map((s) => {
@@ -107,7 +107,7 @@ export function MvStudy({
               const as = assumptions[s];
               return (
                 <tr key={s} className="border-t border-black/5 capitalize">
-                  <td className="px-2 py-1.5 font-semibold">{s}</td>
+                  <td className="px-2 py-1.5 font-semibold">{t(s)}</td>
                   <td className="px-2 py-1.5">${as.price.toLocaleString('en-US')}</td>
                   <td className="px-2 py-1.5">${as.cost}</td>
                   <td className="px-2 py-1.5">{as.unitsPerQuarter}</td>
@@ -146,14 +146,14 @@ export function MvStudy({
       </ChartCard>
 
       <div>
-        <h4 className="font-semibold text-primary">Supuestos del escenario {sc}</h4>
+        <h4 className="font-semibold text-primary">{t('Supuestos del escenario {sc}', { sc: t(sc) })}</h4>
         <div className="mt-2 grid gap-2 text-sm sm:grid-cols-2">
-          <Assumption l="Precio de venta" v={`$${a.price.toLocaleString('en-US')} / m² (${money(a.price * APT_M2)} por apto de ${APT_M2} m²)`} src={[MV_SOURCES.plusvalia, MV_SOURCES.mls]} />
-          <Assumption l="Costo de construcción" v={`$${a.cost} / m²`} src={[MV_SOURCES.costo]} />
-          <Assumption l="Ritmo de ventas" v={`${a.unitsPerQuarter} apartamentos por trimestre`} src={[MV_SOURCES.plusvalia]} />
-          <Assumption l="Tasa de descuento" v={`${Math.round(discount * 100)}% anual (bono EE.UU. + riesgo país + prima del proyecto)`} src={[MV_SOURCES.riesgo]} />
-          <Assumption l="Estudios, diseño, permisos y complementarios" v="Montos del informe original actualizados +20% por inflación de construcción 2020–2026" src={[MV_SOURCES.costo]} />
-          <Assumption l="Forma de pago del comprador" v="30% de entrada al reservar y 70% a la entrega; obra de 6 trimestres" src={[]} />
+          <Assumption l={t('Precio de venta')} v={t('{precio} / m² ({apto} por apto de {m2} m²)', { precio: `$${a.price.toLocaleString('en-US')}`, apto: money(a.price * APT_M2), m2: APT_M2 })} src={[MV_SOURCES.plusvalia, MV_SOURCES.mls]} />
+          <Assumption l={t('Costo de construcción')} v={`$${a.cost} / m²`} src={[MV_SOURCES.costo]} />
+          <Assumption l={t('Ritmo de ventas')} v={t('{n} apartamentos por trimestre', { n: a.unitsPerQuarter })} src={[MV_SOURCES.plusvalia]} />
+          <Assumption l={t('Tasa de descuento')} v={t('{n}% anual (bono EE.UU. + riesgo país + prima del proyecto)', { n: Math.round(discount * 100) })} src={[MV_SOURCES.riesgo]} />
+          <Assumption l={t('Estudios, diseño, permisos y complementarios')} v={t('Montos del informe original actualizados +20% por inflación de construcción 2020–2026')} src={[MV_SOURCES.costo]} />
+          <Assumption l={t('Forma de pago del comprador')} v={t('30% de entrada al reservar y 70% a la entrega; obra de 6 trimestres')} src={[]} />
         </div>
       </div>
     </div>
@@ -167,6 +167,7 @@ function cumulative(flows: number[]) {
 
 function SensitivityTable({ base, discount }: { base: AptAssumption; discount: number }) {
   // Filas y columnas: ±10% alrededor del escenario base.
+  const { t } = useLang();
   const prices = [0.9, 1, 1.1].map((f) => Math.round((base.price * f) / 10) * 10);
   const costs = [1.1, 1, 0.9].map((f) => Math.round((base.cost * f) / 10) * 10);
   const npvAt = (price: number, cost: number) =>
@@ -176,7 +177,7 @@ function SensitivityTable({ base, discount }: { base: AptAssumption; discount: n
       <table className="w-full text-center text-sm">
         <thead>
           <tr>
-            <th className="px-2 py-2 text-left text-xs font-medium text-brand-gray">Costo ↓ / Precio de venta →</th>
+            <th className="px-2 py-2 text-left text-xs font-medium text-brand-gray">{t('Costo ↓ / Precio de venta →')}</th>
             {prices.map((p) => <th key={p} className="px-2 py-2 font-semibold text-primary">${p.toLocaleString('en-US')}/m²</th>)}
           </tr>
         </thead>
@@ -196,7 +197,9 @@ function SensitivityTable({ base, discount }: { base: AptAssumption; discount: n
           ))}
         </tbody>
       </table>
-      <p className="mt-2 text-xs text-brand-gray">Precio y costo ±10% sobre el escenario base; ritmo de ventas del escenario base ({base.unitsPerQuarter} aptos por trimestre).</p>
+      <p className="mt-2 text-xs text-brand-gray">
+        {t('Precio y costo ±10% sobre el escenario base; ritmo de ventas del escenario base ({n} aptos por trimestre).', { n: base.unitsPerQuarter })}
+      </p>
     </div>
   );
 }
@@ -240,9 +243,10 @@ function LineChart({ series, xLabel }: { series: { name: string; color: string; 
 }
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
+  const { t } = useLang();
   return (
     <div className="avoid-break rounded-xl bg-white p-4 ring-1 ring-black/5">
-      <p className="mb-2 text-sm font-semibold text-primary">{title}</p>
+      <p className="mb-2 text-sm font-semibold text-primary">{t(title)}</p>
       {children}
     </div>
   );
@@ -258,15 +262,16 @@ function Kpi({ l, v }: { l: string; v: string }) {
 }
 
 function Assumption({ l, v, src }: { l: string; v: string; src: { label: string; url: string }[] }) {
+  const { t } = useLang();
   return (
     <div className="rounded-lg bg-white p-3 ring-1 ring-black/5">
       <p className="text-xs text-brand-gray">{l}</p>
       <p className="font-medium text-primary">{v}</p>
       {src.length > 0 && (
         <p className="mt-1 text-[11px] text-brand-gray">
-          Fuente:{' '}
+          {t('Fuente')}:{' '}
           {src.map((s, i) => (
-            <span key={s.url}>{i > 0 && ' · '}<a className="underline" href={s.url} target="_blank" rel="noreferrer">{s.label}</a></span>
+            <span key={s.url}>{i > 0 && ' · '}<a className="underline" href={s.url} target="_blank" rel="noreferrer">{t(s.label)}</a></span>
           ))}
         </p>
       )}

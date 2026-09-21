@@ -22,7 +22,7 @@ import { cld } from '@/lib/cloudinary';
 import { formatCurrency } from '@/lib/utils';
 
 export default function ProjectDetailPage() {
-  const { t } = useLang();
+  const { t, tb } = useLang();
   const { slug } = useParams();
   const navigate = useNavigate();
   const { data: project, loading, error } = useProject(slug);
@@ -56,7 +56,7 @@ export default function ProjectDetailPage() {
   // Metadatos del hero: hasta 2 datos duros junto al precio, para dar sustancia
   // sin recargar. Salen de las características ya cargadas del proyecto.
   const heroMeta: { label: string; value: string }[] = [];
-  if (project.features?.tipo) heroMeta.push({ label: t('Tipo'), value: String(project.features.tipo) });
+  if (project.features?.tipo) heroMeta.push({ label: t('Tipo'), value: t(String(project.features.tipo)) });
   if (project.features?.unidades != null)
     heroMeta.push({ label: t('Unidades'), value: String(project.features.unidades) });
 
@@ -75,7 +75,7 @@ export default function ProjectDetailPage() {
     <>
       <Seo
         title={project.name}
-        description={project.subtitle ?? project.description}
+        description={tb(project.subtitle ?? project.description)}
         image={project.coverImage}
       />
 
@@ -116,7 +116,7 @@ export default function ProjectDetailPage() {
               <div className="flex items-center gap-3">
                 <span className="h-px w-8 bg-secondary" />
                 <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-secondary sm:text-xs">
-                  {project.location}
+                  {t(project.location)}
                 </p>
               </div>
             )}
@@ -127,7 +127,7 @@ export default function ProjectDetailPage() {
 
             {project.subtitle && (
               <p className="mt-5 max-w-xl text-base font-light leading-relaxed text-white/85 sm:text-xl">
-                {project.subtitle}
+                {t(project.subtitle)}
               </p>
             )}
 
@@ -141,7 +141,7 @@ export default function ProjectDetailPage() {
                   <p className="mt-1 font-serif text-3xl font-bold text-secondary sm:text-4xl">
                     {project.priceFrom != null
                       ? formatCurrency(project.priceFrom)
-                      : project.priceLabel}
+                      : t(project.priceLabel ?? '')}
                   </p>
                 </div>
               )}
@@ -219,7 +219,7 @@ export default function ProjectDetailPage() {
             <h2 className="text-3xl font-bold text-primary sm:text-4xl">
               {t('Oportunidad de Inversión')}
             </h2>
-            <p className="mt-5 leading-relaxed text-primary/80">{project.description}</p>
+            <p className="mt-5 whitespace-pre-line leading-relaxed text-primary/80">{tb(project.description)}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <DataCard
@@ -233,7 +233,7 @@ export default function ProjectDetailPage() {
             {/* Antes era un '9% anual*' fijo para TODOS los proyectos (incluida una
                 lotización, que no genera renta). Solo se muestra si el proyecto lo define. */}
             {typeof project.features?.retorno === 'string' && (
-              <DataCard label={t('Retorno estimado')} value={project.features.retorno} />
+              <DataCard label={t('Retorno estimado')} value={t(project.features.retorno)} />
             )}
             <DataCard label={t('Ubicación')} value={project.location ?? 'Ecuador'} />
             <DataCard label={t('Estado')} value={project.active ? t('Disponible') : t('No disponible')} />
@@ -306,7 +306,7 @@ export default function ProjectDetailPage() {
       </Modal>
 
       <p className="mx-auto max-w-6xl px-4 pb-10 text-xs text-brand-gray">
-        * Cifras referenciales. No constituyen garantía de retorno.
+        * {t('Cifras referenciales. No constituyen garantía de retorno.')}
       </p>
     </>
   );

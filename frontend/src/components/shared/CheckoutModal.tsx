@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLang } from '@/hooks/useLang';
 import { Modal } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/Badge';
 import { ContactForm } from './ContactForm';
@@ -16,6 +17,7 @@ interface CheckoutModalProps {
 
 /** Modal de solicitud de compra: resumen + atribución de referido + formulario. */
 export function CheckoutModal({ open, product, onClose }: CheckoutModalProps) {
+  const { t } = useLang();
   const { member } = useAuth();
   const cookieCode = getReferralCode();
   const [referrerName, setReferrerName] = useState<string | null>(null);
@@ -47,19 +49,19 @@ export function CheckoutModal({ open, product, onClose }: CheckoutModalProps) {
         {isMember
           ? ownReferrer && (
               <div className="flex items-center gap-2">
-                <Badge variant="gold">Tu referidor</Badge>
+                <Badge variant="gold">{t('Tu referidor')}</Badge>
                 <span className="text-sm text-brand-gray">
-                  Esta compra se acredita a{' '}
+                  {t('Esta compra se acredita a')}{' '}
                   <strong className="text-primary">{ownReferrer.fullName}</strong>
                 </span>
               </div>
             )
           : cookieCode && (
               <div className="flex items-center gap-2">
-                <Badge variant="gold">Referido</Badge>
+                <Badge variant="gold">{t('Referido')}</Badge>
                 <span className="text-sm text-brand-gray">
-                  Serás referido por{' '}
-                  <strong className="text-primary">{referrerName ?? 'un socio de Grupo 3i'}</strong>
+                  {t('Serás referido por')}{' '}
+                  <strong className="text-primary">{referrerName ?? t('un socio de Grupo 3i')}</strong>
                 </span>
               </div>
             )}
@@ -74,7 +76,7 @@ export function CheckoutModal({ open, product, onClose }: CheckoutModalProps) {
         />
 
         <p className="text-xs text-brand-gray">
-          Un asesor confirmará tu compra y te contactará para completar el pago.
+          {t('Un asesor confirmará tu compra y te contactará para completar el pago.')}
         </p>
       </div>
     </Modal>

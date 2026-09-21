@@ -1,4 +1,5 @@
 import { formatCurrency } from '@/lib/utils';
+import { useLang } from '@/hooks/useLang';
 import { cn } from '@/lib/utils';
 
 interface PriceDisplayProps {
@@ -10,12 +11,13 @@ interface PriceDisplayProps {
 }
 
 export function PriceDisplay({ price, promoPrice, label, compact }: PriceDisplayProps) {
+  const { t } = useLang();
   if (label) {
     return (
       <span className="block">
         {!compact && (
           <span className="block text-xs font-semibold uppercase tracking-[0.15em] text-brand-gray">
-            Precio
+            {t('Precio')}
           </span>
         )}
         <span className={cn('font-serif font-bold text-accent', compact ? 'text-lg' : 'text-2xl')}>
@@ -30,7 +32,7 @@ export function PriceDisplay({ price, promoPrice, label, compact }: PriceDisplay
       <span className="block">
         {!compact && (
           <span className="block text-xs font-semibold uppercase tracking-[0.15em] text-brand-gray">
-            Precio de lanzamiento
+            {t('Precio de lanzamiento')}
           </span>
         )}
         <span className="flex items-baseline gap-2">
@@ -54,7 +56,7 @@ export function PriceDisplay({ price, promoPrice, label, compact }: PriceDisplay
     <span className="block">
       {!compact && (
         <span className="block text-xs font-semibold uppercase tracking-[0.15em] text-brand-gray">
-          Precio
+          {t('Precio')}
         </span>
       )}
       <span

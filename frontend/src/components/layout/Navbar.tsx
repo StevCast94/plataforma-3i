@@ -69,7 +69,7 @@ export function Navbar() {
                         <span className="font-medium">{p.name}</span>
                         {p.location && (
                           <span className="block text-xs text-brand-gray">
-                            {p.location}
+                            {t(p.location)}
                           </span>
                         )}
                       </Link>
@@ -81,7 +81,9 @@ export function Navbar() {
           ))}
         </ul>
 
-        <LangSwitch className="ml-6 hidden md:inline-flex" />
+        <div className="ml-6 hidden md:block">
+          <LangSwitch />
+        </div>
 
         {/* Mobile toggle */}
         <div className="flex items-center gap-2 md:hidden">

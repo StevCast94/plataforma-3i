@@ -8,9 +8,9 @@ export function Footer() {
   const { data } = useSectionContent('footer');
   const { data: contact } = useSectionContent('contact');
   const tagline =
-    data?.tagline ?? t('Inversión inmobiliaria inteligente en la costa ecuatoriana.');
+    t(data?.tagline ?? 'Inversión inmobiliaria inteligente en la costa ecuatoriana.');
   const copyright =
-    data?.copyright ?? t('© 2026 Grupo 3i. Todos los derechos reservados.');
+    t(data?.copyright ?? '© 2026 Grupo 3i. Todos los derechos reservados.');
 
   return (
     <footer className="relative overflow-hidden bg-primary text-white print:hidden">

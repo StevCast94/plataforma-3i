@@ -42,6 +42,9 @@ export function translate(lang: Lang, text: string, vars?: Record<string, string
  */
 const TRANSLATED = ['/proyectos', '/propuesta', '/tienda', '/club', '/sobre-nosotros', '/contacto', '/reglamento'];
 
+/** Del área de referidos solo la puerta de entrada está en inglés; el panel interno no. */
+const TRANSLATED_EXACT = ['/oficina', '/oficina/login', '/oficina/registro'];
+
 /** Prefijo de idioma de una ruta interna: '/proyectos' → '/en/proyectos'. */
 export function localizePath(path: string, lang: Lang): string {
   if (lang === 'es') return path;
@@ -49,7 +52,8 @@ export function localizePath(path: string, lang: Lang): string {
   if (!path.startsWith('/')) return path; // anclas, mailto, enlaces externos…
   if (path === '/') return '/en';
   const base = path.split(/[?#]/)[0];
-  return TRANSLATED.some((p) => base === p || base.startsWith(`${p}/`)) ? `/en${path}` : path;
+  const traducida = TRANSLATED_EXACT.includes(base) || TRANSLATED.some((p) => base === p || base.startsWith(`${p}/`));
+  return traducida ? `/en${path}` : path;
 }
 
 /** Quita el prefijo /en de una ruta, para construir el enlace alterno. */

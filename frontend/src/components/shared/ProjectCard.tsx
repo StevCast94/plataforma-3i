@@ -25,15 +25,15 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className="p-6">
           {project.location && (
             <p className="text-xs uppercase tracking-wider text-brand-gray">
-              {project.location}
+              {t(project.location)}
             </p>
           )}
           <h3 className="mt-1 text-2xl text-primary">{project.name}</h3>
           {project.subtitle && (
-            <p className="mt-1 text-sm text-brand-gray">{project.subtitle}</p>
+            <p className="mt-1 text-sm text-brand-gray">{t(project.subtitle)}</p>
           )}
           {project.priceLabel && (
-            <p className="mt-4 font-semibold text-accent">{project.priceLabel}</p>
+            <p className="mt-4 font-semibold text-accent">{t(project.priceLabel)}</p>
           )}
         </div>
       </Card>

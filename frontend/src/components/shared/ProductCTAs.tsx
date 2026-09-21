@@ -80,7 +80,7 @@ export function ProductCTAs({ product }: { product: Product }) {
           </a>
         ) : (
           <Button size="lg" variant="outline" className="w-full" onClick={() => setModal('meet')}>
-            Hablar con un asesor
+            {t('Hablar con un asesor')}
           </Button>
         )}
 
@@ -92,7 +92,7 @@ export function ProductCTAs({ product }: { product: Product }) {
               className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-brand-gray underline-offset-4 transition-colors hover:text-accent hover:underline"
             >
               <CalendarDays className="h-4 w-4" strokeWidth={1.8} />
-              Reservar una visita
+              {t('Reservar una visita')}
             </button>
           )}
           <button
@@ -105,7 +105,7 @@ export function ProductCTAs({ product }: { product: Product }) {
         </div>
 
         <p className="text-center text-xs text-brand-gray">
-          Sin compromiso. Un asesor te acompaña en cada paso.
+          {t('Sin compromiso. Un asesor te acompaña en cada paso.')}
         </p>
       </div>
 
@@ -130,8 +130,7 @@ export function ProductCTAs({ product }: { product: Product }) {
         title={`Reservar visita · ${product.name}`}
       >
         <p className="mb-4 text-sm text-brand-gray">
-          Déjanos tus datos y tu disponibilidad (día y hora preferidos) en el mensaje. Un asesor
-          confirmará tu visita.
+          {t('Déjanos tus datos y tu disponibilidad (día y hora preferidos) en el mensaje. Un asesor confirmará tu visita.')}
         </p>
         <ContactForm
           endpoint={endpoint}
@@ -148,7 +147,7 @@ export function ProductCTAs({ product }: { product: Product }) {
         title={`Meet personalizado · ${product.name}`}
       >
         <p className="mb-4 text-sm text-brand-gray">
-          Agenda una reunión virtual 1 a 1. Indícanos tu disponibilidad en el mensaje.
+          {t('Agenda una reunión virtual 1 a 1. Indícanos tu disponibilidad en el mensaje.')}
         </p>
         <ContactForm
           endpoint={endpoint}

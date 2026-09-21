@@ -26,7 +26,7 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function ProductDetailPage() {
-  const { t } = useLang();
+  const { t, tb } = useLang();
   const { slug } = useParams();
   const { data: product, loading, error } = useProduct(slug);
   const { data: allProducts } = useProducts();
@@ -52,7 +52,7 @@ export default function ProductDetailPage() {
 
   return (
     <>
-      <Seo title={product.name} description={product.description} image={gallery[0]} />
+      <Seo title={t(product.name)} description={tb(product.description)} image={gallery[0]} />
 
       {/* 1. HERO SPLIT */}
       <section className="bg-light">
@@ -60,7 +60,7 @@ export default function ProductDetailPage() {
           <Breadcrumbs
             items={[
               { label: t('Inicio'), to: '/' },
-              { label: product.name },
+              { label: t(product.name) },
             ]}
           />
         </div>
@@ -82,11 +82,11 @@ export default function ProductDetailPage() {
 
           <div className="lg:col-span-2">
             <Badge>{t(typeLabels[product.type] ?? product.type)}</Badge>
-            <h1 className="mt-3 text-4xl font-bold text-primary">{product.name}</h1>
+            <h1 className="mt-3 text-4xl font-bold text-primary">{t(product.name)}</h1>
             <div className="mt-4">
               <PriceDisplay price={product.price} promoPrice={product.promoPrice} />
             </div>
-            <p className="mt-5 leading-relaxed text-primary/80">{product.description}</p>
+            <p className="mt-5 leading-relaxed text-primary/80">{tb(product.description)}</p>
 
             {features.length > 0 && (
               <ul className="mt-6 space-y-2">
@@ -242,7 +242,7 @@ function PropertySections({ product }: { product: Product }) {
               </p>
               <p className="text-xl font-bold text-primary">{product.project.name}</p>
               {product.project.location && (
-                <p className="text-sm text-brand-gray">{product.project.location}</p>
+                <p className="text-sm text-brand-gray">{t(product.project.location)}</p>
               )}
               <span className="mt-1 inline-block text-sm font-medium text-accent">
                 {t('Ver proyecto')} →

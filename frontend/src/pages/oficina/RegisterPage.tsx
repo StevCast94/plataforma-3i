@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -26,6 +27,7 @@ const empty: RegisterData = {
 };
 
 export default function RegisterPage() {
+  const { t } = useLang();
   const { register } = useAuth();
   const referralCode = useReferral();
   const { toast } = useToast();
@@ -57,12 +59,12 @@ export default function RegisterPage() {
   function validateStep(s: number): StepErrors {
     const e: StepErrors = {};
     if (s === 1) {
-      if (!data.fullName.trim()) e.fullName = 'Requerido';
-      if (!EMAIL_RE.test(data.email)) e.email = 'Email inválido';
-      if (data.password.length < 8) e.password = 'Mínimo 8 caracteres';
+      if (!data.fullName.trim()) e.fullName = t('Requerido');
+      if (!EMAIL_RE.test(data.email)) e.email = t('Email inválido');
+      if (data.password.length < 8) e.password = t('Mínimo 8 caracteres');
     }
     if (s === 2) {
-      if (!data.docId.trim()) e.docId = 'Requerido';
+      if (!data.docId.trim()) e.docId = t('Requerido');
     }
     return e;
   }
@@ -83,7 +85,7 @@ export default function RegisterPage() {
     setSubmitting(true);
     try {
       await register(data);
-      toast('¡Bienvenido al Club 3i! 🎉', 'success');
+      toast(t('¡Bienvenido a Refiere y gana!') + ' 🎉', 'success');
       navigate('/oficina/dashboard');
     } catch (err) {
       toast((err as Error).message, 'error');
@@ -94,23 +96,22 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-light px-4 py-10">
-      <Seo title="Registro — Refiere y gana" />
+      <Seo title={t('Registro — Refiere y gana')} />
       <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-xl">
         <Link to="/" className="flex flex-col items-center gap-3 text-center">
-          <Isotipo animation="ascenso" className="h-14 w-auto" title="Grupo 3i" />
-          <img src="/images/logotipo.svg" alt="Grupo 3i" className="h-6 w-auto" />
+          <Isotipo animation="ascenso" className="h-14 w-auto" title={t('Grupo 3i')} />
+          <img src="/images/logotipo.svg" alt={t('Grupo 3i')} className="h-6 w-auto" />
         </Link>
 
         {claimEmail && (
           <div className="mt-4 rounded-xl bg-secondary/15 p-3 text-sm text-primary">
-            ✨ Estás <strong>activando tu oficina</strong>. Define tu contraseña y datos para
-            desbloquear tu código de referidor.
+            ✨ {t('Estás activando tu cuenta. Define tu contraseña y tus datos para desbloquear tu código de referidor.')}
           </div>
         )}
 
         {referralCode ? (
           <div className="mt-4 flex items-center gap-2">
-            <Badge variant="gold">Referido</Badge>
+            <Badge variant="gold">{t('Referido')}</Badge>
             <span className="text-sm text-brand-gray">
               Te invitó:{' '}
               <strong className="text-primary">{referrerName ?? 'un socio de Grupo 3i'}</strong>
@@ -129,32 +130,32 @@ export default function RegisterPage() {
             />
           ))}
         </div>
-        <p className="mt-2 text-xs uppercase tracking-wider text-brand-gray">Paso {step} de 3</p>
+        <p className="mt-2 text-xs uppercase tracking-wider text-brand-gray">{t('Paso {n} de {total}', { n: step, total: 3 })}</p>
 
         <div className="mt-6 space-y-4">
           {step === 1 && (
             <>
-              <h2 className="text-2xl text-primary">Datos personales</h2>
+              <h2 className="text-2xl text-primary">{t('Datos personales')}</h2>
               <FieldInput
-                label="Nombre completo"
+                label={t('Nombre completo')}
                 value={data.fullName}
                 onChange={(v) => set('fullName', v)}
                 error={errors.fullName}
               />
               <FieldInput
-                label="Email"
+                label={t('Email')}
                 type="email"
                 value={data.email}
                 onChange={(v) => set('email', v)}
                 error={errors.email}
               />
               <FieldInput
-                label="Teléfono (opcional)"
+                label={t('Teléfono (opcional)')}
                 value={data.phone ?? ''}
                 onChange={(v) => set('phone', v)}
               />
               <FieldInput
-                label="Contraseña"
+                label={t('Contraseña')}
                 type="password"
                 value={data.password}
                 onChange={(v) => set('password', v)}
@@ -165,20 +166,20 @@ export default function RegisterPage() {
 
           {step === 2 && (
             <>
-              <h2 className="text-2xl text-primary">Documento de identidad</h2>
+              <h2 className="text-2xl text-primary">{t('Documento de identidad')}</h2>
               <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-primary">Tipo</span>
+                <span className="mb-1.5 block text-sm font-medium text-primary">{t('Tipo')}</span>
                 <select
                   value={data.docType}
                   onChange={(e) => set('docType', e.target.value)}
                   className="w-full rounded-lg border border-black/15 bg-white px-4 py-3 text-sm"
                 >
-                  <option value="cedula">Cédula</option>
-                  <option value="pasaporte">Pasaporte</option>
+                  <option value="cedula">{t('Cédula')}</option>
+                  <option value="pasaporte">{t('Pasaporte')}</option>
                 </select>
               </label>
               <FieldInput
-                label="Número de documento"
+                label={t('Número de documento')}
                 value={data.docId}
                 onChange={(v) => set('docId', v)}
                 error={errors.docId}
@@ -188,32 +189,32 @@ export default function RegisterPage() {
 
           {step === 3 && (
             <>
-              <h2 className="text-2xl text-primary">Datos de pago</h2>
+              <h2 className="text-2xl text-primary">{t('Datos de pago')}</h2>
               <label className="block">
                 <span className="mb-1.5 block text-sm font-medium text-primary">
-                  Método preferido
+                  {t('Método preferido')}
                 </span>
                 <select
                   value={data.payoutMethod}
                   onChange={(e) => set('payoutMethod', e.target.value)}
                   className="w-full rounded-lg border border-black/15 bg-white px-4 py-3 text-sm"
                 >
-                  <option value="transfer">Transferencia bancaria</option>
-                  <option value="paypal">PayPal</option>
-                  <option value="payoneer">Payoneer</option>
-                  <option value="wise">Wise</option>
+                  <option value="transfer">{t('Transferencia bancaria')}</option>
+                  <option value="paypal">{t('PayPal')}</option>
+                  <option value="payoneer">{t('Payoneer')}</option>
+                  <option value="wise">{t('Wise')}</option>
                 </select>
               </label>
               {data.payoutMethod !== 'transfer' && (
                 <FieldInput
-                  label="Email de la cuenta"
+                  label={t('Email de la cuenta')}
                   type="email"
                   value={data.payoutEmail ?? ''}
                   onChange={(v) => set('payoutEmail', v)}
                 />
               )}
               <p className="text-xs text-brand-gray">
-                Podrás completar o cambiar estos datos luego desde tu oficina.
+                {t('Podrás completar o cambiar estos datos luego desde tu oficina.')}
               </p>
             </>
           )}
@@ -222,24 +223,24 @@ export default function RegisterPage() {
         <div className="mt-8 flex items-center justify-between">
           {step > 1 ? (
             <Button variant="ghost" onClick={() => setStep((s) => s - 1)}>
-              Atrás
+              {t('Atrás')}
             </Button>
           ) : (
             <span />
           )}
           {step < 3 ? (
-            <Button onClick={next}>Continuar</Button>
+            <Button onClick={next}>{t('Continuar')}</Button>
           ) : (
             <Button onClick={submit} disabled={submitting}>
-              {submitting ? 'Creando cuenta…' : 'Crear mi cuenta'}
+              {submitting ? t('Creando cuenta…') : t('Crear mi cuenta')}
             </Button>
           )}
         </div>
 
         <p className="mt-6 text-center text-sm text-brand-gray">
-          ¿Ya tienes cuenta?{' '}
+          {t('¿Ya tienes cuenta?')}{' '}
           <Link to="/oficina/login" className="font-semibold text-accent hover:underline">
-            Inicia sesión
+            {t('Inicia sesión')}
           </Link>
         </p>
       </div>
@@ -255,6 +256,7 @@ export default function RegisterPage() {
  * la persona llega directo a grupo3i.com sin ningún enlace.
  */
 function ManualReferralField() {
+  const { t } = useLang();
   const [value, setValue] = useState('');
   const [status, setStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
   const [name, setName] = useState('');
@@ -287,17 +289,17 @@ function ManualReferralField() {
     <div className="mt-4">
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium text-primary">
-          ¿Alguien te invitó? <span className="font-normal text-brand-gray">(opcional)</span>
+          {t('¿Alguien te invitó?')} <span className="font-normal text-brand-gray">{t('(opcional)')}</span>
         </span>
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Código o nombre de tu invitador"
+          placeholder={t('Código o nombre de tu invitador')}
           className="w-full rounded-lg border border-black/15 px-4 py-2.5 text-sm uppercase placeholder:normal-case focus:border-secondary focus:outline-none"
         />
       </label>
       {status === 'checking' && (
-        <p className="mt-1.5 text-xs text-brand-gray">Buscando…</p>
+        <p className="mt-1.5 text-xs text-brand-gray">{t('Buscando…')}</p>
       )}
       {status === 'valid' && (
         <p className="mt-1.5 text-xs text-secondary">
@@ -306,7 +308,7 @@ function ManualReferralField() {
       )}
       {status === 'invalid' && (
         <p className="mt-1.5 text-xs text-red-600">
-          No encontramos ese código. Revisa que esté bien escrito.
+          {t('No encontramos ese código. Revisa que esté bien escrito.')}
         </p>
       )}
     </div>

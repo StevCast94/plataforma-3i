@@ -719,4 +719,485 @@ export const EN: Record<string, string> = {
   'Ruta C — Ambos proyectos en una sola operación': 'Route C — Both projects in a single transaction',
   'La lotización completa, el Lobby completo o ambos proyectos en una sola operación. Revisa las cifras, el dossier técnico y las condiciones de pago.':
     'The whole subdivision, the whole Lobby, or both projects in a single transaction. Review the figures, the technical dossier and the payment terms.',
+
+  // ---------- Contenido editable desde el admin (proyectos, productos, secciones) ----------
+  // Si se cambia el texto en el admin, hay que actualizar aquí la clave; mientras
+  // no coincida, la versión inglesa muestra el texto en español.
+  'Inversión premium en la costa ecuatoriana. Invierte inteligente, invierte para el futuro.':
+    'Premium investment on the Ecuadorian coast. Invest smart, invest in the future.',
+  'Condohotel de lujo frente al mar que combina la rentabilidad de un hotel con la propiedad fraccionada. Disfruta de amenidades de cinco estrellas mientras tu inversión genera retornos por ocupación hotelera.':
+    'A luxury beachfront condo-hotel that combines the returns of a hotel with fractional ownership. Enjoy five-star amenities while your investment earns returns from hotel occupancy.',
+  Restaurante: 'Restaurant',
+  'Fracciones desde $12,000': 'Shares from $12,000',
+  'Tu propiedad con vista al mar.': 'Your property with a sea view.',
+  'Fracciona tu inversión, multiplica tu retorno': 'Split your investment, multiply your return',
+  'Vista al Mar 🌊': 'Sea view 🌊',
+  'Terraza Privada 🌅': 'Private terrace 🌅',
+  'Cocina Equipada 🍳': 'Fitted kitchen 🍳',
+  'Parqueadero Privado 🚗': 'Private parking 🚗',
+  'Seguridad 24/7 🔒': '24/7 security 🔒',
+  'Lotes y Amenidades exclusivas con vista al mar': 'Lots and exclusive amenities with a sea view',
+  'Terrenos Premium en Manglaralto, Ruta del Spondylus': 'Premium land in Manglaralto, on the Ruta del Spondylus',
+  '89 solares disponibles desde 490 m², con título saneado desde 2013 y lotización municipal inscrita en 2018.':
+    '89 lots available from 490 m², with clean title since 2013 and a municipal subdivision registered in 2018.',
+  'A pasos del complejo Montañita View Lobby (piscina, restaurante y áreas sociales), del mismo grupo desarrollador — proyecto hermano, con acceso sujeto a convenio entre ambos predios.':
+    'Steps from the Montañita View Lobby complex (pool, restaurant and social areas), by the same developer — a sister project, with access subject to an agreement between the two properties.',
+  'Vía principal asfaltada (Ruta del Spondylus)': 'Paved main road (Ruta del Spondylus)',
+  Energía: 'Electricity',
+  'Agua potable': 'Drinking water',
+  'Garita de acceso': 'Gatehouse',
+  'Valor por m2': 'Value per m²',
+  Lotización: 'Subdivision',
+  Condohotel: 'Condo-hotel',
+  'Inversión en el corazón surfero de Ecuador': 'Investment in the surfing heart of Ecuador',
+  'A minutos de la playa y de la vida nocturna de Montañita, tu solar en el pueblo surfero más visitado del Ecuador.':
+    'Minutes from the beach and Montañita’s nightlife, your lot in Ecuador’s most visited surf town.',
+  'Vive el surf todo el año': 'Surf all year round',
+  'Santa Elena fue la provincia más visitada del país en el feriado del 24 de mayo (Ministerio de Turismo) y Montañita registró 80% de ocupación hotelera en el feriado de mayo de 2026, según la Cámara de Turismo de Santa Elena.':
+    'Santa Elena was the country’s most visited province over the 24 May holiday (Ministry of Tourism), and Montañita recorded 80% hotel occupancy over the May 2026 holiday, according to the Santa Elena Chamber of Tourism.',
+  'Plusvalía en zona en expansión': 'Appreciation in a growing area',
+  'Compra al GAD Municipal de Santa Elena (2013), lotización protocolizada (2014) y reestructuración Montañita VIEW inscrita en el Registro de la Propiedad (14-nov-2018). El 17.3% del área es zona verde, cumpliendo el Art. 424 del COOTAD.':
+    'Purchased from the Santa Elena Municipal Government (2013), subdivision notarised (2014) and the Montañita VIEW restructuring registered with the Property Registry (14 Nov 2018). 17.3% of the area is green space, complying with Art. 424 of the COOTAD.',
+  'Cadena de dominio verificada': 'Verified chain of title',
+  Financiamiento: 'Financing',
+  '24 cuotas, 0% interés': '24 payments, 0% interest',
+  'Lotización residencial y turística': 'Residential and tourism subdivision',
+  'USD $49,084 / solar': 'USD $49,084 / lot',
+  '89 de 111, desde 490 m²': '89 of 111, from 490 m²',
+  'Saneado — inscrito en 2018': 'Clean — registered in 2018',
+  'Energía y alumbrado público': 'Electricity and street lighting',
+  '17.3% de áreas verdes (cumple COOTAD)': '17.3% green areas (COOTAD compliant)',
+  'Cadena de dominio completa: compra al GAD Municipal (2013), lotización protocolizada (2014) y reestructuración inscrita (2018). Solares fuera de tierras comunales.':
+    'Complete chain of title: purchased from the Municipal Government (2013), subdivision notarised (2014) and restructuring registered (2018). Lots outside communal land.',
+  'Título limpio y saneado': 'Clean, clear title',
+  '111 solares en 9 manzanas, con 20.1% de vías y 17.3% de áreas verdes ya cumpliendo la normativa municipal — sin compensaciones pendientes por ese concepto.':
+    '111 lots in 9 blocks, with 20.1% streets and 17.3% green areas already meeting municipal rules — no compensation outstanding on that count.',
+  'Vecino directo del complejo Montañita View Lobby (piscina, restaurante, lobby social) del mismo grupo desarrollador.':
+    'Right next to the Montañita View Lobby complex (pool, restaurant, social lobby), by the same developer.',
+  'Zona en desarrollo activo': 'An area under active development',
+  'Manglaralto todavía tiene espacio para quienes deciden a tiempo. Un solar propio, escrituras claras y la libertad de construir a tu ritmo, junto al proyecto hermano Montañita View Lobby.':
+    'Manglaralto still has room for those who decide in time. Your own lot, clear deeds and the freedom to build at your own pace, next to the sister project Montañita View Lobby.',
+  'desde La Libertad': 'from La Libertad',
+  'a Manglaralto': 'to Manglaralto',
+  'a la playa desde la entrada': 'to the beach from the entrance',
+  'Aquí no compras metros. Compras futuro.': 'You are not buying square metres. You are buying a future.',
+  'Elige tu solar, asegura tu lugar en la costa.': 'Choose your lot, secure your place on the coast.',
+  'Tu solar con título saneado, en un proyecto en constante desarrollo':
+    'Your lot with clean title, in a project that keeps growing',
+  'Hasta 24 cuotas mensuales': 'Up to 24 monthly payments',
+  'Restante del valor': 'Remaining balance',
+  'Título de propiedad individual': 'Individual title deed',
+  'Lotización Montañita VIEW · Manglaralto, Santa Elena, Ecuador':
+    'Montañita VIEW subdivision · Manglaralto, Santa Elena, Ecuador',
+  'Montañita View es una lotización de 25.8 hectáreas aprobadas por el GAD Municipal de Santa Elena, con 111 solares y título saneado desde 2013.':
+    'Montañita View is a 25.8-hectare subdivision approved by the Santa Elena Municipal Government, with 111 lots and clean title since 2013.',
+  'Comparte ubicación con el complejo Montañita View Lobby — un proyecto hermano del mismo grupo desarrollador, con piscina, restaurante y áreas sociales.':
+    'It shares its location with the Montañita View Lobby complex — a sister project by the same developer, with a pool, restaurant and social areas.',
+  'A pocos minutos de la playa y del centro de Montañita, con energía, agua potable y vía principal asfaltada ya instaladas.':
+    'A few minutes from the beach and the centre of Montañita, with electricity, drinking water and a paved main road already in place.',
+  'ocupación hotelera en Montañita, feriado de mayo 2026 (Cámara de Turismo de Santa Elena)':
+    'hotel occupancy in Montañita, May 2026 holiday (Santa Elena Chamber of Tourism)',
+  'crecimiento de llegadas internacionales a Ecuador, primer semestre 2025 (dato nacional)':
+    'growth in international arrivals to Ecuador, first half of 2025 (national figure)',
+  'visitantes en Santa Elena durante el feriado de mayo 2026': 'visitors to Santa Elena over the May 2026 holiday',
+  'Membresía de Viajes Club 3i': 'Club 3i Travel Membership',
+  'Acceso a descuentos de hasta 70% en hoteles mundiales, certificados vacacionales y beneficios exclusivos durante todo el año.':
+    'Access to up to 70% off hotels worldwide, holiday certificates and exclusive benefits all year round.',
+  'Hasta 70% de descuento en hoteles mundiales': 'Up to 70% off hotels worldwide',
+  'Certificado vacacional anual GRATIS en 120+ destinos': 'FREE annual holiday certificate in 120+ destinations',
+  'Acceso a remates exclusivos de tiempo compartido': 'Access to exclusive timeshare auctions',
+  'Descuentos en 220,000+ restaurantes en EE.UU.': 'Discounts at 220,000+ restaurants in the US',
+  'Hasta 50% desc. en asesoría de visa americana': 'Up to 50% off US visa advisory',
+  'Garantía del mejor precio': 'Best-price guarantee',
+  'Acceso VIP a amenidades Montañita View': 'VIP access to Montañita View amenities',
+  'Grupo 3i — Invierte $12K. Gana 70% en Descuentos de Viaje.': 'Grupo 3i — Invest $12K. Get 70% off travel.',
+  'Somos un grupo inmobiliario enfocado en democratizar la inversión a través de propiedades fraccionadas, membresías de viaje y proyectos de alto nivel en Ecuador. Hacemos accesible lo que antes era exclusivo.':
+    'We are a real estate group focused on opening up investment through fractional properties, travel memberships and high-end projects in Ecuador. We make accessible what used to be exclusive.',
+  'Manglaralto, Santa Elena': 'Manglaralto, Santa Elena',
+
+
+  // ---------- Refiere y gana: portada, registro e inicio de sesión ----------
+  'Refiere y gana — Programa de referidos': 'Refer & earn — Referral programme',
+  'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta.':
+    'Recommend a lot at Montañita View or a share in Ibiza Condohotel and earn up to 4% of the sale.',
+  'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis, sin inversión propia.':
+    'Recommend a lot at Montañita View or a share in Ibiza Condohotel and earn up to 4% of the sale. Free sign-up, no investment of your own.',
+  'Programa de referidos': 'Referral programme',
+  'Registrarme gratis': 'Sign up free',
+  'Ya soy miembro': 'I am already a member',
+  'Cómo funciona': 'How it works',
+  Paso: 'Step',
+  'Regístrate gratis': 'Sign up free',
+  'Crea tu cuenta con tu cédula en minutos. No inviertes nada.':
+    'Create your account with your ID in minutes. You invest nothing.',
+  'Comparte tu enlace': 'Share your link',
+  'Recibe tu enlace único y compártelo con quien busca invertir en la costa.':
+    'Get your unique link and share it with anyone looking to invest on the coast.',
+  'Gana comisiones': 'Earn commissions',
+  'Cobras por cada solar, fracción o membresía que se venda con tu enlace.':
+    'You earn on every lot, share or membership sold through your link.',
+  'Elige tu nivel': 'Choose your level',
+  Beneficio: 'Benefit',
+  Premiere: 'Premiere',
+  Elite: 'Elite',
+  'Venta inmobiliaria de tu referido directo': 'Property sale by your direct referral',
+  'Venta inmobiliaria de un referido de tu referido': 'Property sale by your referral’s referral',
+  'Membresía del Club 3i (referido directo)': 'Club 3i membership (direct referral)',
+  'Frecuencia de pago': 'Payout frequency',
+  Mensual: 'Monthly',
+  Quincenal: 'Every two weeks',
+  Liquidación: 'Settlement',
+  '30 días': '30 days',
+  '3 días': '3 days',
+  '90 días': '90 days',
+  '180 días': '180 days',
+  'Ver el reglamento completo del programa': 'Read the full programme terms',
+  '¿Cuánto podrías ganar?': 'How much could you earn?',
+  'Por una sola venta hecha con tu enlace:': 'From a single sale made through your link:',
+  'Un solar en Montañita View': 'A lot at Montañita View',
+  'Una fracción en Ibiza Condohotel': 'A share in Ibiza Condohotel',
+  'Una membresía del Club 3i': 'A Club 3i membership',
+  'por membresía': 'per membership',
+  'Comisión sobre el precio de venta, pagada tras la liquidación. Los precios cambian según el solar o la fracción que elija tu referido.':
+    'Commission on the sale price, paid after settlement. Prices vary with the lot or share your referral chooses.',
+  'Libertad financiera, no solo un ingreso extra': 'Financial freedom, not just extra income',
+  'Tus comisiones se acumulan con cada referido, sin importar dónde estés. Empieza hoy y deja que tu red trabaje para ti.':
+    'Your commissions add up with every referral, wherever you are. Start today and let your network work for you.',
+  'Preguntas frecuentes': 'Frequently asked questions',
+  '¿Cuánto cuesta entrar?': 'What does it cost to join?',
+  'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.':
+    'Nothing. Sign-up is free; we only verify your identity with your ID so we can pay you.',
+  '¿Qué puedo recomendar?': 'What can I recommend?',
+  'Los solares de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.':
+    'Lots at Montañita View, shares in Ibiza Condohotel and the Club 3i membership. Your link records whoever arrives through you, even if they buy weeks later.',
+  '¿Cómo llego a Elite?': 'How do I reach Elite?',
+  'Comprando cualquier producto, o refiriendo 5 personas exitosas en 180 días (¡con membresía de viajes gratis!).':
+    'By buying any product, or by referring 5 successful buyers within 180 days (with a free travel membership!).',
+  '¿Cuándo cobro mis comisiones?': 'When do I get paid?',
+  'Tras un período de retracto de 14 días y la liquidación según tu nivel (30 días Premiere / 3 días Elite).':
+    'After a 14-day cooling-off period and settlement according to your level (30 days Premiere / 3 days Elite).',
+  '¿Pierdo mi cuenta si no refiero?': 'Do I lose my account if I do not refer anyone?',
+  'Premiere: tras 180 días sin referidos nuevos la cuenta se suspende, con avisos previos. Elite es vitalicio.':
+    'Premiere: after 180 days without new referrals the account is suspended, with prior warnings. Elite is for life.',
+  'Empieza gratis ahora': 'Start free now',
+  'Cargando…': 'Loading…',
+  'Iniciar sesión — Refiere y gana': 'Sign in — Refer & earn',
+  'Inicia sesión': 'Sign in',
+  'Bienvenido de vuelta': 'Welcome back',
+  'Ingresa a tu cuenta de Refiere y gana.': 'Sign in to your Refer & earn account.',
+  'Email de la cuenta': 'Account email',
+  'Email de tu cuenta': 'Your account email',
+  Contraseña: 'Password',
+  'Ingresando…': 'Signing in…',
+  Ingresar: 'Sign in',
+  '¿Olvidaste tu contraseña?': 'Forgot your password?',
+  'Recuperar contraseña': 'Reset password',
+  'Escríbenos tu correo y te contactaremos por WhatsApp para verificar tu identidad y restablecer tu contraseña.':
+    'Send us your email and we will contact you on WhatsApp to verify your identity and reset your password.',
+  'Solicitar por WhatsApp': 'Request via WhatsApp',
+  'Solicitud enviada. Un asesor te contactará por WhatsApp.': 'Request sent. An advisor will contact you on WhatsApp.',
+  'Registro — Refiere y gana': 'Sign up — Refer & earn',
+  'Datos personales': 'Personal details',
+  'Datos de pago': 'Payment details',
+  'Documento de identidad': 'Identity document',
+  Cédula: 'National ID',
+  Pasaporte: 'Passport',
+  'Número de documento': 'Document number',
+  'Método preferido': 'Preferred method',
+  'Transferencia bancaria': 'Bank transfer',
+  PayPal: 'PayPal',
+  Payoneer: 'Payoneer',
+  Wise: 'Wise',
+  'Podrás completar o cambiar estos datos luego desde tu oficina.':
+    'You can complete or change these details later from your account.',
+  'Código o nombre de tu invitador': 'Code or name of the person who invited you',
+  'No encontramos ese código. Revisa que esté bien escrito.': 'We could not find that code. Please check it.',
+  Continuar: 'Continue',
+  Atrás: 'Back',
+  'Creando cuenta…': 'Creating account…',
+  'Crear mi cuenta': 'Create my account',
+  '¡Bienvenido a Refiere y gana!': 'Welcome to Refer & earn!',
+
+  // ---------- Reglamento del programa de referidos ----------
+  'Reglamento del Programa de Referidos — Grupo 3i': 'Referral Programme Terms — Grupo 3i',
+  'Reglas oficiales del programa de referidos de Grupo 3i: comisiones, rangos, ascensos, incentivos, liquidación y retiros.':
+    'Official rules of the Grupo 3i referral programme: commissions, ranks, promotions, incentives, settlement and withdrawals.',
+  'Reglamento del Programa de Referidos': 'Referral Programme Terms',
+  'Versión vigente · Última actualización: agosto 2026': 'Current version · Last updated: August 2026',
+  'Descargar / Imprimir PDF': 'Download / Print PDF',
+  'Objeto y definiciones': 'Purpose and definitions',
+  'Rangos: Premiere y Elite': 'Ranks: Premiere and Elite',
+  Comisiones: 'Commissions',
+  'Ascenso a Elite': 'Promotion to Elite',
+  Incentivos: 'Incentives',
+  Atribución: 'Attribution',
+  'Liquidación y retiros': 'Settlement and withdrawals',
+  'Inactividad y baja': 'Inactivity and removal',
+  'Condiciones generales': 'General conditions',
+  'Socio / referidor:': 'Partner / referrer:',
+  'persona registrada con un código de referido propio (formato 3IP-XXXXXX), único y de por vida — no cambia al ascender de rango.':
+    'a person registered with their own referral code (format 3IP-XXXXXX), unique and for life — it does not change on promotion.',
+  'Referido:': 'Referral:',
+  'persona que llega a través del enlace o código de un socio.': 'a person who arrives through a partner’s link or code.',
+  'Nivel 1:': 'Level 1:',
+  'referido directo del socio.': 'the partner’s direct referral.',
+  'Nivel 2:': 'Level 2:',
+  'referido de su referido.': 'a referral of their referral.',
+  'Producto inmobiliario:': 'Property product:',
+  'propiedad fraccionada, propiedad tradicional o terreno.': 'fractional property, traditional property or land.',
+  'Todo socio inicia como': 'Every partner starts as',
+  'y puede ascender a': 'and can be promoted to',
+  '. El rango define las tasas de comisión, la liquidación y los mínimos de retiro.':
+    '. The rank sets the commission rates, settlement times and minimum withdrawals.',
+  'El código y el enlace de referido son los mismos desde el registro: no cambian al ascender, para no romper enlaces ya compartidos.':
+    'The referral code and link stay the same from sign-up: they do not change on promotion, so links already shared keep working.',
+  'Productos inmobiliarios': 'Property products',
+  '— porcentaje sobre el precio neto, según rango y nivel:': '— a percentage of the net price, by rank and level:',
+  'Membresías y productos de valor fijo': 'Memberships and fixed-value products',
+  '— monto fijo por venta, configurable por producto, pagado solo al':
+    '— a fixed amount per sale, set per product, paid only to',
+  'Nivel 1': 'Level 1',
+  'Nivel 2': 'Level 2',
+  '(el Nivel 2 no recibe comisión en productos de valor fijo). Para la Membresía del Club de Viajes:':
+    '(Level 2 earns no commission on fixed-value products). For the Travel Club Membership:',
+  'Las comisiones ya generadas conservan la tasa del rango que tenías al momento de generarse; al ascender, solo cambian las comisiones futuras.':
+    'Commissions already earned keep the rate of the rank you held when they were earned; on promotion, only future commissions change.',
+  Rango: 'Rank',
+  'Comisión inmobiliaria N1 / N2': 'Property commission L1 / L2',
+  'Liquidación (días de espera)': 'Settlement (waiting days)',
+  Transferencia: 'Bank transfer',
+  'Un socio asciende de Premiere a': 'A partner is promoted from Premiere to',
+  'de cualquiera de estas formas:': 'in either of these ways:',
+  'Por compra propia:': 'By their own purchase:',
+  'al comprar cualquier producto (inmobiliario o la membresía).': 'on buying any product (property or the membership).',
+  'Por referidos:': 'Through referrals:',
+  'al acumular': 'on reaching',
+  '5 referidos directos que compren un producto inmobiliario': '5 direct referrals who buy a property product',
+  'dentro de una ventana de 180 días. Además, recibe su': 'within a 180-day window. They also receive their',
+  'membresía del Club de Viajes gratis': 'free Travel Club membership',
+  'El ascenso es permanente y no reduce las comisiones ya ganadas.': 'Promotion is permanent and does not reduce commissions already earned.',
+  'El programa premia a ambas partes:': 'The programme rewards both sides:',
+  'Al referidor:': 'The referrer:',
+  'su comisión correspondiente y, al llegar a 5 referidos inmobiliarios, el ascenso a Elite con membresía gratis (ver sección 4).':
+    'their commission and, on reaching 5 property referrals, promotion to Elite with a free membership (see section 4).',
+  'Al referido:': 'The referral:',
+  recibe: 'receives',
+  'gratis la membresía del Club de Viajes': 'the Travel Club membership free',
+  'cuando compra un': 'when they buy a',
+  'producto inmobiliario': 'property product',
+  'a través del enlace de un socio (no aplica a la compra de la propia membresía).':
+    'through a partner’s link (does not apply to buying the membership itself).',
+  'La membresía de regalo se otorga al': 'The gift membership is granted on',
+  confirmarse: 'confirmation of',
+  'la compra y se revoca si la compra se cancela.': 'the purchase and is revoked if the purchase is cancelled.',
+  'La atribución es': 'Attribution is',
+  'por primer contacto': 'first contact',
+  '(first-click): el primer código con el que llega el referido es el que cuenta.':
+    '(first-click): the first code the referral arrives with is the one that counts.',
+  'La ventana de atribución es de': 'The attribution window is',
+  'desde el primer clic.': 'from the first click.',
+  'Un referido pertenece a un solo referidor. No se permite el auto-referido.':
+    'A referral belongs to a single referrer. Self-referral is not allowed.',
+  'Período de retracto:': 'Cooling-off period:',
+  '14 días desde la confirmación de la venta.': '14 days from confirmation of the sale.',
+  'Liquidación automática:': 'Automatic settlement:',
+  '30 días (Premiere) / 3 días (Elite) desde que termina el retracto. Cumplido el plazo, la comisión pasa sola al saldo retirable, sin que el socio tenga que hacer nada.':
+    '30 days (Premiere) / 3 days (Elite) after the cooling-off period ends. Once due, the commission moves to the withdrawable balance on its own, with nothing for the partner to do.',
+  'Liquidación anticipada:': 'Early settlement:',
+  'el administrador puede validar una comisión antes de que se cumpla el plazo, acreditándola de inmediato.':
+    'the administrator can validate a commission before it is due, crediting it immediately.',
+  'Mínimos de retiro': 'Minimum withdrawals',
+  'según rango y método:': 'by rank and method:',
+  'Si un retiro es marcado como fallido, el monto se devuelve automáticamente al saldo del socio.':
+    'If a withdrawal is marked as failed, the amount is returned automatically to the partner’s balance.',
+  'Inactividad (solo Premiere):': 'Inactivity (Premiere only):',
+  'avisos a los 150 y 170 días sin referidos nuevos; a los': 'warnings at 150 and 170 days without new referrals; at',
+  'sin referidos la cuenta se suspende. La reactivación se gestiona con el administrador.':
+    'without referrals the account is suspended. Reactivation is handled by the administrator.',
+  'No hay límite mensual de comisiones para ningún rango.': 'There is no monthly cap on commissions for any rank.',
+  'Para participar se requiere ser mayor de edad y registrar datos verídicos.':
+    'Participants must be of legal age and register truthful information.',
+  'Grupo 3i podrá reversar comisiones derivadas de compras canceladas o fraudulentas.':
+    'Grupo 3i may reverse commissions arising from cancelled or fraudulent purchases.',
+  'Grupo 3i podrá actualizar este reglamento; la versión vigente es la publicada en esta página.':
+    'Grupo 3i may update these terms; the current version is the one published on this page.',
+  'Documento informativo del Programa de Referidos de Grupo 3i. Ante cualquier duda, escribe a grupoinmobiliario3i.ec@gmail.com.':
+    'Informational document of the Grupo 3i Referral Programme. For any questions, write to grupoinmobiliario3i.ec@gmail.com.',
+  'activando tu oficina': 'activating your account',
+
+
+  // ---------- Propuesta: galerías, etapas, destino y cifras calculadas ----------
+  'Lobby, fachada y piscina': 'Lobby, façade and pool',
+  'Vista desde el Lobby hacia Manglaralto y Montañita': 'View from the Lobby towards Manglaralto and Montañita',
+  'Sala del Lobby': 'Lobby lounge',
+  'Restaurante con vista al bosque': 'Restaurant overlooking the forest',
+  'Terraza con vista al mar': 'Terrace with a sea view',
+  'Acceso con pérgola': 'Pergola entrance',
+  'Eco-hotel: habitaciones en buses reciclados': 'Eco-hotel: rooms in recycled buses',
+  'Habitación del eco-hotel': 'Eco-hotel room',
+  'Terraza de habitación': 'Room terrace',
+  'Baño de habitación': 'Room bathroom',
+  'Vista desde el eco-hotel': 'View from the eco-hotel',
+  'Bar del Lobby': 'Lobby bar',
+  'Polígono del predio del Lobby (Google Earth, 27-sep-2023)': 'Outline of the Lobby property (Google Earth, 27 Sep 2023)',
+  'Plan maestro: lobby, módulos Arrecife, Coral y Manglar, hotel (fase futura), malecón y garita':
+    'Master plan: lobby, Arrecife, Coral and Manglar modules, hotel (future phase), boardwalk and gatehouse',
+  'Terraza de un apartamento tipo': 'Terrace of a typical apartment',
+  'Torre del hotel (diseño conceptual)': 'Hotel tower (concept design)',
+  'Acceso vehicular (diseño conceptual)': 'Vehicle entrance (concept design)',
+  'Etapa {n}': '{n} phase',
+  'Etapa {n} — {u} apartamentos': '{n} phase — {u} apartments',
+  '{n} apartamentos': '{n} apartments',
+  '{u} apartamentos de 151 m² en serie de terrazas ({area} vendibles).':
+    '{u} apartments of 151 m² in terraced rows ({area} sellable).',
+  'Cada unidad: terraza con jacuzzi privado y BBQ, habitación principal con walk-in closet, habitación estándar, sala, cocina semi-integral, comedor y baño social, con domótica y amoblado.':
+    'Each unit: terrace with private jacuzzi and BBQ, master bedroom with walk-in closet, standard bedroom, living room, semi-fitted kitchen, dining area and guest bathroom, with home automation and furnishings.',
+  Etapa: 'Phase',
+  'Cuadro de áreas del plano aprobado de la Lotización Montañita VIEW (GAD Municipal de Santa Elena, 2018);':
+    'Area schedule of the approved plan of the Montañita VIEW subdivision (Santa Elena Municipal Government, 2018);',
+  'Ambos proyectos completos: 158,652 m² en una sola operación, con condiciones preferentes de pago.':
+    'Both projects in full: 158,652 m² in a single transaction, on preferential payment terms.',
+  'La Lotización y el predio del Lobby en una sola operación: 158,652 m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya ejecutados.':
+    'The subdivision and the Lobby property in a single transaction: 158,652 m² on the Ruta del Spondylus, with studies, boundary marking and civil works already completed.',
+  'Los 89 solares en venta de Montañita View Lotes (122,303.98 m²) y el predio de Montañita View Lobby (36,348 m²)':
+    'The 89 lots for sale in Montañita View Lotes (122,303.98 m²) and the Montañita View Lobby property (36,348 m²)',
+  'Montañita View Lotes 122,303.98 m² a $55/m² ($6,726,719) + Montañita View Lobby 36,348 m² a $100/m² ($3,634,800)':
+    'Montañita View Lotes 122,303.98 m² at $55/m² ($6,726,719) + Montañita View Lobby 36,348 m² at $100/m² ($3,634,800)',
+  '36,348 m² (29,090 m² útiles + 7,258 m² de vías y áreas verdes)':
+    '36,348 m² (29,090 m² usable + 7,258 m² of roads and green areas)',
+  '$6,726,719 ($55 / m²)': '$6,726,719 ($55 / m²)',
+  '80% de ocupación hotelera en Montañita en el feriado de mayo de 2026, según la Cámara de Turismo de Santa Elena':
+    '80% hotel occupancy in Montañita over the May 2026 holiday, according to the Santa Elena Chamber of Tourism',
+  '80% de ocupación hotelera provincial en el feriado de octubre de 2025':
+    '80% provincial hotel occupancy over the October 2025 holiday',
+  'Llegadas internacionales a Ecuador +17% en el primer semestre de 2025 frente a 2024, tras una caída de 11.5% en 2024':
+    'International arrivals to Ecuador up 17% in the first half of 2025 versus 2024, after an 11.5% fall in 2024',
+
+  // ---------- Estudio de factibilidad ----------
+  Escenario: 'Scenario',
+  pesimista: 'pessimistic',
+  base: 'base',
+  optimista: 'optimistic',
+  'Ventas totales': 'Total sales',
+  'Costo total': 'Total cost',
+  Margen: 'Margin',
+  'VAN al {n}%': 'NPV at {n}%',
+  Aptos: 'Units',
+  'Precio por apto': 'Price per unit',
+  Ventas: 'Sales',
+  Costo: 'Cost',
+  VAN: 'NPV',
+  TIR: 'IRR',
+  'Capital máximo': 'Peak equity',
+  'La TIR es alta porque la entrada del 30% de las ventas en planos financia parte de la obra; los indicadores principales son el margen y el VAN. Capital máximo: aporte acumulado más alto que requiere cada etapa antes de recuperarse.':
+    'The IRR is high because the 30% off-plan down payment funds part of the construction; the main indicators are margin and NPV. Peak equity: the highest cumulative contribution each phase requires before it pays back.',
+  'Comparativo de escenarios': 'Scenario comparison',
+  'Precio / m²': 'Price / m²',
+  'Costo / m²': 'Cost / m²',
+  'Ventas/trim.': 'Sales/qtr',
+  'Flujo de caja acumulado por etapa (trimestres)': 'Cumulative cash flow by phase (quarters)',
+  'Perfil del VAN según tasa de descuento': 'NPV profile by discount rate',
+  'Sensibilidad: VAN total de las tres etapas': 'Sensitivity: total NPV of the three phases',
+  'Costo ↓ / Precio de venta →': 'Cost ↓ / Sale price →',
+  'Precio y costo ±10% sobre el escenario base; ritmo de ventas del escenario base ({n} aptos por trimestre).':
+    'Price and cost ±10% around the base scenario; base-scenario sales pace ({n} units per quarter).',
+  'Supuestos del escenario {sc}': 'Assumptions — {sc} scenario',
+  'Precio de venta': 'Sale price',
+  '{precio} / m² ({apto} por apto de {m2} m²)': '{precio} / m² ({apto} per {m2} m² unit)',
+  'Costo de construcción': 'Construction cost',
+  'Ritmo de ventas': 'Sales pace',
+  '{n} apartamentos por trimestre': '{n} apartments per quarter',
+  'Tasa de descuento': 'Discount rate',
+  '{n}% anual (bono EE.UU. + riesgo país + prima del proyecto)': '{n}% a year (US bond + country risk + project premium)',
+  'Estudios, diseño, permisos y complementarios': 'Studies, design, permits and ancillary costs',
+  'Montos del informe original actualizados +20% por inflación de construcción 2020–2026':
+    'Figures from the original report updated +20% for 2020–2026 construction inflation',
+  'Forma de pago del comprador': 'Buyer payment terms',
+  '30% de entrada al reservar y 70% a la entrega; obra de 6 trimestres':
+    '30% down on reservation and 70% on handover; 6-quarter build',
+  'Plusvalía — departamentos en venta en Olón (sep-2026)': 'Plusvalía — apartments for sale in Olón (Sep 2026)',
+  'MLS Ecuador — Condo del Valle, Olón ($115,000 / 78 m²)': 'MLS Ecuador — Condo del Valle, Olón ($115,000 / 78 m²)',
+  'EcuaCost — costo de construcción por m² 2026 (Costa)': 'EcuaCost — construction cost per m² 2026 (Coast)',
+  'Tagline — riesgo país 438 pb (18-ago-2026, BCE)': 'Tagline — country risk 438 bp (18 Aug 2026, BCE)',
+
+  // ---------- Club de viajes ----------
+  'Los socios acceden a tarifas con costo casi al neto. El precio de socio aparece en cada resultado.':
+    'Members get rates at close to net cost. The member price is shown on every result.',
+
+  'Viaja como socio, paga como socio': 'Travel as a member, pay as a member',
+
+  // ---------- Fichas de producto: compra, calculadora y ventajas ----------
+  'Agenda una reunión virtual 1 a 1. Indícanos tu disponibilidad en el mensaje.':
+    'Book a one-to-one video meeting. Tell us when you are available in the message.',
+  'Al comprar este producto inmobiliario recibes gratis tu membresía del Club de Viajes 3i y subes automáticamente a Elite. La membresía de regalo aplica solo a la compra de productos inmobiliarios.':
+    'When you buy this property product you get your Club 3i Travel membership free and move up to Elite automatically. The gift membership applies only to property purchases.',
+  'Calculadora de inversión': 'Investment calculator',
+  'Cifras referenciales. No constituyen garantía de retorno.': 'Reference figures. They are not a guarantee of returns.',
+  'Doble incentivo': 'Double incentive',
+  'Déjanos tus datos y tu disponibilidad (día y hora preferidos) en el mensaje. Un asesor confirmará tu visita.':
+    'Leave us your details and your availability (preferred day and time) in the message. An advisor will confirm your visit.',
+  'Estima tu retorno. Cifras referenciales, no constituyen garantía.': 'Estimate your return. Reference figures, not a guarantee.',
+  'Monto a invertir': 'Amount to invest',
+  'Proyección 5 años': '5-year projection',
+  Reintentar: 'Try again',
+  'Reservar una visita': 'Book a visit',
+  'Retorno anual ({n}%)': 'Annual return ({n}%)',
+  'Sin compromiso. Un asesor te acompaña en cada paso.': 'No commitment. An advisor guides you every step of the way.',
+  'Tu invitado gana:': 'Your guest earns:',
+  'Tu referidor': 'Your referrer',
+  'Tú ganas:': 'You earn:',
+  'Un asesor confirmará tu compra y te contactará para completar el pago.':
+    'An advisor will confirm your purchase and contact you to complete the payment.',
+  'membresía de viajes gratis cuando compra un producto inmobiliario con tu enlace (y sube a Elite).':
+    'a free travel membership when they buy a property product through your link (and move up to Elite).',
+  'tu comisión por cada venta y, al llegar a 5 referidos que compren inmobiliario, asciendes a Elite con tu membresía de viajes gratis.':
+    'your commission on every sale and, once 5 referrals buy property, promotion to Elite with a free travel membership.',
+  '¿Llegaste por el enlace de un socio?': 'Did you arrive through a partner’s link?',
+  'Vías internas demarcadas y compactadas': 'Internal roads laid out and compacted',
+  'Uso de suelo aprobado': 'Approved land use',
+
+
+  // ---------- Reglamento: títulos e introducción; registro ----------
+  'Ascensos a Elite': 'Promotions to Elite',
+  'Doble incentivo (membresía de regalo)': 'Double incentive (gift membership)',
+  'Atribución de referidos': 'Referral attribution',
+  Inactividad: 'Inactivity',
+  'El presente reglamento regula el Programa de Referidos de Grupo 3i, mediante el cual un socio (referidor) recibe comisiones e incentivos por recomendar la compra de productos inmobiliarios y la membresía del Club de Viajes 3i.':
+    'These terms govern the Grupo 3i Referral Programme, under which a partner (referrer) earns commissions and incentives for recommending the purchase of property products and the Club 3i Travel membership.',
+  Requerido: 'Required',
+  'Mínimo 8 caracteres': 'At least 8 characters',
+  'Estás activando tu cuenta. Define tu contraseña y tus datos para desbloquear tu código de referidor.':
+    'You are activating your account. Set your password and details to unlock your referral code.',
+  '¿Ya tienes cuenta?': 'Already have an account?',
+  '¿No tienes cuenta?': 'No account yet?',
+  'Esta compra se acredita a': 'This purchase is credited to',
+  'Serás referido por': 'You will be referred by',
+  'un socio de Grupo 3i': 'a Grupo 3i partner',
+
+  // Testimonios de la ficha de la membresía
+  'Ahorré más del 60% en mi viaje a Cancún. La membresía se pagó sola.':
+    'I saved over 60% on my trip to Cancún. The membership paid for itself.',
+  'El certificado vacacional anual es increíble. Ya lo usé dos veces.':
+    'The annual holiday certificate is amazing. I have already used it twice.',
+  'Atención de primera y descuentos reales en hoteles top.': 'First-class service and real discounts at top hotels.',
+  'Paso {n} de {total}': 'Step {n} of {total}',
+  '¿Alguien te invitó?': 'Did someone invite you?',
+  '(opcional)': '(optional)',
+  // ---------- Notas de los solares (GEO 3i) ----------
+  'Una franja de 186.6 m² junto al lindero este está destinada a la estación de rebombeo de la planta de tratamiento de aguas residuales (PTAR) del Municipio. Ya está excluida del área y del precio publicados.':
+    'A 186.6 m² strip along the eastern boundary is set aside for the pumping station of the Municipality’s wastewater treatment plant. It is already excluded from the published area and price.',
+  'El plano de lotización rotula 3,440.22 m²; el levantamiento mide 3,283.25 m² una vez separada la franja de la estación de rebombeo.':
+    'The subdivision plan labels 3,440.22 m²; the survey measures 3,283.25 m² once the pumping-station strip is separated.',
+  'Según el plano de implantación de la lotización (clave impresa en el solar).':
+    'According to the subdivision site plan (reference printed on the lot).',
+  'Plano de implantación georreferenciado sobre el levantamiento GEO 3i (precisión ±0.3 m)':
+    'Site plan georeferenced over the GEO 3i survey (accuracy ±0.3 m)',
+  'Levantamiento topográfico de la urbanización (GEO 3i)': 'Topographic survey of the development (GEO 3i)',
+  'Ficha de predio individual (GEO 3i)': 'Individual parcel record (GEO 3i)',
+  'Área publicada (inventario): {a}. Área según el plano georreferenciado: {b} ({c}). Confirmar con levantamiento de campo.':
+    'Published area (inventory): {a}. Area per the georeferenced plan: {b} ({c}). To be confirmed with a field survey.',
+  'Clave del solar matriz {a}, antes de su división en {b} y {c}.':
+    'Reference of parent lot {a}, before it was split into {b} and {c}.',
+
+  'Equipamiento Urbano': 'Community facilities',
 };

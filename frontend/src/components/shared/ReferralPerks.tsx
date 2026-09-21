@@ -1,4 +1,5 @@
 import { Sparkle } from 'lucide-react';
+import { useLang } from '@/hooks/useLang';
 import { IconMedallion, IconPlane, IconSparkle } from '@/components/icons/TravelIcons';
 
 // ============================================================
@@ -8,6 +9,7 @@ import { IconMedallion, IconPlane, IconSparkle } from '@/components/icons/Travel
 // ============================================================
 
 export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
+  const { t } = useLang();
   if (variant === 'buyer') {
     return (
       <div className="rounded-2xl bg-primary p-5 text-white ring-1 ring-secondary/30">
@@ -16,11 +18,11 @@ export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
             <IconPlane className="h-6 w-6" />
           </span>
           <div>
-            <p className="font-semibold text-secondary">¿Llegaste por el enlace de un socio?</p>
+            <p className="font-semibold text-secondary">{t('¿Llegaste por el enlace de un socio?')}</p>
             <p className="mt-1 text-sm text-white/80">
-              Al comprar este producto inmobiliario recibes <strong>gratis tu membresía del Club
-              de Viajes 3i</strong> y subes automáticamente a <strong>Elite</strong>. La membresía
-              de regalo aplica solo a la compra de productos inmobiliarios.
+              {t(
+                'Al comprar este producto inmobiliario recibes gratis tu membresía del Club de Viajes 3i y subes automáticamente a Elite. La membresía de regalo aplica solo a la compra de productos inmobiliarios.',
+              )}
             </p>
           </div>
         </div>
@@ -34,22 +36,21 @@ export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
         <IconMedallion className="h-7 w-7">
           <IconSparkle className="h-4 w-4" />
         </IconMedallion>
-        <h3 className="font-serif text-lg font-bold text-primary">Doble incentivo</h3>
+        <h3 className="font-serif text-lg font-bold text-primary">{t('Doble incentivo')}</h3>
       </div>
       <ul className="mt-3 space-y-2 text-sm text-primary/80">
         <li className="flex gap-2">
           <Sparkle className="mt-0.5 h-4 w-4 flex-none text-secondary" strokeWidth={1.6} />
           <span>
-            <strong>Tu invitado gana:</strong> membresía de viajes <strong>gratis</strong> cuando
-            compra un producto <strong>inmobiliario</strong> con tu enlace (y sube a Elite).
+            <strong>{t('Tu invitado gana:')}</strong>{' '}
+            {t('membresía de viajes gratis cuando compra un producto inmobiliario con tu enlace (y sube a Elite).')}
           </span>
         </li>
         <li className="flex gap-2">
           <Sparkle className="mt-0.5 h-4 w-4 flex-none text-secondary" strokeWidth={1.6} />
           <span>
-            <strong>Tú ganas:</strong> tu comisión por cada venta y, al llegar a{' '}
-            <strong>5 referidos que compren inmobiliario</strong>, asciendes a <strong>Elite</strong>{' '}
-            con tu membresía de viajes <strong>gratis</strong>.
+            <strong>{t('Tú ganas:')}</strong>{' '}
+            {t('tu comisión por cada venta y, al llegar a 5 referidos que compren inmobiliario, asciendes a Elite con tu membresía de viajes gratis.')}
           </span>
         </li>
       </ul>

@@ -55,7 +55,7 @@ export default function ClubPage() {
         <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
           <div className="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5">
             <div className="bg-light p-8 text-center">
-              <h2 className="text-3xl text-primary">{membership.name}</h2>
+              <h2 className="text-3xl text-primary">{t(membership.name)}</h2>
               <div className="mt-4 flex justify-center">
                 <PriceDisplay price={membership.price} promoPrice={membership.promoPrice} />
               </div>

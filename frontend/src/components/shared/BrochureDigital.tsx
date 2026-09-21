@@ -204,7 +204,7 @@ function LocationInfo({
       <div className="grid gap-6 text-center text-white sm:grid-cols-2 lg:grid-cols-4">
         {routeStats.map((s) => (
           <div key={s.l}>
-            <p className="font-serif text-2xl font-bold text-secondary">{s.v}</p>
+            <p className="font-serif text-2xl font-bold text-secondary">{t(s.v)}</p>
             <p className="text-xs text-white/70">{t(s.l)}</p>
           </div>
         ))}
@@ -244,7 +244,7 @@ interface BrochureDigitalProps {
 }
 
 export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps) {
-  const { t } = useLang();
+  const { t, tb } = useLang();
   const cover = project.coverImage ?? '';
   const gallery = project.images?.length ? project.images : cover ? [cover] : [];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -313,11 +313,11 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
         </Reveal>
         <div className="grid gap-8 lg:grid-cols-5 lg:items-center">
           <Reveal delay={0.05} className="lg:col-span-3">
-            <p className="leading-relaxed text-primary/80">{t(c.overviewText)}</p>
+            <p className="whitespace-pre-line leading-relaxed text-primary/80">{tb(c.overviewText)}</p>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               {c.overviewStats.map((s) => (
                 <div key={s.small} className="rounded-2xl bg-primary p-5 text-center text-white">
-                  <p className="font-serif text-2xl font-bold text-secondary">{s.big}</p>
+                  <p className="font-serif text-2xl font-bold text-secondary">{t(s.big)}</p>
                   <p className="mt-1 text-xs text-white/70">{t(s.small)}</p>
                 </div>
               ))}
@@ -417,7 +417,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {c.rentingStats.map((s) => (
               <div key={s.l} className="rounded-2xl border border-black/10 p-5 text-center">
-                <p className="font-serif text-2xl font-bold text-primary">{s.v}</p>
+                <p className="font-serif text-2xl font-bold text-primary">{t(s.v)}</p>
                 <p className="mt-1 text-sm text-brand-gray">{t(s.l)}</p>
               </div>
             ))}
@@ -536,7 +536,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
           <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-center">
             {c.ctaStats.map((s) => (
               <div key={s.l}>
-                <p className="font-serif text-2xl font-bold text-secondary">{s.v}</p>
+                <p className="font-serif text-2xl font-bold text-secondary">{t(s.v)}</p>
                 <p className="text-xs text-white/60">{t(s.l)}</p>
               </div>
             ))}
