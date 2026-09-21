@@ -64,7 +64,7 @@ export function WhatsAppCTA({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors ${look} ${
+      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors print:hidden ${look} ${
         size === 'sm' ? 'px-3 py-2 text-sm' : 'px-4 py-2.5 text-sm'
       } ${className}`}
     >

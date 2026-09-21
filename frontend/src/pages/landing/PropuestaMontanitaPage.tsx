@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { useToast } from '@/components/shared/Toast';
 import { useSectionContent } from '@/hooks/useSiteContent';
-import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta } from '@/lib/propuestaContent';
+import { PROPUESTA_KEY, PROPUESTA_SECTION, resolvePropuesta, type PropuestaContent } from '@/lib/propuestaContent';
 import { WhatsAppCTA, useWhatsAppHref } from '@/components/shared/WhatsAppCTA';
 
 // ============================================================
@@ -75,6 +75,7 @@ export default function PropuestaMontanitaPage() {
 
   // Contenido editable desde /admin/propuesta (F4); sin datos guardados usa los valores por defecto.
   const { data: saved } = useSectionContent(PROPUESTA_SECTION);
+  const { data: contact } = useSectionContent('contact');
   const c = useMemo(() => {
     try {
       return resolvePropuesta(saved?.[PROPUESTA_KEY] ? JSON.parse(saved[PROPUESTA_KEY]) : undefined);
@@ -86,7 +87,6 @@ export default function PropuestaMontanitaPage() {
   // Reunión por WhatsApp, con el contexto de la propuesta ya escrito.
   const meetHref = useWhatsAppHref(
     'Hola 👋 Vi la propuesta de Montañita View y quiero *agendar una reunión* con un asesor.',
-    c.whatsapp,
   );
 
   // Al imprimir (botón o Ctrl+P) se despliegan todos los detalles técnicos y
@@ -140,8 +140,12 @@ export default function PropuestaMontanitaPage() {
         noindex
       />
 
+      {/* Portada, confidencialidad, índice y resumen ejecutivo: solo en el PDF. */}
+      <PrintCover />
+      <PrintFrontMatter c={c} />
+
       {/* HERO */}
-      <header className="relative isolate overflow-hidden bg-primary text-white">
+      <header className="relative isolate overflow-hidden bg-primary text-white print:hidden">
         <img src={`${IMG}/portada.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover object-center opacity-70" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/45 to-black/5" />
         <div className="mx-auto max-w-5xl px-4 py-24 sm:px-6 sm:py-32">
@@ -194,12 +198,11 @@ export default function PropuestaMontanitaPage() {
           <Route id="solar" eyebrow="Ruta A" title="Comprar un solar en la Lotización">
             <Summary>{c.solar.summary}</Summary>
             <KV rows={c.solar.rows} />
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3 print:hidden">
               <Link to="/proyectos/montanita-view">
                 <Button>Ver el mapa de solares</Button>
               </Link>
               <WhatsAppCTA
-                whatsapp={c.whatsapp}
                 message="Hola 👋 Vi la propuesta de Montañita View y me interesa *comprar un solar* (Ruta A). Quiero más información."
               >
                 Consultar por WhatsApp
@@ -266,7 +269,6 @@ export default function PropuestaMontanitaPage() {
             <KV rows={c.lobby.rows} />
             <WhatsAppCTA
               className="mt-4"
-              whatsapp={c.whatsapp}
               message="Hola 👋 Vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Ruta B). Quiero más información."
             >
               Consultar por WhatsApp
@@ -408,7 +410,6 @@ export default function PropuestaMontanitaPage() {
 
             <WhatsAppCTA
               className="mt-4"
-              whatsapp={c.whatsapp}
               message={`Hola 👋 Vi la propuesta de Montañita View y me interesa *la compra total* (Ruta C, ${c.total.tag}). Quiero más información.`}
             >
               Consultar por WhatsApp
@@ -449,6 +450,8 @@ export default function PropuestaMontanitaPage() {
             </ul>
             <p className="mt-4 text-xs text-brand-gray">{c.disclaimer}</p>
           </section>
+
+          <PrintClosing contact={contact} />
 
           <div className="flex flex-wrap justify-center gap-3 print:hidden">
             {meetHref && (
@@ -534,7 +537,7 @@ function RouteCard({ icon: Icon, tag, title, body, href }: { icon: typeof MapPin
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-secondary">{tag}</p>
       <h3 className="mt-1 font-serif text-xl font-bold text-primary">{title}</h3>
       <p className="mt-2 flex-1 text-sm text-brand-gray">{body}</p>
-      <span className="mt-4 flex items-center gap-1 text-sm font-medium text-accent">
+      <span className="mt-4 flex items-center gap-1 text-sm font-medium text-accent print:hidden">
         Ver detalle <ChevronRight className="h-4 w-4 transition group-hover:translate-x-1" />
       </span>
     </a>
@@ -627,6 +630,162 @@ function Gallery({ items }: { items: [string, string][] }) {
           <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-[11px] text-white">{caption}</span>
         </a>
       ))}
+    </div>
+  );
+}
+
+// ============================================================
+// DOCUMENTO IMPRESO — piezas que solo existen en el PDF.
+//
+// Sigue la estructura habitual de un offering memorandum inmobiliario:
+// portada a toda página, aviso de confidencialidad, índice, resumen ejecutivo
+// que abre con el argumento más fuerte, y una página de cierre con los
+// próximos pasos. En pantalla no se ve nada de esto (`hidden print:block`).
+// ============================================================
+
+/** Mes y año en que se genera el documento, para fecharlo. */
+const periodo = () =>
+  new Date()
+    .toLocaleDateString('es-EC', { month: 'long', year: 'numeric' })
+    .replace(/^./, (m) => m.toUpperCase());
+
+function PrintCover() {
+  return (
+    <div className="pd-cover hidden print:flex">
+      <img src={`${IMG}/portada.jpg`} alt="" className="pd-cover-bg" />
+      <div className="pd-cover-veil" />
+      <div className="pd-cover-top">
+        <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="pd-logo" />
+      </div>
+      <div className="pd-cover-main">
+        <p className="pd-eyebrow">Propuesta de inversión · Documento confidencial</p>
+        <h1 className="pd-cover-title">Montañita View</h1>
+        <div className="pd-rule" />
+        <p className="pd-cover-sub">
+          Lotización de 25.8 hectáreas con título saneado y complejo turístico en operación.
+          <br />
+          Manglaralto · Ruta del Spondylus · Santa Elena, Ecuador
+        </p>
+        <div className="pd-cover-stats">
+          <div>
+            <b>89</b>
+            <span>solares disponibles</span>
+          </div>
+          <div>
+            <b>{m2(TOTAL_M2)}</b>
+            <span>en oferta</span>
+          </div>
+          <div>
+            <b>2018</b>
+            <span>lotización inscrita</span>
+          </div>
+        </div>
+      </div>
+      <div className="pd-cover-foot">
+        <span>Preparado por Grupo 3i · Inversión Inmobiliaria Inteligente</span>
+        <span>{periodo()}</span>
+      </div>
+    </div>
+  );
+}
+
+function PrintFrontMatter({ c }: { c: PropuestaContent }) {
+  return (
+    <div className="hidden print:block">
+      <div className="pd-nda">
+        <h2>Aviso de confidencialidad</h2>
+        <p>
+          Este documento se entrega en forma reservada a un destinatario identificado, con el único
+          fin de evaluar la operación que describe. Su contenido —cifras, planos, estudios y
+          condiciones comerciales— es información privada de Grupo 3i y de los propietarios del
+          proyecto, y no puede reproducirse, distribuirse ni compartirse con terceros sin
+          autorización escrita. Si usted no es el destinatario, le pedimos devolverlo y eliminar
+          cualquier copia.
+        </p>
+      </div>
+
+      <h2 className="pd-h2">Contenido</h2>
+      <ol className="pd-toc">
+        <li><span>Resumen ejecutivo</span></li>
+        <li><span>Las tres maneras de participar</span></li>
+        <li><span>Ruta A — Comprar un solar en la Lotización</span></li>
+        <li><span>Ruta B — Montañita View Lobby</span></li>
+        <li><span>Ruta C — Compra total de ambos proyectos</span></li>
+        <li><span>El destino: Montañita y la Ruta del Spondylus</span></li>
+        <li><span>Próximos pasos y contacto</span></li>
+      </ol>
+
+      <h2 className="pd-h2">Resumen ejecutivo</h2>
+      <p className="pd-lead">
+        Dos proyectos hermanos en la misma loma sobre Manglaralto, a 300 metros de la playa: una
+        lotización de 25.8 hectáreas con la cadena de dominio completa e inscrita, y un complejo con
+        el área social ya construida y operando. Se ofrecen juntos o por separado.
+      </p>
+      <ul className="pd-bullets">
+        <li>
+          <b>Título saneado e inscrito.</b> Compra al GAD Municipal de Santa Elena en 2013,
+          urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada solar se
+          escritura individualmente.
+        </li>
+        <li>
+          <b>111 solares levantados uno por uno.</b> 89 disponibles, {m2(LOTS_M2)} de superficie
+          vendible, con linderos, hitos y coordenadas UTM verificados en campo.
+        </li>
+        <li>
+          <b>Obra civil ejecutada.</b> Vías internas demarcadas y compactadas, desbroce, estudio
+          topográfico y de suelos, linderación y georreferenciación completas.
+        </li>
+        <li>
+          <b>El Lobby ya opera.</b> Área social construida —lobby, dos piscinas, jacuzzi,
+          restaurante, bar y eco-hotel— con un proyecto listo de 81 apartamentos en tres etapas.
+        </li>
+        <li>
+          <b>La operación completa: {c.total.tag}.</b> {m2(TOTAL_M2)} en una sola transacción, con
+          10% al firmar la promesa y el saldo a convenir entre las partes.
+        </li>
+        <li>
+          <b>Venta individual con financiamiento propio.</b> 30% de entrada y el saldo en hasta 24
+          cuotas mensuales sin intereses, sin banco de por medio.
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+function PrintClosing({ contact }: { contact?: Record<string, string> | null }) {
+  const wa = (contact?.whatsapp ?? '').replace(/\D/g, '');
+  return (
+    <div className="pd-closing hidden print:block">
+      <h2 className="pd-h2">Próximos pasos</h2>
+      <ol className="pd-steps">
+        <li>
+          <b>Reunión con un asesor.</b> Revisamos la ruta que le interesa, resolvemos dudas y
+          ponemos a disposición los documentos fuente: escrituras, resolución de urbanización,
+          levantamiento topográfico y estudio de factibilidad.
+        </li>
+        <li>
+          <b>Visita al sitio.</b> Recorrido por la lotización y el complejo, con los hitos de cada
+          solar en terreno.
+        </li>
+        <li>
+          <b>Promesa de compraventa.</b> Se firma ante notario con el 10% de reserva; ahí quedan
+          escritos el precio, los plazos y las obligaciones de cada parte.
+        </li>
+        <li>
+          <b>Escrituración.</b> Inscripción en el Registro de la Propiedad de Santa Elena a nombre
+          del comprador.
+        </li>
+      </ol>
+
+      <div className="pd-contact">
+        <p className="pd-eyebrow-dark">Hablemos</p>
+        <p className="pd-contact-name">Grupo 3i · Inversión Inmobiliaria Inteligente</p>
+        <p className="pd-contact-rows">
+          {wa && <>WhatsApp +{wa}<br /></>}
+          {contact?.email && <>{contact.email}<br /></>}
+          grupo3i.com
+        </p>
+      </div>
     </div>
   );
 }

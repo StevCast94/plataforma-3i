@@ -150,31 +150,181 @@ h1, h2, h3, h4 {
   animation: g3i-shimmer 1.6s infinite;
 }
 
-/* ---------- Impresión / Guardar como PDF (A4) ---------- */
-/* Conserva la identidad visual (fondo crema, tarjetas blancas, dorado y azul);
-   solo ajusta tamaños, saltos de página y lo que no tiene sentido en papel. */
+/* ---------- Documento impreso: la propuesta como memorándum de inversión (A4) ----------
+   La pantalla es una landing; el PDF es otro documento: portada a toda página,
+   aviso de confidencialidad, índice, resumen ejecutivo y cierre con próximos
+   pasos. Aquí se apaga el aspecto de web (tarjetas, sombras, botones) y se
+   compone como papel: serif para los títulos, filetes dorados, tablas de línea
+   fina y saltos de página controlados. */
 @media print {
-  /* @page background pinta también los márgenes de cada hoja (Chrome/Edge). */
-  @page { size: A4; margin: 14mm 13mm 16mm; background: #f5f0e8; }
-  @page :first { margin-top: 0; }
+  @page { size: A4; margin: 17mm 15mm 16mm; }
+  /* La portada ocupa la hoja entera: sin márgenes arriba ni abajo, pero con los
+     mismos márgenes laterales para que el ancho de composición no cambie. */
+  @page :first { margin: 0 15mm; }
+
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  html, body { background: var(--color-light) !important; }
-  .print-doc main { max-width: none !important; padding: 8mm 0 0 !important; }
-  .print-doc header { margin: 0 -13mm; }
-  .print-doc header > div { padding: 22mm 13mm 16mm !important; }
-  .print-doc section[id] { padding: 9mm !important; box-shadow: none !important; border-radius: 14px !important; }
+  html, body { background: #fff !important; }
+
+  .print-doc { background: #fff !important; font-size: 9.5pt; line-height: 1.5; }
+  .print-doc main { max-width: none !important; padding: 0 !important; }
+  .print-doc main > section + section { margin-top: 10mm !important; }
+
+  /* ---------- Portada ---------- */
+  .pd-cover {
+    position: relative; height: 297mm; margin: 0 -15mm; overflow: hidden;
+    break-after: page; color: #fff;
+    flex-direction: column; justify-content: flex-start;
+  }
+  .pd-cover-bg { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pd-cover-veil {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, rgba(2, 6, 8, 0.9) 0%, rgba(2, 6, 8, 0.28) 38%, rgba(2, 6, 8, 0.95) 100%);
+  }
+  .pd-cover-top, .pd-cover-main, .pd-cover-foot { position: relative; z-index: 2; }
+  .pd-cover-top { padding: 20mm 20mm 0; }
+  .pd-logo { height: 13mm; }
+  .pd-cover-main { padding: 0 20mm; margin-top: auto; margin-bottom: 14mm; }
+  .pd-eyebrow {
+    font-size: 8pt; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #d5c03d; margin: 0;
+  }
+  .pd-cover-title {
+    font-family: var(--font-serif); font-size: 42pt; font-weight: 700; line-height: 1.05;
+    margin: 4mm 0 0;
+  }
+  .pd-rule { width: 28mm; height: 1.2mm; background: #d5c03d; margin: 6mm 0; }
+  .pd-cover-sub { font-size: 11pt; line-height: 1.6; color: rgba(255, 255, 255, 0.85); margin: 0; max-width: 130mm; }
+  .pd-cover-stats { display: flex; gap: 14mm; margin-top: 12mm; }
+  .pd-cover-stats b {
+    display: block; font-family: var(--font-serif); font-size: 19pt; color: #d5c03d; font-weight: 700;
+  }
+  .pd-cover-stats span { font-size: 8.5pt; color: rgba(255, 255, 255, 0.72); }
+  .pd-cover-foot {
+    display: flex; justify-content: space-between; font-size: 8pt; letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.7); margin: 0 20mm 16mm;
+    border-top: 0.3pt solid rgba(213, 192, 61, 0.45); padding-top: 5mm;
+  }
+
+  /* ---------- Preliminares: confidencialidad, índice, resumen ---------- */
+  .pd-nda {
+    border: 0.5pt solid #c9a96e; border-left: 2.5pt solid #c9a96e; padding: 6mm 7mm;
+    background: #faf7f1; margin-bottom: 10mm;
+  }
+  .pd-nda h2 { font-family: var(--font-serif); font-size: 12pt; margin: 0 0 3mm; color: #1a1a1a; }
+  .pd-nda p { margin: 0; font-size: 8.5pt; line-height: 1.6; color: #44403c; text-align: justify; }
+
+  .pd-h2 {
+    font-family: var(--font-serif); font-size: 17pt; font-weight: 700; color: #1a1a1a;
+    margin: 0 0 5mm; padding-bottom: 2.5mm; border-bottom: 1pt solid #c9a96e;
+  }
+  .pd-toc { list-style: none; counter-reset: pd; padding: 0; margin: 0 0 12mm; }
+  .pd-toc li {
+    counter-increment: pd; display: flex; align-items: baseline; gap: 4mm;
+    padding: 2.2mm 0; border-bottom: 0.3pt dotted #d6d3d1; font-size: 10pt;
+  }
+  .pd-toc li::before {
+    content: counter(pd, decimal-leading-zero);
+    font-family: var(--font-serif); font-size: 10pt; color: #ab751e; font-weight: 700;
+  }
+  .pd-lead { font-size: 11pt; line-height: 1.65; color: #292524; margin: 0 0 6mm; }
+  .pd-bullets { margin: 0; padding: 0; list-style: none; break-before: avoid; }
+  .pd-bullets li {
+    position: relative; padding: 0 0 3.5mm 7mm; font-size: 9.5pt; line-height: 1.55; color: #44403c;
+    break-inside: avoid;
+  }
+  .pd-bullets li::before {
+    content: ''; position: absolute; left: 0; top: 2.2mm;
+    width: 3mm; height: 3mm; background: #c9a96e; transform: rotate(45deg);
+  }
+  .pd-bullets b { color: #1a1a1a; }
+
+  /* ---------- Secciones del cuerpo ---------- */
+  .print-doc section[id] {
+    padding: 0 !important; background: transparent !important; border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  /* Cada ruta abre hoja nueva con su propio encabezado. */
   .print-doc .print-break { break-before: page; }
-  .print-doc details { box-shadow: none !important; }
-  .print-doc details > summary span { display: none !important; }
+  .print-doc section[id] > p:first-child {
+    font-size: 8pt !important; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #ab751e !important;
+  }
+  .print-doc section[id] > h2 {
+    font-size: 19pt !important; margin: 2mm 0 5mm !important; padding-bottom: 3mm;
+    border-bottom: 1pt solid #c9a96e;
+  }
   .print-doc h2, .print-doc h3, .print-doc h4, .print-doc summary { break-after: avoid; }
-  .print-doc figure, .print-doc table, .print-doc tr, .print-doc dl > div, .print-doc svg, .print-doc .avoid-break { break-inside: avoid; }
-  .print-doc img { max-height: 120mm; }
-  /* Tablas completas, sin scroll horizontal */
-  .print-doc .overflow-x-auto { overflow: visible !important; }
-  .print-doc table { font-size: 8pt; width: 100%; }
-  .print-doc th, .print-doc td { white-space: normal !important; padding: 3px 5px !important; }
+
+  /* Las tres tarjetas de "Elige cómo participar": fichas planas en papel. */
+  .print-doc section:not([id]) > div.grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 4mm !important; }
+  .print-doc section:not([id]) > div.grid > a {
+    box-shadow: none !important; border: 0.5pt solid #e7e5e4; border-top: 2pt solid #c9a96e;
+    border-radius: 0 !important; padding: 5mm !important;
+  }
+
+  /* Detalles técnicos: subsecciones, no acordeones. */
+  .print-doc details {
+    background: transparent !important; border-radius: 0 !important; padding: 0 !important;
+    margin-top: 6mm; box-shadow: none !important;
+  }
+  .print-doc details > summary {
+    font-family: var(--font-serif); font-size: 12pt; color: #294877;
+    border-left: 2pt solid #c9a96e; padding-left: 3.5mm; margin-bottom: 2.5mm;
+  }
+  .print-doc details > summary span { display: none !important; }
+
+  /* Pares dato/valor: tabla de línea fina, sin caja. */
+  .print-doc dl {
+    border-radius: 0 !important; box-shadow: none !important; border-top: 0.6pt solid #1a1a1a;
+  }
+  .print-doc dl > div {
+    padding: 1.8mm 0 !important; border-bottom: 0.3pt solid #e7e5e4;
+    display: flex !important; justify-content: space-between; gap: 8mm;
+  }
+  .print-doc dl dt { color: #57534e !important; }
+  .print-doc dl dd { font-weight: 600; text-align: right; }
+
+  /* Tablas de datos */
+  .print-doc .overflow-x-auto { overflow: visible !important; border-radius: 0 !important; box-shadow: none !important; }
+  .print-doc table { font-size: 8pt; width: 100%; border-collapse: collapse; }
+  .print-doc thead { background: #1a1a1a !important; }
+  .print-doc thead th { color: #fff !important; padding: 2.2mm 2.5mm !important; white-space: normal !important; }
+  .print-doc tbody td { padding: 1.8mm 2.5mm !important; border-top: 0.3pt solid #e7e5e4; white-space: normal !important; }
+
+  /* Imágenes */
+  .print-doc figure, .print-doc table, .print-doc tr, .print-doc dl > div,
+  .print-doc svg, .print-doc .avoid-break, .print-doc li { break-inside: avoid; }
+  .print-doc img:not(.pd-cover-bg):not(.pd-logo) { border-radius: 0 !important; max-height: 105mm; }
+  .print-doc figcaption {
+    font-size: 7.5pt; font-style: italic; color: #78716c; padding-top: 1.5mm;
+    border-top: 0.3pt solid #e7e5e4; margin-top: 1.5mm;
+  }
+
+  /* ---------- Cierre ---------- */
+  .pd-closing { break-before: page; }
+  .pd-steps { counter-reset: st; list-style: none; padding: 0; margin: 0 0 12mm; }
+  .pd-steps li {
+    counter-increment: st; position: relative; padding: 0 0 5mm 12mm;
+    font-size: 9.5pt; line-height: 1.55; color: #44403c; break-inside: avoid;
+  }
+  .pd-steps li::before {
+    content: counter(st); position: absolute; left: 0; top: -1mm;
+    font-family: var(--font-serif); font-size: 15pt; font-weight: 700; color: #c9a96e;
+  }
+  .pd-steps b { color: #1a1a1a; }
+  .pd-contact { background: #1a1a1a !important; color: #fff; padding: 9mm 10mm; break-inside: avoid; }
+  .pd-eyebrow-dark {
+    font-size: 8pt; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #d5c03d; margin: 0 0 3mm;
+  }
+  .pd-contact-name { font-family: var(--font-serif); font-size: 15pt; margin: 0 0 3mm; }
+  .pd-contact-rows { font-size: 9.5pt; line-height: 1.7; color: rgba(255, 255, 255, 0.8); margin: 0; }
+
   /* Fuentes verificables: la URL completa junto al enlace */
-  .print-doc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 7pt; word-break: break-all; color: #666; }
+  .print-doc a[href^="http"]::after {
+    content: " (" attr(href) ")"; font-size: 7pt; word-break: break-all; color: #78716c;
+  }
+  .print-doc .pd-cover a::after, .print-doc figure a::after { content: none; }
 }
 
 /* Nombre de calle rotulado sobre el eje de la vía, siguiendo su trazado. */
