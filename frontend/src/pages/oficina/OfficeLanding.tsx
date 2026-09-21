@@ -5,7 +5,6 @@ import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ClipboardPen, Link2, HandCoins, FileText, type LucideIcon } from 'lucide-react';
-import { estimateMonthly } from '@/lib/referral';
 import { formatCurrency } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { BrandLoader } from '@/components/brand/Isotipo';
@@ -14,46 +13,51 @@ const steps: { icon: LucideIcon; title: string; body: string; image: string }[] 
   {
     icon: ClipboardPen,
     title: 'Regístrate gratis',
-    body: 'Crea tu cuenta Premiere con tu cédula en minutos.',
+    body: 'Crea tu cuenta con tu cédula en minutos. No inviertes nada.',
     image: '/images/secciones/paso-registro.jpg',
   },
   {
     icon: Link2,
     title: 'Comparte tu enlace',
-    body: 'Recibe tu código y enlace único para invitar.',
+    body: 'Recibe tu enlace único y compártelo con quien busca invertir en la costa.',
     image: '/images/secciones/paso-comparte.jpg',
   },
   {
     icon: HandCoins,
     title: 'Gana comisiones',
-    body: 'Cobra por cada membresía y propiedad referida.',
+    body: 'Cobras por cada solar, fracción o membresía que se venda con tu enlace.',
     image: '/images/secciones/paso-gana.jpg',
   },
 ];
 
 const compare = [
-  { feature: 'Comisión membresía (nivel 1)', premiere: '$50', elite: '$100' },
-  { feature: 'Inmobiliario nivel 1', premiere: '2%', elite: '4%' },
-  { feature: 'Inmobiliario nivel 2', premiere: '1%', elite: '2%' },
+  { feature: 'Venta inmobiliaria de tu referido directo', premiere: '2%', elite: '4%' },
+  { feature: 'Venta inmobiliaria de un referido de tu referido', premiere: '1%', elite: '2%' },
+  { feature: 'Membresía del Club 3i (referido directo)', premiere: '$50', elite: '$100' },
   { feature: 'Frecuencia de pago', premiere: 'Mensual', elite: 'Quincenal' },
   { feature: 'Liquidación', premiere: '30 días', elite: '3 días' },
 ];
 
 const faqs = [
-  { q: '¿Cuánto cuesta ser miembro?', a: 'El registro Premiere es gratuito. Solo necesitas verificar tu identidad (KYC).' },
+  { q: '¿Cuánto cuesta entrar?', a: 'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.' },
+  { q: '¿Qué puedo recomendar?', a: 'Los solares de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
   { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto, o refiriendo 5 personas exitosas en 180 días (¡con membresía de viajes gratis!).' },
   { q: '¿Cuándo cobro mis comisiones?', a: 'Tras un período de retracto de 14 días y la liquidación según tu nivel (30 días Premiere / 3 días Elite).' },
-  { q: '¿Pierdo mi cuenta si no refiero?', a: 'Premiere: tras 90 días sin referidos se da de baja. Elite es vitalicio.' },
+  { q: '¿Pierdo mi cuenta si no refiero?', a: 'Premiere: tras 180 días sin referidos nuevos la cuenta se suspende, con avisos previos. Elite es vitalicio.' },
 ];
 
-// Precio de referencia de una fracción, igual al "Invierte desde $12,000" del hero.
-const FRACTION_PRICE = 12000;
+/**
+ * Una venta de cada cosa, con las tasas del motor de comisiones
+ * (backend/src/lib/referralRules.ts): 2% / 4% inmobiliario, $50 / $100 membresía.
+ */
+const EXAMPLES = [
+  { what: 'Un solar en Montañita View', price: 'desde $49,084', premiere: 49084 * 0.02, elite: 49084 * 0.04 },
+  { what: 'Una fracción en Ibiza Condohotel', price: '$12,000', premiere: 12000 * 0.02, elite: 12000 * 0.04 },
+  { what: 'Una membresía del Club 3i', price: 'por membresía', premiere: 50, elite: 100 },
+];
 
 export default function OfficeLanding() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [memberships, setMemberships] = useState(5);
-  const [fractions, setFractions] = useState(1);
-  const elite = estimateMonthly('ELITE', memberships, fractions, FRACTION_PRICE);
 
   // Esta es una página de VENTA del programa (pública, sin sidebar). Si ya hay
   // sesión, no tiene sentido mostrarle "Regístrate gratis" a alguien que ya es
@@ -65,8 +69,8 @@ export default function OfficeLanding() {
   return (
     <>
       <Seo
-        title="Programa de Referidos — Oficina Virtual"
-        description="Transforma tus recomendaciones en ingresos con el Club 3i."
+        title="Refiere y gana — Programa de referidos"
+        description="Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta."
       />
 
       {/* Barra superior: la única página de Oficina sin Navbar del sitio público. */}
@@ -86,17 +90,18 @@ export default function OfficeLanding() {
         />
         <div className="absolute inset-0 -z-10 bg-primary/70" />
         <div className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:px-6">
-          <Badge variant="solid" className="mb-5">Programa de Referidos</Badge>
+          <Badge variant="solid" className="mb-5">Programa de referidos</Badge>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-4xl font-bold sm:text-6xl"
           >
-            Transforma tus recomendaciones en ingresos
+            Refiere y gana
           </motion.h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-white/80">
-            Únete al Club 3i, comparte lo que amas y gana comisiones por cada referido.
+            Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4%
+            de la venta. Registro gratis, sin inversión propia.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link to="/oficina/registro">
@@ -165,45 +170,26 @@ export default function OfficeLanding() {
         </div>
       </section>
 
-      {/* Calculadora rápida */}
-      <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
-        <h2 className="mb-8 text-center text-3xl font-bold text-primary">¿Cuánto podrías ganar?</h2>
-        <div className="space-y-5 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-black/5">
-          <label className="block">
-            <div className="flex items-baseline justify-between">
-              <span className="text-sm font-medium text-primary">Membresías referidas al mes</span>
-              <span className="font-serif text-xl font-bold text-accent">{memberships}</span>
+      {/* Cuánto se gana: casos reales, con los precios de hoy */}
+      <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
+        <h2 className="mb-3 text-center text-3xl font-bold text-primary">¿Cuánto podrías ganar?</h2>
+        <p className="mb-10 text-center text-brand-gray">Por una sola venta hecha con tu enlace:</p>
+        <div className="grid gap-5 sm:grid-cols-3">
+          {EXAMPLES.map((e) => (
+            <div key={e.what} className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5">
+              <p className="text-sm font-medium text-primary">{e.what}</p>
+              <p className="text-xs text-brand-gray">{e.price}</p>
+              <p className="mt-4 text-xs uppercase tracking-wider text-brand-gray">Premiere</p>
+              <p className="font-serif text-2xl font-bold text-primary">{formatCurrency(e.premiere)}</p>
+              <p className="mt-2 text-xs uppercase tracking-wider text-brand-gray">Elite</p>
+              <p className="font-serif text-2xl font-bold text-accent">{formatCurrency(e.elite)}</p>
             </div>
-            <input
-              type="range"
-              min={0}
-              max={20}
-              value={memberships}
-              onChange={(e) => setMemberships(Number(e.target.value))}
-              className="mt-2 w-full cursor-pointer accent-[var(--color-secondary)]"
-            />
-          </label>
-          <label className="block">
-            <div className="flex items-baseline justify-between">
-              <span className="text-sm font-medium text-primary">
-                Fracciones de {formatCurrency(FRACTION_PRICE)} vendidas al mes
-              </span>
-              <span className="font-serif text-xl font-bold text-accent">{fractions}</span>
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={10}
-              value={fractions}
-              onChange={(e) => setFractions(Number(e.target.value))}
-              className="mt-2 w-full cursor-pointer accent-[var(--color-secondary)]"
-            />
-          </label>
-          <p className="pt-2 text-center text-brand-gray">
-            Como Elite ganarías hasta{' '}
-            <strong className="font-serif text-2xl text-accent">{formatCurrency(elite)}/mes</strong>
-          </p>
+          ))}
         </div>
+        <p className="mt-6 text-center text-xs text-brand-gray">
+          Comisión sobre el precio de venta, pagada tras la liquidación. Los precios cambian según el
+          solar o la fracción que elija tu referido.
+        </p>
       </section>
 
       {/* Libertad financiera */}

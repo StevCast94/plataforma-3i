@@ -52,7 +52,7 @@ export default function PaymentsPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <Seo title="Pagos — Oficina Virtual" />
+      <Seo title="Pagos — Refiere y gana" />
       <h1 className="text-3xl font-bold text-primary">Pagos</h1>
 
       <KycSection member={member} onUpdated={refresh} />

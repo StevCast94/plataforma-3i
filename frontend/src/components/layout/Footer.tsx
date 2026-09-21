@@ -34,9 +34,8 @@ export function Footer() {
           </h4>
           <ul className="space-y-2 text-sm text-white/80">
             <li><Link to="/proyectos" className="hover:text-secondary">{t('Proyectos')}</Link></li>
-            <li><Link to="/tienda" className="hover:text-secondary">{t('Tienda')}</Link></li>
             <li><Link to="/club" className="hover:text-secondary">Club 3i</Link></li>
-            <li><Link to="/oficina" className="hover:text-secondary">{t('Oficina Virtual')}</Link></li>
+            <li><Link to="/oficina" className="hover:text-secondary">{t('Refiere y gana')}</Link></li>
             <li><Link to="/sobre-nosotros" className="hover:text-secondary">{t('Nosotros')}</Link></li>
             <li><Link to="/contacto" className="hover:text-secondary">{t('Contacto')}</Link></li>
             <li><Link to="/reglamento" className="hover:text-secondary">{t('Reglamento de Referidos')}</Link></li>

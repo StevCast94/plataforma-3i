@@ -21,7 +21,7 @@ export default function CommissionsPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <Seo title="Comisiones — Oficina Virtual" />
+      <Seo title="Comisiones — Refiere y gana" />
       <h1 className="text-3xl font-bold text-primary">Comisiones</h1>
 
       {/* Resumen */}

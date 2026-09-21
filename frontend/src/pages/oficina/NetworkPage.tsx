@@ -29,7 +29,7 @@ export default function NetworkPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <Seo title="Mi Red — Oficina Virtual" />
+      <Seo title="Mi Red — Refiere y gana" />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-bold text-primary">Mi Red</h1>
         <div className="flex gap-2">

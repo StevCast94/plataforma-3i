@@ -39,9 +39,9 @@ export const MIN_PAYOUT: Record<'PREMIERE' | 'ELITE', { transfer: number; paypal
 export const RETRACTION_DAYS = 14;
 
 /** Inactividad: días sin referidos para que un Premiere cause baja. */
-export const INACTIVITY_LIMIT_DAYS = 90;
-export const INACTIVITY_WARN_1_DAYS = 60; // "te quedan 30 días"
-export const INACTIVITY_WARN_2_DAYS = 80; // "URGENTE: 10 días"
+export const INACTIVITY_LIMIT_DAYS = 180;
+export const INACTIVITY_WARN_1_DAYS = 150; // "te quedan 30 días"
+export const INACTIVITY_WARN_2_DAYS = 170; // "URGENTE: 10 días"
 
 /** Ascenso por referidos: cantidad y ventana (días). */
 export const ELITE_REFERRALS_REQUIRED = 5;

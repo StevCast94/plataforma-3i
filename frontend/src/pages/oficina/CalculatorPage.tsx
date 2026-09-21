@@ -17,7 +17,7 @@ export default function CalculatorPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Seo title="Calculadora — Oficina Virtual" />
+      <Seo title="Calculadora — Refiere y gana" />
       <h1 className="text-3xl font-bold text-primary">Simulador de ganancias</h1>
       <p className="text-brand-gray">
         Estima cuánto puedes ganar como Premiere vs. Elite. Cifras referenciales.

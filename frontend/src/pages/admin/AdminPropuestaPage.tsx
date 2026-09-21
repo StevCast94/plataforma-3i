@@ -22,11 +22,11 @@ import {
 // son datos registrales que no deberían cambiar sin revisión.
 // ============================================================
 
-type RouteKey = 'solar' | 'lobby' | 'total';
+type RouteKey = 'lotes' | 'lobby' | 'total';
 const ROUTES: { key: RouteKey; label: string }[] = [
-  { key: 'solar', label: 'Ruta A — Comprar un solar' },
+  { key: 'lotes', label: 'Ruta A — Montañita View Lotes' },
   { key: 'lobby', label: 'Ruta B — Montañita View Lobby' },
-  { key: 'total', label: 'Ruta C — Compra total' },
+  { key: 'total', label: 'Ruta C — Ambos proyectos' },
 ];
 
 export default function AdminPropuestaPage() {

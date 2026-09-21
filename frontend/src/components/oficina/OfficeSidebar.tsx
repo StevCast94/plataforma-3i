@@ -45,7 +45,7 @@ export function OfficeSidebar() {
           <img src="/images/logotipo-light.svg" alt="Grupo 3i — Volver al inicio" className="mb-2 h-7 w-auto" />
         </Link>
         <p className="text-xs uppercase tracking-widest text-white/50">
-          Oficina Virtual
+          Refiere y gana
         </p>
       </div>
 

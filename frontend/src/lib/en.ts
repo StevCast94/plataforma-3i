@@ -20,6 +20,12 @@ export const EN: Record<string, string> = {
   Menú: 'Menu',
   Navegación: 'Navigation',
   'Oficina Virtual': 'Virtual Office',
+  'Refiere y gana': 'Refer & earn',
+  'Programa de referidos Grupo 3i': 'Grupo 3i referral programme',
+  'Recomienda una inversión y gana hasta el 4%': 'Recommend an investment and earn up to 4%',
+  'Si conoces a alguien que busca un solar en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.':
+    'If you know someone looking for a lot on the coast or a beachfront share, send them your link. When they buy, you earn your commission: free sign-up, no investment of your own.',
+  'Conoce el programa': 'Learn about the programme',
   'Reglamento de Referidos': 'Referral Program Terms',
   'Costa Ecuatoriana': 'Ecuadorian coast',
   'Grupo 3i — Volver al inicio': 'Grupo 3i — Back to home',
@@ -679,4 +685,38 @@ export const EN: Record<string, string> = {
   '81 apartamentos en tres etapas': '81 apartments in three phases',
   'Estudio propio con precios de venta, costos de construcción y tasas de 2026. Cambia de escenario para ver cómo se mueven los resultados.':
     'Our own study, with 2026 sale prices, construction costs and rates. Switch scenarios to see how the results move.',
+
+  // ---------- Propuesta: tres rutas de compra completa ----------
+  'Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Se venden completos, por separado o juntos.':
+    'Two sister projects in Manglaralto, Santa Elena: a 25.8-hectare subdivision with clean title, and a complex with a completed lobby and 81 planned apartments. Each is sold whole, separately or together.',
+  'Montañita View Lotes': 'Montañita View Lotes',
+  'Ambos proyectos': 'Both projects',
+  'Los 89 solares en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².':
+    'All 89 lots for sale in a single purchase: 25.8 hectares with clean title, at $55 per m².',
+  'La lotización completa en una sola operación: los 89 solares disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada solar levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.':
+    'The whole subdivision in a single transaction: the 89 available lots, with a registered chain of title, approved urban plan and every lot surveyed and georeferenced. The buyer decides how to sell, develop or hold it.',
+  'Superficie vendible': 'Sellable area',
+  'Inscrito en el Registro de la Propiedad de Santa Elena; cada solar se escritura por separado':
+    'Registered with the Santa Elena Property Registry; each lot is deeded separately',
+  '10% al firmar la promesa y el saldo a convenir entre las partes':
+    '10% on signing the promise to purchase, balance to be agreed between the parties',
+  'El predio completo de 36,348 m², con lobby, piscinas y eco-hotel ya operando y un proyecto listo de 81 apartamentos.':
+    'The whole 36,348 m² property, with the lobby, pools and eco-hotel already operating and a ready project of 81 apartments.',
+  'Un predio con el área social ya construida y operando — lobby, dos piscinas, jacuzzi, restaurante, bar y eco-hotel — y un proyecto listo de 81 apartamentos de 151 m² en tres etapas, con vista de 270° al océano y al bosque. Se vende completo, con el área social operando y el proyecto de apartamentos listo para ejecutarse; el Lobby existente es la amenidad que diferencia cada apartamento.':
+    'A property with the social area already built and running — lobby, two pools, jacuzzi, restaurant, bar and eco-hotel — plus a ready project of 81 apartments of 151 m² in three phases, with 270° views of the ocean and the forest. It is sold whole, with the social area operating and the apartment project ready to build; the existing Lobby is the amenity that sets every apartment apart.',
+  'Compra del proyecto completo': 'Purchase of the whole project',
+  'Montañita View Lotes — la lotización completa': 'Montañita View Lotes — the whole subdivision',
+  'Montañita View Lobby — el proyecto completo': 'Montañita View Lobby — the whole project',
+  'Ambos proyectos en una sola operación': 'Both projects in a single transaction',
+  'Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lotes completo* (Ruta A). Quiero más información.':
+    'Hello, I saw the Montañita View proposal and I am interested in *the whole Montañita View Lotes* (Route A). I would like more information.',
+  'Hola, vi la propuesta de Montañita View y me interesa *ambos proyectos* (Ruta C, {precio}). Quiero más información.':
+    'Hello, I saw the Montañita View proposal and I am interested in *both projects* (Route C, {precio}). I would like more information.',
+  'Montañita View en venta: la lotización completa, el Lobby completo o ambos proyectos juntos.':
+    'Montañita View for sale: the whole subdivision, the whole Lobby, or both projects together.',
+  'Ruta A — Montañita View Lotes, la lotización completa': 'Route A — Montañita View Lotes, the whole subdivision',
+  'Ruta B — Montañita View Lobby, el proyecto completo': 'Route B — Montañita View Lobby, the whole project',
+  'Ruta C — Ambos proyectos en una sola operación': 'Route C — Both projects in a single transaction',
+  'La lotización completa, el Lobby completo o ambos proyectos en una sola operación. Revisa las cifras, el dossier técnico y las condiciones de pago.':
+    'The whole subdivision, the whole Lobby, or both projects in a single transaction. Review the figures, the technical dossier and the payment terms.',
 };

@@ -9,7 +9,7 @@ export const RATES = {
 
 export const ELITE_REFERRALS_REQUIRED = 5;
 export const ELITE_REFERRALS_WINDOW_DAYS = 180;
-export const INACTIVITY_LIMIT_DAYS = 90;
+export const INACTIVITY_LIMIT_DAYS = 180;
 
 /** Estima la comisión mensual de un escenario para un nivel dado. */
 export function estimateMonthly(

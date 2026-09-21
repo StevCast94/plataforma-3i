@@ -49,7 +49,7 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <Seo title="Dashboard — Oficina Virtual" />
+      <Seo title="Dashboard — Refiere y gana" />
       <OnboardingWelcome member={member} />
 
       <div>

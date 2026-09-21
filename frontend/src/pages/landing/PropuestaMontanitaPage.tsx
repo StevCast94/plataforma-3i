@@ -21,7 +21,7 @@ import { useLang } from '@/hooks/useLang';
 // técnico" al dossier completo de la misma página:
 //   A. Comprar un solar (Lotización, DIWILDI S.A.)
 //   B. Montañita View Lobby (predio de 36,348 m², propiedad de Didier Triana)
-//   C. Compra total de ambos proyectos
+//   C. Ambos proyectos en una sola operación
 //
 // Todas las cifras están conciliadas (ver conversación del 19-sep-2026):
 // áreas de GEO 3i, $100/m², estadísticas con fuente citada. NUNCA se
@@ -139,7 +139,7 @@ export default function PropuestaMontanitaPage() {
     <div className="print-doc bg-light">
       <Seo
         title={t('Propuesta exclusiva — Montañita View')}
-        description={t('Tres formas de invertir en Montañita View: un solar, sociedad en el Lobby o la compra total.')}
+        description={t('Montañita View en venta: la lotización completa, el Lobby completo o ambos proyectos juntos.')}
         noindex
       />
 
@@ -175,10 +175,10 @@ export default function PropuestaMontanitaPage() {
             <div className="grid gap-5 md:grid-cols-3">
               <RouteCard
                 icon={MapPin}
-                tag={c.solar.tag}
-                title="Comprar un solar"
-                body={c.solar.card}
-                href="#solar"
+                tag={c.lotes.tag}
+                title="Montañita View Lotes"
+                body={c.lotes.card}
+                href="#lotes"
               />
               <RouteCard
                 icon={Building2}
@@ -190,23 +190,23 @@ export default function PropuestaMontanitaPage() {
               <RouteCard
                 icon={Landmark}
                 tag={c.total.tag}
-                title="Compra total"
+                title="Ambos proyectos"
                 body={c.total.card}
                 href="#total"
               />
             </div>
           </section>
 
-          {/* ===== A. SOLAR ===== */}
-          <Route id="solar" eyebrow="Ruta A" title="Comprar un solar en la Lotización">
-            <Summary>{t(c.solar.summary)}</Summary>
-            <KV rows={c.solar.rows} />
+          {/* ===== A. LOTIZACIÓN COMPLETA ===== */}
+          <Route id="lotes" eyebrow="Ruta A" title="Montañita View Lotes — la lotización completa">
+            <Summary>{t(c.lotes.summary)}</Summary>
+            <KV rows={c.lotes.rows} />
             <div className="mt-4 flex flex-wrap items-center gap-3 print:hidden">
               <Link to="/proyectos/montanita-view">
-                <Button>{t('Ver el mapa de solares')}</Button>
+                <Button variant="outline">{t('Ver el mapa de solares')}</Button>
               </Link>
               <WhatsAppCTA
-                message={t('Hola, vi la propuesta de Montañita View y me interesa *comprar un solar* (Ruta A). Quiero más información.')}
+                message={t('Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lotes completo* (Ruta A). Quiero más información.')}
               />
             </div>
 
@@ -256,7 +256,7 @@ export default function PropuestaMontanitaPage() {
           </Route>
 
           {/* ===== B. LOBBY ===== */}
-          <Route id="lobby" printBreak eyebrow="Ruta B" title="Montañita View Lobby">
+          <Route id="lobby" printBreak eyebrow="Ruta B" title="Montañita View Lobby — el proyecto completo">
             <Summary>{t(c.lobby.summary)}</Summary>
             <KV rows={c.lobby.rows} />
             <WhatsAppCTA
@@ -362,7 +362,7 @@ export default function PropuestaMontanitaPage() {
           </Route>
 
           {/* ===== C. COMPRA TOTAL ===== */}
-          <Route id="total" printBreak eyebrow="Ruta C" title="Compra total de ambos proyectos">
+          <Route id="total" printBreak eyebrow="Ruta C" title="Ambos proyectos en una sola operación">
             <Summary>{t(c.total.summary)}</Summary>
             <KV rows={c.total.rows} />
 
@@ -386,7 +386,7 @@ export default function PropuestaMontanitaPage() {
 
             <WhatsAppCTA
               className="mt-4"
-              message={t('Hola, vi la propuesta de Montañita View y me interesa *la compra total* (Ruta C, {precio}). Quiero más información.', {
+              message={t('Hola, vi la propuesta de Montañita View y me interesa *ambos proyectos* (Ruta C, {precio}). Quiero más información.', {
                 precio: c.total.tag,
               })}
             />
@@ -692,9 +692,9 @@ function PrintFrontMatter({ c }: { c: PropuestaContent }) {
       <ol className="pd-toc">
         <li><span>{t('Resumen ejecutivo')}</span></li>
         <li><span>{t('Las tres maneras de participar')}</span></li>
-        <li><span>{t('Ruta A — Comprar un solar en la Lotización')}</span></li>
-        <li><span>{t('Ruta B — Montañita View Lobby')}</span></li>
-        <li><span>{t('Ruta C — Compra total de ambos proyectos')}</span></li>
+        <li><span>{t('Ruta A — Montañita View Lotes, la lotización completa')}</span></li>
+        <li><span>{t('Ruta B — Montañita View Lobby, el proyecto completo')}</span></li>
+        <li><span>{t('Ruta C — Ambos proyectos en una sola operación')}</span></li>
         <li><span>{t('El destino: Montañita y la Ruta del Spondylus')}</span></li>
         <li><span>{t('Próximos pasos y contacto')}</span></li>
       </ol>
@@ -720,10 +720,6 @@ function PrintFrontMatter({ c }: { c: PropuestaContent }) {
         <li>
           <b>{t('La operación completa')}: {c.total.tag}.</b>{' '}
           {t('{area} en una sola transacción, con 10% al firmar la promesa y el saldo a convenir entre las partes.', { area: m2(TOTAL_M2) })}
-        </li>
-        <li>
-          <b>{t('Venta individual con financiamiento propio.')}</b>{' '}
-          {t('30% de entrada y el saldo en hasta 24 cuotas mensuales sin intereses, sin banco de por medio.')}
         </li>
       </ul>
     </div>

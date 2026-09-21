@@ -9,7 +9,6 @@ import { ImageGallery } from '@/components/shared/ImageGallery';
 import { PriceDisplay } from '@/components/shared/PriceDisplay';
 import { ProductCTAs } from '@/components/shared/ProductCTAs';
 import { ReferralPerks } from '@/components/shared/ReferralPerks';
-import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { ROICalculator } from '@/components/shared/ROICalculator';
 import { ProductCard } from '@/components/shared/ProductCard';
 import { EmptyState } from '@/components/shared/EmptyState';
@@ -39,8 +38,8 @@ export default function ProductDetailPage() {
       <EmptyState
         title={t('Producto no encontrado')}
         message={t('Es posible que ya no esté disponible.')}
-        ctaText={t('Volver a la tienda')}
-        ctaTo="/tienda"
+        ctaText={t('Volver al inicio')}
+        ctaTo="/"
         icon={<ShoppingBag className="h-12 w-12 text-secondary" strokeWidth={1.4} />}
       />
     );
@@ -61,7 +60,6 @@ export default function ProductDetailPage() {
           <Breadcrumbs
             items={[
               { label: t('Inicio'), to: '/' },
-              { label: t('Tienda'), to: '/tienda' },
               { label: product.name },
             ]}
           />
@@ -120,16 +118,6 @@ export default function ProductDetailPage() {
           <ImageGallery images={gallery} alt={product.name} />
         </section>
       )}
-
-      {/* Compartir (socios) — fuera del bloque de decisión de compra */}
-      <div className="mx-auto flex max-w-6xl justify-center px-4 pb-10 sm:px-6">
-        <ShareToCommunity
-          title={product.name}
-          path={`/tienda/${product.slug}`}
-          image={gallery[0]}
-          description={product.description.slice(0, 120)}
-        />
-      </div>
 
       {/* 5. RELACIONADOS */}
       {related.length > 0 && (

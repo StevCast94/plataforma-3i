@@ -94,7 +94,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-light px-4 py-10">
-      <Seo title="Registro — Oficina Virtual" />
+      <Seo title="Registro — Refiere y gana" />
       <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-xl">
         <Link to="/" className="flex flex-col items-center gap-3 text-center">
           <Isotipo animation="ascenso" className="h-14 w-auto" title="Grupo 3i" />

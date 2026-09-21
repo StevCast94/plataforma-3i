@@ -37,7 +37,7 @@ export default function LoginPage() {
     }
     const digits = (contact?.whatsapp ?? '').replace(/\D/g, '');
     if (digits) {
-      const msg = `Hola, olvidé mi contraseña de la Oficina Virtual. Mi correo es: ${forgotEmail.trim()}. ¿Me ayudan a recuperarla?`;
+      const msg = `Hola, olvidé mi contraseña de la Refiere y gana. Mi correo es: ${forgotEmail.trim()}. ¿Me ayudan a recuperarla?`;
       window.open(`https://wa.me/${digits}?text=${encodeURIComponent(msg)}`, '_blank');
     }
     toast('Solicitud enviada. Un asesor te contactará por WhatsApp.', 'success');
@@ -62,14 +62,14 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-light px-4">
-      <Seo title="Iniciar sesión — Oficina Virtual" />
+      <Seo title="Iniciar sesión — Refiere y gana" />
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
         <Link to="/" className="flex flex-col items-center gap-3 text-center">
           <Isotipo animation="ascenso" className="h-14 w-auto" title="Grupo 3i" />
           <img src="/images/logotipo.svg" alt="Grupo 3i" className="h-6 w-auto" />
         </Link>
         <h1 className="mt-7 text-center text-3xl text-primary">Bienvenido de vuelta</h1>
-        <p className="mt-1 text-center text-sm text-brand-gray">Ingresa a tu oficina virtual.</p>
+        <p className="mt-1 text-center text-sm text-brand-gray">Ingresa a tu cuenta de Refiere y gana.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <Input name="email" type="email" label="Email" placeholder="tucorreo@ejemplo.com" required />

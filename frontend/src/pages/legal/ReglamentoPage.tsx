@@ -161,7 +161,7 @@ export default function ReglamentoPage() {
           <Section id="limites" n="8" t="Inactividad">
             <ul className="list-disc space-y-1 pl-5">
               <li>No hay límite mensual de comisiones para ningún rango.</li>
-              <li><b>Inactividad (solo Premiere):</b> avisos a los 60 y 80 días sin referidos nuevos; a los <b>90 días</b> sin referidos la cuenta se suspende. La reactivación se gestiona con el administrador.</li>
+              <li><b>Inactividad (solo Premiere):</b> avisos a los 150 y 170 días sin referidos nuevos; a los <b>180 días</b> sin referidos la cuenta se suspende. La reactivación se gestiona con el administrador.</li>
             </ul>
           </Section>
 

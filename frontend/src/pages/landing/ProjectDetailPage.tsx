@@ -9,7 +9,6 @@ import { FeatureGrid } from '@/components/shared/FeatureGrid';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { ProjectCard } from '@/components/shared/ProjectCard';
 import { ContactForm } from '@/components/shared/ContactForm';
-import { ShareToCommunity } from '@/components/comunidad/ShareToCommunity';
 import { BrochureDigital } from '@/components/shared/BrochureDigital';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { useLang } from '@/hooks/useLang';
@@ -262,16 +261,7 @@ export default function ProjectDetailPage() {
       )}
 
       {/* 5. CTA — el brochure ya trae su propio cierre; aquí solo si no hay brochure */}
-      {project.showBrochure ? (
-        <div className="flex justify-center px-4 pb-4 pt-2">
-          <ShareToCommunity
-            title={project.name}
-            path={`/proyectos/${project.slug}`}
-            image={project.coverImage}
-            description={project.subtitle ?? undefined}
-          />
-        </div>
-      ) : (
+      {!project.showBrochure && (
       <section className="bg-primary text-white">
         <div className="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
           <h2 className="text-3xl font-bold sm:text-4xl">{t('¿Te interesa este proyecto?')}</h2>
@@ -285,13 +275,6 @@ export default function ProjectDetailPage() {
             <WhatsAppCTA
               message={t('Hola, me interesa el proyecto *{p}* y quiero información.', { p: project.name })}
               className="px-7 py-3.5 text-base"
-            />
-            <ShareToCommunity
-              title={project.name}
-              path={`/proyectos/${project.slug}`}
-              image={project.coverImage}
-              description={project.subtitle ?? undefined}
-              dark
             />
           </div>
         </div>

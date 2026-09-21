@@ -4,11 +4,9 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { CardSkeleton } from '@/components/ui/Skeleton';
 import { ProjectCard } from '@/components/shared/ProjectCard';
-import { ProductCard } from '@/components/shared/ProductCard';
 import { CTASection } from '@/components/shared/CTASection';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useProjects } from '@/hooks/useProjects';
-import { useProducts } from '@/hooks/useProducts';
 import { cld } from '@/lib/cloudinary';
 import { ImageCrossfade } from '@/components/shared/ImageCrossfade';
 
@@ -16,7 +14,6 @@ export default function HomePage() {
   const { t } = useLang();
   const { data: content } = useSiteContent();
   const { data: projects, loading: loadingProjects } = useProjects();
-  const { data: products, loading: loadingProducts } = useProducts();
 
   const hero = content?.hero ?? {};
   const projectsSection = content?.projects ?? {};
@@ -116,7 +113,7 @@ export default function HomePage() {
             <h3 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">{t('Propuesta Montañita View')}</h3>
             <p className="mt-2 max-w-2xl text-white/75">
               {t(
-                'Un solar desde $49,084, sociedad en Montañita View Lobby o la compra total de ambos proyectos. Revisa las cifras, el dossier técnico y las condiciones de pago.',
+                'La lotización completa, el Lobby completo o ambos proyectos en una sola operación. Revisa las cifras, el dossier técnico y las condiciones de pago.',
               )}
             </p>
           </div>
@@ -126,43 +123,28 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* MEMBRESÍA / PRODUCTOS */}
-      <section className="bg-light">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
-            <h2 className="text-3xl font-bold text-primary sm:text-4xl">
-              {t('Membresías y Oportunidades')}
-            </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-brand-gray">
-              {t('Accede a beneficios de viaje y a inversiones fraccionadas.')}
-            </p>
-          </div>
-
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {loadingProducts
-              ? Array.from({ length: 3 }).map((_, i) => <CardSkeleton key={i} />)
-              : (products ?? []).map((p) => <ProductCard key={p.id} product={p} />)}
-          </div>
-        </div>
-      </section>
-
-      {/* COMUNIDAD */}
+      {/* REFIERE Y GANA */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid items-center gap-10 md:grid-cols-2">
           <img
             src="/images/secciones/comunidad-3i.jpg"
-            alt={t('Comunidad Grupo 3i')}
+            alt={t('Programa de referidos Grupo 3i')}
             className="aspect-[4/3] w-full rounded-2xl object-cover shadow-lg md:order-2"
           />
           <div>
-            <h2 className="text-3xl font-bold text-primary sm:text-4xl">{t('Una comunidad, no solo una inversión')}</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">
+              {t('Refiere y gana')}
+            </p>
+            <h2 className="mt-2 text-3xl font-bold text-primary sm:text-4xl">
+              {t('Recomienda una inversión y gana hasta el 4%')}
+            </h2>
             <p className="mt-4 text-brand-gray">
               {t(
-                'Socios, referidos y clientes se conectan en un mismo espacio: comparten experiencias de viaje, oportunidades y consejos de inversión. Únete y forma parte de algo más grande que una propiedad.',
+                'Si conoces a alguien que busca un solar en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.',
               )}
             </p>
-            <Link to="/comunidad" className="mt-8 inline-block">
-              <Button size="lg" variant="outline">{t('Conoce la comunidad')}</Button>
+            <Link to="/oficina" className="mt-8 inline-block">
+              <Button size="lg" variant="outline">{t('Conoce el programa')}</Button>
             </Link>
           </div>
         </div>

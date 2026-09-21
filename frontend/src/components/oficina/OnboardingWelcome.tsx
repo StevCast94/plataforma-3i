@@ -48,7 +48,7 @@ export function OnboardingWelcome({ member }: { member: ReferralMember }) {
         <Isotipo animation="ascenso" className="h-14 w-auto" title="Grupo 3i" />
         <h2 className="mt-4 text-2xl text-primary">¡Bienvenido, {firstName}!</h2>
         <p className="mt-1 text-sm text-brand-gray">
-          Así funciona tu oficina virtual en 3 pasos.
+          Así funciona Refiere y gana en 3 pasos.
         </p>
       </div>
 

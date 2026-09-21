@@ -35,7 +35,7 @@ export interface PropuestaContent {
   heroEyebrow: string;
   heroTitle: string;
   heroSubtitle: string;
-  solar: RouteText;
+  lotes: RouteText;
   lobby: RouteText;
   total: RouteText & { paymentRows: Row[]; paymentNote: string };
   destination: DestinationItem[];
@@ -62,30 +62,31 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
   heroEyebrow: 'Propuesta exclusiva · Documento privado',
   heroTitle: 'Montañita View',
   heroSubtitle:
-    'Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Tres maneras de ser parte.',
-  solar: {
-    tag: 'Desde $49,084',
-    card: 'Tu terreno propio, con título individual y financiamiento directo: 30% de entrada y 24 cuotas sin intereses.',
+    'Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Se venden completos, por separado o juntos.',
+  lotes: {
+    tag: usd(LOTS_M2 * LOTS_PRICE_M2),
+    card: 'Los 89 solares en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².',
     summary:
-      'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 24 cuotas sin intereses.',
+      'La lotización completa en una sola operación: los 89 solares disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada solar levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.',
     rows: [
-      ['Solares disponibles', '89 de 111'],
-      ['Precio', '$100 / m²'],
-      ['Desde', '$49,084 — solar A9, 490.84 m²'],
-      ['Plan de pago', '30% de entrada + saldo en hasta 24 cuotas al 0%'],
-      ['Título', 'Individual, inscrito en el Registro de la Propiedad de Santa Elena'],
+      ['Precio', `${usd(LOTS_M2 * LOTS_PRICE_M2)} ($${LOTS_PRICE_M2} / m²)`],
+      ['Solares', '89'],
+      ['Superficie vendible', m2(LOTS_M2)],
+      ['Título', 'Inscrito en el Registro de la Propiedad de Santa Elena; cada solar se escritura por separado'],
+      ['Forma de pago', '10% al firmar la promesa y el saldo a convenir entre las partes'],
     ],
   },
   lobby: {
     tag: usd(LOBBY_M2 * LOBBY_PRICE_M2),
-    card: '36,348 m² con lobby, piscinas y eco-hotel ya operando, y un proyecto listo de 81 apartamentos en tres etapas.',
+    card: 'El predio completo de 36,348 m², con lobby, piscinas y eco-hotel ya operando y un proyecto listo de 81 apartamentos.',
     summary:
-      'Un predio con el área social ya construida y operando — lobby, dos piscinas, jacuzzi, restaurante, bar y eco-hotel — y un proyecto listo de 81 apartamentos de 151 m² en tres etapas, con vista de 270° al océano y al bosque. Buscamos socios o un desarrollador para ejecutarlo; el Lobby existente es la amenidad que diferencia cada apartamento.',
+      'Un predio con el área social ya construida y operando — lobby, dos piscinas, jacuzzi, restaurante, bar y eco-hotel — y un proyecto listo de 81 apartamentos de 151 m² en tres etapas, con vista de 270° al océano y al bosque. Se vende completo, con el área social operando y el proyecto de apartamentos listo para ejecutarse; el Lobby existente es la amenidad que diferencia cada apartamento.',
     rows: [
       ['Superficie', `${m2(LOBBY_M2)} (29,090 m² útiles + 7,258 m² de vías y áreas verdes)`],
       ['Valor del predio', `${usd(LOBBY_M2 * LOBBY_PRICE_M2)} ($${LOBBY_PRICE_M2} / m²)`],
       ['Propietario', 'Didier Triana — proyecto hermano de la Lotización, con convenio entre ambos'],
-      ['Modalidad', 'Sociedad para el desarrollo del proyecto o compra del predio'],
+      ['Modalidad', 'Compra del proyecto completo'],
+      ['Forma de pago', '10% al firmar la promesa y el saldo a convenir entre las partes'],
     ],
   },
   total: {
@@ -158,7 +159,7 @@ export function resolvePropuesta(raw?: unknown): PropuestaContent {
     heroEyebrow: str(c.heroEyebrow, DEFAULT_PROPUESTA.heroEyebrow),
     heroTitle: str(c.heroTitle, DEFAULT_PROPUESTA.heroTitle),
     heroSubtitle: str(c.heroSubtitle, DEFAULT_PROPUESTA.heroSubtitle),
-    solar: mergeRoute(DEFAULT_PROPUESTA.solar, c.solar),
+    lotes: mergeRoute(DEFAULT_PROPUESTA.lotes, c.lotes),
     lobby: mergeRoute(DEFAULT_PROPUESTA.lobby, c.lobby),
     total: mergeRoute(DEFAULT_PROPUESTA.total, c.total),
     destination: Array.isArray(c.destination)

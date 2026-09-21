@@ -464,7 +464,7 @@ export function LotMap({
           title={full ? t('Salir de pantalla completa (Esc)') : t('Ver el mapa en pantalla completa')}
           aria-label={full ? t('Salir de pantalla completa') : t('Ver el mapa en pantalla completa')}
           className={`absolute z-[1002] rounded-lg bg-white/95 p-2 text-primary shadow-md ring-1 ring-black/10 hover:bg-white ${
-            full ? 'bottom-4 right-4' : 'right-3 top-3'
+            full ? 'bottom-4 right-4' : selected ? 'right-3 top-3 sm:right-[25.5rem]' : 'right-3 top-3'
           }`}
         >
           {full ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
@@ -492,12 +492,6 @@ export function LotMap({
             {t('Cómo llegar')}
           </a>
         )}
-        <WhatsAppCTA
-          variant="outline"
-          message={t('Hola, estoy viendo el mapa de solares de {p} y quiero información.', {
-            p: projectName,
-          })}
-        />
       </div>
 
       {/* Tabla con la misma información (accesible sin mapa, y para comparar) */}

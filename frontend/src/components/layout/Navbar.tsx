@@ -8,11 +8,9 @@ import { Isotipo } from '@/components/brand/Isotipo';
 const links = [
   { to: '/', label: 'Inicio', end: true },
   { to: '/proyectos', label: 'Proyectos', hasDropdown: true },
-  { to: '/tienda', label: 'Tienda' },
   { to: '/club', label: 'Club 3i' },
-  { to: '/comunidad', label: 'Comunidad' },
   { to: '/sobre-nosotros', label: 'Nosotros' },
-  { to: '/oficina', label: 'Oficina' },
+  { to: '/oficina', label: 'Refiere y gana' },
   { to: '/contacto', label: 'Contacto' },
 ];
 

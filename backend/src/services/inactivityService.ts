@@ -8,7 +8,7 @@ import { notify } from './notifications';
 
 // ============================================================
 // INACTIVIDAD DE MIEMBROS PREMIERE
-// Reglamento: un Premiere sin referidos nuevos por 90 días causa baja
+// Reglamento: un Premiere sin referidos nuevos por 180 días causa baja
 // (SUSPENDED). Avisos a los 60 y 80 días. Elite no aplica.
 // La "fecha base" de inactividad es lastReferralAt; si nunca refirió, createdAt.
 // ============================================================

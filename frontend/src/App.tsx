@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
@@ -17,7 +17,6 @@ const ProjectDetailPage = lazy(() => import('@/pages/landing/ProjectDetailPage')
 const PropuestaMontanitaPage = lazy(() => import('@/pages/landing/PropuestaMontanitaPage'));
 const AboutPage = lazy(() => import('@/pages/landing/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
-const ShopPage = lazy(() => import('@/pages/tienda/ShopPage'));
 const ProductDetailPage = lazy(() => import('@/pages/tienda/ProductDetailPage'));
 const ClubPage = lazy(() => import('@/pages/club/ClubPage'));
 const ViajesPage = lazy(() => import('@/pages/club/ViajesPage'));
@@ -78,7 +77,7 @@ const publicRoutes = () => (
     <Route path="proyectos" element={<ProjectsPage />} />
     <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
     <Route path="propuesta/montanita-view" element={<PropuestaMontanitaPage />} />
-    <Route path="tienda" element={<ShopPage />} />
+    <Route path="tienda" element={<Navigate to=".." replace />} />
     <Route path="tienda/:slug" element={<ProductDetailPage />} />
     <Route path="club" element={<ClubPage />} />
     <Route path="club/viajes" element={<ViajesPage />} />
