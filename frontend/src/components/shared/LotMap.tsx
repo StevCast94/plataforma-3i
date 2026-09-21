@@ -757,6 +757,15 @@ function Row({ label, value, strong }: { label: string; value: string; strong?: 
   );
 }
 
+/**
+ * Traduce un colindante conservando el nombre propio: "Solar A11" → "Lot A11".
+ * El nombre de la calle no se traduce: es el rótulo que está en el terreno.
+ */
+function colindante(t: (s: string) => string, texto: string): string {
+  const m = /^(Solar|Calle)\s+(.+)$/.exec(texto);
+  return m ? `${t(m[1])} ${m[2]}` : t(texto);
+}
+
 const CARDINAL_SHORT: Record<string, string> = { NORTE: 'Norte', ESTE: 'Este', SUR: 'Sur', OESTE: 'Oeste' };
 const num = (n: number, d = 2) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -791,7 +800,7 @@ function LotSheet({ lot }: { lot: PublicLot }) {
               {d.linderos.map((l, i) => (
                 <li key={i} className="flex justify-between gap-3">
                   <span className="text-brand-gray">
-                    <b className="font-medium text-primary">{t(CARDINAL_SHORT[l.cardinal] ?? l.cardinal)}:</b> {t(l.colindante)}
+                    <b className="font-medium text-primary">{t(CARDINAL_SHORT[l.cardinal] ?? l.cardinal)}:</b> {colindante(t, l.colindante)}
                   </span>
                   <span className="shrink-0 font-medium text-primary">{num(l.lengthM)} m</span>
                 </li>
