@@ -65,14 +65,14 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     'Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Tres maneras de ser parte.',
   solar: {
     tag: 'Desde $49,084',
-    card: 'Tu terreno propio, con título individual y financiamiento directo: 30% de entrada y 36 cuotas sin intereses.',
+    card: 'Tu terreno propio, con título individual y financiamiento directo: 30% de entrada y 24 cuotas sin intereses.',
     summary:
-      'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 36 cuotas sin intereses.',
+      'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 24 cuotas sin intereses.',
     rows: [
       ['Solares disponibles', '89 de 111'],
       ['Precio', '$100 / m²'],
       ['Desde', '$49,084 — solar A9, 490.84 m²'],
-      ['Plan de pago', '30% de entrada + saldo en hasta 36 cuotas al 0%'],
+      ['Plan de pago', '30% de entrada + saldo en hasta 24 cuotas al 0%'],
       ['Título', 'Individual, inscrito en el Registro de la Propiedad de Santa Elena'],
     ],
   },
@@ -100,9 +100,9 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     ],
     paymentRows: [
       ['Reserva (10%) al firmar la promesa', usd(TOTAL_USD * 0.1)],
-      ['Saldo en 6 pagos semestrales de', usd((TOTAL_USD * 0.9) / 6)],
+      ['Saldo', 'A convenir entre las partes'],
     ],
-    paymentNote: 'Cada semestre se garantiza con cheque de gerencia o carta de crédito.',
+    paymentNote: 'La forma y los plazos del saldo se acuerdan en la negociación y quedan en la promesa de compraventa.',
   },
   destination: [
     {

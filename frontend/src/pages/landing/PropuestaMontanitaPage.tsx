@@ -374,13 +374,12 @@ export default function PropuestaMontanitaPage() {
                 ]}
               />
               <p className="mt-3">
-                No incluye los solares ya vendidos o comprometidos, ni el lote "La Estación", que se
-                negocia por separado. Tampoco las vías ni las áreas verdes, que son de uso público
-                según la Resolución 0118052017-GADMSE-A.
+                No incluye los solares ya vendidos o comprometidos. Tampoco las vías ni las áreas
+                verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.
               </p>
             </Detail>
 
-            <Detail title="Forma de pago — financiamiento directo sin intereses">
+            <Detail title="Forma de pago">
               <KV rows={c.total.paymentRows} />
               <p className="mt-3">{c.total.paymentNote}</p>
             </Detail>

@@ -12,7 +12,7 @@ import ZONAS from '@/data/montanita-zonas.json';
 // ============================================================
 // Mapa interactivo de solares. Geometría real de GEO 3i (reproyectada a
 // lat/lng en el import), sobre imagen satelital de Esri (sin API key).
-// Al tocar un solar: área, precio, cuota con el plan 30% + 36 cuotas al 0%
+// Al tocar un solar: área, precio, cuota con el plan 30% + 24 cuotas al 0%
 // y un formulario "Me interesa" que entra como lead (con la atribución del
 // socio que refirió, vía la cookie de referido que ya lee /api/contact).
 // ============================================================
@@ -32,7 +32,7 @@ const ZONE_STYLE = {
 };
 
 const DOWN_PAYMENT = 0.3;
-const INSTALLMENTS = 36;
+const INSTALLMENTS = 24;
 
 type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
 
@@ -534,7 +534,7 @@ export function LotMap({
       </div>
       <p className="mt-3 text-xs text-brand-gray">
         Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m². Plan de pago: 30% de
-        entrada y saldo en hasta 36 cuotas mensuales sin intereses.
+        entrada y saldo en hasta 24 cuotas mensuales sin intereses.
       </p>
     </section>
   );
