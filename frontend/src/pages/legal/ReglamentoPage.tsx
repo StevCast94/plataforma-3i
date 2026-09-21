@@ -172,7 +172,7 @@ export default function ReglamentoPage() {
               <li>Grupo 3i podrá actualizar este reglamento; la versión vigente es la publicada en esta página.</li>
             </ul>
             <p className="mt-6 border-t border-black/10 pt-4 text-sm text-brand-gray">
-              Documento informativo del Programa de Referidos de Grupo 3i. Ante cualquier duda, escribe a info@grupo3i.com.
+              Documento informativo del Programa de Referidos de Grupo 3i. Ante cualquier duda, escribe a grupoinmobiliario3i.ec@gmail.com.
             </p>
           </Section>
         </article>

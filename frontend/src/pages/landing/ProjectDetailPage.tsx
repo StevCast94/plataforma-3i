@@ -261,7 +261,17 @@ export default function ProjectDetailPage() {
         <BrochureDigital project={project} onRequestInfo={() => setOpen(true)} />
       )}
 
-      {/* 5. CTA */}
+      {/* 5. CTA — el brochure ya trae su propio cierre; aquí solo si no hay brochure */}
+      {project.showBrochure ? (
+        <div className="flex justify-center px-4 pb-4 pt-2">
+          <ShareToCommunity
+            title={project.name}
+            path={`/proyectos/${project.slug}`}
+            image={project.coverImage}
+            description={project.subtitle ?? undefined}
+          />
+        </div>
+      ) : (
       <section className="bg-primary text-white">
         <div className="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
           <h2 className="text-3xl font-bold sm:text-4xl">{t('¿Te interesa este proyecto?')}</h2>
@@ -281,10 +291,12 @@ export default function ProjectDetailPage() {
               path={`/proyectos/${project.slug}`}
               image={project.coverImage}
               description={project.subtitle ?? undefined}
+              dark
             />
           </div>
         </div>
       </section>
+      )}
 
       {/* 6. RELACIONADOS */}
       {related.length > 0 && (

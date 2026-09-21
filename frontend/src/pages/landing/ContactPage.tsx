@@ -30,11 +30,11 @@ export default function ContactPage() {
           <ul className="mt-6 space-y-3 text-primary">
             <li>
               <span className="font-semibold">Email:</span>{' '}
-              {data?.email ?? 'info@grupo3i.com'}
+              {data?.email ?? 'grupoinmobiliario3i.ec@gmail.com'}
             </li>
             <li>
               <span className="font-semibold">{t('Teléfono')}:</span>{' '}
-              {data?.phone ?? '+593 99 999 9999'}
+              {data?.phone ?? '+593 98 487 5050'}
             </li>
             <li>
               <span className="font-semibold">Web:</span> grupo3i.com · club3i.com

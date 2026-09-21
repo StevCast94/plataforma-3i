@@ -14,10 +14,12 @@ interface ShareToCommunityProps {
   path: string;
   image?: string | null;
   description?: string;
+  /** Sobre fondo oscuro: borde y texto claros para que no desaparezca. */
+  dark?: boolean;
 }
 
 /** Botón "Compartir en la comunidad" → crea un post pre-armado. */
-export function ShareToCommunity({ title, path, image, description }: ShareToCommunityProps) {
+export function ShareToCommunity({ title, path, image, description, dark }: ShareToCommunityProps) {
   const { t } = useLang();
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
@@ -48,7 +50,12 @@ export function ShareToCommunity({ title, path, image, description }: ShareToCom
   }
 
   return (
-    <Button variant="outline" onClick={share} disabled={sharing}>
+    <Button
+      variant="outline"
+      onClick={share}
+      disabled={sharing}
+      className={dark ? 'border-white/40 text-white hover:bg-white hover:text-primary' : undefined}
+    >
       <Megaphone className="h-4 w-4" strokeWidth={1.8} />
       {sharing ? t('Compartiendo…') : t('Compartir en la comunidad')}
     </Button>

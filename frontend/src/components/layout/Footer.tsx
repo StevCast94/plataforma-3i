@@ -6,6 +6,7 @@ import { Isotipo } from '@/components/brand/Isotipo';
 export function Footer() {
   const { t } = useLang();
   const { data } = useSectionContent('footer');
+  const { data: contact } = useSectionContent('contact');
   const tagline =
     data?.tagline ?? t('Inversión inmobiliaria inteligente en la costa ecuatoriana.');
   const copyright =
@@ -47,7 +48,8 @@ export function Footer() {
             {t('Contacto')}
           </h4>
           <ul className="space-y-2 text-sm text-white/80">
-            <li>info@grupo3i.com</li>
+            <li>{contact?.email ?? 'grupoinmobiliario3i.ec@gmail.com'}</li>
+            {contact?.phone && <li>{contact.phone}</li>}
             <li>grupo3i.com · club3i.com</li>
             <li>{t('Costa Ecuatoriana')}</li>
           </ul>

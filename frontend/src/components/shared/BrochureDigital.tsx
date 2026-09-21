@@ -547,7 +547,12 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
               message={t('Hola, me interesa el proyecto *{p}* y quiero información.', { p: project.name })}
               className="px-7 py-3.5 text-base"
             />
-            <Button size="lg" variant="outline" onClick={onRequestInfo}>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={onRequestInfo}
+              className="border-white/40 text-white hover:bg-white hover:text-primary"
+            >
               {t('Solicitar información')}
             </Button>
             {c.pdfUrl && (

@@ -87,7 +87,7 @@ export default function PurchaseConfirmationPage() {
 
         <p className="mt-8 text-center text-xs text-brand-gray">
           Este comprobante certifica el registro de tu compra en Grupo 3i. Ante cualquier duda,
-          contáctanos por WhatsApp o escribe a info@grupo3i.com.
+          contáctanos por WhatsApp o escribe a grupoinmobiliario3i.ec@gmail.com.
         </p>
 
         <div className="mt-6 flex justify-center print:hidden">
