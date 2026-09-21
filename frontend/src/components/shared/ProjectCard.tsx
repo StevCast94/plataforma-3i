@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { cld } from '@/lib/cloudinary';
 import type { Project } from '@shared/types';
 
 export function ProjectCard({ project }: { project: Project }) {
+  const { t } = useLang();
   return (
     <Link to={`/proyectos/${project.slug}`}>
       <Card className="group h-full">
@@ -17,7 +18,7 @@ export function ProjectCard({ project }: { project: Project }) {
           />
           {project.featured && (
             <Badge variant="dark" className="absolute left-4 top-4">
-              Destacado
+              {t('Destacado')}
             </Badge>
           )}
         </div>

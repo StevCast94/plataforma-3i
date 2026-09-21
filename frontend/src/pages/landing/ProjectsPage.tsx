@@ -1,16 +1,18 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { useLang } from '@/hooks/useLang';
 import { ProjectCard } from '@/components/shared/ProjectCard';
 import { CardSkeleton } from '@/components/ui/Skeleton';
 import { useProjects } from '@/hooks/useProjects';
 
 export default function ProjectsPage() {
+  const { t } = useLang();
   const { data, loading, error } = useProjects();
 
   return (
     <>
       <PageHeader
-        title="Proyectos"
-        subtitle="Oportunidades de inversión cuidadosamente seleccionadas en la costa ecuatoriana."
+        title={t('Proyectos')}
+        subtitle={t('Oportunidades de inversión cuidadosamente seleccionadas en la costa ecuatoriana.')}
         image="/images/secciones/header-proyectos.jpg"
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -21,7 +23,7 @@ export default function ProjectsPage() {
             : (data ?? []).map((p) => <ProjectCard key={p.id} project={p} />)}
         </div>
         {!loading && (data?.length ?? 0) === 0 && (
-          <p className="text-center text-brand-gray">No hay proyectos disponibles aún.</p>
+          <p className="text-center text-brand-gray">{t('No hay proyectos disponibles aún.')}</p>
         )}
       </section>
     </>

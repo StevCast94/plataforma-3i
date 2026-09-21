@@ -1,4 +1,5 @@
 import { useState, type FocusEventHandler } from 'react';
+import { useLang } from '@/hooks/useLang';
 
 // ============================================================
 // Campo de WhatsApp con prefijo de país.
@@ -46,6 +47,7 @@ interface Props {
 }
 
 export function PhoneField({ name, label, hint, required, onChange, onFocus, className = '' }: Props) {
+  const { t } = useLang();
   const [code, setCode] = useState('+593');
   const [num, setNum] = useState('');
 
@@ -60,7 +62,7 @@ export function PhoneField({ name, label, hint, required, onChange, onFocus, cla
       <div className="flex gap-2">
         <select
           value={code}
-          aria-label="Código de país"
+          aria-label={t('Código de país')}
           onChange={(e) => {
             setCode(e.target.value);
             emit(e.target.value, num);
@@ -69,7 +71,7 @@ export function PhoneField({ name, label, hint, required, onChange, onFocus, cla
         >
           {CODES.map(([dial, país]) => (
             <option key={dial + país} value={dial}>
-              {dial} {país}
+              {dial} {t(país)}
             </option>
           ))}
         </select>

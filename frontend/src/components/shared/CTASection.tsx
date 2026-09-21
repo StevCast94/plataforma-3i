@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/hooks/useLang';
 import { Button } from '@/components/ui/Button';
 
 interface CTASectionProps {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLang } from '@/hooks/useLang';
+import { LangSwitch } from '@/components/shared/LangSwitch';
 import { cn } from '@/lib/utils';
 import { useProjects } from '@/hooks/useProjects';
 import { Isotipo } from '@/components/brand/Isotipo';
@@ -16,6 +17,7 @@ const links = [
 ];
 
 export function Navbar() {
+  const { t } = useLang();
   const [open, setOpen] = useState(false);
   const { data: projects } = useProjects();
 
@@ -52,7 +54,7 @@ export function Navbar() {
                   )
                 }
               >
-                {l.label}
+                {t(l.label)}
                 {l.hasDropdown && <span className="text-xs">▾</span>}
               </NavLink>
 
@@ -81,10 +83,14 @@ export function Navbar() {
           ))}
         </ul>
 
+        <LangSwitch className="ml-6 hidden md:inline-flex" />
+
         {/* Mobile toggle */}
+        <div className="flex items-center gap-2 md:hidden">
+        <LangSwitch />
         <button
-          className="cursor-pointer p-2 md:hidden"
-          aria-label="Menú"
+          className="cursor-pointer p-2"
+          aria-label={t('Menú')}
           onClick={() => setOpen((v) => !v)}
         >
           <div className="space-y-1.5">
@@ -93,6 +99,7 @@ export function Navbar() {
             <span className="block h-0.5 w-6 bg-primary" />
           </div>
         </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
@@ -111,7 +118,7 @@ export function Navbar() {
                   )
                 }
               >
-                {l.label}
+                {t(l.label)}
               </NavLink>
               {/* Sub-lista de proyectos en mobile */}
               {l.hasDropdown &&

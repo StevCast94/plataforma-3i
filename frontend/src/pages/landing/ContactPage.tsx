@@ -1,27 +1,31 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { useLang } from '@/hooks/useLang';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { ContactForm } from '@/components/shared/ContactForm';
 import { useSectionContent } from '@/hooks/useSiteContent';
 
 export default function ContactPage() {
+  const { t } = useLang();
   const { data } = useSectionContent('contact');
 
   return (
     <>
       <PageHeader
-        title={data?.title ?? 'Contacto'}
+        title={t(data?.title ?? 'Contacto')}
         subtitle={
-          data?.subtitle ??
-          'Déjanos tus datos y un asesor te contactará en menos de 24 horas.'
+          t(
+            data?.subtitle ??
+              'Déjanos tus datos y un asesor te contactará en menos de 24 horas.',
+          )
         }
         image="/images/secciones/header-contacto.jpg"
       />
 
       <section className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2">
         <div>
-          <h2 className="text-2xl text-primary">Hablemos</h2>
+          <h2 className="text-2xl text-primary">{t('Hablemos')}</h2>
           <p className="mt-3 text-brand-gray">
-            Estamos para ayudarte a encontrar la inversión o el plan de viaje ideal.
+            {t('Estamos para ayudarte a encontrar la inversión o el plan de viaje ideal.')}
           </p>
           <ul className="mt-6 space-y-3 text-primary">
             <li>
@@ -29,7 +33,7 @@ export default function ContactPage() {
               {data?.email ?? 'info@grupo3i.com'}
             </li>
             <li>
-              <span className="font-semibold">Teléfono:</span>{' '}
+              <span className="font-semibold">{t('Teléfono')}:</span>{' '}
               {data?.phone ?? '+593 99 999 9999'}
             </li>
             <li>
@@ -39,9 +43,9 @@ export default function ContactPage() {
 
           <WhatsAppCTA
             className="mt-6"
-            message="Hola, estoy en la web de Grupo 3i y quiero información."
+            message={t('Hola, estoy en la web de Grupo 3i y quiero información.')}
           >
-            Contactar un asesor
+            {t('Contactar un asesor')}
           </WhatsAppCTA>
         </div>
 

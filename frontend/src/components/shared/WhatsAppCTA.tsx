@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useSectionContent } from '@/hooks/useSiteContent';
+import { useLang } from '@/hooks/useLang';
 import { getReferralCode } from '@/hooks/useReferral';
 
 // ============================================================
@@ -45,12 +46,13 @@ interface Props {
 
 export function WhatsAppCTA({
   message,
-  children = 'Contactar un asesor',
+  children,
   whatsapp,
   variant = 'solid',
   size = 'md',
   className = '',
 }: Props) {
+  const { t } = useLang();
   const href = useWhatsAppHref(message, whatsapp);
   if (!href) return null;
 
@@ -69,7 +71,7 @@ export function WhatsAppCTA({
       } ${className}`}
     >
       <span className={variant === 'solid' ? '' : 'text-[#25D366]'}>{WA_ICON}</span>
-      {children}
+      {children ?? t('Contactar un asesor')}
     </a>
   );
 }

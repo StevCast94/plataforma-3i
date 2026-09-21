@@ -13,7 +13,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': { target: 'https://grupo3i.com', changeOrigin: true },
     },
   },
   build: {

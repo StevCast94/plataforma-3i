@@ -67,6 +67,28 @@ const MembersPage = lazy(() => import('@/pages/comunidad/MembersPage'));
 const MessagesPage = lazy(() => import('@/pages/comunidad/MessagesPage'));
 const MessageConversation = lazy(() => import('@/pages/comunidad/MessageConversation'));
 
+/**
+ * Las rutas públicas, montadas dos veces: bajo "/" en español y bajo "/en" en
+ * inglés. El idioma lo deduce cada página de la URL (ver hooks/useLang), así
+ * que el mismo componente sirve para los dos.
+ */
+const publicRoutes = () => (
+  <>
+    <Route index element={<HomePage />} />
+    <Route path="proyectos" element={<ProjectsPage />} />
+    <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
+    <Route path="propuesta/montanita-view" element={<PropuestaMontanitaPage />} />
+    <Route path="tienda" element={<ShopPage />} />
+    <Route path="tienda/:slug" element={<ProductDetailPage />} />
+    <Route path="club" element={<ClubPage />} />
+    <Route path="club/viajes" element={<ViajesPage />} />
+    <Route path="sobre-nosotros" element={<AboutPage />} />
+    <Route path="contacto" element={<ContactPage />} />
+    <Route path="reglamento" element={<ReglamentoPage />} />
+    <Route path="*" element={<NotFoundPage />} />
+  </>
+);
+
 export default function App() {
   return (
     <HelmetProvider>
@@ -76,21 +98,9 @@ export default function App() {
           <div className="print:hidden"><InstallAppBanner /></div>
           <BrowserRouter>
             <Routes>
-              {/* Sitio público con navbar/footer */}
-              <Route element={<Layout />}>
-                <Route index element={<HomePage />} />
-                <Route path="proyectos" element={<ProjectsPage />} />
-                <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
-                <Route path="propuesta/montanita-view" element={<PropuestaMontanitaPage />} />
-                <Route path="tienda" element={<ShopPage />} />
-                <Route path="tienda/:slug" element={<ProductDetailPage />} />
-                <Route path="club" element={<ClubPage />} />
-                <Route path="club/viajes" element={<ViajesPage />} />
-                <Route path="sobre-nosotros" element={<AboutPage />} />
-                <Route path="contacto" element={<ContactPage />} />
-                <Route path="reglamento" element={<ReglamentoPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Route>
+              {/* Sitio público con navbar/footer, en español (/) y en inglés (/en). */}
+              <Route element={<Layout />}>{publicRoutes()}</Route>
+              <Route path="en" element={<Layout />}>{publicRoutes()}</Route>
 
               {/* Comprobante de compra — público, standalone, imprimible (se comparte por WhatsApp) */}
               <Route path="confirmacion/:id" element={<PurchaseConfirmationPage />} />

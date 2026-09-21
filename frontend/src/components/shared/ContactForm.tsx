@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { Input, Textarea } from '@/components/ui/Input';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { Button } from '@/components/ui/Button';
@@ -42,6 +42,7 @@ export function ContactForm({
   extra,
   submitLabel,
 }: ContactFormProps) {
+  const { t } = useLang();
   const { toast } = useToast();
   const { member } = useAuth();
   const isContact = endpoint === '/contact';
@@ -54,15 +55,15 @@ export function ContactForm({
   function validate(data: Record<string, string>): Errors {
     const e: Errors = {};
     if (!member) {
-      if (!data.name.trim()) e.name = 'Ingresa tu nombre';
-      if (!data.email.trim()) e.email = 'Ingresa tu email';
-      else if (!EMAIL_RE.test(data.email)) e.email = 'Email inválido';
+      if (!data.name.trim()) e.name = t('Ingresa tu nombre');
+      if (!data.email.trim()) e.email = t('Ingresa tu email');
+      else if (!EMAIL_RE.test(data.email)) e.email = t('Email inválido');
       // El WhatsApp es el canal por el que responde el asesor: sin él, el lead
       // se queda esperando un correo que casi nadie abre.
-      if (data.phone.replace(/D/g, '').length < 7) e.phone = 'Ingresa tu WhatsApp';
+      if (data.phone.replace(/D/g, '').length < 7) e.phone = t('Ingresa tu WhatsApp');
     }
     if (isContact && withMessage && !data.message.trim())
-      e.message = 'Cuéntanos qué necesitas';
+      e.message = t('Cuéntanos qué necesitas');
     return e;
   }
 
@@ -97,13 +98,13 @@ export function ContactForm({
         ...(referralCode ? { referralCode } : {}),
         ...(extra ?? {}),
       });
-      toast('¡Listo! Un asesor te contactará pronto.', 'success');
+      toast(t('¡Listo! Un asesor te contactará pronto.'), 'success');
       form.reset();
       setActivateEmail(res?.canActivate ? data.email : null);
       setDone(true);
       onSuccess?.();
     } catch (err) {
-      toast((err as Error).message || 'No se pudo enviar. Intenta de nuevo.', 'error');
+      toast((err as Error).message || t('No se pudo enviar. Intenta de nuevo.'), 'error');
     } finally {
       setSending(false);
     }
@@ -112,25 +113,25 @@ export function ContactForm({
   if (done && inlineSuccess) {
     return (
       <div className="rounded-2xl bg-light p-8 text-center">
-        <h3 className="text-2xl text-primary">¡Gracias! 🎉</h3>
+        <h3 className="text-2xl text-primary">{t('¡Gracias!')} 🎉</h3>
         <p className="mt-2 text-brand-gray">
-          Hemos recibido tu mensaje. Un asesor te contactará pronto.
+          {t('Hemos recibido tu mensaje. Un asesor te contactará pronto.')}
         </p>
 
         {activateEmail && (
           <div className="mx-auto mt-5 max-w-sm rounded-xl bg-secondary/15 p-4">
             <p className="text-sm text-primary">
-              💡 <strong>Bonus:</strong> te creamos tu oficina. Activa tu código de referido
-              y gana recomendando lo que te gustó.
+              💡 <strong>{t('Bonus')}:</strong>{' '}
+              {t('te creamos tu oficina. Activa tu código de referido y gana recomendando lo que te gustó.')}
             </p>
             <Link to={`/oficina/registro?email=${encodeURIComponent(activateEmail)}`} className="mt-3 inline-block">
-              <Button size="sm">Activar mi código</Button>
+              <Button size="sm">{t('Activar mi código')}</Button>
             </Link>
           </div>
         )}
 
         <Button variant="outline" className="mt-5" onClick={() => setDone(false)}>
-          Enviar otro
+          {t('Enviar otro')}
         </Button>
       </div>
     );
@@ -142,16 +143,16 @@ export function ContactForm({
           cookie (el backend lo ignora y usa su upline real). */}
       {referralCode && !member && (
         <div className="flex items-center gap-2">
-          <Badge variant="gold">Referido</Badge>
+          <Badge variant="gold">{t('Referido')}</Badge>
           <span className="text-sm text-brand-gray">
-            Código aplicado: <strong className="text-primary">{referralCode}</strong>
+            {t('Código aplicado')}: <strong className="text-primary">{referralCode}</strong>
           </span>
         </div>
       )}
 
       {member ? (
         <div className="rounded-xl bg-light p-4 text-sm">
-          <p className="text-brand-gray">Enviando como</p>
+          <p className="text-brand-gray">{t('Enviando como')}</p>
           <p className="font-semibold text-primary">{member.fullName}</p>
           <p className="text-brand-gray">{member.email}</p>
         </div>
@@ -159,7 +160,7 @@ export function ContactForm({
         <>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <Input name="name" label="Nombre" placeholder="Tu nombre" />
+              <Input name="name" label={t('Nombre')} placeholder={t('Tu nombre')} />
               {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
             </div>
             <div>
@@ -167,7 +168,7 @@ export function ContactForm({
                 name="email"
                 type="email"
                 label="Email"
-                placeholder="tucorreo@ejemplo.com"
+                placeholder={t('tucorreo@ejemplo.com')}
               />
               {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
             </div>
@@ -178,7 +179,7 @@ export function ContactForm({
             {errors.phone ? (
               <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
             ) : (
-              <p className="mt-1 text-xs text-brand-gray">Obligatorio: es por donde te responde el asesor.</p>
+              <p className="mt-1 text-xs text-brand-gray">{t('Obligatorio: es por donde te responde el asesor.')}</p>
             )}
           </div>
         </>
@@ -188,8 +189,8 @@ export function ContactForm({
         <div>
           <Textarea
             name="message"
-            label="Mensaje"
-            placeholder="Cuéntanos en qué estás interesado…"
+            label={t('Mensaje')}
+            placeholder={t('Cuéntanos en qué estás interesado…')}
           />
           {errors.message && (
             <p className="mt-1 text-sm text-red-600">{errors.message}</p>
@@ -198,7 +199,7 @@ export function ContactForm({
       )}
 
       <Button type="submit" size="lg" loading={sending} className="w-full">
-        {sending ? 'Enviando…' : (submitLabel ?? 'Enviar')}
+        {sending ? t('Enviando…') : (submitLabel ?? t('Enviar'))}
       </Button>
     </form>
   );

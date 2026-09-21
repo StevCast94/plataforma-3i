@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PriceDisplay } from './PriceDisplay';
@@ -13,6 +13,7 @@ const typeLabels: Record<string, string> = {
 };
 
 export function ProductCard({ product }: { product: Product }) {
+  const { t } = useLang();
   return (
     <Link to={`/tienda/${product.slug}`}>
       <Card className="group flex h-full flex-col">
@@ -24,7 +25,7 @@ export function ProductCard({ product }: { product: Product }) {
             loading="lazy"
           />
           <Badge className="absolute left-4 top-4">
-            {typeLabels[product.type] ?? product.type}
+            {t(typeLabels[product.type] ?? product.type)}
           </Badge>
         </div>
         <div className="flex flex-1 flex-col p-6">

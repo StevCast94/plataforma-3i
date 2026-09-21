@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/shared/Toast';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { PhoneField } from '@/components/shared/PhoneField';
+import { useLang } from '@/hooks/useLang';
 import { useVisualViewport } from '@/hooks/useVisualViewport';
 import type { PublicLot, LotStatus } from '@shared/types';
 import ZONAS from '@/data/montanita-zonas.json';
@@ -145,6 +146,7 @@ export function LotMap({
   mapLat?: number | null;
   mapLng?: number | null;
 }) {
+  const { t } = useLang();
   const [lots, setLots] = useState<PublicLot[] | null>(null);
   const [selected, setSelected] = useState<PublicLot | null>(null);
   const [block, setBlock] = useState('');
@@ -332,7 +334,7 @@ export function LotMap({
     };
   }, [visible]);
 
-  if (lots === null) return <p className="py-10 text-center text-brand-gray">Cargando mapa de solares…</p>;
+  if (lots === null) return <p className="py-10 text-center text-brand-gray">{t('Cargando mapa de solares…')}</p>;
   if (lots.length === 0) return null;
 
   const minPrice = Math.min(...available.map((l) => l.price ?? Infinity));
@@ -355,14 +357,14 @@ export function LotMap({
       {(Object.keys(STATUS_STYLE) as LotStatus[]).map((s) => (
         <span key={s} className="flex items-center gap-1.5">
           <span className="h-3 w-3 rounded-sm" style={{ background: STATUS_STYLE[s].fill }} />
-          {STATUS_STYLE[s].label}
+          {t(STATUS_STYLE[s].label)}
         </span>
       ))}
       {projectSlug === 'montanita-view' &&
         Object.values(ZONE_STYLE).map((z) => (
           <span key={z.label} className="flex items-center gap-1.5">
             <span className="h-3 w-3 rounded-sm opacity-60" style={{ background: z.color }} />
-            {z.label}
+            {t(z.label)}
           </span>
         ))}
     </div>
@@ -375,10 +377,10 @@ export function LotMap({
         onChange={(e) => setBlock(e.target.value)}
         className="rounded-lg border border-black/15 px-3 py-2 text-sm"
       >
-        <option value="">Todas las manzanas</option>
+        <option value="">{t('Todas las manzanas')}</option>
         {blocks.map((b) => (
           <option key={b} value={b}>
-            {b.replace('MZ-', 'Manzana ')}
+            {b.replace('MZ-', `${t('Manzana')} `)}
           </option>
         ))}
       </select>
@@ -387,14 +389,14 @@ export function LotMap({
         onChange={(e) => setSize(e.target.value as SizeFilter)}
         className="rounded-lg border border-black/15 px-3 py-2 text-sm"
       >
-        <option value="">Cualquier tamaño</option>
-        <option value="lt800">Menos de 800 m²</option>
+        <option value="">{t('Cualquier tamaño')}</option>
+        <option value="lt800">{t('Menos de 800 m²')}</option>
         <option value="800to1500">800 – 1,500 m²</option>
-        <option value="gt1500">Más de 1,500 m²</option>
+        <option value="gt1500">{t('Más de 1,500 m²')}</option>
       </select>
       <label className="flex items-center gap-2 text-sm text-primary">
         <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} />
-        Solo disponibles
+        {t('Solo disponibles')}
       </label>
       <div className="ml-auto">{legend}</div>
     </div>
@@ -403,11 +405,11 @@ export function LotMap({
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8" id="mapa-solares">
       <div className="mb-6 text-center">
-        <h2 className="text-3xl font-bold text-primary sm:text-4xl">Elige tu solar</h2>
+        <h2 className="text-3xl font-bold text-primary sm:text-4xl">{t('Elige tu solar')}</h2>
         <p className="mt-2 text-brand-gray">
-          {available.length} solares disponibles
-          {Number.isFinite(minPrice) && <> · desde {formatCurrency(minPrice)}</>} · toca uno para ver su
-          precio y tu cuota
+          {t('{n} solares disponibles', { n: available.length })}
+          {Number.isFinite(minPrice) && <> · {t('desde')} {formatCurrency(minPrice)}</>} ·{' '}
+          {t('toca uno para ver su precio y tu cuota')}
         </p>
       </div>
 
@@ -434,15 +436,16 @@ export function LotMap({
               <div className="flex items-start justify-between gap-3">
                 {panel ? (
                   <p className="px-1 text-sm font-medium text-primary">
-                    {visible.length} solares en pantalla · {available.length} disponibles
-                    {Number.isFinite(minPrice) && <> · desde {formatCurrency(minPrice)}</>}
+                    {t('{n} solares en pantalla', { n: visible.length })} ·{' '}
+                    {t('{n} disponibles', { n: available.length })}
+                    {Number.isFinite(minPrice) && <> · {t('desde')} {formatCurrency(minPrice)}</>}
                   </p>
                 ) : (
                   legend
                 )}
                 <button
                   onClick={() => setPanel((p) => !p)}
-                  aria-label={panel ? 'Ocultar los filtros' : 'Mostrar los filtros'}
+                  aria-label={panel ? t('Ocultar los filtros') : t('Mostrar los filtros')}
                   className="-mr-1 -mt-1 shrink-0 rounded-lg p-1.5 text-primary hover:bg-light"
                 >
                   {panel ? <ChevronUp className="h-5 w-5" /> : <SlidersHorizontal className="h-5 w-5" />}
@@ -458,8 +461,8 @@ export function LotMap({
         )}
         <button
           onClick={toggleFull}
-          title={full ? 'Salir de pantalla completa (Esc)' : 'Ver el mapa en pantalla completa'}
-          aria-label={full ? 'Salir de pantalla completa' : 'Ver el mapa en pantalla completa'}
+          title={full ? t('Salir de pantalla completa (Esc)') : t('Ver el mapa en pantalla completa')}
+          aria-label={full ? t('Salir de pantalla completa') : t('Ver el mapa en pantalla completa')}
           className={`absolute z-[1002] rounded-lg bg-white/95 p-2 text-primary shadow-md ring-1 ring-black/10 hover:bg-white ${
             full ? 'bottom-4 right-4' : 'right-3 top-3'
           }`}
@@ -486,15 +489,15 @@ export function LotMap({
             className="inline-flex items-center gap-2 rounded-lg border border-black/15 px-3 py-2 text-sm font-medium text-primary hover:bg-light"
           >
             <Navigation className="h-4 w-4" strokeWidth={1.8} />
-            Cómo llegar
+            {t('Cómo llegar')}
           </a>
         )}
         <WhatsAppCTA
           variant="outline"
-          message={`Hola, estoy viendo el mapa de solares de ${projectName} y quiero información.`}
-        >
-          Contactar un asesor
-        </WhatsAppCTA>
+          message={t('Hola, estoy viendo el mapa de solares de {p} y quiero información.', {
+            p: projectName,
+          })}
+        />
       </div>
 
       {/* Tabla con la misma información (accesible sin mapa, y para comparar) */}
@@ -502,11 +505,11 @@ export function LotMap({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-black/5 text-xs uppercase tracking-wider text-brand-gray">
-              <th className="px-3 py-3">Solar</th>
-              <th className="px-3 py-3">Área</th>
-              <th className="px-3 py-3">Precio</th>
-              <th className="hidden px-3 py-3 sm:table-cell">Cuota mensual</th>
-              <th className="px-3 py-3">Estado</th>
+              <th className="px-3 py-3">{t('Solar')}</th>
+              <th className="px-3 py-3">{t('Área')}</th>
+              <th className="px-3 py-3">{t('Precio')}</th>
+              <th className="hidden px-3 py-3 sm:table-cell">{t('Cuota mensual')}</th>
+              <th className="px-3 py-3">{t('Estado')}</th>
             </tr>
           </thead>
           <tbody>
@@ -521,9 +524,9 @@ export function LotMap({
               >
                 <td className="px-3 py-2 font-medium text-primary">
                   {l.code}
-                  {l.name && <span className="block text-xs font-normal text-brand-gray">{l.name}</span>}
+                  {l.name && <span className="block text-xs font-normal text-brand-gray">{t(l.name)}</span>}
                   {l.approximateGeometry && (
-                    <span className="block text-xs font-normal text-amber-700">Ubicación en el mapa por confirmar</span>
+                    <span className="block text-xs font-normal text-amber-700">{t('Ubicación en el mapa por confirmar')}</span>
                   )}
                 </td>
                 <td className="px-3 py-2">{fmtArea(l.areaM2)}</td>
@@ -533,7 +536,7 @@ export function LotMap({
                 </td>
                 <td className="px-3 py-2">
                   <span className="rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ background: STATUS_STYLE[l.status].fill }}>
-                    {STATUS_STYLE[l.status].label}
+                    {t(STATUS_STYLE[l.status].label)}
                   </span>
                 </td>
               </tr>
@@ -545,13 +548,12 @@ export function LotMap({
             onClick={() => setShowAll((v) => !v)}
             className="w-full border-t border-black/5 py-3 text-sm font-medium text-accent hover:bg-light"
           >
-            {showAll ? 'Ver menos' : `Ver los ${visible.length} solares`}
+            {showAll ? t('Ver menos') : t('Ver los {n} solares', { n: visible.length })}
           </button>
         )}
       </div>
       <p className="mt-3 text-xs text-brand-gray">
-        Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m². Plan de pago: 30% de
-        entrada y saldo en hasta 24 cuotas mensuales sin intereses.
+        {t('Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m². Plan de pago: 30% de entrada y saldo en hasta 24 cuotas mensuales sin intereses.')}
       </p>
     </section>
   );
@@ -571,6 +573,7 @@ function monthly(price: number) {
 
 /** Fotos del solar cargadas desde el panel de administración. */
 function LotPhotos({ images, code }: { images: string[]; code: string }) {
+  const { t } = useLang();
   const [open, setOpen] = useState<number | null>(null);
   if (!images.length) return null;
   return (
@@ -581,9 +584,9 @@ function LotPhotos({ images, code }: { images: string[]; code: string }) {
             key={src}
             onClick={() => setOpen(i)}
             className="shrink-0 overflow-hidden rounded-lg ring-1 ring-black/10"
-            aria-label={`Ver foto ${i + 1} del solar ${code}`}
+            aria-label={t('Ver foto {n} del solar {code}', { n: i + 1, code })}
           >
-            <img src={src} alt={`Solar ${code}, foto ${i + 1}`} loading="lazy" className="h-20 w-28 object-cover" />
+            <img src={src} alt={t('Solar {code}, foto {n}', { code, n: i + 1 })} loading="lazy" className="h-20 w-28 object-cover" />
           </button>
         ))}
       </div>
@@ -593,8 +596,8 @@ function LotPhotos({ images, code }: { images: string[]; code: string }) {
           onClick={() => setOpen(null)}
           role="dialog"
         >
-          <img src={images[open]} alt={`Solar ${code}`} className="max-h-full max-w-full rounded-lg object-contain" />
-          <button onClick={() => setOpen(null)} aria-label="Cerrar" className="absolute right-4 top-4 text-white">
+          <img src={images[open]} alt={t('Solar {code}', { code })} className="max-h-full max-w-full rounded-lg object-contain" />
+          <button onClick={() => setOpen(null)} aria-label={t('Cerrar')} className="absolute right-4 top-4 text-white">
             <X className="h-7 w-7" />
           </button>
         </div>
@@ -615,6 +618,7 @@ function LotPanel({
   modal?: boolean;
   onClose: () => void;
 }) {
+  const { t } = useLang();
   const { toast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [sending, setSending] = useState(false);
@@ -625,7 +629,12 @@ function LotPanel({
   const vv = useVisualViewport();
 
   const precio = lot.price != null ? `, ${formatCurrency(lot.price)}` : '';
-  const waMsg = `Hola, me interesa el *solar ${lot.code}* de ${projectName} (${fmtArea(lot.areaM2)}${precio}). Quiero más información.`;
+  const waMsg = t('Hola, me interesa el *solar {code}* de {p} ({area}{precio}). Quiero más información.', {
+    code: lot.code,
+    p: projectName,
+    area: fmtArea(lot.areaM2),
+    precio,
+  });
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -652,18 +661,18 @@ function LotPanel({
   };
 
   const closeButton = (
-    <button onClick={onClose} aria-label="Cerrar" className="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-1 text-brand-gray hover:text-primary">
+    <button onClick={onClose} aria-label={t('Cerrar')} className="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-1 text-brand-gray hover:text-primary">
       <X className="h-5 w-5" />
     </button>
   );
 
   const body = (
     <>
-      <p className="text-xs uppercase tracking-wider text-brand-gray">{lot.block?.replace('MZ-', 'Manzana ')}</p>
-      <h3 className="font-serif text-2xl font-bold text-primary">Solar {lot.code}</h3>
-      {lot.name && <p className="text-sm text-accent">Uso proyectado: {lot.name}</p>}
+      <p className="text-xs uppercase tracking-wider text-brand-gray">{lot.block?.replace('MZ-', `${t('Manzana')} `)}</p>
+      <h3 className="font-serif text-2xl font-bold text-primary">{t('Solar')} {lot.code}</h3>
+      {lot.name && <p className="text-sm text-accent">{t('Uso proyectado')}: {t(lot.name)}</p>}
       <span className="mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ background: STATUS_STYLE[lot.status].fill }}>
-        {STATUS_STYLE[lot.status].label}
+        {t(STATUS_STYLE[lot.status].label)}
       </span>
 
       <LotPhotos images={lot.images ?? []} code={lot.code} />
@@ -671,38 +680,36 @@ function LotPanel({
       <dl className="mt-4 space-y-2 text-sm">
         {lot.price != null && (
           <>
-            <Row label="Precio" value={formatCurrency(lot.price)} strong />
-            {lot.pricePerM2 != null && <Row label="Precio por m²" value={formatCurrency(lot.pricePerM2)} />}
-            <Row label="Entrada (30%)" value={formatCurrency(lot.price * DOWN_PAYMENT)} />
-            <Row label={`${INSTALLMENTS} cuotas sin interés de`} value={formatCurrency(monthly(lot.price))} />
+            <Row label={t('Precio')} value={formatCurrency(lot.price)} strong />
+            {lot.pricePerM2 != null && <Row label={t('Precio por m²')} value={formatCurrency(lot.pricePerM2)} />}
+            <Row label={t('Entrada (30%)')} value={formatCurrency(lot.price * DOWN_PAYMENT)} />
+            <Row label={t('{n} cuotas sin interés de', { n: INSTALLMENTS })} value={formatCurrency(monthly(lot.price))} />
           </>
         )}
       </dl>
 
       {/* Vía más rápida: abre WhatsApp con el solar ya escrito, sin llenar nada. */}
-      <WhatsAppCTA message={waMsg} className="mt-4 w-full">
-        Contactar un asesor
-      </WhatsAppCTA>
+      <WhatsAppCTA message={waMsg} className="mt-4 w-full" />
 
       <LotSheet lot={lot} />
 
       {available && !sent && (
         <form onSubmit={submit} className="mt-4 space-y-2 border-t border-black/5 pt-4">
-          <p className="text-sm font-semibold text-primary">O déjanos tus datos y te escribimos</p>
-          <input required placeholder="Nombre" onFocus={keepVisible} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
-          <input required type="email" placeholder="Email" onFocus={keepVisible} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+          <p className="text-sm font-semibold text-primary">{t('O déjanos tus datos y te escribimos')}</p>
+          <input required placeholder={t('Nombre')} onFocus={keepVisible} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
+          <input required type="email" placeholder={t('Email')} onFocus={keepVisible} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
           <PhoneField required onFocus={keepVisible} onChange={(phone) => setForm({ ...form, phone })} />
           <Button type="submit" className="w-full" disabled={sending}>
-            {sending ? 'Enviando…' : 'Quiero que me contacten'}
+            {sending ? t('Enviando…') : t('Quiero que me contacten')}
           </Button>
           <p className="text-xs text-brand-gray">
-            El WhatsApp es obligatorio: es por donde te responde el asesor.
+            {t('El WhatsApp es obligatorio: es por donde te responde el asesor.')}
           </p>
         </form>
       )}
       {sent && (
         <p className="mt-4 rounded-lg bg-green-50 p-3 text-sm text-green-800">
-          ¡Listo! Un asesor te contactará por WhatsApp sobre el solar {lot.code}.
+          {t('¡Listo! Un asesor te contactará por WhatsApp sobre el solar {code}.', { code: lot.code })}
         </p>
       )}
     </>
@@ -716,10 +723,10 @@ function LotPanel({
         className="fixed inset-x-0 z-[3100] flex items-center justify-center p-3"
         style={{ top: vv.offsetTop, height: vv.height }}
       >
-        <button className="absolute inset-0 cursor-default bg-black/50" onClick={onClose} aria-label="Cerrar la ficha" />
+        <button className="absolute inset-0 cursor-default bg-black/50" onClick={onClose} aria-label={t('Cerrar la ficha')} />
         <div
           role="dialog"
-          aria-label={`Ficha del solar ${lot.code}`}
+          aria-label={t('Ficha del solar {code}', { code: lot.code })}
           className="relative w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl bg-white p-5 shadow-2xl"
           style={{ maxHeight: '100%' }}
         >
@@ -755,35 +762,36 @@ const num = (n: number, d = 2) => n.toLocaleString('en-US', { minimumFractionDig
 
 /** Ficha técnica del solar: identificación, linderos y coordenadas (fuente GEO 3i). */
 function LotSheet({ lot }: { lot: PublicLot }) {
+  const { t } = useLang();
   const note = lot.details?.cadastralNote;
   // Solo hay geometría cuando el solar está digitalizado en GEO 3i.
   const d = lot.details?.linderos ? lot.details : null;
   return (
     <div className="mt-4 space-y-3 border-t border-black/5 pt-4 text-sm">
-      <p className="text-xs font-semibold uppercase tracking-wider text-secondary">Ficha técnica</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-secondary">{t('Ficha técnica')}</p>
       {lot.details?.notice && <p className="rounded-lg bg-amber-50 p-2 text-xs font-medium text-amber-900">⚠ {lot.details.notice}</p>}
       <dl className="space-y-2">
-        <Row label="Clave catastral" value={lot.cadastralCode ?? 'Por asignar'} />
+        <Row label={t('Clave catastral')} value={lot.cadastralCode ?? t('Por asignar')} />
         {note && <p className="-mt-1 text-right text-[11px] text-brand-gray">{note}</p>}
-        <Row label="Área" value={fmtArea(lot.areaM2)} />
-        {d && <Row label="Perímetro" value={`${num(d.perimeterM)} m`} />}
-        {d?.frentes?.length ? <Row label={d.frentes.length > 1 ? 'Frentes' : 'Frente'} value={d.frentes.map((f) => `${num(f.lengthM)} m a ${f.calle}`).join(' · ')} /> : null}
-        {d?.fondoM ? <Row label="Fondo" value={`${num(d.fondoM)} m`} /> : null}
+        <Row label={t('Área')} value={fmtArea(lot.areaM2)} />
+        {d && <Row label={t('Perímetro')} value={`${num(d.perimeterM)} m`} />}
+        {d?.frentes?.length ? <Row label={d.frentes.length > 1 ? t('Frentes') : t('Frente')} value={d.frentes.map((f) => `${num(f.lengthM)} m ${t('a')} ${f.calle}`).join(' · ')} /> : null}
+        {d?.fondoM ? <Row label={t('Fondo')} value={`${num(d.fondoM)} m`} /> : null}
         {lot.details?.areaNote && <p className="-mt-1 text-right text-[11px] text-amber-700">{lot.details.areaNote}</p>}
-        {d && <Row label="Lados" value={String(d.sides.length)} />}
-        <Row label="Ubicación" value="Manglaralto, Santa Elena" />
-        {d && <Row label="Centro (UTM 17S)" value={`${num(d.centroidUTM.este, 1)} E · ${num(d.centroidUTM.norte, 1)} N`} />}
+        {d && <Row label={t('Lados')} value={String(d.sides.length)} />}
+        <Row label={t('Ubicación')} value="Manglaralto, Santa Elena" />
+        {d && <Row label={t('Centro (UTM 17S)')} value={`${num(d.centroidUTM.este, 1)} E · ${num(d.centroidUTM.norte, 1)} N`} />}
       </dl>
 
       {d ? (
         <>
           <div>
-            <p className="mb-1 font-semibold text-primary">Linderos</p>
+            <p className="mb-1 font-semibold text-primary">{t('Linderos')}</p>
             <ul className="space-y-1">
               {d.linderos.map((l, i) => (
                 <li key={i} className="flex justify-between gap-3">
                   <span className="text-brand-gray">
-                    <b className="font-medium text-primary">{CARDINAL_SHORT[l.cardinal] ?? l.cardinal}:</b> {l.colindante}
+                    <b className="font-medium text-primary">{t(CARDINAL_SHORT[l.cardinal] ?? l.cardinal)}:</b> {t(l.colindante)}
                   </span>
                   <span className="shrink-0 font-medium text-primary">{num(l.lengthM)} m</span>
                 </li>
@@ -791,10 +799,10 @@ function LotSheet({ lot }: { lot: PublicLot }) {
             </ul>
           </div>
           <details className="rounded-lg bg-light p-2">
-            <summary className="cursor-pointer text-xs font-medium text-primary">Coordenadas de los vértices (UTM WGS84 zona 17S)</summary>
+            <summary className="cursor-pointer text-xs font-medium text-primary">{t('Coordenadas de los vértices (UTM WGS84 zona 17S)')}</summary>
             <table className="mt-2 w-full text-xs">
               <thead className="text-brand-gray">
-                <tr><th className="text-left font-medium">Vértice</th><th className="text-right font-medium">Este (m)</th><th className="text-right font-medium">Norte (m)</th><th className="text-right font-medium">Lado (m)</th></tr>
+                <tr><th className="text-left font-medium">{t('Vértice')}</th><th className="text-right font-medium">{t('Este (m)')}</th><th className="text-right font-medium">{t('Norte (m)')}</th><th className="text-right font-medium">{t('Lado (m)')}</th></tr>
               </thead>
               <tbody>
                 {d.vertices.map((v, i) => (
@@ -808,11 +816,11 @@ function LotSheet({ lot }: { lot: PublicLot }) {
               </tbody>
             </table>
           </details>
-          <p className="text-[11px] text-brand-gray">Fuente: {d.source}. Datos referenciales; los linderos legales constan en la escritura.</p>
+          <p className="text-[11px] text-brand-gray">{t('Fuente')}: {d.source}. {t('Datos referenciales; los linderos legales constan en la escritura.')}</p>
         </>
       ) : (
         <p className="rounded-lg bg-amber-50 p-2 text-xs text-amber-800">
-          Linderos y coordenadas pendientes: este solar aún no está digitalizado en el levantamiento topográfico.
+          {t('Linderos y coordenadas pendientes: este solar aún no está digitalizado en el levantamiento topográfico.')}
         </p>
       )}
     </div>

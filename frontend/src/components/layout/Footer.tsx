@@ -1,13 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
+import { LangSwitch } from '@/components/shared/LangSwitch';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { Isotipo } from '@/components/brand/Isotipo';
 
 export function Footer() {
+  const { t } = useLang();
   const { data } = useSectionContent('footer');
   const tagline =
-    data?.tagline ?? 'Inversión inmobiliaria inteligente en la costa ecuatoriana.';
+    data?.tagline ?? t('Inversión inmobiliaria inteligente en la costa ecuatoriana.');
   const copyright =
-    data?.copyright ?? '© 2026 Grupo 3i. Todos los derechos reservados.';
+    data?.copyright ?? t('© 2026 Grupo 3i. Todos los derechos reservados.');
 
   return (
     <footer className="relative overflow-hidden bg-primary text-white print:hidden">
@@ -20,33 +22,34 @@ export function Footer() {
 
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <Link to="/" className="inline-block"><img src="/images/logotipo-light.svg" alt="Grupo 3i — Volver al inicio" className="h-8 w-auto" /></Link>
+          <Link to="/" className="inline-block"><img src="/images/logotipo-light.svg" alt={t('Grupo 3i — Volver al inicio')} className="h-8 w-auto" /></Link>
           <p className="mt-3 max-w-xs text-sm text-white/70">{tagline}</p>
+          <LangSwitch className="mt-4 border-white/20 bg-white/5" />
         </div>
 
         <div>
           <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-secondary">
-            Navegación
+            {t('Navegación')}
           </h4>
           <ul className="space-y-2 text-sm text-white/80">
-            <li><Link to="/proyectos" className="hover:text-secondary">Proyectos</Link></li>
-            <li><Link to="/tienda" className="hover:text-secondary">Tienda</Link></li>
+            <li><Link to="/proyectos" className="hover:text-secondary">{t('Proyectos')}</Link></li>
+            <li><Link to="/tienda" className="hover:text-secondary">{t('Tienda')}</Link></li>
             <li><Link to="/club" className="hover:text-secondary">Club 3i</Link></li>
-            <li><Link to="/oficina" className="hover:text-secondary">Oficina Virtual</Link></li>
-            <li><Link to="/sobre-nosotros" className="hover:text-secondary">Nosotros</Link></li>
-            <li><Link to="/contacto" className="hover:text-secondary">Contacto</Link></li>
-            <li><Link to="/reglamento" className="hover:text-secondary">Reglamento de Referidos</Link></li>
+            <li><Link to="/oficina" className="hover:text-secondary">{t('Oficina Virtual')}</Link></li>
+            <li><Link to="/sobre-nosotros" className="hover:text-secondary">{t('Nosotros')}</Link></li>
+            <li><Link to="/contacto" className="hover:text-secondary">{t('Contacto')}</Link></li>
+            <li><Link to="/reglamento" className="hover:text-secondary">{t('Reglamento de Referidos')}</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-secondary">
-            Contacto
+            {t('Contacto')}
           </h4>
           <ul className="space-y-2 text-sm text-white/80">
             <li>info@grupo3i.com</li>
             <li>grupo3i.com · club3i.com</li>
-            <li>Costa Ecuatoriana</li>
+            <li>{t('Costa Ecuatoriana')}</li>
           </ul>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLang } from '@/hooks/useLang';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { CardSkeleton } from '@/components/ui/Skeleton';
@@ -13,6 +13,7 @@ import { cld } from '@/lib/cloudinary';
 import { ImageCrossfade } from '@/components/shared/ImageCrossfade';
 
 export default function HomePage() {
+  const { t } = useLang();
   const { data: content } = useSiteContent();
   const { data: projects, loading: loadingProjects } = useProjects();
   const { data: products, loading: loadingProducts } = useProducts();
@@ -56,19 +57,21 @@ export default function HomePage() {
             className="max-w-2xl"
           >
             <h1 className="text-4xl font-bold leading-tight sm:text-6xl">
-              {hero.title ?? 'Invierte en el futuro. Vive el presente.'}
+              {t(hero.title ?? 'Invierte en el futuro. Vive el presente.')}
             </h1>
             <p className="mt-6 text-lg text-white/80">
-              {hero.subtitle ??
-                'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.'}
+              {t(
+                hero.subtitle ??
+                  'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
+              )}
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link to="/proyectos">
-                <Button size="lg">{hero.cta_text ?? 'Explorar proyectos'}</Button>
+                <Button size="lg">{t(hero.cta_text ?? 'Explorar proyectos')}</Button>
               </Link>
               <Link to="/club">
                 <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white hover:text-primary">
-                  Conoce el Club 3i
+                  {t('Conoce el Club 3i')}
                 </Button>
               </Link>
             </div>
@@ -80,11 +83,11 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-bold text-primary sm:text-4xl">
-            {projectsSection.title ?? 'Nuestros Proyectos'}
+            {t(projectsSection.title ?? 'Nuestros Proyectos')}
           </h2>
           {projectsSection.subtitle && (
             <p className="mx-auto mt-3 max-w-2xl text-brand-gray">
-              {projectsSection.subtitle}
+              {t(projectsSection.subtitle)}
             </p>
           )}
         </div>
@@ -97,7 +100,7 @@ export default function HomePage() {
 
         <div className="mt-10 text-center">
           <Link to="/proyectos">
-            <Button variant="outline">Ver todos los proyectos</Button>
+            <Button variant="outline">{t('Ver todos los proyectos')}</Button>
           </Link>
         </div>
 
@@ -108,16 +111,17 @@ export default function HomePage() {
         >
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
-              Oportunidad de inversión
+              {t('Oportunidad de inversión')}
             </p>
-            <h3 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">Propuesta Montañita View</h3>
+            <h3 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">{t('Propuesta Montañita View')}</h3>
             <p className="mt-2 max-w-2xl text-white/75">
-              Un solar desde $49,084, sociedad en Montañita View Lobby o la compra total de ambos proyectos.
-              Revisa las cifras, el dossier técnico y las condiciones de pago.
+              {t(
+                'Un solar desde $49,084, sociedad en Montañita View Lobby o la compra total de ambos proyectos. Revisa las cifras, el dossier técnico y las condiciones de pago.',
+              )}
             </p>
           </div>
           <span className="shrink-0 rounded-full bg-secondary px-6 py-3 text-center font-semibold text-primary transition group-hover:brightness-110">
-            Ver la propuesta →
+            {t('Ver la propuesta')} →
           </span>
         </Link>
       </section>
@@ -127,10 +131,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold text-primary sm:text-4xl">
-              Membresías y Oportunidades
+              {t('Membresías y Oportunidades')}
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-brand-gray">
-              Accede a beneficios de viaje y a inversiones fraccionadas.
+              {t('Accede a beneficios de viaje y a inversiones fraccionadas.')}
             </p>
           </div>
 
@@ -147,18 +151,18 @@ export default function HomePage() {
         <div className="grid items-center gap-10 md:grid-cols-2">
           <img
             src="/images/secciones/comunidad-3i.jpg"
-            alt="Comunidad Grupo 3i"
+            alt={t('Comunidad Grupo 3i')}
             className="aspect-[4/3] w-full rounded-2xl object-cover shadow-lg md:order-2"
           />
           <div>
-            <h2 className="text-3xl font-bold text-primary sm:text-4xl">Una comunidad, no solo una inversión</h2>
+            <h2 className="text-3xl font-bold text-primary sm:text-4xl">{t('Una comunidad, no solo una inversión')}</h2>
             <p className="mt-4 text-brand-gray">
-              Socios, referidos y clientes se conectan en un mismo espacio: comparten experiencias
-              de viaje, oportunidades y consejos de inversión. Únete y forma parte de algo más
-              grande que una propiedad.
+              {t(
+                'Socios, referidos y clientes se conectan en un mismo espacio: comparten experiencias de viaje, oportunidades y consejos de inversión. Únete y forma parte de algo más grande que una propiedad.',
+              )}
             </p>
             <Link to="/comunidad" className="mt-8 inline-block">
-              <Button size="lg" variant="outline">Conoce la comunidad</Button>
+              <Button size="lg" variant="outline">{t('Conoce la comunidad')}</Button>
             </Link>
           </div>
         </div>
@@ -166,12 +170,14 @@ export default function HomePage() {
 
       {/* CLUB 3i */}
       <CTASection
-        title={club.title ?? 'Únete al Club 3i'}
+        title={t(club.title ?? 'Únete al Club 3i')}
         subtitle={
-          club.subtitle ??
-          'Viaja por el mundo con descuentos de hasta 70% y accede a beneficios exclusivos.'
+          t(
+            club.subtitle ??
+              'Viaja por el mundo con descuentos de hasta 70% y accede a beneficios exclusivos.',
+          )
         }
-        ctaText="Quiero ser miembro"
+        ctaText={t('Quiero ser miembro')}
         ctaTo="/club"
       />
     </>
