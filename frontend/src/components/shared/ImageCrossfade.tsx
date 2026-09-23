@@ -33,6 +33,9 @@ export function ImageCrossfade({
   interval = 7000,
 }: ImageCrossfadeProps) {
   const [index, setIndex] = useState(0);
+  // Con 'reducir movimiento' se rota igual pero solo con fundido, sin desplazamiento.
+  const reduce =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Si la lista de imágenes cambia (p.ej. llega la del CMS) y el índice activo
   // quedó fuera de rango, no reiniciar la rotación de golpe.
@@ -42,7 +45,6 @@ export function ImageCrossfade({
 
   useEffect(() => {
     if (images.length < 2) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % images.length);
     }, interval);
@@ -61,9 +63,9 @@ export function ImageCrossfade({
           aria-hidden={index === 0 ? undefined : true}
           className={className}
           loading={index === 0 ? 'eager' : 'lazy'}
-          initial={{ x: '8%', opacity: 0 }}
+          initial={{ x: reduce ? 0 : '8%', opacity: 0 }}
           animate={{ x: '0%', opacity: activeOpacity }}
-          exit={{ x: '-8%', opacity: 0 }}
+          exit={{ x: reduce ? 0 : '-8%', opacity: 0 }}
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
         />
       </AnimatePresence>

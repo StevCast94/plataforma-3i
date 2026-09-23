@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLang } from '@/hooks/useLang';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { CardSkeleton } from '@/components/ui/Skeleton';
 import { ProjectCard } from '@/components/shared/ProjectCard';
@@ -37,6 +37,31 @@ export default function HomePage() {
     return Array.from(new Set([local, ...cmsUrls]));
   }, [hero.image_url]);
 
+  // El texto del hero rota por su cuenta (independiente de las fotos): primero
+  // el mensaje del CMS (Ibiza) y luego el de Montañita View.
+  const slides = useMemo(
+    () => [
+      {
+        title: hero.title ?? 'Invierte en el futuro. Vive el presente.',
+        subtitle:
+          hero.subtitle ??
+          'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
+      },
+      {
+        title: 'Montañita View. Lotes con vista al mar, financiados a 24 meses sin intereses',
+        subtitle:
+          'Lotización frente al Pacífico en Montañita, Santa Elena, y el complejo Montañita View Lobby con piscina, restaurante y áreas sociales.',
+      },
+    ],
+    [hero.title, hero.subtitle],
+  );
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setSlide((i) => (i + 1) % slides.length), 9000);
+    return () => clearInterval(id);
+  }, [slides.length]);
+  const cur = slides[slide];
+
   return (
     <>
       {/* HERO */}
@@ -53,15 +78,20 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <h1 className="text-4xl font-bold leading-tight sm:text-6xl">
-              {t(hero.title ?? 'Invierte en el futuro. Vive el presente.')}
-            </h1>
-            <p className="mt-6 text-lg text-white/80">
-              {t(
-                hero.subtitle ??
-                  'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
-              )}
-            </p>
+            <div className="min-h-[15rem] sm:min-h-[19rem]">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={slide}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h1 className="text-4xl font-bold leading-tight sm:text-6xl">{t(cur.title)}</h1>
+                  <p className="mt-6 text-lg text-white/80">{t(cur.subtitle)}</p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link to="/proyectos">
                 <Button size="lg">{t(hero.cta_text ?? 'Explorar proyectos')}</Button>
