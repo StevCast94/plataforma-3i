@@ -313,7 +313,8 @@ export function LotMap({
       poly.on('click', () => setSelected(lot));
       poly.addTo(layer);
       labelLot(poly, lot, map.getZoom() >= LOT_LABEL_ZOOM, t);
-      ring.forEach((c) => bounds.extend(c));
+      // El Lobby queda fuera del encuadre por defecto (puede salir cortado); sigue visible al alejar.
+      if (lot.code !== 'LOBBY') ring.forEach((c) => bounds.extend(c));
     }
     // Acercado, el código y el uso van rotulados dentro de cada solar; en la
     // vista general estorban y basta el globo al pasar el cursor.
