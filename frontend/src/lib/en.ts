@@ -305,6 +305,7 @@ export const EN: Record<string, string> = {
   'desde Salinas': 'from Salinas',
   'a la playa': 'to the beach',
   'a Montañita': 'to Montañita',
+  'al mar': 'to the sea',
   'Reparto fraccionario / administración': 'Owner / management split',
   'Renta por semana según temporada': 'Weekly rent by season',
   'Ingreso anual potencial': 'Potential annual income',

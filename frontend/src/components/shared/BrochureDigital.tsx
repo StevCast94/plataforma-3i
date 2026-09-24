@@ -202,7 +202,7 @@ function LocationInfo({
 
   return (
     <div className="overflow-hidden rounded-2xl bg-primary p-6 sm:p-8">
-      <div className="grid gap-6 text-center text-white sm:grid-cols-2 lg:grid-cols-4">
+      <div className={`grid gap-6 text-center text-white ${routeStats.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-4'}`}>
         {routeStats.map((s) => (
           <div key={s.l}>
             <p className="font-serif text-2xl font-bold text-secondary">{t(s.v)}</p>
