@@ -15,6 +15,7 @@ import {
   type BrochureSectionId,
 } from '@/lib/brochureContent';
 import type { Project } from '@shared/types';
+import { projectBrand } from '@/lib/projectBrand';
 
 // ============================================================
 // BROCHURE DIGITAL — componente genérico, reutilizable por proyecto.
@@ -571,6 +572,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
   };
 
   const order = resolveSectionOrder(c.layout);
+  const brand = projectBrand(project.slug);
 
   return (
     <section className="bg-white">
@@ -603,7 +605,13 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
                 {t(c.eyebrow)}
               </p>
-              <h2 className="mt-4 font-serif text-4xl font-bold sm:text-6xl">{project.name}</h2>
+              {brand ? (
+                <h2 className="mt-5">
+                  <img src={brand.light} alt={project.name} className="mx-auto h-24 w-auto sm:h-36" />
+                </h2>
+              ) : (
+                <h2 className="mt-4 font-serif text-4xl font-bold sm:text-6xl">{project.name}</h2>
+              )}
               <p className="mx-auto mt-4 max-w-2xl text-lg text-white/85">{t(c.heroTagline)}</p>
               <p className="mt-2 text-sm text-white/70">{t(c.heroLocation)}</p>
             </div>

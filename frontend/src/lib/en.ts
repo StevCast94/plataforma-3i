@@ -43,6 +43,7 @@ export const EN: Record<string, string> = {
     'Montañita View. Sea-view lots, financed over 24 months interest-free',
   'Lotización frente al Pacífico en Montañita, Santa Elena, y el complejo Montañita View Lobby con piscina, restaurante y áreas sociales.':
     'A Pacific-front development in Montañita, Santa Elena, plus the Montañita View Lobby complex with pool, restaurant and social areas.',
+  'Sobre el proyecto': 'About the project',
   'Invierte en un Paraíso. Fracciones en Condohotel Ibiza desde $12,000':
     'Invest in paradise. Shares in the Ibiza Condohotel from $12,000',
   'Explorar proyectos': 'Explore projects',

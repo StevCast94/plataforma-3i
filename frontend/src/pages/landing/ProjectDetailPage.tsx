@@ -5,7 +5,8 @@ import { Building2, ArrowRight, ChevronDown } from 'lucide-react';
 import { useProject, useProjects } from '@/hooks/useProjects';
 import { Seo } from '@/components/shared/Seo';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
-import { FeatureGrid } from '@/components/shared/FeatureGrid';
+import { AmenityIcon } from '@/lib/amenityIcons';
+import { projectBrand } from '@/lib/projectBrand';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { ProjectCard } from '@/components/shared/ProjectCard';
 import { ContactForm } from '@/components/shared/ContactForm';
@@ -55,6 +56,9 @@ export default function ProjectDetailPage() {
 
   // Metadatos del hero: hasta 2 datos duros junto al precio, para dar sustancia
   // sin recargar. Salen de las características ya cargadas del proyecto.
+  const brand = projectBrand(project.slug);
+  const amenities = project.features?.amenities ?? [];
+
   const heroMeta: { label: string; value: string }[] = [];
   if (project.features?.tipo) heroMeta.push({ label: t('Tipo'), value: t(String(project.features.tipo)) });
   if (project.features?.unidades != null)
@@ -121,9 +125,19 @@ export default function ProjectDetailPage() {
               </div>
             )}
 
-            <h1 className="mt-4 font-serif text-5xl font-bold leading-[0.95] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-7xl lg:text-8xl">
-              {project.name}
-            </h1>
+            {brand ? (
+              <h1 className="mt-5">
+                <img
+                  src={brand.light}
+                  alt={project.name}
+                  className="h-24 w-auto drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:h-32 lg:h-40"
+                />
+              </h1>
+            ) : (
+              <h1 className="mt-4 font-serif text-5xl font-bold leading-[0.95] tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.6)] sm:text-7xl lg:text-8xl">
+                {project.name}
+              </h1>
+            )}
 
             {project.subtitle && (
               <p className="mt-5 max-w-xl text-base font-light leading-relaxed text-white/85 sm:text-xl">
@@ -199,49 +213,8 @@ export default function ProjectDetailPage() {
         </motion.div>
       </section>
 
-      {/* 2. FEATURES GRID */}
-      <FeatureGrid features={project.features} />
-
-      {/* 3. GALERÍA — omitida cuando el proyecto tiene Brochure Digital propio (evita duplicado) */}
-      {gallery.length > 0 && !project.showBrochure && (
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-          <h2 className="mb-8 text-center text-3xl font-bold text-primary sm:text-4xl">
-            {t('Galería')}
-          </h2>
-          <ImageGallery images={gallery} alt={project.name} />
-        </section>
-      )}
-
-      {/* 4. OPORTUNIDAD DE INVERSIÓN */}
-      <section className="bg-light">
-        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div>
-            <h2 className="text-3xl font-bold text-primary sm:text-4xl">
-              {t('Oportunidad de Inversión')}
-            </h2>
-            <p className="mt-5 whitespace-pre-line leading-relaxed text-primary/80">{tb(project.description)}</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <DataCard
-              label={t('Precio desde')}
-              value={
-                project.priceFrom != null
-                  ? formatCurrency(project.priceFrom)
-                  : (project.priceLabel ?? t('Consultar'))
-              }
-            />
-            {/* Antes era un '9% anual*' fijo para TODOS los proyectos (incluida una
-                lotización, que no genera renta). Solo se muestra si el proyecto lo define. */}
-            {typeof project.features?.retorno === 'string' && (
-              <DataCard label={t('Retorno estimado')} value={t(project.features.retorno)} />
-            )}
-            <DataCard label={t('Ubicación')} value={project.location ?? 'Ecuador'} />
-            <DataCard label={t('Estado')} value={project.active ? t('Disponible') : t('No disponible')} />
-          </div>
-        </div>
-      </section>
-
-      {/* 4.6 MAPA DE SOLARES — solo aparece si el proyecto tiene lotes cargados */}
+      {/* 2. LO PRINCIPAL, JUSTO DESPUÉS DEL HERO: el mapa de solares (si hay lotes)
+          y el brochure digital (si está activo). */}
       <LotMap projectSlug={project.slug} projectName={project.name} mapLat={project.mapLat} mapLng={project.mapLng} />
 
       {project.slug === 'montanita-view' && (
@@ -255,9 +228,54 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      {/* 4.5 BROCHURE DIGITAL — proyectos con showBrochure activo desde el admin */}
       {project.showBrochure && (
         <BrochureDigital project={project} onRequestInfo={() => setOpen(true)} />
+      )}
+
+      {/* 3. SOBRE EL PROYECTO — solo sin brochure (el brochure ya trae descripción y
+          amenidades más completas). Precio, ubicación y tipo ya están en el hero. */}
+      {!project.showBrochure && (project.description || amenities.length > 0) && (
+        <section className="bg-light">
+          <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-primary sm:text-4xl">{t('Sobre el proyecto')}</h2>
+            {project.description && (
+              <p className="mx-auto mt-5 max-w-2xl whitespace-pre-line text-left leading-relaxed text-primary/80 sm:text-center">
+                {tb(project.description)}
+              </p>
+            )}
+            {typeof project.features?.retorno === 'string' && (
+              <p className="mt-6 text-sm text-primary/70">
+                {t('Retorno estimado')}: <strong className="text-primary">{t(project.features.retorno)}</strong>
+              </p>
+            )}
+            {amenities.length > 0 && (
+              <div className="mt-10">
+                <h3 className="mb-5 text-xl text-primary">{t('Amenidades')}</h3>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {amenities.map((am) => (
+                    <div
+                      key={am}
+                      className="flex items-center gap-2.5 rounded-full bg-white px-4 py-2.5 shadow-sm ring-1 ring-black/5"
+                    >
+                      <AmenityIcon name={am} className="h-4 w-4 flex-none text-accent" />
+                      <span className="text-sm font-medium text-primary">{t(am)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 4. GALERÍA — omitida cuando el proyecto tiene Brochure Digital propio (evita duplicado) */}
+      {gallery.length > 0 && !project.showBrochure && (
+        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+          <h2 className="mb-8 text-center text-3xl font-bold text-primary sm:text-4xl">
+            {t('Galería')}
+          </h2>
+          <ImageGallery images={gallery} alt={project.name} />
+        </section>
       )}
 
       {/* 5. CTA — el brochure ya trae su propio cierre; aquí solo si no hay brochure */}
@@ -312,11 +330,3 @@ export default function ProjectDetailPage() {
   );
 }
 
-function DataCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-      <p className="text-xs uppercase tracking-wider text-brand-gray">{label}</p>
-      <p className="mt-2 font-serif text-2xl font-bold text-primary">{value}</p>
-    </div>
-  );
-}
