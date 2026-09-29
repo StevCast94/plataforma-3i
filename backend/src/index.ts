@@ -40,7 +40,8 @@ import { metricsRoutes } from './routes/metrics';
 import { travelRoutes } from './routes/travel';
 import { adminTravelRoutes } from './routes/adminTravel';
 import { referralApiRoutes, referralRedirect } from './routes/referral';
-import { projectOgHandler } from './lib/ogProject';
+import { lotOgHandler, projectOgHandler } from './lib/ogProject';
+import { lotOgImage } from './lib/lotOgImage';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -104,6 +105,22 @@ app.use('/api/admin/travel', adminTravelRoutes);
 app.use('/api/referral', referralApiRoutes);
 
 // Cualquier /api/* no encontrada -> 404 JSON (no cae al SPA fallback)
+// Imagen de vista previa de la ficha de un solar (tarjeta de WhatsApp/Facebook).
+app.get('/api/og/lot/:slug/:file', async (req, res) => {
+  try {
+    const code = decodeURIComponent(String(req.params.file)).replace(/.jpg$/i, '').toUpperCase();
+    const img = await lotOgImage(String(req.params.slug), code);
+    if (!img) {
+      res.status(404).end();
+      return;
+    }
+    res.set('Cache-Control', 'public, max-age=86400').type('image/jpeg').send(img);
+  } catch (err) {
+    console.error('GET /api/og/lot', err);
+    res.status(500).end();
+  }
+});
+
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: 'Endpoint no encontrado' });
 });
@@ -121,6 +138,7 @@ if (hasBuild) {
   // Tarjeta social por proyecto: WhatsApp y Facebook no ejecutan JS, así que las
   // meta tags se escriben en el HTML antes de enviarlo (ver lib/ogProject.ts).
   app.get(['/proyectos/:slug', '/en/proyectos/:slug'], projectOgHandler(frontendPath));
+  app.get(['/proyectos/:slug/solar/:code', '/en/proyectos/:slug/solar/:code'], lotOgHandler(frontendPath));
 
   // SPA fallback -> todas las rutas no-API devuelven index.html
   app.get(/^(?!\/api).*/, (_req, res) => {

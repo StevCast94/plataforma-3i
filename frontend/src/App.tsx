@@ -54,6 +54,7 @@ const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
 const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
 const AdminTravelClaimsPage = lazy(() => import('@/pages/admin/AdminTravelClaimsPage'));
 const AdminSupportPage = lazy(() => import('@/pages/admin/AdminSupportPage'));
+const LotPage = lazy(() => import('@/pages/landing/LotPage'));
 const AdminBosquePage = lazy(() => import('@/pages/admin/AdminBosquePage'));
 
 // Bosque (adopta un árbol): landing con marca propia, vinculada a Grupo 3i
@@ -86,6 +87,7 @@ const publicRoutes = () => (
     <Route index element={<HomePage />} />
     <Route path="proyectos" element={<ProjectsPage />} />
     <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
+    <Route path="proyectos/:slug/solar/:code" element={<LotPage />} />
     <Route path="propuesta/montanita-view" element={<PropuestaMontanitaPage />} />
     <Route path="tienda" element={<Navigate to=".." replace />} />
     <Route path="tienda/:slug" element={<ProductDetailPage />} />

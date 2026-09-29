@@ -362,3 +362,8 @@ text.via-label {
   pointer-events: none;
 }
 .leaflet-tooltip.lot-label::before { display: none; }
+
+/* Ficha de solar impresa: sin controles del mapa. */
+@media print {
+  .leaflet-control-zoom { display: none !important; }
+}

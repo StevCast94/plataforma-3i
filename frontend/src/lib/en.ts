@@ -44,6 +44,19 @@ export const EN: Record<string, string> = {
   'Lotización frente al Pacífico en Montañita, Santa Elena, y el complejo Montañita View Lobby con piscina, restaurante y áreas sociales.':
     'A Pacific-front development in Montañita, Santa Elena, plus the Montañita View Lobby complex with pool, restaurant and social areas.',
   'Sobre el proyecto': 'About the project',
+  // Ficha del solar y compartir
+  'Explorar el mapa': 'Explore the map',
+  'Compartir ficha': 'Share lot',
+  'Ficha completa': 'Full lot sheet',
+  'El enlace lleva tu código de socio {code}.': 'The link includes your partner code {code}.',
+  'Enlace copiado: pégalo donde quieras compartirlo': 'Link copied: paste it wherever you want to share it',
+  'Copia este enlace': 'Copy this link',
+  'No encontramos ese solar': 'We could not find that lot',
+  'Ver todos los solares': 'See all lots',
+  'Forma, ubicación, medidas y linderos del solar.': 'Shape, location, measurements and boundaries of the lot.',
+  'Ver en el mapa del proyecto': 'See it on the project map',
+  'Cómo llegar al solar': 'Directions to the lot',
+  'Descargar ficha en PDF': 'Download lot sheet as PDF',
   'Invierte en un Paraíso. Fracciones en Condohotel Ibiza desde $12,000':
     'Invest in paradise. Shares in the Ibiza Condohotel from $12,000',
   'Explorar proyectos': 'Explore projects',

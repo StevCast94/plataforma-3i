@@ -103,3 +103,72 @@ export function projectOgHandler(frontendPath: string) {
     }
   };
 }
+
+const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
+
+/**
+ * Tarjeta social de la ficha de un solar (/proyectos/:slug/solar/:code): título con
+ * el código, el área y el precio, e imagen satelital con la forma del solar.
+ */
+export function lotOgHandler(frontendPath: string) {
+  const indexPath = path.join(frontendPath, 'index.html');
+
+  return async (req: Request, res: Response) => {
+    try {
+      const slug = String(req.params.slug ?? '');
+      const code = String(req.params.code ?? '').toUpperCase();
+      const project = await prisma.project.findUnique({ where: { slug }, select: { id: true, name: true } });
+      const lot = project
+        ? await prisma.lot.findFirst({
+            where: { projectId: project.id, code, active: true },
+            select: { code: true, areaM2: true, price: true, status: true, name: true },
+          })
+        : null;
+      if (!project || !lot) {
+        res.sendFile(indexPath);
+        return;
+      }
+      const en = req.path.startsWith('/en/');
+      const origin = publicBaseUrl();
+      const label = en ? `Lot ${lot.code}` : `Solar ${lot.code}`;
+      const parts = [label];
+      if (lot.areaM2) parts.push(`${Math.round(lot.areaM2).toLocaleString('en-US')} m²`);
+      if (lot.price && lot.status === 'AVAILABLE') parts.push(usd(lot.price));
+      const title = `${parts.join(' · ')} — ${project.name}`;
+      const status =
+        lot.status === 'AVAILABLE'
+          ? en
+            ? '24-month interest-free financing.'
+            : 'Financiamiento a 24 meses sin intereses.'
+          : lot.status === 'SOLD'
+            ? en ? 'Sold.' : 'Vendido.'
+            : lot.status === 'RESERVED'
+              ? en ? 'Reserved.' : 'Reservado.'
+              : '';
+      const description = en
+        ? `See its shape and location on the satellite map, dimensions, boundaries and price. Manglaralto, Ruta del Spondylus. ${status}`
+        : `Mira su forma y ubicación en el mapa satelital, medidas, linderos y precio. Manglaralto, Ruta del Spondylus. ${status}`;
+      const image = `${origin}/api/og/lot/${slug}/${encodeURIComponent(lot.code)}.jpg`;
+      const url = `${origin}${en ? '/en' : ''}/proyectos/${slug}/solar/${encodeURIComponent(lot.code)}`;
+
+      let html = fs.readFileSync(indexPath, 'utf8');
+      html = html.replace(/<title>[^<]*<\/title>/i, `<title>${esc(title)}</title>`);
+      html = setMeta(html, 'name', 'description', description);
+      html = setMeta(html, 'property', 'og:url', url);
+      html = setMeta(html, 'property', 'og:title', title);
+      html = setMeta(html, 'property', 'og:description', description);
+      html = setMeta(html, 'property', 'og:image', image);
+      html = setMeta(html, 'property', 'og:image:secure_url', image);
+      html = setMeta(html, 'property', 'og:image:type', 'image/jpeg');
+      html = setMeta(html, 'property', 'og:image:alt', title);
+      html = setMeta(html, 'property', 'og:locale', en ? 'en_US' : 'es_EC');
+      html = setMeta(html, 'name', 'twitter:title', title);
+      html = setMeta(html, 'name', 'twitter:description', description);
+      html = setMeta(html, 'name', 'twitter:image', image);
+      res.type('html').send(html);
+    } catch (err) {
+      console.error('GET /proyectos/:slug/solar/:code (tarjeta social)', err);
+      res.sendFile(indexPath);
+    }
+  };
+}

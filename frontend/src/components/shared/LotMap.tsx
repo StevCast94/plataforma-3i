@@ -10,6 +10,7 @@ import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { useLang } from '@/hooks/useLang';
 import { useVisualViewport } from '@/hooks/useVisualViewport';
+import { ShareLot } from '@/components/shared/ShareLot';
 import type { PublicLot, LotStatus } from '@shared/types';
 import ZONAS from '@/data/montanita-zonas.json';
 
@@ -21,7 +22,7 @@ import ZONAS from '@/data/montanita-zonas.json';
 // socio que refirió, vía la cookie de referido que ya lee /api/contact).
 // ============================================================
 
-const STATUS_STYLE: Record<LotStatus, { fill: string; label: string }> = {
+export const STATUS_STYLE: Record<LotStatus, { fill: string; label: string }> = {
   AVAILABLE: { fill: '#16a34a', label: 'Disponible' },
   RESERVED: { fill: '#f59e0b', label: 'Reservado' },
   SOLD: { fill: '#dc2626', label: 'Vendido' },
@@ -35,8 +36,8 @@ const ZONE_STYLE = {
   via: { color: '#facc15', label: 'Vías' },
 };
 
-const DOWN_PAYMENT = 0.3;
-const INSTALLMENTS = 24;
+export const DOWN_PAYMENT = 0.3;
+export const INSTALLMENTS = 24;
 
 type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
 
@@ -134,6 +135,15 @@ function drawUrbanism(map: L.Map, t: (s: string) => string) {
   map.whenReady(toggleLabels);
 }
 
+/** Mapa en reposo: sin arrastre ni pellizco (el dedo desplaza la página); los toques siguen funcionando. */
+function setRest(map: L.Map, rest: boolean) {
+  const handlers = [map.dragging, map.touchZoom, map.doubleClickZoom, map.boxZoom, map.keyboard];
+  for (const h of handlers) {
+    if (rest) h.disable();
+    else h.enable();
+  }
+}
+
 export function LotMap({
   projectSlug,
   projectName,
@@ -159,6 +169,9 @@ export function LotMap({
   const layerRef = useRef<L.LayerGroup | null>(null);
   const tileRef = useRef<L.TileLayer | null>(null);
   const [full, setFull] = useState(false);
+  // Pantalla táctil: fuera de pantalla completa el mapa no toma el dedo, así la
+  // página se desplaza con normalidad. Tocar un solar sigue abriendo su ficha.
+  const touch = useMemo(() => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches, []);
   // En el teléfono el panel de búsqueda tapaba un tercio del mapa: entra plegado
   // y deja solo la leyenda; en pantallas grandes sobra espacio y entra abierto.
   const [panel, setPanel] = useState(true);
@@ -213,6 +226,7 @@ export function LotMap({
     // secuestraría el desplazamiento de quien solo pasaba por encima.
     if (full) map.scrollWheelZoom.enable();
     else map.scrollWheelZoom.disable();
+    setRest(map, touch && !full);
     // Al cambiar de tamaño hay un instante en que el contenedor mide 0 y la capa
     // de imagen satelital se queda sin teselas (fondo negro/blanco). Se refresca
     // dos veces: al terminar la transición y una más por si aún no había medida.
@@ -287,6 +301,7 @@ export function LotMap({
     if (projectSlug === 'montanita-view') drawUrbanism(map, t);
     layerRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
+    setRest(map, touch && !document.fullscreenElement);
     return () => {
       map.remove();
       mapRef.current = null;
@@ -430,6 +445,15 @@ export function LotMap({
           cambiar de modo, se las lleva por delante y el mapa se queda en negro.
         */}
         <div ref={mapEl} className="h-full w-full" />
+        {touch && !full && !selected && (
+          <button
+            onClick={toggleFull}
+            className="absolute bottom-4 left-1/2 z-[1002] flex -translate-x-1/2 items-center gap-2 rounded-full bg-primary/90 px-5 py-2.5 text-sm font-semibold text-white shadow-lg backdrop-blur"
+          >
+            <Maximize2 className="h-4 w-4" />
+            {t('Explorar el mapa')}
+          </button>
+        )}
         {/* En pantalla completa los filtros flotan sobre el mapa, como en un buscador. */}
         {full && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-[1001] p-3">
@@ -474,6 +498,7 @@ export function LotMap({
           <LotPanel
             lot={selected}
             projectName={projectName}
+            projectSlug={projectSlug}
             modal={full}
             onClose={() => setSelected(null)}
           />
@@ -558,16 +583,16 @@ function byCode(a: PublicLot, b: PublicLot) {
   return a.code.localeCompare(b.code, 'es', { numeric: true });
 }
 
-function fmtArea(a?: number | null) {
+export function fmtArea(a?: number | null) {
   return a != null ? `${a.toLocaleString('en-US', { maximumFractionDigits: 0 })} m²` : '—';
 }
 
-function monthly(price: number) {
+export function monthly(price: number) {
   return (price * (1 - DOWN_PAYMENT)) / INSTALLMENTS;
 }
 
 /** Fotos del solar cargadas desde el panel de administración. */
-function LotPhotos({ images, code }: { images: string[]; code: string }) {
+export function LotPhotos({ images, code }: { images: string[]; code: string }) {
   const { t } = useLang();
   const [open, setOpen] = useState<number | null>(null);
   if (!images.length) return null;
@@ -604,11 +629,13 @@ function LotPhotos({ images, code }: { images: string[]; code: string }) {
 function LotPanel({
   lot,
   projectName,
+  projectSlug,
   modal,
   onClose,
 }: {
   lot: PublicLot;
   projectName: string;
+  projectSlug: string;
   /** En pantalla completa la ficha es una ventana emergente sobre el mapa. */
   modal?: boolean;
   onClose: () => void;
@@ -685,6 +712,7 @@ function LotPanel({
 
       {/* Vía más rápida: abre WhatsApp con el solar ya escrito, sin llenar nada. */}
       <WhatsAppCTA message={waMsg} className="mt-4 w-full" />
+      <ShareLot lot={lot} projectName={projectName} projectSlug={projectSlug} className="mt-2" />
 
       <LotSheet lot={lot} />
 
@@ -743,7 +771,7 @@ function LotPanel({
   );
 }
 
-function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+export function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
     <div className="flex justify-between gap-3">
       <dt className="shrink-0 text-brand-gray">{label}</dt>
@@ -779,7 +807,7 @@ const CARDINAL_SHORT: Record<string, string> = { NORTE: 'Norte', ESTE: 'Este', S
 const num = (n: number, d = 2) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 /** Ficha técnica del solar: identificación, linderos y coordenadas (fuente GEO 3i). */
-function LotSheet({ lot }: { lot: PublicLot }) {
+export function LotSheet({ lot }: { lot: PublicLot }) {
   const { t } = useLang();
   const note = lot.details?.cadastralNote;
   // Solo hay geometría cuando el solar está digitalizado en GEO 3i.
