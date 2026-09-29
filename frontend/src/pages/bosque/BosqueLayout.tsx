@@ -33,6 +33,9 @@ export default function BosqueLayout() {
             <a href={`${bosquePath()}#mapa`} className="hidden px-2 py-1 hover:text-bosque md:inline">
               Mapa
             </a>
+            <Link to={bosquePath('/transparencia')} className="hidden px-2 py-1 hover:text-bosque lg:inline">
+              Cuentas claras
+            </Link>
             <a
               href={`${bosquePath()}#especies`}
               className="whitespace-nowrap rounded-full bg-bosque px-4 py-2 text-white transition hover:bg-bosque-dark"
@@ -67,6 +70,12 @@ export default function BosqueLayout() {
           <div className="text-sm">
             <p className="font-semibold text-white">Gestión técnica</p>
             <p className="mt-2">Ing. Génesis Baquerizo, ingeniera agropecuaria</p>
+            <Link to={bosquePath('/transparencia')} className="mt-3 block hover:text-guayacan">
+              Cuentas claras
+            </Link>
+            <Link to={bosquePath('/terminos')} className="mt-1 block hover:text-guayacan">
+              Términos de la adopción
+            </Link>
           </div>
         </div>
       </footer>

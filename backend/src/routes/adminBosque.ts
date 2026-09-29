@@ -263,6 +263,9 @@ adminBosqueRoutes.put('/trees/:id', async (req: AuthedRequest, res) => {
     if (b.lat !== undefined) data.lat = b.lat === '' || b.lat == null ? null : Number(b.lat);
     if (b.lng !== undefined) data.lng = b.lng === '' || b.lng == null ? null : Number(b.lng);
     if (b.speciesId) data.speciesId = String(b.speciesId);
+    // Árbol perdido (para reponer): cuenta en la supervivencia pública.
+    if (b.lost === true) data.status = 'LOST';
+    if (b.lost === false) data.status = (await prisma.tree.findUnique({ where: { id: req.params.id }, select: { adoptionId: true } }))?.adoptionId ? 'ADOPTED' : 'AVAILABLE';
     const t = await prisma.tree.update({ where: { id: req.params.id }, data });
     await audit(req.staff?.staffId, 'update', 'tree', t.id, { code: t.code });
     res.json(t);
@@ -319,5 +322,48 @@ adminBosqueRoutes.delete('/updates/:id', async (req: AuthedRequest, res) => {
     res.status(204).end();
   } catch {
     res.status(404).json({ error: 'Novedad no encontrada' });
+  }
+});
+
+// ---------------- Gastos (transparencia) ----------------
+const EXPENSE_CATEGORIES = ['VIVERO', 'SIEMBRA', 'RIEGO', 'MANO_OBRA', 'HERRAMIENTAS', 'OTROS'];
+
+adminBosqueRoutes.get('/expenses', async (_req, res) => {
+  res.json(await prisma.bosqueExpense.findMany({ orderBy: { date: 'desc' } }));
+});
+
+adminBosqueRoutes.post('/expenses', async (req: AuthedRequest, res) => {
+  try {
+    const b = req.body ?? {};
+    const amount = Number(b.amount);
+    const description = String(b.description ?? '').trim();
+    if (!description || !Number.isFinite(amount) || amount <= 0 || !EXPENSE_CATEGORIES.includes(b.category)) {
+      res.status(400).json({ error: 'Categoría, descripción y monto mayor a 0 son obligatorios' });
+      return;
+    }
+    const e = await prisma.bosqueExpense.create({
+      data: {
+        date: b.date ? new Date(b.date) : new Date(),
+        category: b.category,
+        description: description.slice(0, 300),
+        amount,
+        receiptUrl: b.receiptUrl ? String(b.receiptUrl) : null,
+      },
+    });
+    await audit(req.staff?.staffId, 'create', 'bosqueExpense', e.id, { amount: e.amount, category: e.category });
+    res.status(201).json(e);
+  } catch (err) {
+    console.error('POST /api/admin/bosque/expenses', err);
+    res.status(400).json({ error: 'No se pudo registrar el gasto' });
+  }
+});
+
+adminBosqueRoutes.delete('/expenses/:id', async (req: AuthedRequest, res) => {
+  try {
+    await prisma.bosqueExpense.delete({ where: { id: req.params.id } });
+    await audit(req.staff?.staffId, 'delete', 'bosqueExpense', req.params.id);
+    res.status(204).end();
+  } catch {
+    res.status(404).json({ error: 'Gasto no encontrado' });
   }
 });

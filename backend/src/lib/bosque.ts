@@ -40,6 +40,8 @@ export async function assignTrees(adoptionId: string): Promise<number> {
     include: { _count: { select: { trees: true } } },
   });
   if (!a || a.status !== 'confirmed') return 0;
+  // El árbol que el padrino eligió en el mapa ya está reservado a su nombre.
+  await prisma.tree.updateMany({ where: { adoptionId: a.id, status: 'RESERVED' }, data: { status: 'ADOPTED' } });
   const missing = a.quantity - a._count.trees;
   if (missing <= 0) return 0;
   const free = await prisma.tree.findMany({

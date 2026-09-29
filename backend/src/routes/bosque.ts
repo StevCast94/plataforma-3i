@@ -33,11 +33,11 @@ bosqueRoutes.get('/stats', async (_req, res) => {
 // GET /api/bosque/trees — puntos del mapa (solo árboles con coordenadas)
 bosqueRoutes.get('/trees', async (_req, res) => {
   const trees = await prisma.tree.findMany({
-    where: { lat: { not: null }, lng: { not: null } },
+    where: { lat: { not: null }, lng: { not: null }, status: { not: 'LOST' } },
     select: {
-      code: true, status: true, lat: true, lng: true, plantedAt: true,
+      code: true, status: true, lat: true, lng: true, plantedAt: true, speciesId: true, zone: true,
       species: { select: { name: true, category: true } },
-      adoption: { select: { dedication: true, customerName: true, status: true } },
+      adoption: { select: { dedication: true, customerName: true, status: true, anonymous: true } },
     },
     orderBy: { code: 'asc' },
   });
@@ -49,8 +49,15 @@ bosqueRoutes.get('/trees', async (_req, res) => {
       lng: t.lng,
       planted: !!t.plantedAt,
       species: t.species.name,
+      speciesId: t.speciesId,
+      zone: t.zone,
       category: t.species.category,
-      padrino: t.adoption?.status === 'confirmed' ? t.adoption.dedication || t.adoption.customerName : null,
+      padrino:
+        t.adoption?.status === 'confirmed'
+          ? t.adoption.anonymous
+            ? 'Padrino anónimo'
+            : t.adoption.dedication || t.adoption.customerName
+          : null,
     })),
   );
 });
@@ -61,7 +68,7 @@ bosqueRoutes.get('/tree/:code', async (req, res) => {
     where: { code: req.params.code.toUpperCase() },
     include: {
       species: true,
-      adoption: { select: { code: true, dedication: true, customerName: true, status: true, confirmedAt: true } },
+      adoption: { select: { code: true, dedication: true, customerName: true, status: true, confirmedAt: true, anonymous: true } },
     },
   });
   if (!tree) {
@@ -90,9 +97,8 @@ bosqueRoutes.get('/tree/:code', async (req, res) => {
       description: tree.species.description,
       image: tree.species.image,
     },
-    padrino: a ? a.dedication || a.customerName : null,
+    padrino: a ? (a.anonymous ? 'Padrino anónimo' : a.dedication || a.customerName) : null,
     adoptedAt: a?.confirmedAt ?? null,
-    adoptionCode: a?.code ?? null,
     updates: updates.map((u) => ({ id: u.id, title: u.title, body: u.body, photos: u.photos, createdAt: u.createdAt })),
   });
 });
@@ -127,16 +133,24 @@ bosqueRoutes.get('/adoption/:code', async (req, res) => {
 // POST /api/bosque/adoptions — solicitud de adopción (queda pendiente de pago)
 bosqueRoutes.post('/adoptions', async (req, res) => {
   try {
-    const { speciesId, quantity, customerName, customerEmail, customerPhone, dedication, message, referralCode, subscription } =
+    const { anonymous, speciesId, treeCode, quantity, customerName, customerEmail, customerPhone, dedication, message, referralCode, subscription } =
       req.body ?? {};
     const name = String(customerName ?? '').trim();
     const phone = String(customerPhone ?? '').trim();
-    const qty = Math.min(Math.max(parseInt(String(quantity ?? 1), 10) || 1, 1), 100);
+    // Si eligió un árbol concreto en el mapa, la adopción es de ese árbol (1 unidad).
+    const picked = treeCode
+      ? await prisma.tree.findUnique({ where: { code: String(treeCode).trim().toUpperCase() } })
+      : null;
+    if (treeCode && (!picked || picked.status !== 'AVAILABLE')) {
+      res.status(409).json({ error: 'Ese árbol ya fue elegido por otra persona. Elige otro en el mapa.' });
+      return;
+    }
+    const qty = picked ? 1 : Math.min(Math.max(parseInt(String(quantity ?? 1), 10) || 1, 1), 100);
     if (!name || !phone) {
       res.status(400).json({ error: 'Nombre y WhatsApp son obligatorios' });
       return;
     }
-    const species = await prisma.treeSpecies.findFirst({ where: { id: String(speciesId ?? ''), active: true } });
+    const species = await prisma.treeSpecies.findFirst({ where: { id: picked ? picked.speciesId : String(speciesId ?? ''), active: true } });
     if (!species) {
       res.status(400).json({ error: 'Elige una especie' });
       return;
@@ -154,9 +168,22 @@ bosqueRoutes.post('/adoptions', async (req, res) => {
         message: message ? String(message).trim().slice(0, 1000) : null,
         referralCode: referralCode ? String(referralCode).trim().toUpperCase().slice(0, 40) : null,
         subscription: !!subscription,
+        anonymous: !!anonymous,
       },
     });
-    res.status(201).json({ code: adoption.code, amount: adoption.amount, quantity: adoption.quantity, species: species.name });
+    if (picked) {
+      // Reserva atómica: si otra persona lo tomó en el mismo instante, se deshace.
+      const r = await prisma.tree.updateMany({
+        where: { id: picked.id, status: 'AVAILABLE' },
+        data: { status: 'RESERVED', adoptionId: adoption.id },
+      });
+      if (r.count === 0) {
+        await prisma.treeAdoption.delete({ where: { id: adoption.id } });
+        res.status(409).json({ error: 'Ese árbol ya fue elegido por otra persona. Elige otro en el mapa.' });
+        return;
+      }
+    }
+    res.status(201).json({ code: adoption.code, amount: adoption.amount, quantity: adoption.quantity, species: species.name, treeCode: picked?.code ?? null });
   } catch (err) {
     console.error('POST /api/bosque/adoptions', err);
     res.status(500).json({ error: 'No se pudo registrar la adopción' });
@@ -172,4 +199,41 @@ bosqueRoutes.get('/updates', async (_req, res) => {
     select: { id: true, title: true, body: true, photos: true, createdAt: true },
   });
   res.json(updates);
+});
+
+const EXPENSE_LABEL: Record<string, string> = {
+  VIVERO: 'Vivero y plántulas',
+  SIEMBRA: 'Siembra',
+  RIEGO: 'Riego y agua',
+  MANO_OBRA: 'Mano de obra',
+  HERRAMIENTAS: 'Herramientas e insumos',
+  OTROS: 'Otros',
+};
+
+// GET /api/bosque/transparency — cuentas y avance, públicos
+bosqueRoutes.get('/transparency', async (_req, res) => {
+  const [income, expenses, trees, planted, lost, adopted] = await Promise.all([
+    prisma.treeAdoption.aggregate({ where: { status: 'confirmed' }, _sum: { amount: true, quantity: true } }),
+    prisma.bosqueExpense.findMany({ orderBy: { date: 'desc' } }),
+    prisma.tree.count(),
+    prisma.tree.count({ where: { plantedAt: { not: null } } }),
+    prisma.tree.count({ where: { status: 'LOST' } }),
+    prisma.tree.count({ where: { status: 'ADOPTED' } }),
+  ]);
+  const byCategory: Record<string, number> = {};
+  for (const e of expenses) byCategory[e.category] = (byCategory[e.category] ?? 0) + e.amount;
+  const spent = expenses.reduce((n, e) => n + e.amount, 0);
+  res.json({
+    income: income._sum.amount ?? 0,
+    treesCommitted: income._sum.quantity ?? 0,
+    spent,
+    balance: (income._sum.amount ?? 0) - spent,
+    byCategory: Object.entries(byCategory)
+      .map(([k, v]) => ({ category: k, label: EXPENSE_LABEL[k] ?? k, amount: v }))
+      .sort((a, b) => b.amount - a.amount),
+    expenses: expenses.slice(0, 50).map((e) => ({
+      id: e.id, date: e.date, label: EXPENSE_LABEL[e.category] ?? e.category, description: e.description, amount: e.amount, receiptUrl: e.receiptUrl,
+    })),
+    trees: { total: trees, planted, lost, adopted, survival: planted > 0 ? Math.round(((planted - lost) / planted) * 1000) / 10 : null },
+  });
 });

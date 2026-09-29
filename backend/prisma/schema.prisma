@@ -718,7 +718,7 @@ model Tree {
   code       String        @unique
   speciesId  String
   species    TreeSpecies   @relation(fields: [speciesId], references: [id])
-  status     String        @default("AVAILABLE") // AVAILABLE | ADOPTED
+  status     String        @default("AVAILABLE") // AVAILABLE | RESERVED (adopción pendiente de pago) | ADOPTED | LOST
   lat        Float?
   lng        Float?
   zone       String?
@@ -753,6 +753,8 @@ model TreeAdoption {
   referralCode  String?
   source        String       @default("web") // web | solar | cortesia
   subscription  Boolean      @default(false)
+  /// Oculta el nombre en el mapa y la página del árbol (el certificado lo conserva).
+  anonymous     Boolean      @default(false)
   lotId         String?      @unique
   lotCode       String?
   trees         Tree[]
@@ -771,4 +773,15 @@ model TreeUpdate {
   createdAt DateTime @default(now())
 
   @@index([treeId])
+}
+
+/// Gasto del Bosque: alimenta la página pública de transparencia.
+model BosqueExpense {
+  id          String   @id @default(uuid())
+  date        DateTime
+  category    String // VIVERO | SIEMBRA | RIEGO | MANO_OBRA | HERRAMIENTAS | OTROS
+  description String
+  amount      Float
+  receiptUrl  String?
+  createdAt   DateTime @default(now())
 }

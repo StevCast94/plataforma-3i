@@ -61,6 +61,8 @@ const BosqueLayout = lazy(() => import('@/pages/bosque/BosqueLayout'));
 const BosqueHome = lazy(() => import('@/pages/bosque/BosqueHome'));
 const BosqueTreePage = lazy(() => import('@/pages/bosque/BosqueTreePage'));
 const BosqueCertificatePage = lazy(() => import('@/pages/bosque/BosqueCertificatePage'));
+const BosqueTransparencyPage = lazy(() => import('@/pages/bosque/BosqueTransparencyPage'));
+const BosqueTermsPage = lazy(() => import('@/pages/bosque/BosqueTermsPage'));
 
 // Comunidad (red social)
 const CommunityFeedPage = lazy(() => import('@/pages/comunidad/CommunityFeedPage'));
@@ -112,6 +114,8 @@ export default function App() {
                   <Route index element={<BosqueHome />} />
                   <Route path="arbol/:code" element={<BosqueTreePage />} />
                   <Route path="certificado/:code" element={<BosqueCertificatePage />} />
+                  <Route path="transparencia" element={<BosqueTransparencyPage />} />
+                  <Route path="terminos" element={<BosqueTermsPage />} />
                   <Route path="*" element={<BosqueHome />} />
                 </Route>
               </Routes>
@@ -126,6 +130,8 @@ export default function App() {
                 <Route index element={<BosqueHome />} />
                 <Route path="arbol/:code" element={<BosqueTreePage />} />
                 <Route path="certificado/:code" element={<BosqueCertificatePage />} />
+                  <Route path="transparencia" element={<BosqueTransparencyPage />} />
+                  <Route path="terminos" element={<BosqueTermsPage />} />
               </Route>
 
               {/* Comprobante de compra — público, standalone, imprimible (se comparte por WhatsApp) */}

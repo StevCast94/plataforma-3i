@@ -54,7 +54,9 @@ export interface BosqueStats {
 
 export interface MapTree {
   code: string;
-  status: 'AVAILABLE' | 'ADOPTED';
+  status: 'AVAILABLE' | 'RESERVED' | 'ADOPTED';
+  speciesId?: string;
+  zone?: string | null;
   lat: number;
   lng: number;
   planted: boolean;
@@ -82,7 +84,6 @@ export interface PublicTree {
   species: { name: string; scientificName: string | null; category: SpeciesCategory; description: string; image: string | null };
   padrino: string | null;
   adoptedAt: string | null;
-  adoptionCode: string | null;
   updates: TreeUpdateItem[];
 }
 

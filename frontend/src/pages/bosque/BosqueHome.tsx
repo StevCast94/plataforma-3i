@@ -15,7 +15,8 @@ import {
   type TreeUpdateItem,
 } from '@/lib/bosque';
 import { cld } from '@/lib/cloudinary';
-import { BosqueMap } from './BosqueMap';
+import { BosqueMap, TREE_COLOR } from './BosqueMap';
+import { FOREST_HA, PILOT_HA } from '@/lib/bosqueGeo';
 import { AdoptModal } from './AdoptModal';
 
 const HERO = 'https://res.cloudinary.com/db3t73yas/image/upload/v1787623457/grupo3i/szzat1etcxe280jdtabj.jpg';
@@ -31,6 +32,16 @@ const STEPS = [
   { icon: MapPin, title: 'Lo sembramos con tu nombre', body: 'Tu árbol recibe un código, una ubicación GPS y un certificado con QR.' },
   { icon: Droplets, title: 'Lo cuidamos 3 años', body: 'Riego desde el río, reposición si no prospera y fotos para que lo veas crecer.' },
   { icon: TreeDeciduous, title: 'Nunca se tala', body: 'Es un bosque de conservación permanente. Puedes visitarlo cuando quieras.' },
+];
+
+const chip = (active: boolean) =>
+  `rounded-full px-3.5 py-1.5 text-sm font-medium ${active ? 'bg-bosque text-white' : 'bg-white text-bosque-dark hover:bg-bosque/10'}`;
+
+const CALENDAR = [
+  { when: 'Octubre a diciembre', title: 'Vivero', body: 'Recolección de semillas y germinación en el vivero junto al río. Tu árbol empieza aquí.' },
+  { when: 'Diciembre y enero', title: 'Floración del guayacán', body: 'Los guayacanes se cubren de flores amarillas. La mejor época para visitar el bosque.' },
+  { when: 'Enero a abril', title: 'Siembra', body: 'Sembramos con las lluvias. Registramos la fecha y la foto de cada árbol en su página.' },
+  { when: 'Mayo a diciembre', title: 'Cuidado en época seca', body: 'Riego desde el río, control de maleza y reposición de los árboles que no prosperen.' },
 ];
 
 const FAQ = [
@@ -66,6 +77,8 @@ export default function BosqueHome() {
   const [trees, setTrees] = useState<MapTree[]>([]);
   const [updates, setUpdates] = useState<TreeUpdateItem[]>([]);
   const [adopt, setAdopt] = useState<TreeSpecies | null | undefined>(undefined);
+  const [picked, setPicked] = useState<MapTree | null>(null);
+  const [filter, setFilter] = useState<string | null>(null);
 
   useEffect(() => {
     bosqueGet<TreeSpecies[]>('/species').then(setSpecies).catch(() => {});
@@ -193,24 +206,52 @@ export default function BosqueHome() {
 
       {/* MAPA */}
       <section id="mapa" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6">
-        <h2 className="font-bosque text-4xl font-semibold text-bosque">El bosque, árbol por árbol</h2>
-        {trees.length > 0 ? (
-          <>
-            <p className="mt-3 text-bosque-dark/75">
-              Cada punto es un árbol. <span className="font-semibold text-[#b07e0c]">Amarillo</span>: ya tiene padrino.{' '}
-              <span className="font-semibold text-bosque">Verde</span>: espera el suyo.
-            </p>
-            <BosqueMap trees={trees} className="mt-8 h-[460px]" />
-          </>
-        ) : (
-          <div className="mt-8 grid gap-6 rounded-2xl bg-bosque p-8 text-white sm:grid-cols-[auto_1fr] sm:items-center">
-            <MapPin className="h-10 w-10 text-guayacan" strokeWidth={1.5} />
-            <p className="max-w-2xl leading-relaxed text-white/85">
-              El plano de siembra se publica al iniciar la siembra, en enero de 2027. Desde ese momento cada árbol aparece
-              aquí con su código y su padrino, y tú puedes ubicar el tuyo.
-            </p>
-          </div>
-        )}
+        <h2 className="font-bosque text-4xl font-semibold text-bosque">Elige tu árbol en el mapa</h2>
+        <p className="mt-3 max-w-3xl text-bosque-dark/75">
+          El terreno completo tiene {FOREST_HA} hectáreas (línea blanca). La primera etapa, de {PILOT_HA} hectáreas, está
+          marcada en amarillo. Toca un árbol verde para adoptarlo: queda reservado a tu nombre mientras coordinamos el pago.
+        </p>
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setFilter(null)}
+            className={chip(filter === null)}
+          >
+            Todas
+          </button>
+          {species.map((sp) => (
+            <button
+              key={sp.id}
+              onClick={() => setFilter(sp.id)}
+              className={chip(filter === sp.id)}
+            >
+              {sp.name}
+              <span className="ml-1.5 text-xs opacity-70">{trees.filter((t) => t.speciesId === sp.id && t.status === 'AVAILABLE').length}</span>
+            </button>
+          ))}
+        </div>
+        <BosqueMap trees={trees} speciesFilter={filter} onPick={setPicked} className="mt-5 h-[480px] sm:h-[560px]" />
+        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-bosque-dark/75">
+          <span><i className="mr-2 inline-block h-3 w-3 rounded-full align-[-1px]" style={{ background: TREE_COLOR.AVAILABLE }} />Disponible</span>
+          <span><i className="mr-2 inline-block h-3 w-3 rounded-full align-[-1px]" style={{ background: TREE_COLOR.RESERVED }} />Reservado</span>
+          <span><i className="mr-2 inline-block h-3 w-3 rounded-full align-[-1px]" style={{ background: TREE_COLOR.ADOPTED }} />Con padrino</span>
+          <span className="text-bosque-dark/60">Ubicaciones del plano de siembra: pueden ajustarse unos metros al sembrar.</span>
+        </div>
+      </section>
+
+      {/* CALENDARIO */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+          <h2 className="font-bosque text-4xl font-semibold text-bosque">El año en el bosque</h2>
+          <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {CALENDAR.map((c) => (
+              <li key={c.when} className="border-t-2 border-guayacan pt-4">
+                <p className="text-xs font-semibold uppercase tracking-widest text-bosque/70">{c.when}</p>
+                <h3 className="mt-1 font-semibold">{c.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-bosque-dark/75">{c.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* VÍNCULO MONTAÑITA VIEW */}
@@ -279,8 +320,17 @@ export default function BosqueHome() {
         </div>
       </section>
 
-      {adopt !== undefined && species.length > 0 && (
-        <AdoptModal species={species} initial={adopt} onClose={() => setAdopt(undefined)} />
+      {(adopt !== undefined || picked) && species.length > 0 && (
+        <AdoptModal
+          species={species}
+          initial={adopt ?? null}
+          picked={picked}
+          onClose={() => {
+            setAdopt(undefined);
+            if (picked) bosqueGet<MapTree[]>('/trees').then(setTrees).catch(() => {});
+            setPicked(null);
+          }}
+        />
       )}
     </>
   );

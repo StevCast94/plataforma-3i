@@ -4,15 +4,18 @@ import { Minus, Plus, X } from 'lucide-react';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { useReferral } from '@/hooks/useReferral';
-import { BOSQUE_NAME, bosquePath, bosquePost, CATEGORY_LABEL, money, type TreeSpecies } from '@/lib/bosque';
+import { BOSQUE_NAME, bosquePath, bosquePost, CATEGORY_LABEL, money, type MapTree, type TreeSpecies } from '@/lib/bosque';
 
 interface Props {
   species: TreeSpecies[];
   initial: TreeSpecies | null;
+  /** Árbol elegido en el mapa: la adopción es de ese árbol exacto. */
+  picked?: MapTree | null;
   onClose: () => void;
 }
 
 interface Created {
+  treeCode?: string | null;
   code: string;
   amount: number;
   quantity: number;
@@ -22,9 +25,11 @@ interface Created {
 const field = 'w-full rounded-xl border border-bosque/20 bg-white px-4 py-3 text-sm outline-none focus:border-bosque';
 
 /** Formulario de adopción. La adopción queda pendiente hasta que se confirma el pago. */
-export function AdoptModal({ species, initial, onClose }: Props) {
+export function AdoptModal({ species, initial, picked, onClose }: Props) {
   const referral = useReferral();
-  const [speciesId, setSpeciesId] = useState(initial?.id ?? species[0]?.id ?? '');
+  const [speciesId, setSpeciesId] = useState(picked?.speciesId ?? initial?.id ?? species[0]?.id ?? '');
+  const [accepted, setAccepted] = useState(false);
+  const [anonymous, setAnonymous] = useState(false);
   const [qty, setQty] = useState(1);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -47,7 +52,7 @@ export function AdoptModal({ species, initial, onClose }: Props) {
   }, [onClose]);
 
   const sp = species.find((s) => s.id === speciesId);
-  const total = (sp?.price ?? 0) * qty;
+  const total = (sp?.price ?? 0) * (picked ? 1 : qty);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -60,12 +65,14 @@ export function AdoptModal({ species, initial, onClose }: Props) {
     try {
       const r = await bosquePost<Created>('/adoptions', {
         speciesId,
-        quantity: qty,
+        treeCode: picked?.code ?? null,
+        quantity: picked ? 1 : qty,
         customerName: name,
         customerPhone: phone,
         customerEmail: email || null,
         dedication: gift || dedication ? dedication || null : null,
         subscription,
+        anonymous,
         referralCode: referral,
       });
       setCreated(r);
@@ -77,7 +84,7 @@ export function AdoptModal({ species, initial, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[1100] flex items-end justify-center bg-black/50 sm:items-center sm:p-4" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
@@ -97,7 +104,7 @@ export function AdoptModal({ species, initial, onClose }: Props) {
         {created ? (
           <div className="mt-5 space-y-4 text-sm leading-relaxed">
             <p>
-              Registramos tu adopción de <strong>{created.quantity} {created.species}</strong> por{' '}
+              Registramos tu adopción de <strong>{created.treeCode ? `${created.species} ${created.treeCode}` : `${created.quantity} ${created.species}`}</strong> por{' '}
               <strong>{money(created.amount)}</strong>.
             </p>
             <div className="rounded-2xl bg-white p-4 text-center">
@@ -123,6 +130,16 @@ export function AdoptModal({ species, initial, onClose }: Props) {
           </div>
         ) : (
           <form onSubmit={submit} className="mt-5 space-y-4">
+            {picked ? (
+              <div className="rounded-xl bg-white px-4 py-3">
+                <p className="text-xs uppercase tracking-widest text-bosque-dark/60">Árbol elegido en el mapa</p>
+                <p className="mt-1 font-semibold">
+                  <span className="font-mono text-bosque">{picked.code}</span> · {picked.species}
+                  {picked.zone ? ` · ${picked.zone}` : ''}
+                </p>
+              </div>
+            ) : (
+            <>
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium">Especie</span>
               <select id="adopt-species" value={speciesId} onChange={(e) => setSpeciesId(e.target.value)} className={field}>
@@ -146,6 +163,8 @@ export function AdoptModal({ species, initial, onClose }: Props) {
                 </button>
               </div>
             </div>
+            </>
+            )}
 
             <input id="adopt-name" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre completo" className={field} />
             <PhoneField name="adopt-phone" label="WhatsApp" required onChange={setPhone} />
@@ -159,11 +178,26 @@ export function AdoptModal({ species, initial, onClose }: Props) {
               <input id="adopt-dedication" value={dedication} onChange={(e) => setDedication(e.target.value)} placeholder="Nombre que aparecerá en el certificado" className={field} />
             )}
 
+            <label className="flex items-center gap-2 text-sm">
+              <input id="adopt-anon" type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="h-4 w-4 accent-[#1f4d34]" />
+              No mostrar mi nombre en el mapa (aparecerá como padrino anónimo)
+            </label>
+
             <label className="flex items-start gap-2 text-sm">
               <input id="adopt-sub" type="checkbox" checked={subscription} onChange={(e) => setSubscription(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[#1f4d34]" />
               <span>
                 Quiero sumarme como <strong>padrino activo</strong> (aporte mensual opcional para novedades, visita guiada y
                 fruta de temporada). Te contamos los detalles por WhatsApp.
+              </span>
+            </label>
+
+            <label className="flex items-start gap-2 text-sm">
+              <input id="adopt-terms" type="checkbox" required checked={accepted} onChange={(e) => setAccepted(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[#1f4d34]" />
+              <span>
+                Acepto los{' '}
+                <Link to={bosquePath('/terminos')} target="_blank" className="font-semibold text-bosque underline underline-offset-2">
+                  términos de la adopción
+                </Link>
               </span>
             </label>
 

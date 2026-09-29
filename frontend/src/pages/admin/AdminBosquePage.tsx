@@ -65,7 +65,7 @@ interface Update {
   tree: { code: string } | null;
 }
 
-const TABS = ['Adopciones', 'Árboles', 'Especies', 'Novedades'] as const;
+const TABS = ['Adopciones', 'Árboles', 'Especies', 'Novedades', 'Gastos'] as const;
 type Tab = (typeof TABS)[number];
 
 const input = 'w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm';
@@ -131,6 +131,7 @@ export default function AdminBosquePage() {
       {tab === 'Árboles' && <TreesTab onChange={summary.reload} />}
       {tab === 'Especies' && <SpeciesTab />}
       {tab === 'Novedades' && <UpdatesTab />}
+      {tab === 'Gastos' && <ExpensesTab />}
     </div>
   );
 }
@@ -410,10 +411,11 @@ function TreeEditor({ tree, onClose, onSaved }: { tree: Tree; onClose: () => voi
   const [plantedAt, setPlantedAt] = useState(tree.plantedAt ? tree.plantedAt.slice(0, 10) : '');
   const [zone, setZone] = useState(tree.zone ?? '');
   const [photos, setPhotos] = useState<string[]>(tree.photos);
+  const [lost, setLost] = useState(tree.status === 'LOST');
 
   async function save() {
     try {
-      await adminApi.put(`/admin/bosque/trees/${tree.id}`, { plantedAt: plantedAt || null, zone, photos });
+      await adminApi.put(`/admin/bosque/trees/${tree.id}`, { plantedAt: plantedAt || null, zone, photos, lost });
       toast(`${tree.code} actualizado`, 'success');
       onSaved();
     } catch (e) {
@@ -441,6 +443,10 @@ function TreeEditor({ tree, onClose, onSaved }: { tree: Tree; onClose: () => voi
           <input id="te-zone" value={zone} onChange={(e) => setZone(e.target.value)} className={`${input} mt-1`} />
         </label>
       </div>
+      <label className="mt-3 flex items-center gap-2 text-sm">
+        <input id="te-lost" type="checkbox" checked={lost} onChange={(e) => setLost(e.target.checked)} />
+        El árbol no prosperó (cuenta en la supervivencia pública; hay que reponerlo)
+      </label>
       <p className="mt-4 text-sm font-medium">Fotos del árbol (la primera es la portada)</p>
       <div className="mt-2">
         <CloudinaryUpload value={photos} onChange={setPhotos} />
@@ -620,6 +626,128 @@ function UpdatesTab() {
             </button>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------ Gastos
+interface Expense {
+  id: string;
+  date: string;
+  category: string;
+  description: string;
+  amount: number;
+  receiptUrl: string | null;
+}
+
+const EXPENSE_CATS: [string, string][] = [
+  ['VIVERO', 'Vivero y plántulas'],
+  ['SIEMBRA', 'Siembra'],
+  ['RIEGO', 'Riego y agua'],
+  ['MANO_OBRA', 'Mano de obra'],
+  ['HERRAMIENTAS', 'Herramientas e insumos'],
+  ['OTROS', 'Otros'],
+];
+
+function ExpensesTab() {
+  const { toast } = useToast();
+  const list = useAdminGet<Expense[]>('/admin/bosque/expenses');
+  const today = new Date().toISOString().slice(0, 10);
+  const [f, setF] = useState({ date: today, category: 'VIVERO', description: '', amount: '' });
+  const [receipt, setReceipt] = useState<string[]>([]);
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      await adminApi.post('/admin/bosque/expenses', { ...f, amount: Number(f.amount), receiptUrl: receipt[0] ?? null });
+      toast('Gasto registrado: ya aparece en Cuentas claras', 'success');
+      setF({ ...f, description: '', amount: '' });
+      setReceipt([]);
+      list.reload();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    }
+  }
+
+  async function remove(x: Expense) {
+    try {
+      await adminApi.del(`/admin/bosque/expenses/${x.id}`);
+      list.reload();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    }
+  }
+
+  const total = (list.data ?? []).reduce((n, x) => n + x.amount, 0);
+
+  return (
+    <div className="space-y-5">
+      <form onSubmit={save} className="space-y-3 rounded-xl bg-white p-4 shadow-sm">
+        <h2 className="font-semibold text-primary">Registrar gasto</h2>
+        <p className="text-sm text-brand-gray">
+          Todo lo que registres aquí se publica en la página Cuentas claras. Adjunta la foto de la factura o el recibo cuando
+          puedas.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-4">
+          <input id="ex-date" type="date" value={f.date} onChange={(e) => setF({ ...f, date: e.target.value })} className={input} />
+          <select id="ex-cat" value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} className={input}>
+            {EXPENSE_CATS.map(([k, l]) => (
+              <option key={k} value={k}>
+                {l}
+              </option>
+            ))}
+          </select>
+          <input id="ex-desc" required placeholder="Detalle (ej. 200 fundas para vivero)" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} className={input} />
+          <input id="ex-amount" required type="number" min={0.01} step="0.01" placeholder="Monto USD" value={f.amount} onChange={(e) => setF({ ...f, amount: e.target.value })} className={input} />
+        </div>
+        <CloudinaryUpload single value={receipt} onChange={setReceipt} />
+        <button className={btn}>Registrar</button>
+      </form>
+
+      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+        <table className="w-full text-sm">
+          <thead className="bg-light text-left text-xs uppercase tracking-wide text-brand-gray">
+            <tr>
+              <th className="px-3 py-2">Fecha</th>
+              <th className="px-3 py-2">Rubro</th>
+              <th className="px-3 py-2">Detalle</th>
+              <th className="px-3 py-2 text-right">Monto</th>
+              <th className="px-3 py-2" />
+            </tr>
+          </thead>
+          <tbody>
+            {(list.data ?? []).map((x) => (
+              <tr key={x.id} className="border-t border-black/5">
+                <td className="px-3 py-2">{new Date(x.date).toLocaleDateString('es-EC', { timeZone: 'UTC' })}</td>
+                <td className="px-3 py-2">{EXPENSE_CATS.find(([k]) => k === x.category)?.[1] ?? x.category}</td>
+                <td className="px-3 py-2">
+                  {x.description}
+                  {x.receiptUrl && (
+                    <a href={x.receiptUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs underline">
+                      comprobante
+                    </a>
+                  )}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums">{money(x.amount)}</td>
+                <td className="px-3 py-2 text-right">
+                  <button className={`${btnGhost} text-red-700`} onClick={() => remove(x)}>
+                    Borrar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-black/10 font-semibold">
+              <td className="px-3 py-2" colSpan={3}>
+                Total invertido
+              </td>
+              <td className="px-3 py-2 text-right tabular-nums">{money(total)}</td>
+              <td />
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
   );
