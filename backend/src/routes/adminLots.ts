@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
+import { giftTreeForLot } from '../lib/bosque';
 
 export const adminLotRoutes = Router();
 adminLotRoutes.use(requireAdmin);
@@ -45,6 +46,10 @@ adminLotRoutes.put('/:id', async (req: AuthedRequest, res) => {
     delete data.updatedAt;
     const lot = await prisma.lot.update({ where: { id: req.params.id }, data });
     await audit(req.staff?.staffId, 'update', 'lot', lot.id, { code: lot.code, status: lot.status });
+    // Cada solar vendido de Montañita View trae 1 árbol del Bosque a nombre del comprador.
+    if (lot.status === 'SOLD' && lot.kind === 'LOT' && lot.code !== 'LOBBY') {
+      await giftTreeForLot(lot).catch((e) => console.error('giftTreeForLot', e));
+    }
     res.json(lot);
   } catch (err) {
     console.error('PUT /api/admin/lots/:id', err);

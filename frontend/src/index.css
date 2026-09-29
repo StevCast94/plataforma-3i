@@ -18,6 +18,13 @@
   --color-brand-red: #a83437;
   --color-brand-bronze: #ab751e;
 
+  /* === Bosque ("adopta un árbol"): identidad propia, vinculada a Grupo 3i === */
+  --color-bosque: #1f4d34;
+  --color-bosque-dark: #12301f;
+  --color-guayacan: #e3a81b;
+  --color-savia: #eef3ea;
+  --font-bosque: "Fraunces", Georgia, serif;
+
   --font-serif: "Playfair Display", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
 }

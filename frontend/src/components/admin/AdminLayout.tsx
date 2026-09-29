@@ -1,17 +1,19 @@
 import { Suspense } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { AdminSidebar } from './AdminSidebar';
 import { AdminHeader } from './AdminHeader';
 import { BrandLoader } from '@/components/brand/Isotipo';
 
 export function AdminLayout() {
-  const { isAuthenticated, loading } = useAdminAuth();
+  const { isAuthenticated, loading, staff } = useAdminAuth();
+  const { pathname } = useLocation();
 
   if (loading) {
     return <BrandLoader className="min-h-screen" label="Cargando panel…" />;
   }
   if (!isAuthenticated) return <Navigate to="/admin/login" replace />;
+  if (staff?.role === 'bosque' && !pathname.startsWith('/admin/bosque')) return <Navigate to="/admin/bosque" replace />;
 
   return (
     <div className="flex min-h-screen bg-[#f5f5f5]">

@@ -112,6 +112,7 @@ function StaffTab() {
               <option value="admin">Admin</option>
               <option value="advisor">Asesor (recibe leads)</option>
               <option value="content">Contenido</option>
+              <option value="bosque">Gestora del Bosque (solo su módulo)</option>
               <option value="superadmin">Superadmin</option>
             </select>
           </label>

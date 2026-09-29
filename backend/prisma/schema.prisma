@@ -690,3 +690,85 @@ model PriceGuaranteeClaim {
   resolution    String?  @db.Text
   createdAt     DateTime @default(now())
 }
+
+// ============================================================
+// BOSQUE — "Adopta un árbol" (proyecto vinculado a Montañita View)
+// ============================================================
+
+model TreeSpecies {
+  id             String         @id @default(uuid())
+  slug           String         @unique
+  name           String
+  scientificName String?
+  category       String // NATIVE | FRUIT | MONUMENTAL
+  description    String         @db.Text
+  price          Float
+  image          String?
+  active         Boolean        @default(true)
+  sortOrder      Int            @default(0)
+  trees          Tree[]
+  adoptions      TreeAdoption[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Tree {
+  id         String        @id @default(uuid())
+  /// Código público del árbol ("BM-0001"), va en el certificado y el QR.
+  code       String        @unique
+  speciesId  String
+  species    TreeSpecies   @relation(fields: [speciesId], references: [id])
+  status     String        @default("AVAILABLE") // AVAILABLE | ADOPTED
+  lat        Float?
+  lng        Float?
+  zone       String?
+  plantedAt  DateTime?
+  photos     String[]
+  notes      String?       @db.Text // internas
+  adoptionId String?
+  adoption   TreeAdoption? @relation(fields: [adoptionId], references: [id])
+  updates    TreeUpdate[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([adoptionId])
+}
+
+model TreeAdoption {
+  id            String       @id @default(uuid())
+  /// Código público de la adopción ("AD-7K2M9Q"): certificado y seguimiento.
+  code          String       @unique
+  speciesId     String?
+  species       TreeSpecies? @relation(fields: [speciesId], references: [id])
+  quantity      Int          @default(1)
+  amount        Float
+  status        String       @default("pending") // pending | confirmed | cancelled
+  customerName  String
+  customerEmail String?
+  customerPhone String?
+  /// Nombre que aparece en el certificado (puede ser otra persona: regalo).
+  dedication    String?
+  message       String?      @db.Text
+  /// Código de socio que trajo la adopción. Solo trazabilidad: no genera comisión.
+  referralCode  String?
+  source        String       @default("web") // web | solar | cortesia
+  subscription  Boolean      @default(false)
+  lotId         String?      @unique
+  lotCode       String?
+  trees         Tree[]
+  confirmedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model TreeUpdate {
+  id        String   @id @default(uuid())
+  treeId    String?
+  tree      Tree?    @relation(fields: [treeId], references: [id], onDelete: Cascade)
+  title     String
+  body      String   @db.Text
+  photos    String[]
+  createdAt DateTime @default(now())
+
+  @@index([treeId])
+}

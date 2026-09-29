@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useLang } from '@/hooks/useLang';
+import { isBosqueHost } from '@/lib/bosque';
 import { Download, Share, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Isotipo } from '@/components/brand/Isotipo';
@@ -33,6 +35,8 @@ function isIos(): boolean {
  */
 export function InstallAppBanner() {
   const { t } = useLang();
+  const { pathname } = useLocation();
+  const inBosque = isBosqueHost() || pathname.startsWith('/bosque');
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [iosHint, setIosHint] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -71,7 +75,8 @@ export function InstallAppBanner() {
     setVisible(false);
   }
 
-  if (!visible) return null;
+  // El Bosque tiene marca propia: ahí no se ofrece la app de Grupo 3i.
+  if (!visible || inBosque) return null;
 
   return (
     <div

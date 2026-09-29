@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { isBosqueHost } from '@/lib/bosque';
 import { CommunityLayout } from '@/components/comunidad/CommunityLayout';
 import { ToastProvider } from '@/components/shared/Toast';
 import { AuthProvider } from '@/context/AuthContext';
@@ -53,6 +54,13 @@ const AdminReportsPage = lazy(() => import('@/pages/admin/AdminReportsPage'));
 const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
 const AdminTravelClaimsPage = lazy(() => import('@/pages/admin/AdminTravelClaimsPage'));
 const AdminSupportPage = lazy(() => import('@/pages/admin/AdminSupportPage'));
+const AdminBosquePage = lazy(() => import('@/pages/admin/AdminBosquePage'));
+
+// Bosque (adopta un árbol): landing con marca propia, vinculada a Grupo 3i
+const BosqueLayout = lazy(() => import('@/pages/bosque/BosqueLayout'));
+const BosqueHome = lazy(() => import('@/pages/bosque/BosqueHome'));
+const BosqueTreePage = lazy(() => import('@/pages/bosque/BosqueTreePage'));
+const BosqueCertificatePage = lazy(() => import('@/pages/bosque/BosqueCertificatePage'));
 
 // Comunidad (red social)
 const CommunityFeedPage = lazy(() => import('@/pages/comunidad/CommunityFeedPage'));
@@ -97,10 +105,28 @@ export default function App() {
           <BrowserRouter>
             {/* Dentro del Router: el banner lee el idioma de la URL. */}
             <div className="print:hidden"><InstallAppBanner /></div>
+            {isBosqueHost() ? (
+              // Dominio propio del Bosque: la landing vive en la raíz.
+              <Routes>
+                <Route element={<BosqueLayout />}>
+                  <Route index element={<BosqueHome />} />
+                  <Route path="arbol/:code" element={<BosqueTreePage />} />
+                  <Route path="certificado/:code" element={<BosqueCertificatePage />} />
+                  <Route path="*" element={<BosqueHome />} />
+                </Route>
+              </Routes>
+            ) : (
             <Routes>
               {/* Sitio público con navbar/footer, en español (/) y en inglés (/en). */}
               <Route element={<Layout />}>{publicRoutes()}</Route>
               <Route path="en" element={<Layout />}>{publicRoutes()}</Route>
+
+              {/* Bosque: en grupo3i.com vive bajo /bosque (en su dominio propio, en la raíz). */}
+              <Route path="bosque" element={<BosqueLayout />}>
+                <Route index element={<BosqueHome />} />
+                <Route path="arbol/:code" element={<BosqueTreePage />} />
+                <Route path="certificado/:code" element={<BosqueCertificatePage />} />
+              </Route>
 
               {/* Comprobante de compra — público, standalone, imprimible (se comparte por WhatsApp) */}
               <Route path="confirmacion/:id" element={<PurchaseConfirmationPage />} />
@@ -143,6 +169,7 @@ export default function App() {
                 <Route path="reportes" element={<AdminReportsPage />} />
                 <Route path="garantias" element={<AdminTravelClaimsPage />} />
                 <Route path="soporte" element={<AdminSupportPage />} />
+                <Route path="bosque" element={<AdminBosquePage />} />
                 <Route path="configuracion" element={<AdminSettingsPage />} />
               </Route>
 
@@ -160,6 +187,7 @@ export default function App() {
                 <Route path="mensajes/:code" element={<MessageConversation />} />
               </Route>
             </Routes>
+            )}
           </BrowserRouter>
           </AdminAuthProvider>
         </AuthProvider>

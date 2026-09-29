@@ -15,11 +15,14 @@ const items = [
   { to: '/admin/compras', label: 'Compras', icon: '🛒' },
   { to: '/admin/garantias', label: 'Garantías', icon: '🛡️' },
   { to: '/admin/soporte', label: 'Soporte', icon: '🆘' },
+  { to: '/admin/bosque', label: 'Bosque', icon: '🌳' },
   { to: '/admin/reportes', label: 'Reportes', icon: '📄' },
 ];
 
 export function AdminSidebar() {
-  const { isSuperadmin } = useAdminAuth();
+  const { isSuperadmin, staff } = useAdminAuth();
+  // La gestora del Bosque solo ve su módulo.
+  const visible = staff?.role === 'bosque' ? items.filter((i) => i.to === '/admin/bosque') : items;
 
   return (
     <aside className="hidden w-60 flex-none flex-col bg-primary px-3 py-5 md:flex">
@@ -30,7 +33,7 @@ export function AdminSidebar() {
         <p className="mt-0.5 text-[10px] uppercase tracking-widest text-white/50">Admin</p>
       </div>
       <nav className="space-y-1">
-        {items.map((it) => (
+        {visible.map((it) => (
           <NavLink
             key={it.to}
             to={it.to}

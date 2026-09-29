@@ -20,6 +20,8 @@ import { adminStatsRoutes } from './routes/adminStats';
 import { adminProductRoutes } from './routes/adminProducts';
 import { adminProjectRoutes } from './routes/adminProjects';
 import { adminLotRoutes } from './routes/adminLots';
+import { bosqueRoutes } from './routes/bosque';
+import { adminBosqueRoutes } from './routes/adminBosque';
 import { adminMemberRoutes } from './routes/adminMembers';
 import { adminCommissionRoutes } from './routes/adminCommissions';
 import { adminLeadRoutes } from './routes/adminLeads';
@@ -59,6 +61,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/purchases', purchaseRoutes);
+app.use('/api/bosque', bosqueRoutes);
 
 // Fase 2 — Programa de referidos (oficina virtual)
 app.use('/api/members', memberRoutes);
@@ -74,6 +77,7 @@ app.use('/api/admin/stats', adminStatsRoutes);
 app.use('/api/admin/products', adminProductRoutes);
 app.use('/api/admin/projects', adminProjectRoutes);
 app.use('/api/admin/lots', adminLotRoutes);
+app.use('/api/admin/bosque', adminBosqueRoutes);
 app.use('/api/admin/members', adminMemberRoutes);
 app.use('/api/admin/commissions', adminCommissionRoutes);
 app.use('/api/admin/leads', adminLeadRoutes);

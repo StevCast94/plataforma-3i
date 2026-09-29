@@ -24,6 +24,13 @@ export function signStaffToken(payload: StaffPayload): string {
   return jwt.sign(payload, secret(), { expiresIn: '12h' });
 }
 
+// Coincidencia por segmento completo: '/api/admin/me' NO debe dejar pasar '/api/admin/members'.
+const BOSQUE_ALLOWED = ['/api/admin/bosque', '/api/admin/me', '/api/admin/seed-images'];
+function bosqueAllowed(url: string): boolean {
+  const path = url.split('?')[0];
+  return BOSQUE_ALLOWED.some((p) => path === p || path.startsWith(p + '/'));
+}
+
 /** Requiere un staff autenticado y activo. */
 export async function requireAdmin(
   req: AuthedRequest,
@@ -51,6 +58,12 @@ export async function requireAdmin(
       return;
     }
     req.staff = { staffId: staff.id, username: staff.username, role: staff.role };
+    // Rol 'bosque' (gestora del Bosque): solo su módulo, subir imágenes y su sesión.
+    // Nunca ve ventas, socios ni comisiones del resto de Grupo 3i.
+    if (staff.role === 'bosque' && !bosqueAllowed(req.originalUrl)) {
+      res.status(403).json({ error: 'Tu usuario solo tiene acceso al módulo del Bosque' });
+      return;
+    }
     next();
   } catch {
     res.status(401).json({ error: 'Token inválido o expirado' });
