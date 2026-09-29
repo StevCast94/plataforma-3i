@@ -32,6 +32,23 @@ export default function LotPage() {
   const { slug = '', code = '' } = useParams();
   const { t } = useLang();
   useReferral(); // guarda el ?ref= del socio que compartió el enlace
+
+  // Al imprimir se abren los desplegables (coordenadas de los vértices) y luego
+  // se devuelven a como estaban.
+  useEffect(() => {
+    let closed: HTMLDetailsElement[] = [];
+    const before = () => {
+      closed = [...document.querySelectorAll<HTMLDetailsElement>('.lot-print details:not([open])')];
+      closed.forEach((d) => (d.open = true));
+    };
+    const after = () => closed.forEach((d) => (d.open = false));
+    window.addEventListener('beforeprint', before);
+    window.addEventListener('afterprint', after);
+    return () => {
+      window.removeEventListener('beforeprint', before);
+      window.removeEventListener('afterprint', after);
+    };
+  }, []);
   const { data: project } = useProject(slug);
   const [lots, setLots] = useState<PublicLot[] | null>(null);
 
@@ -64,7 +81,7 @@ export default function LotPage() {
   const dest = lot.centroidLat != null && lot.centroidLng != null ? `${lot.centroidLat},${lot.centroidLng}` : null;
 
   return (
-    <div className="bg-light print:bg-white">
+    <div className="lot-print bg-light print:bg-white">
       <Seo
         title={`${t('Solar')} ${lot.code} · ${projectName}`}
         description={`${fmtArea(lot.areaM2)}${precio}. ${t('Forma, ubicación, medidas y linderos del solar.')}`}
@@ -116,7 +133,7 @@ export default function LotPage() {
           )}
         </div>
 
-        <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:shadow-none">
+        <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Stat label={t('Área')} value={fmtArea(lot.areaM2)} />
             {lot.price != null && <Stat label={t('Precio')} value={formatCurrency(lot.price)} strong />}
@@ -151,7 +168,7 @@ export default function LotPage() {
           </section>
         )}
 
-        <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:shadow-none">
+        <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">
           <LotSheet lot={lot} />
         </section>
 
@@ -205,5 +222,5 @@ function LotMiniMap({ lots, lot }: { lots: PublicLot[]; lot: PublicLot }) {
     };
   }, [lots, lot]);
 
-  return <div ref={el} className="isolate mt-5 h-[300px] w-full overflow-hidden rounded-2xl ring-1 ring-black/10 sm:h-[380px] print:h-[260px]" />;
+  return <div ref={el} className="isolate mt-5 h-[300px] w-full overflow-hidden rounded-2xl ring-1 ring-black/10 sm:h-[380px] print:mt-3 print:h-[210px]" />;
 }

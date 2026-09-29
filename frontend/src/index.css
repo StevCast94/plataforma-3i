@@ -363,7 +363,12 @@ text.via-label {
 }
 .leaflet-tooltip.lot-label::before { display: none; }
 
-/* Ficha de solar impresa: sin controles del mapa. */
+/* Ficha de solar impresa: página propia (no hereda la portada sin márgenes de la propuesta). */
+@page ficha { size: A4; margin: 12mm 14mm; }
+@page ficha:first { margin: 12mm 14mm; }
 @media print {
-  .leaflet-control-zoom { display: none !important; }
+  .lot-print { page: ficha; }
+  .lot-print .leaflet-control-zoom { display: none !important; }
+  .lot-print details > summary { list-style: none; }
+  .lot-print details > summary::-webkit-details-marker { display: none; }
 }
