@@ -21,7 +21,7 @@ export default function BosqueLayout() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link to={bosquePath()} className="flex items-center gap-2 text-bosque">
             <TreeDeciduous className="h-6 w-6 text-guayacan" strokeWidth={1.8} />
-            <span className="font-bosque text-xl font-semibold">{BOSQUE_NAME}</span>
+            <span className="whitespace-nowrap font-bosque text-lg font-semibold sm:text-xl">{BOSQUE_NAME}</span>
           </Link>
           <nav className="flex items-center gap-1 text-sm font-medium sm:gap-5">
             <a href={`${bosquePath()}#especies`} className="hidden px-2 py-1 hover:text-bosque sm:inline">
@@ -35,7 +35,7 @@ export default function BosqueLayout() {
             </a>
             <a
               href={`${bosquePath()}#especies`}
-              className="rounded-full bg-bosque px-4 py-2 text-white transition hover:bg-bosque-dark"
+              className="whitespace-nowrap rounded-full bg-bosque px-4 py-2 text-white transition hover:bg-bosque-dark"
             >
               Adopta un árbol
             </a>
