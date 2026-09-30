@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Link, useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
 import { Input } from '@/components/ui/Input';
+import { PhoneField } from '@/components/shared/PhoneField';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Seo } from '@/components/shared/Seo';
@@ -149,11 +150,7 @@ export default function RegisterPage() {
                 onChange={(v) => set('email', v)}
                 error={errors.email}
               />
-              <FieldInput
-                label={t('Teléfono (opcional)')}
-                value={data.phone ?? ''}
-                onChange={(v) => set('phone', v)}
-              />
+              <PhoneField label={t('Teléfono (opcional)')} onChange={(v) => set('phone', v)} />
               <FieldInput
                 label={t('Contraseña')}
                 type="password"
