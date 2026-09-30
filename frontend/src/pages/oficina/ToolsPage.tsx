@@ -7,6 +7,7 @@ import { api } from '@/lib/api';
 import { useToast } from '@/components/shared/Toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useProducts } from '@/hooks/useProducts';
+import { useProjects } from '@/hooks/useProjects';
 import { whatsappShareUrl } from '@/lib/referral';
 import { copyToClipboard } from '@/lib/clipboard';
 import { generateShareCard } from '@/lib/shareCard';
@@ -33,6 +34,7 @@ export default function ToolsPage() {
   const { member } = useAuth();
   const { toast } = useToast();
   const { data: products } = useProducts();
+  const { data: projects } = useProjects();
   const { data: templateContent } = useSectionContent('referral_templates');
   const { data: campaigns, loading: loadingCampaigns } = useReferralCampaigns();
   const [info, setInfo] = useState<LinkInfo | null>(null);
@@ -205,6 +207,12 @@ export default function ToolsPage() {
             <option value="/">Página principal</option>
             <option value="/club">Club 3i</option>
             <option value="/club/viajes">Club de Viajes</option>
+            {(projects ?? []).map((p) => (
+              <option key={p.id} value={`/proyectos/${p.slug}`}>
+                Proyecto: {p.name}
+                {p.slug === 'montanita-view' ? ' (mapa interactivo de solares)' : ''}
+              </option>
+            ))}
             {(products ?? []).map((p) => (
               <option key={p.id} value={`/tienda/${p.slug}`}>
                 Producto: {p.name}
