@@ -70,7 +70,10 @@ export const referralRedirect = asyncHandler(async (req: Request, res: Response)
 
   const campaignKey = String(req.query.c ?? '').trim();
   const campaigns = await loadCampaigns();
-  const campaign = campaigns[campaignKey];
+  // Sin ?c=: si el destino es la página de una campaña (p. ej. un proyecto), se usa su
+  // tarjeta personalizada, así 'Comparte cualquier página' también muestra "{nombre} te invita…".
+  const byDestination = Object.values(campaigns).find((c) => c.to === String(req.query.to ?? ''));
+  const campaign = campaigns[campaignKey] ?? byDestination;
 
   // El destino explícito (?to=) manda; si no, el de la campaña; si no, registro.
   const fallbackTo = campaign?.to ?? DEFAULT_REF_DESTINATION;

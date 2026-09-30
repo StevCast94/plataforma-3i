@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { AppErrorBoundary } from './components/shared/AppErrorBoundary';
 import './index.css';
 
 // Enlaces antiguos con HashRouter (grupo3i.com/#/ruta?x=1) siguen circulando en
@@ -14,7 +15,9 @@ if (window.location.hash.startsWith('#/')) {
 // No envolver aquí para evitar el bug de doble Router con React 19.
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <AppErrorBoundary>
+      <App />
+    </AppErrorBoundary>
   </React.StrictMode>,
 );
 

@@ -41,6 +41,24 @@ export interface OgCampaign {
  * mensaje sin repetir siempre la misma imagen en los chats de sus contactos.
  */
 export const DEFAULT_CAMPAIGNS: Record<string, OgCampaign> = {
+  montanita: {
+    label: 'Montañita View — mapa de solares',
+    title: '{nombre} te invita a elegir tu solar en Montañita View',
+    description: 'Lotes con vista al mar en Manglaralto desde $49,084, con financiamiento a 24 meses sin intereses.',
+    image: '/images/og/og-camp-montanita.jpg',
+    message:
+      'Mira los solares de Montañita View en el mapa interactivo: eliges el tuyo, ves su precio y su cuota, y lo pagas en 24 meses sin intereses. Te dejo mi enlace:',
+    to: '/proyectos/montanita-view',
+  },
+  ibiza: {
+    label: 'Ibiza Condohotel — fracciones',
+    title: '{nombre} te invita a Ibiza Condohotel',
+    description: 'Tu fracción en un condohotel a 300 m del mar, desde $12,000: disfruta, gana plusvalía y hereda.',
+    image: '/images/og/og-camp-ibiza.jpg',
+    message:
+      'Con Ibiza Condohotel puedes tener tu fracción cerca del mar desde $12,000: la disfrutas, gana plusvalía y la heredas. Mira aquí:',
+    to: '/proyectos/ibiza-condohotel',
+  },
   inversion: {
     label: 'Inversión desde $12,000',
     title: '{nombre} te invita a invertir desde $12,000',

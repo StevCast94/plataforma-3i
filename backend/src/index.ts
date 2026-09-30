@@ -40,7 +40,7 @@ import { metricsRoutes } from './routes/metrics';
 import { travelRoutes } from './routes/travel';
 import { adminTravelRoutes } from './routes/adminTravel';
 import { referralApiRoutes, referralRedirect } from './routes/referral';
-import { lotOgHandler, projectOgHandler } from './lib/ogProject';
+import { lotOgHandler, pageOgHandler, PAGE_OG_PATHS, projectOgHandler } from './lib/ogProject';
 import { lotOgImage } from './lib/lotOgImage';
 
 const app = express();
@@ -133,12 +133,20 @@ const frontendPath = path.join(__dirname, '../../frontend/dist');
 const hasBuild = fs.existsSync(path.join(frontendPath, 'index.html'));
 
 if (hasBuild) {
-  app.use(express.static(frontendPath));
+  // index: false → la portada pasa por el manejador de tarjetas sociales (ver PAGE_OG).
+  app.use(express.static(frontendPath, { index: false }));
+
+  // Un archivo de una versión anterior (pestaña abierta antes de publicar) debe dar 404,
+  // no el index.html: si no, el navegador lo intenta ejecutar y la pantalla queda en blanco.
+  app.use('/assets', (_req, res) => {
+    res.status(404).type('text/plain').send('Not found');
+  });
 
   // Tarjeta social por proyecto: WhatsApp y Facebook no ejecutan JS, así que las
   // meta tags se escriben en el HTML antes de enviarlo (ver lib/ogProject.ts).
   app.get(['/proyectos/:slug', '/en/proyectos/:slug'], projectOgHandler(frontendPath));
   app.get(['/proyectos/:slug/solar/:code', '/en/proyectos/:slug/solar/:code'], lotOgHandler(frontendPath));
+  app.get(PAGE_OG_PATHS, pageOgHandler(frontendPath));
 
   // SPA fallback -> todas las rutas no-API devuelven index.html
   app.get(/^(?!\/api).*/, (_req, res) => {
