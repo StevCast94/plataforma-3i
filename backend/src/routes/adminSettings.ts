@@ -38,6 +38,7 @@ adminSettingsRoutes.post('/seed-images', async (req, res) => {
     const result = await cloudinary.uploader.upload(dataUri, {
       folder: folder ? String(folder) : 'grupo3i',
       resource_type: 'image',
+      transformation: [{ width: 2400, height: 2400, crop: 'limit', quality: 'auto:good' }],
     });
     res.json({ url: result.secure_url, publicId: result.public_id });
   } catch (err) {

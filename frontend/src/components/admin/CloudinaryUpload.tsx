@@ -1,3 +1,4 @@
+import { resizeForUpload } from '@/lib/resizeImage';
 import { useState } from 'react';
 import { adminApi } from '@/lib/adminApi';
 import { cld } from '@/lib/cloudinary';
@@ -11,7 +12,7 @@ interface CloudinaryUploadProps {
   single?: boolean;
 }
 
-function fileToDataUri(file: File): Promise<string> {
+function fileToDataUri(file: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result as string);
@@ -30,7 +31,7 @@ export function CloudinaryUpload({ value, onChange, single }: CloudinaryUploadPr
     try {
       const uploaded: string[] = [];
       for (const file of Array.from(files)) {
-        const dataUri = await fileToDataUri(file);
+        const dataUri = await fileToDataUri(await resizeForUpload(file));
         const res = await adminApi.post<{ url: string }>('/admin/seed-images', { dataUri });
         uploaded.push(res.url);
       }

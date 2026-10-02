@@ -334,6 +334,7 @@ memberRoutes.post('/upload-image', authMember, async (req: MemberRequest, res) =
     const result = await cloudinary.uploader.upload(dataUri, {
       folder: 'grupo3i/comunidad',
       resource_type: 'image',
+      transformation: [{ width: 2400, height: 2400, crop: 'limit', quality: 'auto:good' }],
     });
     res.json({ url: result.secure_url });
   } catch (err) {

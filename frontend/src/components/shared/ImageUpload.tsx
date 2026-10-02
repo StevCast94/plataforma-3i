@@ -1,3 +1,4 @@
+import { resizeForUpload } from '@/lib/resizeImage';
 import { useState } from 'react';
 import { api } from '@/lib/api';
 import { cld } from '@/lib/cloudinary';
@@ -13,7 +14,7 @@ interface ImageUploadProps {
   max?: number;
 }
 
-function fileToDataUri(file: File): Promise<string> {
+function fileToDataUri(file: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result as string);
@@ -43,7 +44,7 @@ export function ImageUpload({ value, onChange, single, max }: ImageUploadProps) 
       const uploaded: string[] = [];
       for (const file of Array.from(files)) {
         if (max && value.length + uploaded.length >= max) break;
-        const dataUri = await fileToDataUri(file);
+        const dataUri = await fileToDataUri(await resizeForUpload(file));
         const res = await api.post<{ url: string }>('/members/upload-image', { dataUri });
         uploaded.push(res.url);
       }

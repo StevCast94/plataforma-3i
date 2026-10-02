@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { X, LocateFixed, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
+import { cld } from '@/lib/cloudinary';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/shared/Toast';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
@@ -704,7 +705,16 @@ export function LotPhotos({ images, code }: { images: string[]; code: string }) 
             className="shrink-0 overflow-hidden rounded-lg ring-1 ring-black/10"
             aria-label={t('Ver foto {n} del solar {code}', { n: i + 1, code })}
           >
-            <img src={src} alt={t('Solar {code}, foto {n}', { code, n: i + 1 })} loading="lazy" className="h-20 w-28 object-cover" />
+            <img
+              src={cld(src, { width: 112, height: 80 })}
+              srcSet={[1, 2, 3].map((d) => `${cld(src, { width: 112 * d, height: 80 * d })} ${d}x`).join(', ')}
+              width={112}
+              height={80}
+              alt={t('Solar {code}, foto {n}', { code, n: i + 1 })}
+              loading="lazy"
+              decoding="async"
+              className="h-20 w-28 object-cover"
+            />
           </button>
         ))}
       </div>
@@ -714,7 +724,11 @@ export function LotPhotos({ images, code }: { images: string[]; code: string }) 
           onClick={() => setOpen(null)}
           role="dialog"
         >
-          <img src={images[open]} alt={t('Solar {code}', { code })} className="max-h-full max-w-full rounded-lg object-contain" />
+          <img
+            src={cld(images[open], { width: 1600, crop: 'limit' })}
+            srcSet={[800, 1200, 1600, 2400].map((w) => `${cld(images[open], { width: w, crop: 'limit' })} ${w}w`).join(', ')}
+            sizes="100vw"
+            alt={t('Solar {code}', { code })} className="max-h-full max-w-full rounded-lg object-contain" />
           <button onClick={() => setOpen(null)} aria-label={t('Cerrar')} className="absolute right-4 top-4 text-white">
             <X className="h-7 w-7" />
           </button>
