@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { X, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
+import { X, LocateFixed, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -136,6 +136,9 @@ function drawUrbanism(map: L.Map, t: (s: string) => string) {
 }
 
 /** Mapa en reposo: sin arrastre ni pellizco (el dedo desplaza la página); los toques siguen funcionando. */
+/** Hasta dónde (m) del área de los solares se permite mostrar la ubicación. */
+const NEAR_METERS = 1000;
+
 function setRest(map: L.Map, rest: boolean) {
   const handlers = [map.dragging, map.touchZoom, map.doubleClickZoom, map.boxZoom, map.keyboard];
   for (const h of handlers) {
@@ -175,6 +178,82 @@ export function LotMap({
   // En el teléfono el panel de búsqueda tapaba un tercio del mapa: entra plegado
   // y deja solo la leyenda; en pantallas grandes sobra espacio y entra abierto.
   const [panel, setPanel] = useState(true);
+
+  // "Activar tu ubicación": solo se muestra al estar dentro o cerca de los solares.
+  const [loc, setLoc] = useState<'off' | 'asking' | 'on'>('off');
+  const [locMsg, setLocMsg] = useState('');
+  const watchRef = useRef<number | null>(null);
+  const locLayerRef = useRef<L.LayerGroup | null>(null);
+
+  const stopLocate = () => {
+    if (watchRef.current != null) navigator.geolocation.clearWatch(watchRef.current);
+    watchRef.current = null;
+    locLayerRef.current?.remove();
+    locLayerRef.current = null;
+    setLoc('off');
+  };
+
+  const toggleLocate = () => {
+    if (loc !== 'off') {
+      stopLocate();
+      setLocMsg('');
+      return;
+    }
+    const map = mapRef.current;
+    if (!map || !lots) return;
+    if (!navigator.geolocation) {
+      setLocMsg(t('Tu navegador no permite usar la ubicación.'));
+      return;
+    }
+    const area = L.latLngBounds([]);
+    lots.forEach((l) => l.geometry.coordinates[0].forEach(([lng, lat]) => area.extend([lat, lng])));
+    setLoc('asking');
+    setLocMsg('');
+    watchRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        const here = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        // Distancia al punto más cercano del área de los solares (0 si está dentro).
+        const nearest = L.latLng(
+          Math.min(Math.max(here.lat, area.getSouth()), area.getNorth()),
+          Math.min(Math.max(here.lng, area.getWest()), area.getEast()),
+        );
+        const away = map.distance(here, nearest);
+        if (away > NEAR_METERS) {
+          stopLocate();
+          setLocMsg(
+            t('Estás a {km} km de los solares. La ubicación se activa solo cerca o dentro del proyecto.', {
+              km: (away / 1000).toFixed(1),
+            }),
+          );
+          return;
+        }
+        const first = !locLayerRef.current;
+        if (!locLayerRef.current) locLayerRef.current = L.layerGroup().addTo(map);
+        const g = locLayerRef.current;
+        g.clearLayers();
+        L.circle(here, { radius: pos.coords.accuracy, color: '#2563eb', weight: 1, fillOpacity: 0.12, interactive: false }).addTo(g);
+        L.circleMarker(here, { radius: 8, color: '#fff', weight: 3, fillColor: '#2563eb', fillOpacity: 1, interactive: false }).addTo(g);
+        setLoc('on');
+        if (first) map.setView(here, Math.max(map.getZoom(), 18));
+      },
+      (err) => {
+        stopLocate();
+        setLocMsg(
+          err.code === err.PERMISSION_DENIED
+            ? t('Permite el acceso a tu ubicación en el navegador para verla en el mapa.')
+            : t('No pudimos obtener tu ubicación. Inténtalo de nuevo.'),
+        );
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 },
+    );
+  };
+
+  useEffect(
+    () => () => {
+      if (watchRef.current != null) navigator.geolocation.clearWatch(watchRef.current);
+    },
+    [],
+  );
 
   /**
    * Pantalla completa. Se usa la API nativa cuando existe (el mapa ocupa toda la
@@ -494,6 +573,25 @@ export function LotMap({
         >
           {full ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
         </button>
+        <button
+          onClick={toggleLocate}
+          title={loc === 'off' ? t('Activar tu ubicación') : t('Desactivar tu ubicación')}
+          aria-label={loc === 'off' ? t('Activar tu ubicación') : t('Desactivar tu ubicación')}
+          className={`absolute z-[1002] flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold shadow-md ring-1 ring-black/10 ${
+            loc === 'off' ? 'bg-white/95 text-primary hover:bg-white' : 'bg-blue-600 text-white'
+          } ${full ? 'bottom-4 right-16' : selected ? 'right-3 top-14 sm:right-[25.5rem]' : 'right-3 top-14'}`}
+        >
+          <LocateFixed className={`h-4 w-4 ${loc === 'asking' ? 'animate-pulse' : ''}`} />
+          {loc === 'off' ? t('Mi ubicación') : loc === 'asking' ? t('Buscando…') : t('Quitar')}
+        </button>
+        {locMsg && (
+          <div className="absolute inset-x-3 top-3 z-[1003] mx-auto max-w-sm rounded-xl bg-white/95 p-3 pr-8 text-sm text-primary shadow-lg ring-1 ring-black/10">
+            {locMsg}
+            <button onClick={() => setLocMsg('')} aria-label={t('Cerrar')} className="absolute right-2 top-2 text-brand-gray">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
         {selected && (
           <LotPanel
             lot={selected}

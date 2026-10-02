@@ -42,7 +42,7 @@ const LOT_BLOCKS = [
   { mz: 'H', n: 16, m2: 25154.24 },
   { mz: 'I', n: 9, m2: 12325.19 },
 ];
-const LOTS_M2 = 122303.98;
+const LOTS_M2 = 123423.16;
 const LOBBY_M2 = 36348;
 const TOTAL_M2 = LOTS_M2 + LOBBY_M2;
 
@@ -156,7 +156,7 @@ export default function PropuestaMontanitaPage() {
           <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">{t(c.heroTitle)}</h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">{t(c.heroSubtitle)}</p>
           <div className="mt-6 flex flex-wrap gap-6 text-sm">
-            <Stat v="89" l={t('solares disponibles')} />
+            <Stat v="90" l={t('solares disponibles')} />
             <Stat v={m2(TOTAL_M2)} l={t('en oferta')} />
             <Stat v="2018" l={t('lotización inscrita')} />
           </div>
@@ -245,7 +245,7 @@ export default function PropuestaMontanitaPage() {
                 head={['Manzana', 'Solares', 'Área', 'Valor a $100/m²']}
                 rows={[
                   ...LOT_BLOCKS.map((b) => [b.mz, String(b.n), m2(b.m2), formatCurrency(b.m2 * 100)]),
-                  ['Total', '89', m2(LOTS_M2), formatCurrency(LOTS_M2 * 100)],
+                  ['Total', '90', m2(LOTS_M2), formatCurrency(LOTS_M2 * 100)],
                 ]}
               />
               <p className="mt-3">
@@ -367,7 +367,7 @@ export default function PropuestaMontanitaPage() {
             <Detail title={t('Superficie incluida')}>
               <KV
                 rows={[
-                  ['Montañita View Lotes — 89 solares en venta', m2(LOTS_M2)],
+                  ['Montañita View Lotes — 90 solares en venta', m2(LOTS_M2)],
                   ['Montañita View Lobby — predio', m2(LOBBY_M2)],
                   ['Total', m2(TOTAL_M2)],
                 ]}
@@ -654,7 +654,7 @@ function PrintCover() {
         </p>
         <div className="pd-cover-stats">
           <div>
-            <b>89</b>
+            <b>90</b>
             <span>solares disponibles</span>
           </div>
           <div>
@@ -707,7 +707,7 @@ function PrintFrontMatter({ c }: { c: PropuestaContent }) {
         </li>
         <li>
           <b>{t('111 solares levantados uno por uno.')}</b>{' '}
-          {t('89 disponibles, {area} de superficie vendible, con linderos, hitos y coordenadas UTM verificados en campo.', { area: m2(LOTS_M2) })}
+          {t('90 disponibles, {area} de superficie vendible, con linderos, hitos y coordenadas UTM verificados en campo.', { area: m2(LOTS_M2) })}
         </li>
         <li>
           <b>{t('Obra civil ejecutada.')}</b> {t('Vías internas demarcadas y compactadas, desbroce, estudio topográfico y de suelos, linderación y georreferenciación completas.')}

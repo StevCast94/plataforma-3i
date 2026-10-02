@@ -19,7 +19,7 @@ const OVERRIDES: Record<string, { title: string; description: string; image: str
   'montanita-view': {
     title: 'Montañita View — mapa interactivo de solares',
     description:
-      'Explora los 89 solares disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, su clave catastral, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $100/m².',
+      'Explora los 90 solares disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, su clave catastral, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $100/m².',
     image: '/images/og/og-montanita-view.jpg',
   },
   'ibiza-condohotel': {
@@ -35,7 +35,7 @@ const OVERRIDES_EN: Record<string, { title: string; description: string; image: 
   'montanita-view': {
     title: 'Montañita View — interactive lot map',
     description:
-      'Explore the 89 available lots on the satellite map: tap any one to see its price, monthly payment, cadastral reference, boundaries and street frontage. Manglaralto, Ruta del Spondylus, from $100/m².',
+      'Explore the 90 available lots on the satellite map: tap any one to see its price, monthly payment, cadastral reference, boundaries and street frontage. Manglaralto, Ruta del Spondylus, from $100/m².',
     image: '/images/og/og-montanita-view.jpg',
   },
   'ibiza-condohotel': {

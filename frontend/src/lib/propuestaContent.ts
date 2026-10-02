@@ -45,11 +45,11 @@ export interface PropuestaContent {
   study: { discount: number; scenarios: AptAssumptions };
 }
 
-// Superficies y precios de la compra total: los 89 solares en venta de
+// Superficies y precios de la compra total: los 90 solares en venta de
 // Montañita View Lotes a $55/m² y el predio de Montañita View Lobby a $100/m².
 // El equipamiento urbano y las áreas verdes no se valoran: son cargas de la
 // lotización, no superficie vendible.
-const LOTS_M2 = 122303.98;
+const LOTS_M2 = 123423.16;
 const LOBBY_M2 = 36348;
 const TOTAL_M2 = LOTS_M2 + LOBBY_M2;
 const LOTS_PRICE_M2 = 55;
@@ -65,12 +65,12 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
     'Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Se venden completos, por separado o juntos.',
   lotes: {
     tag: usd(LOTS_M2 * LOTS_PRICE_M2),
-    card: 'Los 89 solares en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².',
+    card: 'Los 90 solares en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².',
     summary:
-      'La lotización completa en una sola operación: los 89 solares disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada solar levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.',
+      'La lotización completa en una sola operación: los 90 solares disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada solar levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.',
     rows: [
       ['Precio', `${usd(LOTS_M2 * LOTS_PRICE_M2)} ($${LOTS_PRICE_M2} / m²)`],
-      ['Solares', '89'],
+      ['Solares', '90'],
       ['Superficie vendible', m2(LOTS_M2)],
       ['Título', 'Inscrito en el Registro de la Propiedad de Santa Elena; cada solar se escritura por separado'],
       ['Forma de pago', '10% al firmar la promesa y el saldo a convenir entre las partes'],
@@ -97,7 +97,7 @@ export const DEFAULT_PROPUESTA: PropuestaContent = {
       ['Precio', usd(TOTAL_USD)],
       ['Cómo se calcula', `Montañita View Lotes ${m2(LOTS_M2)} a $${LOTS_PRICE_M2}/m² (${usd(LOTS_M2 * LOTS_PRICE_M2)}) + Montañita View Lobby ${m2(LOBBY_M2)} a $${LOBBY_PRICE_M2}/m² (${usd(LOBBY_M2 * LOBBY_PRICE_M2)})`],
       ['Superficie', m2(TOTAL_M2)],
-      ['Qué incluye', `Los 89 solares en venta de Montañita View Lotes (${m2(LOTS_M2)}) y el predio de Montañita View Lobby (${m2(LOBBY_M2)})`],
+      ['Qué incluye', `Los 90 solares en venta de Montañita View Lotes (${m2(LOTS_M2)}) y el predio de Montañita View Lobby (${m2(LOBBY_M2)})`],
     ],
     paymentRows: [
       ['Reserva (10%) al firmar la promesa', usd(TOTAL_USD * 0.1)],

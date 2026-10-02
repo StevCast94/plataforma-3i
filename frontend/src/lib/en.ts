@@ -46,6 +46,7 @@ export const EN: Record<string, string> = {
   'Sobre el proyecto': 'About the project',
   // Ficha del solar y compartir
   'Explorar el mapa': 'Explore the map',
+'Tu navegador no permite usar la ubicación.': 'Your browser does not support location.',  'Estás a {km} km de los solares. La ubicación se activa solo cerca o dentro del proyecto.': 'You are {km} km from the lots. Location only works near or inside the project.',  'Permite el acceso a tu ubicación en el navegador para verla en el mapa.': 'Allow location access in your browser to see it on the map.',  'No pudimos obtener tu ubicación. Inténtalo de nuevo.': 'We could not get your location. Please try again.',  'Activar tu ubicación': 'Turn on your location',  'Desactivar tu ubicación': 'Turn off your location',  'Mi ubicación': 'My location',  'Quitar': 'Remove',
   'Compartir ficha': 'Share lot',
   'Ficha completa': 'Full lot sheet',
   'El enlace lleva tu código de socio {code}.': 'The link includes your partner code {code}.',
@@ -513,7 +514,7 @@ export const EN: Record<string, string> = {
   'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 24 cuotas sin intereses.':
     'Your own lot in Manglaralto, minutes from the beach and from Montañita, with a complete, registered chain of title. Pick yours on the map and pay it over 24 interest-free instalments.',
   'Solares disponibles': 'Lots available',
-  '89 de 111': '89 of 111',
+  '90 de 111': '90 of 111',
   '$100 / m²': '$100 / m²',
   Desde: 'From',
   '$49,084 — solar A9, 490.84 m²': '$49,084 — lot A9, 490.84 m²',
@@ -604,7 +605,7 @@ export const EN: Record<string, string> = {
   'El plan maestro reserva espacio para un hotel de 92 habitaciones estándar y 12 lofts. Se plantea como fase posterior, una vez consolidadas las etapas de apartamentos; su dimensión y viabilidad se evaluarán con la demanda generada por el complejo.':
     'The master plan reserves space for a hotel with 92 standard rooms and 12 lofts. It is proposed as a later phase, once the apartment stages are consolidated; its size and viability will be assessed against the demand the complex generates.',
   'Superficie incluida': 'Area included',
-  'Montañita View Lotes — 89 solares en venta': 'Montañita View Lotes — 89 lots for sale',
+  'Montañita View Lotes — 90 solares en venta': 'Montañita View Lotes — 90 lots for sale',
   'Montañita View Lobby — predio': 'Montañita View Lobby — property',
   'No incluye los solares ya vendidos o comprometidos. Tampoco las vías ni las áreas verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.':
     'It does not include lots already sold or committed, nor the streets and green areas, which are for public use under Resolution 0118052017-GADMSE-A.',
@@ -671,8 +672,8 @@ export const EN: Record<string, string> = {
   'Compra al GAD Municipal de Santa Elena en 2013, urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada solar se escritura individualmente.':
     'Purchased from the Santa Elena Municipal Government in 2013, subdivision approved by Resolution 0118052017-GADMSE-A and registered in 2018. Each lot is deeded individually.',
   '111 solares levantados uno por uno.': '111 lots surveyed one by one.',
-  '89 disponibles, {area} de superficie vendible, con linderos, hitos y coordenadas UTM verificados en campo.':
-    '89 available, {area} of sellable area, with boundaries, markers and UTM coordinates verified on site.',
+  '90 disponibles, {area} de superficie vendible, con linderos, hitos y coordenadas UTM verificados en campo.':
+    '90 available, {area} of sellable area, with boundaries, markers and UTM coordinates verified on site.',
   'Obra civil ejecutada.': 'Civil works completed.',
   'Vías internas demarcadas y compactadas, desbroce, estudio topográfico y de suelos, linderación y georreferenciación completas.':
     'Internal roads laid out and compacted, land cleared, topographic and soil surveys done, boundary marking and georeferencing complete.',
@@ -710,10 +711,10 @@ export const EN: Record<string, string> = {
     'Two sister projects in Manglaralto, Santa Elena: a 25.8-hectare subdivision with clean title, and a complex with a completed lobby and 81 planned apartments. Each is sold whole, separately or together.',
   'Montañita View Lotes': 'Montañita View Lotes',
   'Ambos proyectos': 'Both projects',
-  'Los 89 solares en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².':
-    'All 89 lots for sale in a single purchase: 25.8 hectares with clean title, at $55 per m².',
-  'La lotización completa en una sola operación: los 89 solares disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada solar levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.':
-    'The whole subdivision in a single transaction: the 89 available lots, with a registered chain of title, approved urban plan and every lot surveyed and georeferenced. The buyer decides how to sell, develop or hold it.',
+  'Los 90 solares en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².':
+    'All 90 lots for sale in a single purchase: 25.8 hectares with clean title, at $55 per m².',
+  'La lotización completa en una sola operación: los 90 solares disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada solar levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.':
+    'The whole subdivision in a single transaction: the 90 available lots, with a registered chain of title, approved urban plan and every lot surveyed and georeferenced. The buyer decides how to sell, develop or hold it.',
   'Superficie vendible': 'Sellable area',
   'Inscrito en el Registro de la Propiedad de Santa Elena; cada solar se escritura por separado':
     'Registered with the Santa Elena Property Registry; each lot is deeded separately',
@@ -757,8 +758,8 @@ export const EN: Record<string, string> = {
   'Seguridad 24/7 🔒': '24/7 security 🔒',
   'Lotes y Amenidades exclusivas con vista al mar': 'Lots and exclusive amenities with a sea view',
   'Terrenos Premium en Manglaralto, Ruta del Spondylus': 'Premium land in Manglaralto, on the Ruta del Spondylus',
-  '89 solares disponibles desde 490 m², con título saneado desde 2013 y lotización municipal inscrita en 2018.':
-    '89 lots available from 490 m², with clean title since 2013 and a municipal subdivision registered in 2018.',
+  '90 solares disponibles desde 490 m², con título saneado desde 2013 y lotización municipal inscrita en 2018.':
+    '90 lots available from 490 m², with clean title since 2013 and a municipal subdivision registered in 2018.',
   'A pasos del complejo Montañita View Lobby (piscina, restaurante y áreas sociales), del mismo grupo desarrollador — proyecto hermano, con acceso sujeto a convenio entre ambos predios.':
     'Steps from the Montañita View Lobby complex (pool, restaurant and social areas), by the same developer — a sister project, with access subject to an agreement between the two properties.',
   'Vía principal asfaltada (Ruta del Spondylus)': 'Paved main road (Ruta del Spondylus)',
@@ -782,7 +783,7 @@ export const EN: Record<string, string> = {
   '24 cuotas, 0% interés': '24 payments, 0% interest',
   'Lotización residencial y turística': 'Residential and tourism subdivision',
   'USD $49,084 / solar': 'USD $49,084 / lot',
-  '89 de 111, desde 490 m²': '89 of 111, from 490 m²',
+  '90 de 111, desde 490 m²': '90 of 111, from 490 m²',
   'Saneado — inscrito en 2018': 'Clean — registered in 2018',
   'Energía y alumbrado público': 'Electricity and street lighting',
   '17.3% de áreas verdes (cumple COOTAD)': '17.3% green areas (COOTAD compliant)',
@@ -1078,13 +1079,13 @@ export const EN: Record<string, string> = {
     'Both projects in full: 158,652 m² in a single transaction, on preferential payment terms.',
   'La Lotización y el predio del Lobby en una sola operación: 158,652 m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya ejecutados.':
     'The subdivision and the Lobby property in a single transaction: 158,652 m² on the Ruta del Spondylus, with studies, boundary marking and civil works already completed.',
-  'Los 89 solares en venta de Montañita View Lotes (122,303.98 m²) y el predio de Montañita View Lobby (36,348 m²)':
-    'The 89 lots for sale in Montañita View Lotes (122,303.98 m²) and the Montañita View Lobby property (36,348 m²)',
-  'Montañita View Lotes 122,303.98 m² a $55/m² ($6,726,719) + Montañita View Lobby 36,348 m² a $100/m² ($3,634,800)':
-    'Montañita View Lotes 122,303.98 m² at $55/m² ($6,726,719) + Montañita View Lobby 36,348 m² at $100/m² ($3,634,800)',
+  'Los 90 solares en venta de Montañita View Lotes (123,423.16 m²) y el predio de Montañita View Lobby (36,348 m²)':
+    'The 90 lots for sale in Montañita View Lotes (123,423.16 m²) and the Montañita View Lobby property (36,348 m²)',
+  'Montañita View Lotes 123,423.16 m² a $55/m² ($6,788,274) + Montañita View Lobby 36,348 m² a $100/m² ($3,634,800)':
+    'Montañita View Lotes 123,423.16 m² at $55/m² ($6,788,274) + Montañita View Lobby 36,348 m² at $100/m² ($3,634,800)',
   '36,348 m² (29,090 m² útiles + 7,258 m² de vías y áreas verdes)':
     '36,348 m² (29,090 m² usable + 7,258 m² of roads and green areas)',
-  '$6,726,719 ($55 / m²)': '$6,726,719 ($55 / m²)',
+  '$6,788,274 ($55 / m²)': '$6,788,274 ($55 / m²)',
   '80% de ocupación hotelera en Montañita en el feriado de mayo de 2026, según la Cámara de Turismo de Santa Elena':
     '80% hotel occupancy in Montañita over the May 2026 holiday, according to the Santa Elena Chamber of Tourism',
   '80% de ocupación hotelera provincial en el feriado de octubre de 2025':
