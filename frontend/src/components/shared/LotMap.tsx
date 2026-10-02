@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { X, LocateFixed, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, LocateFixed, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
 import { api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { cld } from '@/lib/cloudinary';
@@ -694,6 +694,23 @@ export function monthly(price: number) {
 export function LotPhotos({ images, code }: { images: string[]; code: string }) {
   const { t } = useLang();
   const [open, setOpen] = useState<number | null>(null);
+  const [hint, setHint] = useState(true);
+  const touchX = useRef<number | null>(null);
+  const touch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+  const go = (d: number) => {
+    setHint(false);
+    setOpen((o) => (o == null ? o : (o + d + images.length) % images.length));
+  };
+  useEffect(() => {
+    if (open == null) return;
+    const key = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') go(1);
+      else if (e.key === 'ArrowLeft') go(-1);
+      else if (e.key === 'Escape') setOpen(null);
+    };
+    window.addEventListener('keydown', key);
+    return () => window.removeEventListener('keydown', key);
+  }, [open, images.length]);
   if (!images.length) return null;
   return (
     <>
@@ -722,16 +739,55 @@ export function LotPhotos({ images, code }: { images: string[]; code: string }) 
         <div
           className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/85 p-4"
           onClick={() => setOpen(null)}
+          onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            if (touchX.current == null) return;
+            const dx = e.changedTouches[0].clientX - touchX.current;
+            touchX.current = null;
+            if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+          }}
           role="dialog"
         >
           <img
+            key={open}
             src={cld(images[open], { width: 1600, crop: 'limit' })}
             srcSet={[800, 1200, 1600, 2400].map((w) => `${cld(images[open], { width: w, crop: 'limit' })} ${w}w`).join(', ')}
             sizes="100vw"
-            alt={t('Solar {code}', { code })} className="max-h-full max-w-full rounded-lg object-contain" />
+            alt={t('Solar {code}', { code })}
+            className="max-h-full max-w-full select-none rounded-lg object-contain"
+            draggable={false}
+          />
           <button onClick={() => setOpen(null)} aria-label={t('Cerrar')} className="absolute right-4 top-4 text-white">
             <X className="h-7 w-7" />
           </button>
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); go(-1); }}
+                aria-label={t('Foto anterior')}
+                className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); go(1); }}
+                aria-label={t('Foto siguiente')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+              <div className="pointer-events-none absolute inset-x-0 bottom-5 flex flex-col items-center gap-1 text-white">
+                <span className="rounded-full bg-black/50 px-3 py-1 text-sm font-medium">
+                  {open + 1} / {images.length}
+                </span>
+                {touch && hint && (
+                  <span className="animate-pulse rounded-full bg-black/50 px-3 py-1 text-xs">
+                    ← {t('Desliza para ver más fotos')} →
+                  </span>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
     </>

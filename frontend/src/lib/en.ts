@@ -46,6 +46,9 @@ export const EN: Record<string, string> = {
   'Sobre el proyecto': 'About the project',
   // Ficha del solar y compartir
   'Explorar el mapa': 'Explore the map',
+  'Foto anterior': 'Previous photo',
+  'Foto siguiente': 'Next photo',
+  'Desliza para ver más fotos': 'Swipe for more photos',
 'Tu navegador no permite usar la ubicación.': 'Your browser does not support location.',  'Estás a {km} km de los solares. La ubicación se activa solo cerca o dentro del proyecto.': 'You are {km} km from the lots. Location only works near or inside the project.',  'Permite el acceso a tu ubicación en el navegador para verla en el mapa.': 'Allow location access in your browser to see it on the map.',  'No pudimos obtener tu ubicación. Inténtalo de nuevo.': 'We could not get your location. Please try again.',  'Activar tu ubicación': 'Turn on your location',  'Desactivar tu ubicación': 'Turn off your location',  'Mi ubicación': 'My location',  'Quitar': 'Remove',
   'Compartir ficha': 'Share lot',
   'Ficha completa': 'Full lot sheet',
