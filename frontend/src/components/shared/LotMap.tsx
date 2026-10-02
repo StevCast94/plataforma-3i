@@ -723,8 +723,8 @@ export function LotPhotos({ images, code }: { images: string[]; code: string }) 
             aria-label={t('Ver foto {n} del solar {code}', { n: i + 1, code })}
           >
             <img
-              src={cld(src, { width: 112, height: 80 })}
-              srcSet={[1, 2, 3].map((d) => `${cld(src, { width: 112 * d, height: 80 * d })} ${d}x`).join(', ')}
+              src={cld(src, { width: 112, height: 80, quality: 'good' })}
+              srcSet={[1, 2, 3].map((d) => `${cld(src, { width: 112 * d, height: 80 * d, quality: 'good' })} ${d}x`).join(', ')}
               width={112}
               height={80}
               alt={t('Solar {code}, foto {n}', { code, n: i + 1 })}
@@ -750,8 +750,8 @@ export function LotPhotos({ images, code }: { images: string[]; code: string }) 
         >
           <img
             key={open}
-            src={cld(images[open], { width: 1600, crop: 'limit' })}
-            srcSet={[800, 1200, 1600, 2400].map((w) => `${cld(images[open], { width: w, crop: 'limit' })} ${w}w`).join(', ')}
+            src={cld(images[open], { width: 1280, crop: 'limit', quality: 'good' })}
+            srcSet={[800, 1280, 1920].map((w) => `${cld(images[open], { width: w, crop: 'limit', quality: 'good' })} ${w}w`).join(', ')}
             sizes="100vw"
             alt={t('Solar {code}', { code })}
             className="max-h-full max-w-full select-none rounded-lg object-contain"

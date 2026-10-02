@@ -12,11 +12,13 @@ interface CldOptions {
   height?: number;
   /** modo de recorte (c_), por defecto fill */
   crop?: 'fill' | 'fit' | 'scale' | 'limit';
+  /** calidad automática: 'best' (por defecto) o 'good' (~3x más liviana, sin diferencia visible en fotos) */
+  quality?: 'best' | 'good';
 }
 
 /** Construye las transformaciones base + opcionales. */
 function transform(opts: CldOptions = {}): string {
-  const parts = ['q_auto:best', 'f_auto'];
+  const parts = [`q_auto:${opts.quality ?? 'best'}`, 'f_auto'];
   if (opts.width) parts.push(`w_${opts.width}`);
   if (opts.height) parts.push(`h_${opts.height}`);
   if (opts.width || opts.height) parts.push(`c_${opts.crop ?? 'fill'}`);
