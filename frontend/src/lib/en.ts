@@ -46,6 +46,8 @@ export const EN: Record<string, string> = {
   'Sobre el proyecto': 'About the project',
   // Ficha del solar y compartir
   'Explorar el mapa': 'Explore the map',
+  'Te escribiremos por aquí cuando tus referidos se inscriban o compren.': 'We will message you here when your referrals sign up or buy.',
+  'Escribe tu número de WhatsApp': 'Enter your WhatsApp number',
   'Foto anterior': 'Previous photo',
   'Foto siguiente': 'Next photo',
   'Desliza para ver más fotos': 'Swipe for more photos',
@@ -286,8 +288,8 @@ export const EN: Record<string, string> = {
   Capacidad: 'Capacity',
   '6 personas · 71.66 m²': '6 guests · 71.66 m²',
   'Tu playa, todo el año': 'Your beach, all year round',
-  'Una semana de uso vacacional garantizada de por vida frente al mar, en un condohotel de lujo pensado para disfrutar en familia.':
-    'One guaranteed holiday week for life, beachfront, in a luxury condo-hotel designed for family stays.',
+  'Cuatro semanas de uso vacacional cada año, de por vida, frente al mar, en un condohotel de lujo pensado para disfrutar en familia.':
+    'Four holiday weeks every year, for life, by the sea, in a luxury condo-hotel designed for family stays.',
   'Plusvalía real': 'Real appreciation',
   'Hasta +65% de valorización proyectada en 5 años, en una de las zonas costeras de mayor crecimiento turístico del Ecuador.':
     'Up to +65% projected appreciation over 5 years, in one of Ecuador’s fastest-growing coastal tourism areas.',
@@ -306,7 +308,8 @@ export const EN: Record<string, string> = {
   '0% — financiamiento directo': '0% — direct financing',
   'Total pagado': 'Total paid',
   'Cuota de mantenimiento': 'Maintenance fee',
-  'USD $300 / año (2026)': 'USD $300 / year (2026)',
+  'USD $600 / año': 'USD $600 / year',
+  'Ingreso anual potencial con tus 4 semanas': 'Potential annual income from your 4 weeks',
   Representación: 'Representation',
   '25 acciones preferentes': '25 preferred shares',
   'Año 0': 'Year 0',
@@ -341,8 +344,8 @@ export const EN: Record<string, string> = {
   'Valor estimado a 5 años entre $17K y $20K por fracción. Proyectos frente al mar superan el 3.6% del mercado.':
     'Estimated value in 5 years between $17K and $20K per share. Beachfront projects outperform the market’s 3.6%.',
   'Ingresos pasivos administrados': 'Managed passive income',
-  'Programa de renting 70/30 con gestión profesional. Ingreso anual potencial ~$1,960 (16.3% bruto).':
-    'A 70/30 rental programme under professional management. Potential annual income ~$1,960 (16.3% gross).',
+  'Programa de renting 70/30 con gestión profesional: si pones tus 4 semanas en renting, ingreso anual potencial ~$1,960 (16.3% bruto).':
+    'A 70/30 rental programme under professional management: put your 4 weeks in the rental pool for a potential annual income of ~$1,960 (16.3% gross).',
   'Respaldo patrimonial sólido': 'Solid asset backing',
   'DIWILDI S.A., garante solidario, con $17M en activos, 108 terrenos y 16 años de experiencia.':
     'DIWILDI S.A., joint guarantor, with $17M in assets, 108 plots of land and 16 years of experience.',
@@ -748,8 +751,8 @@ export const EN: Record<string, string> = {
   // no coincida, la versión inglesa muestra el texto en español.
   'Inversión premium en la costa ecuatoriana. Invierte inteligente, invierte para el futuro.':
     'Premium investment on the Ecuadorian coast. Invest smart, invest in the future.',
-  'Condohotel de lujo frente al mar que combina la rentabilidad de un hotel con la propiedad fraccionada. Disfruta de amenidades de cinco estrellas mientras tu inversión genera retornos por ocupación hotelera.':
-    'A luxury beachfront condo-hotel that combines the returns of a hotel with fractional ownership. Enjoy five-star amenities while your investment earns returns from hotel occupancy.',
+  'Condohotel de lujo a 300 m del mar en Manglaralto, Santa Elena, en propiedad fraccionada: cada fracción te da 4 semanas de uso al año de por vida, la opción de poner tus semanas en el programa de renting administrado y un patrimonio que puedes heredar.':
+    'A luxury condo-hotel 300 m from the sea in Manglaralto, Santa Elena, under fractional ownership: each fraction gives you 4 weeks of use every year for life, the option to place your weeks in the managed rental programme, and an asset you can pass on.',
   Restaurante: 'Restaurant',
   'Fracciones desde $12,000': 'Shares from $12,000',
   'Tu propiedad con vista al mar.': 'Your property with a sea view.',

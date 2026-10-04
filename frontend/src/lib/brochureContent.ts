@@ -182,7 +182,7 @@ export const DEFAULT_BROCHURE_CONTENT: Required<BrochureContent> = {
     {
       icon: 'waves',
       title: 'Tu playa, todo el año',
-      body: 'Una semana de uso vacacional garantizada de por vida frente al mar, en un condohotel de lujo pensado para disfrutar en familia.',
+      body: 'Cuatro semanas de uso vacacional cada año, de por vida, frente al mar, en un condohotel de lujo pensado para disfrutar en familia.',
     },
     {
       icon: 'trending',
@@ -207,7 +207,7 @@ export const DEFAULT_BROCHURE_CONTENT: Required<BrochureContent> = {
     { label: '23 cuotas mensuales', value: 'USD $500 c/u' },
     { label: 'Interés', value: '0% — financiamiento directo' },
     { label: 'Total pagado', value: 'USD $12,000' },
-    { label: 'Cuota de mantenimiento', value: 'USD $300 / año (2026)' },
+    { label: 'Cuota de mantenimiento', value: 'USD $600 / año' },
     { label: 'Representación', value: '25 acciones preferentes' },
   ],
   valueProjection: [
@@ -218,14 +218,14 @@ export const DEFAULT_BROCHURE_CONTENT: Required<BrochureContent> = {
   chart: [12000, 13200, 13800, 14400, 16000, 18500],
   routeStats: [
     { v: '2h 30m', l: 'desde Guayaquil' },
-    { v: '45 min', l: 'desde Salinas' },
-    { v: '~80 m', l: 'a la playa' },
-    { v: '1h', l: 'a Montañita' },
+    { v: '1h', l: 'desde Salinas' },
+    { v: '5 min', l: 'a Montañita' },
+    { v: '~300 m', l: 'al mar' },
   ],
   rentingStats: [
     { v: '70% / 30%', l: 'Reparto fraccionario / administración' },
     { v: '$500 – $850', l: 'Renta por semana según temporada' },
-    { v: '~$1,960', l: 'Ingreso anual potencial' },
+    { v: '~$1,960', l: 'Ingreso anual potencial con tus 4 semanas' },
   ],
   amenities: [
     'Piscinas',
@@ -251,7 +251,7 @@ export const DEFAULT_BROCHURE_CONTENT: Required<BrochureContent> = {
     {
       icon: 'wallet',
       title: 'Ingresos pasivos administrados',
-      body: 'Programa de renting 70/30 con gestión profesional. Ingreso anual potencial ~$1,960 (16.3% bruto).',
+      body: 'Programa de renting 70/30 con gestión profesional: si pones tus 4 semanas en renting, ingreso anual potencial ~$1,960 (16.3% bruto).',
     },
     {
       icon: 'landmark',
@@ -261,26 +261,10 @@ export const DEFAULT_BROCHURE_CONTENT: Required<BrochureContent> = {
   ],
   insurances: [
     { label: 'Construcción Todo Riesgo', value: '$8M' },
-    { label: 'Garantía de Entrega', value: '$6M' },
     { label: 'Responsabilidad Civil', value: '$5M' },
   ],
-  testimonials: [
-    {
-      name: 'Roberto M.',
-      role: 'Inversionista, Guayaquil',
-      text: 'Buscaba una inversión segura frente al mar. La garantía de recompra del 120% me dio la confianza para entrar en la preventa.',
-    },
-    {
-      name: 'Carolina V.',
-      role: 'Fraccionaria',
-      text: 'Tener mi semana de vacaciones cada año y además generar renta es lo mejor de ambos mundos. El proceso fue transparente.',
-    },
-    {
-      name: 'Andrés P.',
-      role: 'Inversionista',
-      text: 'El financiamiento directo a 0% interés hizo que entrar fuera muy accesible. Un patrimonio para heredar a mis hijos.',
-    },
-  ],
+  // Sin testimonios por defecto: solo se muestran los reales que se carguen desde el admin.
+  testimonials: [],
   bannerEyebrow: 'Más que una inversión',
   bannerTitle: 'Disfruta hoy. Hereda mañana.',
   bannerBody:

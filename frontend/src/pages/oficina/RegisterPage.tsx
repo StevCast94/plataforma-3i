@@ -62,6 +62,7 @@ export default function RegisterPage() {
     if (s === 1) {
       if (!data.fullName.trim()) e.fullName = t('Requerido');
       if (!EMAIL_RE.test(data.email)) e.email = t('Email inválido');
+      if ((data.phone ?? '').replace(/\D/g, '').length < 9) e.phone = t('Escribe tu número de WhatsApp');
       if (data.password.length < 8) e.password = t('Mínimo 8 caracteres');
     }
     if (s === 2) {
@@ -150,7 +151,14 @@ export default function RegisterPage() {
                 onChange={(v) => set('email', v)}
                 error={errors.email}
               />
-              <PhoneField label={t('Teléfono (opcional)')} onChange={(v) => set('phone', v)} />
+              <PhoneField
+                label={t('WhatsApp')}
+                required
+                defaultValue={data.phone}
+                error={errors.phone}
+                hint={t('Te escribiremos por aquí cuando tus referidos se inscriban o compren.')}
+                onChange={(v) => set('phone', v)}
+              />
               <FieldInput
                 label={t('Contraseña')}
                 type="password"

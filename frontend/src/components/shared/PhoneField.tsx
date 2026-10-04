@@ -53,12 +53,17 @@ interface Props {
   onChange?: (value: string) => void;
   onFocus?: FocusEventHandler<HTMLInputElement>;
   className?: string;
+  /** Valor inicial ("+593 991234567"), para no perder el número al volver a este paso. */
+  defaultValue?: string;
+  /** Mensaje de error bajo el campo. */
+  error?: string;
 }
 
-export function PhoneField({ name, label, hint, required, onChange, onFocus, className = '' }: Props) {
+export function PhoneField({ name, label, hint, required, onChange, onFocus, className = '', defaultValue, error }: Props) {
   const { t } = useLang();
-  const [code, setCode] = useState('+593');
-  const [num, setNum] = useState('');
+  const initial = defaultValue?.match(/^(\+\d+)\s+(.*)$/);
+  const [code, setCode] = useState(initial && CODES.some(([d]) => d === initial[1]) ? initial[1] : '+593');
+  const [num, setNum] = useState(initial ? initial[2] : '');
 
   const emit = (c: string, n: string) => {
     const clean = n.replace(/[^\d\s-]/g, '').trim();
@@ -95,11 +100,12 @@ export function PhoneField({ name, label, hint, required, onChange, onFocus, cla
             setNum(e.target.value);
             emit(code, e.target.value);
           }}
-          className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm"
+          className={`w-full rounded-lg border px-3 py-2 text-sm ${error ? 'border-red-500' : 'border-black/15'}`}
         />
       </div>
       {name && <input type="hidden" name={name} value={num.trim() ? `${code} ${num.trim()}` : ''} />}
-      {hint && <p className="mt-1 text-xs text-brand-gray">{hint}</p>}
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {hint && !error && <p className="mt-1 text-xs text-brand-gray">{hint}</p>}
     </div>
   );
 }

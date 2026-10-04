@@ -76,6 +76,11 @@ memberRoutes.post('/register', async (req, res) => {
       res.status(400).json({ error: 'Nombre, email, contraseña y documento son requeridos' });
       return;
     }
+    // WhatsApp obligatorio, con prefijo de país ("+593 991234567").
+    if (!/^\+\d{1,4}\s*[\d\s-]{6,}$/.test(String(phone ?? '').trim())) {
+      res.status(400).json({ error: 'El número de WhatsApp es obligatorio (con el código de país)' });
+      return;
+    }
     if (!EMAIL_RE.test(email)) {
       res.status(400).json({ error: 'Email inválido' });
       return;

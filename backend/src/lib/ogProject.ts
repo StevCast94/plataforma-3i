@@ -25,7 +25,7 @@ const OVERRIDES: Record<string, { title: string; description: string; image: str
   'ibiza-condohotel': {
     title: 'Ibiza Condohotel — fracciones desde $12,000',
     description:
-      'Propiedad fraccionada en un condohotel a 300 m del mar en la costa ecuatoriana: disfruta tu semana, gana con la plusvalía y hereda tu patrimonio.',
+      'Propiedad fraccionada en un condohotel a 300 m del mar en la costa ecuatoriana: disfruta tus 4 semanas al año, gana con la plusvalía y hereda tu patrimonio.',
     image: '/images/og/og-ibiza.jpg',
   },
 };
@@ -41,7 +41,7 @@ const OVERRIDES_EN: Record<string, { title: string; description: string; image: 
   'ibiza-condohotel': {
     title: 'Ibiza Condohotel — fractions from $12,000',
     description:
-      'Fractional ownership in a condo-hotel 300 m from the sea on the Ecuadorian coast: enjoy your week, gain appreciation and pass it on.',
+      'Fractional ownership in a condo-hotel 300 m from the sea on the Ecuadorian coast: enjoy your 4 weeks a year, gain appreciation and pass it on.',
     image: '/images/og/og-ibiza.jpg',
   },
 };
