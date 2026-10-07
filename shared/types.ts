@@ -161,7 +161,7 @@ export type SiteContentMap = Record<string, Record<string, string>>;
 // ============================================================
 
 export type MemberStatus = 'PREMIERE' | 'ELITE' | 'SUSPENDED';
-export type EliteBy = 'PURCHASE' | 'REFERRALS';
+export type EliteBy = 'PURCHASE' | 'REFERRALS' | 'LAUNCH_PROMO';
 export type CommissionStatus =
   | 'PENDING'
   | 'CONFIRMED'

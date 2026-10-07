@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { prisma } from '../prisma';
+import { sendPushToMember } from './push';
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
@@ -29,4 +30,6 @@ export async function notify(
   await db.notification.create({
     data: { memberId, type, title, body, link },
   });
+  // También al teléfono, si el socio activó las notificaciones (sin bloquear).
+  void sendPushToMember(memberId, { title, body, link }).catch((err) => console.error('push', err));
 }

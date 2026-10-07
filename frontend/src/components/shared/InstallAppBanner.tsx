@@ -5,26 +5,10 @@ import { isBosqueHost } from '@/lib/bosque';
 import { Download, Share, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Isotipo } from '@/components/brand/Isotipo';
-
-// Evento no tipado por lib.dom (Chrome/Edge/Android). Se castea localmente.
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
+import { canPromptInstall, isIos, isStandalone, onInstallChange, promptInstall } from '@/lib/pwa';
 
 const DISMISS_KEY = 'g3i_pwa_install_dismissed_until';
 const COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000; // 14 días — no ser insistente
-
-function isStandalone(): boolean {
-  return (
-    window.matchMedia('(display-mode: standalone)').matches ||
-    (window.navigator as Navigator & { standalone?: boolean }).standalone === true
-  );
-}
-
-function isIos(): boolean {
-  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
-}
 
 /**
  * Aviso para instalar la PWA. En Android/Chrome/Edge dispara el prompt nativo
@@ -37,7 +21,6 @@ export function InstallAppBanner() {
   const { t } = useLang();
   const { pathname } = useLocation();
   const inBosque = isBosqueHost() || pathname.startsWith('/bosque');
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [iosHint, setIosHint] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -53,13 +36,9 @@ export function InstallAppBanner() {
       return;
     }
 
-    function onBeforeInstall(e: Event) {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setVisible(true);
-    }
-    window.addEventListener('beforeinstallprompt', onBeforeInstall);
-    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+    const sync = () => setVisible(canPromptInstall());
+    sync();
+    return onInstallChange(sync);
   }, []);
 
   function dismiss() {
@@ -68,15 +47,13 @@ export function InstallAppBanner() {
   }
 
   async function install() {
-    if (!deferredPrompt) return;
-    await deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    setDeferredPrompt(null);
+    await promptInstall();
     setVisible(false);
   }
 
   // El Bosque tiene marca propia: ahí no se ofrece la app de Grupo 3i.
-  if (!visible || inBosque) return null;
+  // En la oficina se encarga la tarjeta "Prepara tu app" (AppSetupSteps).
+  if (!visible || inBosque || pathname.startsWith('/oficina')) return null;
 
   return (
     <div

@@ -188,6 +188,7 @@ enum MemberStatus {
 enum EliteBy {
   PURCHASE
   REFERRALS
+  LAUNCH_PROMO // regalo de lanzamiento (primer referido); se confirma o se revierte al cerrar la temporada
 }
 
 enum KycStatus {
@@ -226,6 +227,7 @@ model ReferralMember {
   referrerId            String?
   referrer              ReferralMember?  @relation("ReferralChain", fields: [referrerId], references: [id])
   referrals             ReferralMember[] @relation("ReferralChain")
+  pushSubscriptions     PushSubscription[]
   walletBalance         Float            @default(0)
   totalEarned           Float            @default(0)
   totalReferrals        Int              @default(0)
@@ -784,4 +786,17 @@ model BosqueExpense {
   amount      Float
   receiptUrl  String?
   createdAt   DateTime @default(now())
+}
+
+/// Suscripción a notificaciones push (Web Push) de un socio, una por navegador/dispositivo.
+model PushSubscription {
+  id        String         @id @default(uuid())
+  memberId  String
+  member    ReferralMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  endpoint  String         @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime       @default(now())
+
+  @@index([memberId])
 }

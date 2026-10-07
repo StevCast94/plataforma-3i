@@ -1,4 +1,5 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
+import { grantLaunchElite } from './launchPromo';
 import { prisma } from '../prisma';
 import { createCommission } from './commissionCalculator';
 import { checkReferralAscension } from './ascendService';
@@ -144,6 +145,9 @@ export async function attributeReferral(
     'Una persona se registró con tu enlace. ¡Sigue compartiendo!',
     db,
   );
+
+  // Temporada de lanzamiento: el primer referido regala el ascenso a Elite.
+  await grantLaunchElite(referrer.id, db);
 
   return { attributed: true };
 }

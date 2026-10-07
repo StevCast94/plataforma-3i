@@ -5,6 +5,8 @@ import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { ProgressToElite } from '@/components/oficina/ProgressToElite';
 import { OnboardingWelcome } from '@/components/oficina/OnboardingWelcome';
+import { AppSetupSteps } from '@/components/oficina/AppSetupSteps';
+import { LaunchPromoCard } from '@/components/oficina/LaunchPromoCard';
 import { useAuth } from '@/hooks/useAuth';
 import { useCommissionSummary } from '@/hooks/useCommissions';
 import { useReferrals } from '@/hooks/useReferrals';
@@ -59,6 +61,9 @@ export default function DashboardPage() {
           {member.membershipAwarded && ' · Membresía de viajes GRATIS 🎁'}
         </p>
       </div>
+
+      <LaunchPromoCard member={member} />
+      <AppSetupSteps />
 
       {/* Cards resumen */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

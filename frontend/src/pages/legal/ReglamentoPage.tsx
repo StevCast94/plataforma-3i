@@ -121,6 +121,15 @@ export default function ReglamentoPage() {
               <li><b>{t('Por referidos:')}</b>{' '}{t('al acumular')}{' '}<b>{t('5 referidos directos que compren un producto inmobiliario')}</b>{' '}{t('dentro de una ventana de 180 días. Además, recibe su')}{' '}<b>{t('membresía del Club de Viajes gratis')}</b>.</li>
             </ul>
             <p>{t('El ascenso es permanente y no reduce las comisiones ya ganadas.')}</p>
+            <div className="rounded-xl bg-secondary/15 p-4 ring-1 ring-secondary/40">
+              <p><b>{t('Promoción de lanzamiento (del 6 de octubre al 7 de noviembre de 2026):')}</b></p>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                <li>{t('El socio Premiere que inscriba a su')}{' '}<b>{t('primer referido directo')}</b>{' '}{t('asciende a Elite de regalo, sin necesidad de compra. Aplica también a quienes ya tenían al menos un referido al iniciar la promoción.')}</li>
+                <li>{t('Al cerrar la temporada conserva el nivel Elite quien tenga al menos')}{' '}<b>{t('1 venta confirmada')}</b>{' '}{t('dentro de la temporada, propia o de un referido directo. Se dan 7 días adicionales para confirmar las ventas hechas dentro del plazo.')}</li>
+                <li>{t('Quien no la tenga vuelve a Premiere. Las comisiones ganadas como Elite durante la temporada se mantienen.')}</li>
+                <li>{t('El regalo no incluye la membresía del Club de Viajes.')}</li>
+              </ul>
+            </div>
           </Section>
 
           <Section id="incentivo" n="5" title="Doble incentivo (membresía de regalo)">

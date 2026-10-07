@@ -11,6 +11,8 @@ import { hasTravelAccess } from '../travel/membershipAccess';
 import { refFromRequest } from './referral';
 import { uploadKycDocument } from '../lib/kycStorage';
 import { notify } from '../services/notifications';
+import { vapidPublicKey } from '../services/push';
+import { LAUNCH_PROMO_END, isLaunchPromoActive } from '../lib/launchPromo';
 
 export const memberRoutes = Router();
 
@@ -262,6 +264,34 @@ memberRoutes.post('/login', async (req, res) => {
 });
 
 // GET /api/members/me
+// GET /api/members/push/key — clave pública VAPID para suscribirse a push.
+memberRoutes.get('/push/key', (_req, res) => {
+  res.json({ key: vapidPublicKey() || null });
+});
+
+// POST /api/members/push/subscribe — guarda la suscripción de este dispositivo.
+memberRoutes.post('/push/subscribe', authMember, async (req: MemberRequest, res) => {
+  const sub = req.body ?? {};
+  const endpoint = String(sub.endpoint ?? '');
+  const p256dh = String(sub.keys?.p256dh ?? '');
+  const auth = String(sub.keys?.auth ?? '');
+  if (!endpoint.startsWith('https://') || !p256dh || !auth) {
+    res.status(400).json({ error: 'Suscripción inválida' });
+    return;
+  }
+  await prisma.pushSubscription.upsert({
+    where: { endpoint },
+    create: { endpoint, p256dh, auth, memberId: req.memberId! },
+    update: { p256dh, auth, memberId: req.memberId! },
+  });
+  res.json({ ok: true });
+});
+
+// GET /api/members/launch-promo — estado de la promoción de lanzamiento.
+memberRoutes.get('/launch-promo', (_req, res) => {
+  res.json({ active: isLaunchPromoActive(), endsAt: LAUNCH_PROMO_END.toISOString() });
+});
+
 memberRoutes.get('/me', authMember, async (req: MemberRequest, res) => {
   const member = await prisma.referralMember.findUnique({
     where: { id: req.memberId },

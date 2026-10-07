@@ -1,5 +1,6 @@
 import { liquidateDueCommissions } from './liquidationService';
 import { processInactivity } from './inactivityService';
+import { backfillLaunchElite, closeLaunchPromo } from './launchPromo';
 
 // ============================================================
 // SCHEDULER EN PROCESO (cron diario)
@@ -17,6 +18,9 @@ async function runDailyJobs(): Promise<void> {
   try {
     const credited = await liquidateDueCommissions();
     const inact = await processInactivity();
+    const promoGranted = await backfillLaunchElite();
+    const promoClosed = await closeLaunchPromo();
+    console.log(`[scheduler] lanzamiento: regalados=${promoGranted} conservan=${promoClosed.kept} revertidos=${promoClosed.reverted}`);
     console.log(
       `[scheduler] liquidadas=${credited} avisos=${inact.warned} suspendidos=${inact.suspended}`,
     );
