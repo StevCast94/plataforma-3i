@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { X, ChevronLeft, ChevronRight, LocateFixed, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
@@ -12,7 +12,18 @@ import { PhoneField } from '@/components/shared/PhoneField';
 import { useLang } from '@/hooks/useLang';
 import { useVisualViewport } from '@/hooks/useVisualViewport';
 import { ShareLot } from '@/components/shared/ShareLot';
-import type { PublicLot, LotStatus } from '@shared/types';
+import type { PublicLot, LotStatus, Panorama } from '@shared/types';
+
+// El visor 360° (three.js) solo se descarga cuando alguien abre una vista.
+const PanoViewer = lazy(() => import('@/components/shared/PanoViewer'));
+
+/** Ícono de los puntos 360° del mapa. */
+const PANO_ICON = L.divIcon({
+  className: 'pano-pin',
+  html: '<span>360°</span>',
+  iconSize: [40, 40],
+  iconAnchor: [20, 20],
+});
 import ZONAS from '@/data/montanita-zonas.json';
 
 // ============================================================
@@ -329,6 +340,37 @@ export function LotMap({
     api.get<PublicLot[]>(`/projects/${projectSlug}/lots`).then(setLots).catch(() => setLots([]));
   }, [projectSlug]);
 
+  // Vistas 360° del proyecto: puntos en el mapa que abren el visor.
+  const [panos, setPanos] = useState<Panorama[]>([]);
+  const [panoOpen, setPanoOpen] = useState<string | null>(null);
+  const [mapReady, setMapReady] = useState(0); // sube cada vez que se crea el mapa
+  useEffect(() => {
+    api.get<Panorama[]>(`/projects/${projectSlug}/panoramas`).then(setPanos).catch(() => setPanos([]));
+  }, [projectSlug]);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !panos.length) return;
+    const group = L.layerGroup().addTo(map);
+    for (const p of panos) {
+      if (p.lat == null || p.lng == null) continue;
+      L.marker([p.lat, p.lng], { icon: PANO_ICON, zIndexOffset: 1000, title: p.title })
+        .bindTooltip(p.title, { direction: 'top', offset: [0, -18] })
+        .on('click', () => setPanoOpen(p.id))
+        .addTo(group);
+    }
+    // Precarga el visor (three.js) en segundo plano y la versión liviana (2048 px)
+    // de cada vista, para que abran al instante.
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1500));
+    idle(() => void import('@/components/shared/PanoViewer'));
+    panos.forEach((p) => {
+      const img = new Image();
+      img.src = p.tiles.baseUrl;
+    });
+    return () => {
+      group.remove();
+    };
+  }, [panos, mapReady]);
+
   // ?lote=A9 abre directamente la ficha de ese solar y centra el mapa en él:
   // así el enlace "Ver ficha" del panel de administración lleva a su ficha pública.
   const wanted = new URLSearchParams(window.location.search).get('lote');
@@ -381,6 +423,7 @@ export function LotMap({
     if (projectSlug === 'montanita-view') drawUrbanism(map, t);
     layerRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
+    setMapReady((n) => n + 1);
     setRest(map, touch && !document.fullscreenElement);
     return () => {
       map.remove();
@@ -592,6 +635,16 @@ export function LotMap({
               <X className="h-4 w-4" />
             </button>
           </div>
+        )}
+        {panoOpen && (
+          <Suspense fallback={<div className="fixed inset-0 z-[4000] bg-black" />}>
+            <PanoViewer
+              panoramas={panos.filter((p) => p.lat != null)}
+              startId={panoOpen}
+              lots={lots ?? []}
+              onClose={() => setPanoOpen(null)}
+            />
+          </Suspense>
         )}
         {selected && (
           <LotPanel

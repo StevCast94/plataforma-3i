@@ -61,6 +61,26 @@ const publicLotSelect = {
   details: true,
 } as const;
 
+// GET /api/projects/:slug/panoramas -> vistas 360° activas del proyecto (público)
+projectRoutes.get('/:slug/panoramas', async (req, res) => {
+  try {
+    const project = await prisma.project.findUnique({ where: { slug: req.params.slug }, select: { id: true } });
+    if (!project) {
+      res.status(404).json({ error: 'Proyecto no encontrado' });
+      return;
+    }
+    const rows = await prisma.panorama.findMany({
+      where: { projectId: project.id, active: true },
+      select: { id: true, title: true, description: true, lat: true, lng: true, tiles: true, northYaw: true, altitude: true },
+      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+    });
+    res.json(rows);
+  } catch (err) {
+    console.error('GET /api/projects/:slug/panoramas', err);
+    res.status(500).json({ error: 'Error al obtener las vistas 360°' });
+  }
+});
+
 // GET /api/projects/:slug/lots -> mapa de lotes de un proyecto (público)
 projectRoutes.get('/:slug/lots', async (req, res) => {
   try {

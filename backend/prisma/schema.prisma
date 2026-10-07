@@ -48,6 +48,7 @@ model Project {
   brochureContent Json? // textos/cifras del Brochure Digital (ver frontend/src/lib/brochureContent.ts)
   products    Product[]
   lots        Lot[]
+  panoramas   Panorama[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -799,4 +800,27 @@ model PushSubscription {
   createdAt DateTime       @default(now())
 
   @@index([memberId])
+}
+
+/// Vista 360° (imagen equirectangular cortada en mosaicos) ubicada en el mapa de un proyecto.
+model Panorama {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  description String?  @db.Text
+  lat         Float?
+  lng         Float?
+  /// Mosaicos: { baseUrl, levels: [{ width, cols, rows, tiles: string[] (fila por fila) }] }
+  tiles       Json
+  /// Ángulo (grados) de la imagen que apunta al norte, para la brújula y el cono del mapa.
+  northYaw    Float    @default(0)
+  /// Altura de la cámara sobre el suelo (m); la usará la superposición de solares.
+  altitude    Float?
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([projectId])
 }

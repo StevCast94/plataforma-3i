@@ -43,6 +43,7 @@ const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage')
 const AdminProductsPage = lazy(() => import('@/pages/admin/AdminProductsPage'));
 const AdminProjectsPage = lazy(() => import('@/pages/admin/AdminProjectsPage'));
 const AdminLotsPage = lazy(() => import('@/pages/admin/AdminLotsPage'));
+const AdminPanoramasPage = lazy(() => import('@/pages/admin/AdminPanoramasPage'));
 const AdminPropuestaPage = lazy(() => import('@/pages/admin/AdminPropuestaPage'));
 const AdminMembersPage = lazy(() => import('@/pages/admin/AdminMembersPage'));
 const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPage'));
@@ -167,6 +168,7 @@ export default function App() {
                 <Route path="productos" element={<AdminProductsPage />} />
                 <Route path="proyectos" element={<AdminProjectsPage />} />
                 <Route path="proyectos/:projectId/lotes" element={<AdminLotsPage />} />
+                <Route path="proyectos/:projectId/vistas-360" element={<AdminPanoramasPage />} />
                 <Route path="propuesta" element={<AdminPropuestaPage />} />
                 <Route path="miembros" element={<AdminMembersPage />} />
                 <Route path="leads" element={<AdminLeadsPage />} />

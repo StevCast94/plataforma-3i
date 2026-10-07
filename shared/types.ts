@@ -594,3 +594,28 @@ export interface KycDocuments {
   back: string | null;
   selfie: string | null;
 }
+
+/** Nivel de mosaicos de una vista 360° (imagen equirectangular de `width`×`width/2`). */
+export interface PanoramaTileLevel {
+  width: number;
+  cols: number;
+  rows: number;
+  /** URLs fila por fila: tiles[row * cols + col]. */
+  tiles: string[];
+}
+
+/** Vista 360° de un proyecto, ubicada en el mapa. */
+export interface Panorama {
+  id: string;
+  title: string;
+  description?: string | null;
+  lat: number | null;
+  lng: number | null;
+  tiles: { baseUrl: string; levels: PanoramaTileLevel[] };
+  /** Ángulo (grados) de la imagen original que apunta al norte. */
+  northYaw: number;
+  altitude?: number | null;
+  active?: boolean;
+  sortOrder?: number;
+  projectId?: string;
+}

@@ -44,6 +44,7 @@ export default function AdminProjectsPage() {
       cell: (p) => (
         <div className="flex gap-2">
           <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/admin/proyectos/${p.id}/lotes`); }}>Lotes</Button>
+          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/admin/proyectos/${p.id}/vistas-360`); }}>360°</Button>
           <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setEditing(p); setFormOpen(true); }}>Editar</Button>
           <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setToDelete(p); }} className="text-red-600">Eliminar</Button>
         </div>

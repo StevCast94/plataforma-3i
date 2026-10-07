@@ -372,3 +372,26 @@ text.via-label {
   .lot-print details > summary { list-style: none; }
   .lot-print details > summary::-webkit-details-marker { display: none; }
 }
+
+/* Puntos 360° del mapa de solares */
+.pano-pin span {
+  display: flex;
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #1f2937;
+  border: 3px solid #ffc428;
+  color: #fff;
+  font: 700 11px/1 Inter, sans-serif;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  animation: pano-pulse 2.4s ease-in-out infinite;
+}
+@keyframes pano-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 196, 40, 0.55), 0 4px 14px rgba(0, 0, 0, 0.45); }
+  50% { box-shadow: 0 0 0 10px rgba(255, 196, 40, 0), 0 4px 14px rgba(0, 0, 0, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pano-pin span { animation: none; }
+}
