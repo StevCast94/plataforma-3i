@@ -40,7 +40,7 @@ function offset(lat: number, lng: number, dist: number, bearing: number): [numbe
   return [lat + dLat, lng + dLng];
 }
 
-function conePoints(lat: number, lng: number, heading: number, fov: number, dist = 110): [number, number][] {
+function conePoints(lat: number, lng: number, heading: number, fov: number, dist = 35): [number, number][] {
   const pts: [number, number][] = [[lat, lng]];
   for (let i = 0; i <= 12; i++) pts.push(offset(lat, lng, dist, heading - fov / 2 + (fov * i) / 12));
   return pts;
@@ -82,7 +82,7 @@ export default function PanoViewer({ panoramas, startId, lots, onClose, onSetNor
       maxFov: 100,
       mousewheelCtrlKey: false,
       touchmoveTwoFingers: false,
-      navbar: ['zoom', 'move', 'gyroscope', 'caption', 'fullscreen'],
+      navbar: ['zoom', 'gyroscope', 'caption', 'fullscreen'],
       caption: first.title,
       lang: { zoom: t('Acercar'), moveUp: '', moveDown: '', moveLeft: '', moveRight: '', fullscreen: t('Pantalla completa') },
       plugins: [
