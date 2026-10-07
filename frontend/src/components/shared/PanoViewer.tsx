@@ -29,7 +29,7 @@ function panoConfig(p: Panorama) {
       levels: p.tiles.levels.map(({ width, cols, rows }) => ({ width, cols, rows })),
       tileUrl: (col: number, row: number, level: number) => p.tiles.levels[level]?.tiles[row * p.tiles.levels[level].cols + col] ?? null,
     },
-    sphereCorrection: { pan: -toRad(p.northYaw) },
+    sphereCorrection: { pan: toRad(p.northYaw) },
   };
 }
 
