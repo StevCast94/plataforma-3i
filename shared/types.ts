@@ -600,8 +600,8 @@ export interface PanoramaTileLevel {
   width: number;
   cols: number;
   rows: number;
-  /** URLs fila por fila: tiles[row * cols + col]. */
-  tiles: string[];
+  /** URLs fila por fila: tiles[row * cols + col]; null = sin imagen (panorámica parcial). */
+  tiles: (string | null)[];
 }
 
 /** Vista 360° de un proyecto, ubicada en el mapa. */
@@ -611,7 +611,12 @@ export interface Panorama {
   description?: string | null;
   lat: number | null;
   lng: number | null;
-  tiles: { baseUrl: string; levels: PanoramaTileLevel[] };
+  tiles: {
+    baseUrl: string;
+    levels: PanoramaTileLevel[];
+    /** Solo en panorámicas parciales: grados que cubre de lado a lado y de arriba abajo. */
+    range?: { hfov: number; vfov: number };
+  };
   /** Ángulo (grados) de la imagen original que apunta al norte. */
   northYaw: number;
   altitude?: number | null;

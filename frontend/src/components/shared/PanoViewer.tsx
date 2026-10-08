@@ -3,6 +3,7 @@ import { Viewer } from '@photo-sphere-viewer/core';
 import { EquirectangularTilesAdapter } from '@photo-sphere-viewer/equirectangular-tiles-adapter';
 import { GyroscopePlugin } from '@photo-sphere-viewer/gyroscope-plugin';
 import { CompassPlugin } from '@photo-sphere-viewer/compass-plugin';
+import { VisibleRangePlugin } from '@photo-sphere-viewer/visible-range-plugin';
 import '@photo-sphere-viewer/core/index.css';
 import '@photo-sphere-viewer/compass-plugin/index.css';
 import L from 'leaflet';
@@ -30,6 +31,24 @@ function panoConfig(p: Panorama) {
       tileUrl: (col: number, row: number, level: number) => p.tiles.levels[level]?.tiles[row * p.tiles.levels[level].cols + col] ?? null,
     },
     sphereCorrection: { pan: toRad(p.northYaw) },
+  };
+}
+
+/** Rumbo (grados) del centro de la foto: el ángulo 0 de la imagen original. */
+const centerHeading = (p: Panorama) => -p.northYaw;
+
+/**
+ * Límites de giro y zoom. En una panorámica parcial solo se puede recorrer la
+ * zona con imagen y el zoom máximo no deja ver más alto de lo que cubre la foto.
+ */
+function viewLimits(p: Panorama) {
+  const r = p.tiles.range;
+  if (!r) return { horizontal: null, vertical: null, maxFov: 100 };
+  const c = centerHeading(p);
+  return {
+    horizontal: [toRad(c - r.hfov / 2), toRad(c + r.hfov / 2)] as [number, number],
+    vertical: [toRad(-r.vfov / 2), toRad(r.vfov / 2)] as [number, number],
+    maxFov: Math.max(30, Math.min(100, r.vfov - 2)),
   };
 }
 
@@ -77,9 +96,10 @@ export default function PanoViewer({ panoramas, startId, lots, onClose, onSetNor
       container: el.current,
       adapter: EquirectangularTilesAdapter.withConfig({ baseBlur: true }),
       ...panoConfig(first),
-      defaultZoomLvl: 20,
+      defaultYaw: toRad(centerHeading(first)),
+      defaultZoomLvl: first.tiles.range ? 0 : 20,
       minFov: 25,
-      maxFov: 100,
+      maxFov: viewLimits(first).maxFov,
       mousewheelCtrlKey: false,
       touchmoveTwoFingers: false,
       navbar: ['zoom', 'gyroscope', 'caption', 'fullscreen'],
@@ -88,6 +108,7 @@ export default function PanoViewer({ panoramas, startId, lots, onClose, onSetNor
       plugins: [
         [GyroscopePlugin, { touchmove: true }],
         [CompassPlugin, { size: '90px', position: 'top right', coneColor: 'rgba(255, 196, 40, 0.5)', navigation: true }],
+        [VisibleRangePlugin, { horizontalRange: viewLimits(first).horizontal, verticalRange: viewLimits(first).vertical }],
       ],
     });
     viewerRef.current = viewer;
@@ -173,7 +194,22 @@ export default function PanoViewer({ panoramas, startId, lots, onClose, onSetNor
     if (!p || !v || id === currentRef.current.id) return;
     setCurrentId(id);
     const cfg = panoConfig(p);
-    v.setPanorama(cfg.panorama, { sphereCorrection: cfg.sphereCorrection, caption: p.title, transition: { speed: 800 } }).then(() => updateRef.current());
+    const lim = viewLimits(p);
+    const range = v.getPlugin<VisibleRangePlugin>(VisibleRangePlugin);
+    range?.setHorizontalRange(null);
+    range?.setVerticalRange(null);
+    v.setOption('maxFov', lim.maxFov);
+    v.setPanorama(cfg.panorama, {
+      sphereCorrection: cfg.sphereCorrection,
+      caption: p.title,
+      position: { yaw: toRad(centerHeading(p)), pitch: 0 },
+      zoom: p.tiles.range ? 0 : 20,
+      transition: { speed: 800 },
+    }).then(() => {
+      range?.setHorizontalRange(lim.horizontal);
+      range?.setVerticalRange(lim.vertical);
+      updateRef.current();
+    });
   }
 
   function setNorth() {

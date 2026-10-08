@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
-import { buildPanoramaTiles, inspectEquirect } from '@/lib/panoTiles';
+import { buildPanoramaTiles, inspectEquirect, type EquirectInfo } from '@/lib/panoTiles';
 import type { AdminLot, Panorama } from '@shared/types';
 
 const PanoViewer = lazy(() => import('@/components/shared/PanoViewer'));
@@ -208,7 +208,7 @@ export default function AdminPanoramasPage() {
         onDone={(id) => {
           setUploadOpen(false);
           reload();
-          setPlacing(id);
+          setPlacing(id || null);
         }}
       />
 
@@ -247,9 +247,13 @@ function UploadModal({
   const [info, setInfo] = useState('');
   const [warning, setWarning] = useState('');
   const [progress, setProgress] = useState<[number, number] | null>(null);
+  const [meta, setMeta] = useState<EquirectInfo | null>(null);
+  const [hfov, setHfov] = useState('');
 
   useEffect(() => {
     if (!open) {
+      setMeta(null);
+      setHfov('');
       setTitle('');
       setFile(null);
       setInfo('');
@@ -265,20 +269,41 @@ function UploadModal({
     if (!f) return;
     try {
       const r = await inspectEquirect(f);
-      setInfo(`${r.width}×${r.height} px · ${(f.size / 1048576).toFixed(1)} MB`);
+      setMeta(r);
+      setHfov(String(r.hfov));
+      setInfo(
+        `${r.width}×${r.height} px · ${(f.size / 1048576).toFixed(1)} MB · ${r.partial ? 'panorámica parcial' : '360° completa'}` +
+          (r.lat != null ? ' · con ubicación GPS' : '') +
+          (r.heading != null ? ` · rumbo ${Math.round(r.heading)}°` : ''),
+      );
       setWarning(r.warning ?? '');
       if (!title) setTitle(f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '));
     } catch {
-      setWarning('No se pudo leer la imagen. Usa JPG o PNG.');
+      setWarning('No se pudo leer la imagen. Usa JPG o PNG (las fotos HEIC del iPhone hay que convertirlas antes).');
     }
   }
 
   async function save() {
     if (!file || !title.trim()) return;
     try {
-      const tiles = await buildPanoramaTiles(file, (d, t) => setProgress([d, t]));
-      const p = await adminApi.post<Panorama>('/admin/panoramas', { projectId, title: title.trim(), tiles });
-      toast('Vista 360° creada ✅ Ahora ubícala en el mapa.', 'success');
+      const h = meta?.partial ? Math.min(360, Math.max(30, Number(hfov) || meta.hfov)) : 360;
+      const tiles = await buildPanoramaTiles(file, (d, t) => setProgress([d, t]), h);
+      const located = meta?.lat != null && meta?.lng != null;
+      const p = await adminApi.post<Panorama>('/admin/panoramas', {
+        projectId,
+        title: title.trim(),
+        tiles,
+        // Con los datos de la cámara queda ubicada y orientada sola (se puede ajustar después).
+        lat: meta?.lat,
+        lng: meta?.lng,
+        altitude: meta?.altitude,
+        northYaw: meta?.heading != null ? (360 - meta.heading) % 360 : 0,
+      });
+      toast(located ? 'Vista creada y ubicada con el GPS de la foto ✅ Revisa el norte con «Ver / norte».' : 'Vista 360° creada ✅ Ahora ubícala en el mapa.', 'success');
+      if (located) {
+        onDone('');
+        return;
+      }
       onDone(p.id);
     } catch (err) {
       toast((err as Error).message || 'Error al subir', 'error');
@@ -292,11 +317,27 @@ function UploadModal({
       <div className="space-y-4">
         <Input label="Nombre (se ve en el mapa)" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Mirador manzana A" />
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-primary">Imagen equirectangular (2:1, JPG)</span>
+          <span className="mb-1.5 block text-sm font-medium text-primary">Imagen 360° (equirectangular 2:1) o panorámica (JPG)</span>
           <input type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={(e) => pick(e.target.files?.[0] ?? null)} />
         </label>
         {info && <p className="text-sm text-brand-gray">{info}</p>}
         {warning && <p className="rounded-lg bg-amber-50 p-2 text-sm text-amber-800">{warning}</p>}
+        {meta?.partial && (
+          <div>
+            <Input
+              label="Ángulo que cubre de lado a lado (grados)"
+              type="number"
+              min={30}
+              max={360}
+              value={hfov}
+              onChange={(e) => setHfov(e.target.value)}
+            />
+            <p className="mt-1 text-xs text-brand-gray">
+              Estimado por la proporción de la imagen. Si al verla se ve estirada, súbelo; si se ve aplastada, bájalo. Una
+              panorámica del iPhone de vuelta completa suele estar entre 180° y 240°.
+            </p>
+          </div>
+        )}
         {busy && (
           <div>
             <div className="h-2 overflow-hidden rounded-full bg-black/10">
