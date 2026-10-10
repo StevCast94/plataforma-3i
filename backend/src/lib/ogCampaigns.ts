@@ -44,7 +44,7 @@ export const DEFAULT_CAMPAIGNS: Record<string, OgCampaign> = {
   montanita: {
     label: 'Montañita View — mapa de solares',
     title: '{nombre} te invita a elegir tu solar en Montañita View',
-    description: 'Lotes con vista al mar en Manglaralto desde $49,084, con financiamiento a 24 meses sin intereses.',
+    description: 'Lotes con vista al mar en Manglaralto desde $41,721, con financiamiento a 24 meses sin intereses.',
     image: '/images/og/og-camp-montanita.jpg',
     message:
       'Mira los solares de Montañita View en el mapa interactivo: eliges el tuyo, ves su precio y su cuota, y lo pagas en 24 meses sin intereses. Te dejo mi enlace:',

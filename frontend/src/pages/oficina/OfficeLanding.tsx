@@ -53,7 +53,7 @@ const faqs = [
  * (backend/src/lib/referralRules.ts): 2% / 4% inmobiliario, $50 / $100 membresía.
  */
 const EXAMPLES = [
-  { what: 'Un solar en Montañita View', price: 'desde $49,084', premiere: 49084 * 0.02, elite: 49084 * 0.04 },
+  { what: 'Un solar en Montañita View', price: 'desde $41,721', premiere: 41721 * 0.02, elite: 41721 * 0.04 },
   { what: 'Una fracción en Ibiza Condohotel', price: '$12,000', premiere: 12000 * 0.02, elite: 12000 * 0.04 },
   { what: 'Una membresía del Club 3i', price: 'por membresía', premiere: 50, elite: 100 },
 ];

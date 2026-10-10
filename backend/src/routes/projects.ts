@@ -54,6 +54,7 @@ const publicLotSelect = {
   depthM: true,
   price: true,
   pricePerM2: true,
+  cashOnly: true,
   name: true,
   description: true,
   images: true,

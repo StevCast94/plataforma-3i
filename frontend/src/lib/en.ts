@@ -46,6 +46,11 @@ export const EN: Record<string, string> = {
   'Sobre el proyecto': 'About the project',
   // Ficha del solar y compartir
   'Explorar el mapa': 'Explore the map',
+  'Precio de contado': 'Cash price',
+  'Solo contado': 'Cash only',
+  'Promo de contado': 'Cash promo',
+  'Promo': 'Promo',
+  'Precio promocional válido solo con pago de contado. No aplica el plan de financiamiento.': 'Promotional price valid only for cash payment. The financing plan does not apply.',
   "Promoción de lanzamiento (del 6 de octubre al 7 de noviembre de 2026):": "Launch promotion (6 October to 7 November 2026):",
   "El socio Premiere que inscriba a su": "A Premiere member who signs up their",
   "primer referido directo": "first direct referral",
@@ -82,8 +87,8 @@ export const EN: Record<string, string> = {
   'Ver todos los proyectos': 'See all projects',
   'Oportunidad de inversión': 'Investment opportunity',
   'Propuesta Montañita View': 'Montañita View proposal',
-  'Un solar desde $49,084, sociedad en Montañita View Lobby o la compra total de ambos proyectos. Revisa las cifras, el dossier técnico y las condiciones de pago.':
-    'A lot from $49,084, a partnership in Montañita View Lobby, or both projects in a single purchase. Review the figures, the technical dossier and the payment terms.',
+  'Un solar desde $41,721, sociedad en Montañita View Lobby o la compra total de ambos proyectos. Revisa las cifras, el dossier técnico y las condiciones de pago.':
+    'A lot from $41,721, a partnership in Montañita View Lobby, or both projects in a single purchase. Review the figures, the technical dossier and the payment terms.',
   'Ver la propuesta': 'View the proposal',
   'Membresías y Oportunidades': 'Memberships and opportunities',
   'Accede a beneficios de viaje y a inversiones fraccionadas.':
@@ -202,8 +207,8 @@ export const EN: Record<string, string> = {
   'Quiero que me contacten': 'Please contact me',
   '¡Listo! Un asesor te contactará por WhatsApp sobre el solar {code}.':
     'Done. An advisor will contact you on WhatsApp about lot {code}.',
-  'Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m². Plan de pago: 30% de entrada y saldo en hasta 24 cuotas mensuales sin intereses.':
-    'Areas from the GEO 3i topographic survey. List price $100/m². Payment plan: 30% down and the balance in up to 24 interest-free monthly payments.',
+  'Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m² ($85/m² en la manzana A). Plan de pago: 30% de entrada y saldo en hasta 24 cuotas mensuales sin intereses.':
+    'Areas from the GEO 3i topographic survey. List price $100/m² ($85/m² in block A). Payment plan: 30% down and the balance in up to 24 interest-free monthly payments.',
 
   // ---------- Ficha técnica del solar ----------
   'Ficha técnica': 'Technical sheet',
@@ -523,7 +528,7 @@ export const EN: Record<string, string> = {
     'Hello, I saw the Montañita View proposal and would like to *schedule a meeting* with an advisor.',
 
   // Rutas y datos clave de la propuesta
-  'Desde $49,084': 'From $49,084',
+  'Desde $41,721': 'From $41,721',
   'Tu terreno propio, con título individual y financiamiento directo: 30% de entrada y 24 cuotas sin intereses.':
     'Your own land, with individual title and direct financing: 30% down and 24 interest-free payments.',
   'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 24 cuotas sin intereses.':
@@ -532,7 +537,7 @@ export const EN: Record<string, string> = {
   '90 de 111': '90 of 111',
   '$100 / m²': '$100 / m²',
   Desde: 'From',
-  '$49,084 — solar A9, 490.84 m²': '$49,084 — lot A9, 490.84 m²',
+  '$41,721 — solar A9, 490.84 m²': '$41,721 — lot A9, 490.84 m²',
   'Plan de pago': 'Payment plan',
   '30% de entrada + saldo en hasta 24 cuotas al 0%':
     '30% down + balance over up to 24 payments at 0%',
@@ -797,7 +802,7 @@ export const EN: Record<string, string> = {
   Financiamiento: 'Financing',
   '24 cuotas, 0% interés': '24 payments, 0% interest',
   'Lotización residencial y turística': 'Residential and tourism subdivision',
-  'USD $49,084 / solar': 'USD $49,084 / lot',
+  'USD $41,721 / solar': 'USD $41,721 / lot',
   '90 de 111, desde 490 m²': '90 of 111, from 490 m²',
   'Saneado — inscrito en 2018': 'Clean — registered in 2018',
   'Energía y alumbrado público': 'Electricity and street lighting',

@@ -71,6 +71,8 @@ export interface PublicLot {
   depthM?: number | null;
   price?: number | null;
   pricePerM2?: number | null;
+  /** Precio promocional válido solo con pago de contado (sin financiamiento). */
+  cashOnly?: boolean;
   name?: string | null;
   description?: string | null;
   images: string[];

@@ -64,7 +64,7 @@ const LOT_LABEL_ZOOM = 18;
 function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoomed: boolean, t: (s: string) => string) {
   poly.lotData = lot;
   if (!zoomed) {
-    poly.unbindTooltip().bindTooltip(`${lot.code} · ${t(lot.name || STATUS_STYLE[lot.status].label)}`, { sticky: true });
+    poly.unbindTooltip().bindTooltip(`${lot.code} · ${t(lot.name || STATUS_STYLE[lot.status].label)}${lot.cashOnly && lot.status === 'AVAILABLE' ? ` · ${t('Promo de contado')}` : ''}`, { sticky: true });
     return;
   }
   poly
@@ -696,6 +696,9 @@ export function LotMap({
               >
                 <td className="px-3 py-2 font-medium text-primary">
                   {l.code}
+                  {l.cashOnly && l.status === 'AVAILABLE' && (
+                    <span className="ml-1.5 rounded bg-secondary px-1.5 py-0.5 text-[10px] font-bold uppercase text-primary">{t('Promo')}</span>
+                  )}
                   {l.name && <span className="block text-xs font-normal text-brand-gray">{t(l.name)}</span>}
                   {l.approximateGeometry && (
                     <span className="block text-xs font-normal text-amber-700">{t('Ubicación en el mapa por confirmar')}</span>
@@ -704,7 +707,7 @@ export function LotMap({
                 <td className="px-3 py-2">{fmtArea(l.areaM2)}</td>
                 <td className="px-3 py-2">{l.price != null ? formatCurrency(l.price) : '—'}</td>
                 <td className="hidden px-3 py-2 sm:table-cell">
-                  {l.price != null ? formatCurrency(monthly(l.price)) : '—'}
+                  {l.price == null ? '—' : l.cashOnly ? <span className="text-xs font-semibold text-accent">{t('Solo contado')}</span> : formatCurrency(monthly(l.price))}
                 </td>
                 <td className="px-3 py-2">
                   <span className="rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ background: STATUS_STYLE[l.status].fill }}>
@@ -725,7 +728,7 @@ export function LotMap({
         )}
       </div>
       <p className="mt-3 text-xs text-brand-gray">
-        {t('Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m². Plan de pago: 30% de entrada y saldo en hasta 24 cuotas mensuales sin intereses.')}
+        {t('Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m² ($85/m² en la manzana A). Plan de pago: 30% de entrada y saldo en hasta 24 cuotas mensuales sin intereses.')}
       </p>
     </section>
   );
@@ -737,6 +740,16 @@ function byCode(a: PublicLot, b: PublicLot) {
 
 export function fmtArea(a?: number | null) {
   return a != null ? `${a.toLocaleString('en-US', { maximumFractionDigits: 0 })} m²` : '—';
+}
+
+/** Aviso de los solares en promoción de contado. */
+export function CashOnlyNote() {
+  const { t } = useLang();
+  return (
+    <p className="rounded-lg bg-secondary/20 px-3 py-2 text-xs font-medium text-primary">
+      🏷️ {t('Precio promocional válido solo con pago de contado. No aplica el plan de financiamiento.')}
+    </p>
+  );
 }
 
 export function monthly(price: number) {
@@ -923,10 +936,16 @@ function LotPanel({
       <dl className="mt-4 space-y-2 text-sm">
         {lot.price != null && (
           <>
-            <Row label={t('Precio')} value={formatCurrency(lot.price)} strong />
+            <Row label={lot.cashOnly ? t('Precio de contado') : t('Precio')} value={formatCurrency(lot.price)} strong />
             {lot.pricePerM2 != null && <Row label={t('Precio por m²')} value={formatCurrency(lot.pricePerM2)} />}
-            <Row label={t('Entrada (30%)')} value={formatCurrency(lot.price * DOWN_PAYMENT)} />
-            <Row label={t('{n} cuotas sin interés de', { n: INSTALLMENTS })} value={formatCurrency(monthly(lot.price))} />
+            {lot.cashOnly ? (
+              <CashOnlyNote />
+            ) : (
+              <>
+                <Row label={t('Entrada (30%)')} value={formatCurrency(lot.price * DOWN_PAYMENT)} />
+                <Row label={t('{n} cuotas sin interés de', { n: INSTALLMENTS })} value={formatCurrency(monthly(lot.price))} />
+              </>
+            )}
           </>
         )}
       </dl>

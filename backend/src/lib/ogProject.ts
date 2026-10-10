@@ -19,7 +19,7 @@ const OVERRIDES: Record<string, { title: string; description: string; image: str
   'montanita-view': {
     title: 'Montañita View — mapa interactivo de solares',
     description:
-      'Explora los 90 solares disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, su clave catastral, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $100/m².',
+      'Explora los 90 solares disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, su clave catastral, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $85/m².',
     image: '/images/og/og-montanita-view.jpg',
   },
   'ibiza-condohotel': {
@@ -35,7 +35,7 @@ const OVERRIDES_EN: Record<string, { title: string; description: string; image: 
   'montanita-view': {
     title: 'Montañita View — interactive lot map',
     description:
-      'Explore the 90 available lots on the satellite map: tap any one to see its price, monthly payment, cadastral reference, boundaries and street frontage. Manglaralto, Ruta del Spondylus, from $100/m².',
+      'Explore the 90 available lots on the satellite map: tap any one to see its price, monthly payment, cadastral reference, boundaries and street frontage. Manglaralto, Ruta del Spondylus, from $85/m².',
     image: '/images/og/og-montanita-view.jpg',
   },
   'ibiza-condohotel': {
@@ -133,7 +133,7 @@ export function lotOgHandler(frontendPath: string) {
       const lot = project
         ? await prisma.lot.findFirst({
             where: { projectId: project.id, code, active: true },
-            select: { code: true, areaM2: true, price: true, status: true, name: true },
+            select: { code: true, areaM2: true, price: true, status: true, name: true, cashOnly: true },
           })
         : null;
       if (!project || !lot) {
@@ -149,9 +149,13 @@ export function lotOgHandler(frontendPath: string) {
       const title = `${parts.join(' · ')} — ${project.name}`;
       const status =
         lot.status === 'AVAILABLE'
-          ? en
-            ? '24-month interest-free financing.'
-            : 'Financiamiento a 24 meses sin intereses.'
+          ? lot.cashOnly
+            ? en
+              ? 'Promotional cash price.'
+              : 'Precio promocional de contado.'
+            : en
+              ? '24-month interest-free financing.'
+              : 'Financiamiento a 24 meses sin intereses.'
           : lot.status === 'SOLD'
             ? en ? 'Sold.' : 'Vendido.'
             : lot.status === 'RESERVED'
@@ -201,7 +205,7 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
     es: {
       title: 'Grupo 3i — Invierte en un paraíso',
       description:
-        'Propiedad fraccionada, lotes con vista al mar y experiencias premium en la costa ecuatoriana. Ibiza Condohotel desde $12,000 · Montañita View desde $49,084.',
+        'Propiedad fraccionada, lotes con vista al mar y experiencias premium en la costa ecuatoriana. Ibiza Condohotel desde $12,000 · Montañita View desde $41,721.',
       image: '/images/og/og-home.jpg',
     },
     en: {
@@ -214,13 +218,13 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
     es: {
       title: 'Proyectos de Grupo 3i',
       description:
-        'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (lotes con vista al mar desde $49,084) en Santa Elena, Ecuador.',
+        'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (lotes con vista al mar desde $41,721) en Santa Elena, Ecuador.',
       image: '/images/og/og-proyectos.jpg',
     },
     en: {
       title: 'Grupo 3i projects',
       description:
-        'Ibiza Condohotel (fractions from $12,000) and Montañita View (sea-view lots from $49,084) in Santa Elena, Ecuador.',
+        'Ibiza Condohotel (fractions from $12,000) and Montañita View (sea-view lots from $41,721) in Santa Elena, Ecuador.',
       image: '/images/og/og-proyectos.jpg',
     },
   },

@@ -129,6 +129,7 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
         status: form.status,
         price: form.price === null || form.price === undefined ? null : Number(form.price),
         pricePerM2: form.pricePerM2 === null || form.pricePerM2 === undefined ? null : Number(form.pricePerM2),
+        cashOnly: !!form.cashOnly,
         cadastralCode: form.cadastralCode || null,
         ownerName: form.ownerName || null,
         ownerPhone: form.ownerPhone || null,
@@ -180,6 +181,15 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
               onChange={(e) => setForm((f) => ({ ...f, pricePerM2: e.target.value === '' ? null : Number(e.target.value) }))}
             />
           </div>
+
+          <label className="flex items-center gap-2 text-sm text-primary">
+            <input
+              type="checkbox"
+              checked={!!form.cashOnly}
+              onChange={(e) => setForm((f) => ({ ...f, cashOnly: e.target.checked }))}
+            />
+            Promoción solo de contado (no aplica el plan de 24 cuotas)
+          </label>
 
           <Input
             label="Uso / proyecto de negocio"

@@ -21,6 +21,7 @@ import {
   STATUS_STYLE,
   fmtArea,
   monthly,
+  CashOnlyNote,
 } from '@/components/shared/LotMap';
 import { BrandLoader } from '@/components/brand/Isotipo';
 
@@ -136,15 +137,15 @@ export default function LotPage() {
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Stat label={t('Área')} value={fmtArea(lot.areaM2)} />
-            {lot.price != null && <Stat label={t('Precio')} value={formatCurrency(lot.price)} strong />}
-            {lot.price != null && (
+            {lot.price != null && <Stat label={lot.cashOnly ? t('Precio de contado') : t('Precio')} value={formatCurrency(lot.price)} strong />}
+            {lot.price != null && !lot.cashOnly && (
               <Stat label={t('{n} cuotas sin interés de', { n: INSTALLMENTS })} value={formatCurrency(monthly(lot.price))} />
             )}
           </div>
           {lot.price != null && (
             <dl className="mt-4 space-y-2 border-t border-black/5 pt-4 text-sm">
               {lot.pricePerM2 != null && <Row label={t('Precio por m²')} value={formatCurrency(lot.pricePerM2)} />}
-              <Row label={t('Entrada (30%)')} value={formatCurrency(lot.price * DOWN_PAYMENT)} />
+              {lot.cashOnly ? <CashOnlyNote /> : <Row label={t('Entrada (30%)')} value={formatCurrency(lot.price * DOWN_PAYMENT)} />}
             </dl>
           )}
 

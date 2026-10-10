@@ -15,7 +15,7 @@ const cards = [
   {
     file: 'og-montanita-view.jpg', bg: MV, eyebrow: 'Manglaralto, Santa Elena', title: 'Montañita View',
     sub: 'Lotes con vista al mar · elige tu solar en el mapa interactivo',
-    stats: [['Inversión desde', '$49,084', true], ['Tipo', 'Lotización'], ['Financiamiento', '0% · 24 meses']],
+    stats: [['Inversión desde', '$41,721', true], ['Tipo', 'Lotización'], ['Financiamiento', '0% · 24 meses']],
   },
   {
     file: 'og-ibiza.jpg', bg: IBIZA, eyebrow: 'Costa ecuatoriana', logo: `${PUB}/images/proyectos/ibiza/logo-light.svg`, title: 'Ibiza Condohotel',
@@ -30,12 +30,12 @@ const cards = [
   {
     file: 'og-home.jpg', bg: `${PUB}/images/secciones/hero-home.jpg`, eyebrow: 'Grupo 3i · costa ecuatoriana', title: 'Invierte en un paraíso',
     sub: 'Propiedad fraccionada, lotes con vista al mar y experiencias premium',
-    stats: [['Ibiza Condohotel desde', '$12,000', true], ['Montañita View desde', '$49,084', true]],
+    stats: [['Ibiza Condohotel desde', '$12,000', true], ['Montañita View desde', '$41,721', true]],
   },
   {
     file: 'og-proyectos.jpg', bg: MV, eyebrow: 'Grupo 3i', title: 'Nuestros proyectos',
     sub: 'Condohotel junto al mar y lotización con vista al mar en Santa Elena',
-    stats: [['Ibiza Condohotel desde', '$12,000', true], ['Montañita View desde', '$49,084', true]],
+    stats: [['Ibiza Condohotel desde', '$12,000', true], ['Montañita View desde', '$41,721', true]],
   },
   {
     file: 'og-club.jpg', bg: `${PUB}/images/secciones/hero-club.jpg`, eyebrow: 'Grupo 3i', title: 'Club 3i',
@@ -62,7 +62,7 @@ const cards = [
 
 // Tarjetas cuadradas para los mensajes de referido (WhatsApp las muestra más grandes).
 const squares = [
-  { file: 'og-camp-montanita.jpg', bg: MV, eyebrow: 'Manglaralto, Santa Elena', title: 'Montañita View', sub: 'Elige tu solar con vista al mar en el mapa interactivo', stats: [['Desde', '$49,084', true], ['Financiamiento', '24 cuotas sin intereses']] },
+  { file: 'og-camp-montanita.jpg', bg: MV, eyebrow: 'Manglaralto, Santa Elena', title: 'Montañita View', sub: 'Elige tu solar con vista al mar en el mapa interactivo', stats: [['Desde', '$41,721', true], ['Financiamiento', '24 cuotas sin intereses']] },
   { file: 'og-camp-ibiza.jpg', bg: IBIZA, eyebrow: 'Costa ecuatoriana', logo: `${PUB}/images/proyectos/ibiza/logo-light.svg`, title: 'Ibiza Condohotel', sub: 'Tu fracción a 300 m del mar: disfruta, gana plusvalía y hereda', stats: [['Desde', '$12,000', true], ['Tipo', 'Condohotel']] },
 ];
 

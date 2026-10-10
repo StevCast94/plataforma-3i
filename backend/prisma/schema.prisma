@@ -100,6 +100,8 @@ model Lot {
   // --- Comercial (fuente: panel admin) ---
   price         Float?
   pricePerM2    Float?
+  /// Precio promocional válido solo con pago de contado (sin plan de financiamiento).
+  cashOnly      Boolean   @default(false)
   cadastralCode String?
   /// PRIVADO: nunca se expone en el API público (LOPDP).
   ownerName     String?
