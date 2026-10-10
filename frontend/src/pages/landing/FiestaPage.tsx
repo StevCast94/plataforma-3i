@@ -166,8 +166,10 @@ const store = {
   },
 };
 
-/** Idioma inicial: el guardado, si no el del teléfono. */
+/** Idioma inicial: el del QR (?lang=en del afiche en inglés), el guardado o el del teléfono. */
 function initialLang(): Lang {
+  const q = new URLSearchParams(window.location.search).get('lang');
+  if (q === 'es' || q === 'en') return q;
   const saved = store.get(LANG_KEY);
   if (saved === 'es' || saved === 'en') return saved;
   return /^es\b/i.test(navigator.language) ? 'es' : 'en';
