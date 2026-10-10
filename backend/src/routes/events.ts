@@ -42,7 +42,8 @@ function view(g: NonNullable<Awaited<ReturnType<typeof guestBySecret>>>) {
   return {
     name: g.member.fullName,
     firstName: g.member.fullName.split(' ')[0],
-    link: `${publicBaseUrl()}/r/${g.member.referralSlug}?c=montanita`,
+    lang: g.lang,
+    link: `${publicBaseUrl()}/r/${g.member.referralSlug}?c=${g.lang === 'en' ? 'montanita-en' : 'montanita'}`,
     drinks: g.drinks.map((d) => ({ id: d.id, channel: d.channel, code: d.code, redeemedAt: d.redeemedAt })),
     maxDrinks: MAX_DRINKS,
   };
@@ -63,9 +64,15 @@ eventRoutes.post('/:event/join', async (req, res) => {
       return;
     }
     const name = String(req.body?.name ?? '').trim();
+    const lang = req.body?.lang === 'en' ? 'en' : 'es';
     const phone = String(req.body?.phone ?? '').trim();
     if (name.length < 2 || digits(phone).length < 9 || !req.body?.consent) {
-      res.status(400).json({ error: 'Escribe tu nombre y tu WhatsApp, y acepta el uso de tus datos.' });
+      res.status(400).json({
+        error:
+          lang === 'en'
+            ? 'Enter your name and WhatsApp, and accept the use of your data.'
+            : 'Escribe tu nombre y tu WhatsApp, y acepta el uso de tus datos.',
+      });
       return;
     }
     // Un socio por número de WhatsApp: si ya existe (socio o invitado), se reutiliza.
@@ -83,8 +90,9 @@ eventRoutes.post('/:event/join', async (req, res) => {
     let guest = await prisma.eventGuest.findUnique({ where: { event_memberId: { event: req.params.event, memberId } } });
     if (!guest)
       guest = await prisma.eventGuest.create({
-        data: { event: req.params.event, memberId, secret: crypto.randomBytes(24).toString('hex') },
+        data: { event: req.params.event, memberId, lang, secret: crypto.randomBytes(24).toString('hex') },
       });
+    else if (guest.lang !== lang) guest = await prisma.eventGuest.update({ where: { id: guest.id }, data: { lang } });
     const full = await guestBySecret(guest.secret);
     res.json({ secret: guest.secret, ...view(full!) });
   } catch (err) {
@@ -118,7 +126,7 @@ eventRoutes.post('/drink', async (req, res) => {
   }
   if (!g.drinks.some((d) => d.channel === channel)) {
     if (g.drinks.length >= MAX_DRINKS) {
-      res.status(409).json({ error: `Ya tienes tu bebida. ¡Gracias por compartir!` });
+      res.status(409).json({ error: g.lang === 'en' ? 'You already have your drink. Thanks for sharing!' : 'Ya tienes tu bebida. ¡Gracias por compartir!' });
       return;
     }
     await prisma.eventDrink.create({

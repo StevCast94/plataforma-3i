@@ -63,6 +63,7 @@ const cards = [
 // Tarjetas cuadradas para los mensajes de referido (WhatsApp las muestra más grandes).
 const squares = [
   { file: 'og-camp-montanita.jpg', bg: MV, eyebrow: 'Manglaralto, Santa Elena', title: 'Montañita View', sub: 'Elige tu solar con vista al mar en el mapa interactivo', stats: [['Desde', '$41,721', true], ['Financiamiento', '24 cuotas sin intereses']] },
+  { file: 'og-camp-montanita-en.jpg', bg: MV, eyebrow: 'Ecuadorian coast', title: 'Montañita View', sub: 'Choose your ocean-view lot on the interactive map', stats: [['From', '$41,721', true], ['Financing', '24 months, 0% interest']] },
   { file: 'og-camp-ibiza.jpg', bg: IBIZA, eyebrow: 'Costa ecuatoriana', logo: `${PUB}/images/proyectos/ibiza/logo-light.svg`, title: 'Ibiza Condohotel', sub: 'Tu fracción a 300 m del mar: disfruta, gana plusvalía y hereda', stats: [['Desde', '$12,000', true], ['Tipo', 'Condohotel']] },
 ];
 

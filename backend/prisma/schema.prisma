@@ -837,6 +837,8 @@ model EventGuest {
   member    ReferralMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
   /// Llave del invitado en su teléfono (para pedir y canjear sus bebidas).
   secret    String         @unique
+  /// Idioma elegido (es | en): define el idioma de su enlace y de su tarjeta.
+  lang      String         @default("es")
   createdAt DateTime       @default(now())
   drinks    EventDrink[]
 

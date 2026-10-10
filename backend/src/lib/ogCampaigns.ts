@@ -50,6 +50,15 @@ export const DEFAULT_CAMPAIGNS: Record<string, OgCampaign> = {
       'Mira los solares de Montañita View en el mapa interactivo: eliges el tuyo, ves su precio y su cuota, y lo pagas en 24 meses sin intereses. Te dejo mi enlace:',
     to: '/proyectos/montanita-view',
   },
+  'montanita-en': {
+    label: 'Montañita View — lots map (English)',
+    title: '{nombre} invites you to choose your lot at Montañita View',
+    description: 'Ocean-view lots on the Ecuadorian coast from $41,721, with 24 months of interest-free financing.',
+    image: '/images/og/og-camp-montanita-en.jpg',
+    message:
+      'Check out the Montañita View lots on the interactive map: pick yours, see its price and monthly payment, and pay it over 24 months interest-free. Here is my link:',
+    to: '/en/proyectos/montanita-view',
+  },
   ibiza: {
     label: 'Ibiza Condohotel — fracciones',
     title: '{nombre} te invita a Ibiza Condohotel',
