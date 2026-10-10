@@ -96,10 +96,21 @@ memberRoutes.post('/register', async (req, res) => {
     const docIdStr = String(docId).trim();
 
     // ¿Email ya existe? Puede ser un PRE-REGISTRO provisional reclamable.
-    const existing = await prisma.referralMember.findUnique({
+    // Un invitado de evento (sin email, registrado con su WhatsApp) se reconoce por el número.
+    const byEmail = await prisma.referralMember.findUnique({
       where: { email: emailLc },
       select: { id: true, claimed: true, referredByCode: true },
     });
+    const phoneDigits = String(phone ?? '').replace(/\D/g, '');
+    const guest = byEmail
+      ? null
+      : (
+          await prisma.referralMember.findMany({
+            where: { claimed: false, email: { endsWith: '@invitado.grupo3i.com' } },
+            select: { id: true, claimed: true, referredByCode: true, phone: true },
+          })
+        ).find((m) => phoneDigits.length >= 9 && (m.phone ?? '').replace(/\D/g, '') === phoneDigits);
+    const existing = byEmail ?? (guest ? { id: guest.id, claimed: guest.claimed, referredByCode: guest.referredByCode } : null);
     if (existing && existing.claimed) {
       res.status(409).json({ error: 'Ya existe una cuenta con ese email. Inicia sesión.' });
       return;
@@ -129,6 +140,7 @@ memberRoutes.post('/register', async (req, res) => {
             docType: docType ? String(docType) : 'cedula',
             status: 'PREMIERE',
             claimed: true,
+            email: emailLc,
             fullName: String(fullName).trim(),
             phone: phone ? String(phone).trim() : undefined,
             payoutMethod: payoutMethod && PAYOUT_METHODS[payoutMethod] ? String(payoutMethod) : undefined,

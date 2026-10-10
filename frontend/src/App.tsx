@@ -44,6 +44,7 @@ const AdminProductsPage = lazy(() => import('@/pages/admin/AdminProductsPage'));
 const AdminProjectsPage = lazy(() => import('@/pages/admin/AdminProjectsPage'));
 const AdminLotsPage = lazy(() => import('@/pages/admin/AdminLotsPage'));
 const AdminPanoramasPage = lazy(() => import('@/pages/admin/AdminPanoramasPage'));
+const AdminFiestaPage = lazy(() => import('@/pages/admin/AdminFiestaPage'));
 const AdminPropuestaPage = lazy(() => import('@/pages/admin/AdminPropuestaPage'));
 const AdminMembersPage = lazy(() => import('@/pages/admin/AdminMembersPage'));
 const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPage'));
@@ -56,6 +57,7 @@ const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
 const AdminTravelClaimsPage = lazy(() => import('@/pages/admin/AdminTravelClaimsPage'));
 const AdminSupportPage = lazy(() => import('@/pages/admin/AdminSupportPage'));
 const LotPage = lazy(() => import('@/pages/landing/LotPage'));
+const FiestaPage = lazy(() => import('@/pages/landing/FiestaPage'));
 const AdminBosquePage = lazy(() => import('@/pages/admin/AdminBosquePage'));
 
 // Bosque (adopta un árbol): landing con marca propia, vinculada a Grupo 3i
@@ -125,6 +127,8 @@ export default function App() {
             ) : (
             <Routes>
               {/* Sitio público con navbar/footer, en español (/) y en inglés (/en). */}
+              {/* Activación de eventos: pantalla completa, sin menú */}
+              <Route path="fiesta" element={<FiestaPage />} />
               <Route element={<Layout />}>{publicRoutes()}</Route>
               <Route path="en" element={<Layout />}>{publicRoutes()}</Route>
 
@@ -169,6 +173,7 @@ export default function App() {
                 <Route path="proyectos" element={<AdminProjectsPage />} />
                 <Route path="proyectos/:projectId/lotes" element={<AdminLotsPage />} />
                 <Route path="proyectos/:projectId/vistas-360" element={<AdminPanoramasPage />} />
+                <Route path="fiesta" element={<AdminFiestaPage />} />
                 <Route path="propuesta" element={<AdminPropuestaPage />} />
                 <Route path="miembros" element={<AdminMembersPage />} />
                 <Route path="leads" element={<AdminLeadsPage />} />

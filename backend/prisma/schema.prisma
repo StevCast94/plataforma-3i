@@ -231,6 +231,7 @@ model ReferralMember {
   referrer              ReferralMember?  @relation("ReferralChain", fields: [referrerId], references: [id])
   referrals             ReferralMember[] @relation("ReferralChain")
   pushSubscriptions     PushSubscription[]
+  eventGuests           EventGuest[]
   walletBalance         Float            @default(0)
   totalEarned           Float            @default(0)
   totalReferrals        Int              @default(0)
@@ -825,4 +826,32 @@ model Panorama {
   updatedAt   DateTime @updatedAt
 
   @@index([projectId])
+}
+
+/// Invitado de un evento con activación "comparte y te invitamos un trago".
+/// Queda como socio pre-registrado (lead + enlace de referidor activo).
+model EventGuest {
+  id        String         @id @default(uuid())
+  event     String
+  memberId  String
+  member    ReferralMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  /// Llave del invitado en su teléfono (para pedir y canjear sus bebidas).
+  secret    String         @unique
+  createdAt DateTime       @default(now())
+  drinks    EventDrink[]
+
+  @@unique([event, memberId])
+}
+
+/// Una bebida por cada red donde compartió (whatsapp, instagram, facebook); máximo 2 por invitado.
+model EventDrink {
+  id         String     @id @default(uuid())
+  guestId    String
+  guest      EventGuest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  channel    String
+  code       String
+  redeemedAt DateTime?
+  createdAt  DateTime   @default(now())
+
+  @@unique([guestId, channel])
 }

@@ -10,6 +10,7 @@ const items = [
   { to: '/admin/miembros', label: 'Miembros', icon: '👥' },
   { to: '/admin/leads', label: 'Leads', icon: '📨' },
   { to: '/admin/marketing', label: 'Marketing', icon: '📈' },
+  { to: '/admin/fiesta', label: 'Fiesta (en vivo)', icon: '🍹' },
   { to: '/admin/comisiones', label: 'Comisiones', icon: '💲' },
   { to: '/admin/retiros', label: 'Retiros', icon: '💸' },
   { to: '/admin/compras', label: 'Compras', icon: '🛒' },

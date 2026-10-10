@@ -278,6 +278,18 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
       image: '/images/og/og-refiere.jpg',
     },
   },
+  '/fiesta': {
+    es: {
+      title: 'Comparte y Grupo 3i te invita un trago 🍹',
+      description: 'Fiesta en el Lobby de Montañita View: comparte en tu estado o historia y recibe tu bebida.',
+      image: '/images/og/og-camp-montanita.jpg',
+    },
+    en: {
+      title: 'Share and Grupo 3i buys you a drink 🍹',
+      description: 'Party at the Montañita View Lobby: share on your status or story and get your drink.',
+      image: '/images/og/og-camp-montanita.jpg',
+    },
+  },
   '/bosque': {
     es: {
       title: 'Bosque Montañita — adopta un árbol',

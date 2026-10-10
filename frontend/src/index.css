@@ -395,3 +395,14 @@ text.via-label {
 @media (prefers-reduced-motion: reduce) {
   .pano-pin span { animation: none; }
 }
+
+/* Vale de bebida de /fiesta: brillo dorado en movimiento (no sirve una captura) */
+.fiesta-voucher {
+  background: linear-gradient(120deg, #ffc428, #ffe08a, #f5a300, #ffe08a, #ffc428);
+  background-size: 300% 300%;
+  animation: fiesta-shine 3s linear infinite;
+}
+@keyframes fiesta-shine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}

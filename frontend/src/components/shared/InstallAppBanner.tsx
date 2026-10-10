@@ -53,7 +53,7 @@ export function InstallAppBanner() {
 
   // El Bosque tiene marca propia: ahí no se ofrece la app de Grupo 3i.
   // En la oficina se encarga la tarjeta "Prepara tu app" (AppSetupSteps).
-  if (!visible || inBosque || pathname.startsWith('/oficina')) return null;
+  if (!visible || inBosque || pathname.startsWith('/oficina') || pathname.startsWith('/fiesta')) return null;
 
   return (
     <div
