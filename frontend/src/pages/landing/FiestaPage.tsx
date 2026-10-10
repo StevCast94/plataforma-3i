@@ -103,7 +103,8 @@ async function makeShareImage(guest: Guest, place: string): Promise<File> {
   const bh = bg.height * scale;
   ctx.drawImage(bg, (W - bw) / 2 - bw * 0.08, (H - bh) / 2, bw, bh);
   const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, 'rgba(0,0,0,0.70)');
+  g.addColorStop(0, 'rgba(0,0,0,0.85)');
+  g.addColorStop(0.18, 'rgba(0,0,0,0.65)');
   g.addColorStop(0.35, 'rgba(0,0,0,0.15)');
   g.addColorStop(0.6, 'rgba(0,0,0,0.55)');
   g.addColorStop(1, 'rgba(0,0,0,0.92)');
