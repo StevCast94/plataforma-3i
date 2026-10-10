@@ -22,7 +22,7 @@ export const EVENTS: Record<string, { title: string; place: string; endsAt: stri
 };
 export const CURRENT_EVENT = 'halloween-cubata';
 const CHANNELS = ['whatsapp', 'instagram', 'facebook'] as const;
-const MAX_DRINKS = 2;
+const MAX_DRINKS = 1; // la otra bebida de la fiesta es la bienvenida de Cubata, no la manejamos aquí
 /** Dominio de los correos provisionales de invitados sin email (se reemplaza al activar la cuenta). */
 export const GUEST_EMAIL_DOMAIN = 'invitado.grupo3i.com';
 
@@ -118,7 +118,7 @@ eventRoutes.post('/drink', async (req, res) => {
   }
   if (!g.drinks.some((d) => d.channel === channel)) {
     if (g.drinks.length >= MAX_DRINKS) {
-      res.status(409).json({ error: `Ya tienes tus ${MAX_DRINKS} bebidas. ¡Gracias por compartir!` });
+      res.status(409).json({ error: `Ya tienes tu bebida. ¡Gracias por compartir!` });
       return;
     }
     await prisma.eventDrink.create({

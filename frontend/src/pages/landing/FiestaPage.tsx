@@ -255,8 +255,8 @@ export default function FiestaPage() {
         ) : !guest ? (
           <form onSubmit={join} className="space-y-4 rounded-2xl bg-white p-5 text-primary shadow-xl">
             <p className="text-sm text-brand-gray">
-              Por cada red donde compartas (estado de WhatsApp, historia de Instagram o Facebook) te invitamos{' '}
-              <b className="text-primary">una bebida, hasta 2</b>.
+              Comparte en tu estado de WhatsApp, historia de Instagram o Facebook y{' '}
+              <b className="text-primary">Grupo 3i te invita una bebida</b>.
             </p>
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium">Tu nombre</span>
@@ -287,14 +287,14 @@ export default function FiestaPage() {
         ) : (
           <div className="space-y-5">
             {/* Bebidas ganadas */}
-            {guest.drinks.map((d, i) => (
-              <Voucher key={d.id} drink={d} n={i + 1} onRedeem={() => redeem(d)} />
+            {guest.drinks.map((d) => (
+              <Voucher key={d.id} drink={d} onRedeem={() => redeem(d)} />
             ))}
 
             {!full && (
               <div className="rounded-2xl bg-white p-5 text-primary">
                 <p className="font-semibold">
-                  {guest.drinks.length === 0 ? `¡Listo, ${guest.firstName}! Elige dónde compartir:` : 'Comparte en otra red y gana tu segunda bebida:'}
+                  ¡Listo, {guest.firstName}! Elige dónde compartir:
                 </p>
                 <p className="mt-1 text-xs text-brand-gray">
                   Se abre la app con tu imagen lista. Publícala y muéstrasela al bartender.
@@ -345,7 +345,7 @@ export default function FiestaPage() {
 
             {full && pending.length === 0 && (
               <p className="rounded-2xl bg-white/10 p-4 text-center text-sm">
-                ¡Ya disfrutaste tus {guest.maxDrinks} bebidas! Gracias por compartir 🎉
+                ¡Ya disfrutaste tu bebida! Gracias por compartir 🎉
               </p>
             )}
 
@@ -369,14 +369,14 @@ export default function FiestaPage() {
             </div>
           </div>
         )}
-        <p className="mt-8 text-center text-xs text-white/50">Válido durante el evento · máximo 2 bebidas por persona · {IG}</p>
+        <p className="mt-8 text-center text-xs text-white/50">Válido durante el evento · una bebida por persona · {IG}</p>
       </main>
     </div>
   );
 }
 
 /** Vale de la bebida: animado y con la hora en vivo para que no sirva una captura. */
-function Voucher({ drink, n, onRedeem }: { drink: Drink; n: number; onRedeem: () => void }) {
+function Voucher({ drink, onRedeem }: { drink: Drink; onRedeem: () => void }) {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     if (drink.redeemedAt) return;
@@ -388,14 +388,14 @@ function Voucher({ drink, n, onRedeem }: { drink: Drink; n: number; onRedeem: ()
   if (drink.redeemedAt)
     return (
       <div className="rounded-2xl bg-white/10 p-4 text-center text-sm text-white/60">
-        Bebida {n} · {ch?.label} · entregada a las{' '}
+        Bebida de Grupo 3i · {ch?.label} · entregada a las{' '}
         {new Date(drink.redeemedAt).toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' })} ✓
       </div>
     );
 
   return (
     <div className="fiesta-voucher relative overflow-hidden rounded-2xl p-5 text-center text-primary shadow-2xl">
-      <p className="text-xs font-bold uppercase tracking-widest">Bebida {n} · {ch?.label}</p>
+      <p className="text-xs font-bold uppercase tracking-widest">Cortesía de Grupo 3i · {ch?.label}</p>
       <p className="mt-1 font-serif text-3xl font-bold">¡Tu trago está listo! 🍹</p>
       <p className="mt-2 font-mono text-5xl font-bold tracking-widest">{drink.code}</p>
       <p className="mt-1 font-mono text-lg tabular-nums">{now.toLocaleTimeString('es-EC')}</p>
