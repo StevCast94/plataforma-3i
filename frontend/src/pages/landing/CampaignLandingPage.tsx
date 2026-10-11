@@ -133,7 +133,9 @@ export default function CampaignLandingPage() {
   // Mosaico sin huecos: 1 grande + 2 (3 fotos) o 1 grande + 5 (6 fotos).
   // La imagen grande del mosaico se elige en el proyecto: Características → «imagen_aterrizaje» (URL).
   const featured = typeof project.features?.imagen_aterrizaje === 'string' ? project.features.imagen_aterrizaje : null;
-  const rest = featured ? [featured, ...images.slice(1).filter((x) => x !== featured)] : images.slice(1);
+  // Reemplaza solo la grande; las demás conservan su orden.
+  const others = images.slice(1).filter((x) => x !== featured);
+  const rest = featured ? [featured, ...others.slice(1)] : others;
   const gallery = rest.slice(0, rest.length >= 6 ? 6 : rest.length >= 3 ? 3 : rest.length);
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
