@@ -4,6 +4,8 @@ import fs from 'fs';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { startScheduler } from './services/scheduler';
+import { syncAllStaffCrmUsers } from './services/internalTeam';
+import { backfillContactLeads } from './services/webInbox';
 import { contentRoutes } from './routes/content';
 import { contactRoutes } from './routes/contact';
 import { projectRoutes } from './routes/projects';
@@ -175,6 +177,11 @@ if (hasBuild) {
     '⚠️  frontend/dist no encontrado. Ejecuta "cd frontend && npm run build".',
   );
 }
+
+// Equipo interno en el CRM y bandeja única (idempotentes).
+syncAllStaffCrmUsers()
+  .then(backfillContactLeads)
+  .catch((e) => console.error('[crm] arranque', e));
 
 app.listen(PORT, () => {
   console.log(`🚀 Plataforma 3i corriendo en puerto ${PORT}`);

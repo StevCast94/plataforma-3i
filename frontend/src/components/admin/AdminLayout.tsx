@@ -4,6 +4,7 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { AdminSidebar } from './AdminSidebar';
 import { AdminHeader } from './AdminHeader';
 import { BrandLoader } from '@/components/brand/Isotipo';
+import { canOpen, homeFor } from '@/lib/adminNav';
 
 export function AdminLayout() {
   const { isAuthenticated, loading, staff } = useAdminAuth();
@@ -13,7 +14,8 @@ export function AdminLayout() {
     return <BrandLoader className="min-h-screen" label="Cargando panel…" />;
   }
   if (!isAuthenticated) return <Navigate to="/admin/login" replace />;
-  if (staff?.role === 'bosque' && !pathname.startsWith('/admin/bosque')) return <Navigate to="/admin/bosque" replace />;
+  // Cada rol solo abre sus secciones (el servidor también lo exige).
+  if (!canOpen(pathname, staff?.role)) return <Navigate to={homeFor(staff?.role)} replace />;
 
   return (
     <div className="flex min-h-screen bg-[#f5f5f5]">

@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
 import { refFromRequest } from './referral';
-import { cleanUtm, registerLead } from '../services/projectLeads';
+import { cleanUtm } from '../services/projectLeads';
+import { contactToLead } from '../services/webInbox';
 
 export const contactRoutes = Router();
 
@@ -34,23 +35,9 @@ contactRoutes.post('/', async (req, res) => {
       },
     });
 
-    // Formulario dentro de la ficha de un proyecto: también queda como contacto del proyecto.
-    const slug = typeof source === 'string' && source.startsWith('proyecto:') ? source.slice(9) : null;
-    if (slug && phone) {
-      const project = await prisma.project.findUnique({ where: { slug }, select: { id: true, publishStatus: true } });
-      if (project?.publishStatus === 'PUBLISHED') {
-        await registerLead({
-          projectId: project.id,
-          name: String(name),
-          phone: String(phone),
-          email: String(email),
-          message: String(message),
-          channel: 'form',
-          referralCode,
-          utm: cleanUtm(utm),
-        }).catch((e) => console.error('registerLead (contact)', e));
-      }
-    }
+    // Bandeja única: si el formulario es de un proyecto (ficha, propuesta o solar),
+    // entra al CRM como contacto de ese proyecto.
+    await contactToLead(submission.id, { utm: cleanUtm(utm) }).catch((e) => console.error('contactToLead', e));
 
     res.status(201).json({ ok: true, id: submission.id });
   } catch (err) {

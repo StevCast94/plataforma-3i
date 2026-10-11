@@ -240,6 +240,10 @@ crmRoutes.get('/crm/templates', async (req: DeveloperRequest, res) => {
 
 // POST /api/developer/crm/templates {name, body}
 crmRoutes.post('/crm/templates', async (req: DeveloperRequest, res) => {
+  if (req.developerRole === 'SELLER') {
+    res.status(403).json({ error: 'Solo el dueño crea plantillas' });
+    return;
+  }
   const name = String(req.body?.name ?? '').trim();
   const body = String(req.body?.body ?? '').trim();
   if (!name || !body) {
@@ -253,6 +257,10 @@ crmRoutes.post('/crm/templates', async (req: DeveloperRequest, res) => {
 
 // DELETE /api/developer/crm/templates/:id
 crmRoutes.delete('/crm/templates/:id', async (req: DeveloperRequest, res) => {
+  if (req.developerRole === 'SELLER') {
+    res.status(403).json({ error: 'Solo el dueño borra plantillas' });
+    return;
+  }
   await prisma.whatsAppTemplate.deleteMany({ where: { id: req.params.id, developerId: req.developerId } });
   res.json({ ok: true });
 });

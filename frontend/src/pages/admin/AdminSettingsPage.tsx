@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { CloudinaryUpload } from '@/components/admin/CloudinaryUpload';
 import { useAdminGet } from '@/hooks/useAdminAPI';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
-import type { StaffUser, AuditLogRow } from '@/lib/adminTypes';
+import type { AuditLogRow } from '@/lib/adminTypes';
 import type { SiteContentMap } from '@shared/types';
 
 /** Campos de SiteContent que son imágenes: se editan subiendo archivos, no
@@ -15,7 +14,18 @@ import type { SiteContentMap } from '@shared/types';
  * usa CloudinaryUpload sin `single`, guardando las URLs unidas por línea). */
 const IMAGE_FIELDS = new Set(['hero.image_url']);
 
-type Tab = 'staff' | 'content' | 'cards' | 'audit';
+type Tab = 'content' | 'cards';
+
+/** Secciones que tienen su propia pantalla y no se editan aquí. */
+const HIDDEN_SECTIONS = new Set(['tracking', 'propuesta_mv', 'referral_og']);
+const SECTION_LABEL: Record<string, string> = {
+  hero: 'Portada',
+  about: 'Nosotros',
+  contact: 'Contacto y WhatsApp oficial',
+  footer: 'Pie de página',
+  club: 'Club 3i',
+  projects: 'Proyectos',
+};
 
 /** Sección de SiteContent donde viven las campañas (una fila por campaña,
  *  el `value` es el JSON de la tarjeta). Debe coincidir con OG_SECTION del backend. */
@@ -33,108 +43,29 @@ interface Campaign {
 
 export default function AdminSettingsPage() {
   const { isSuperadmin } = useAdminAuth();
-  const [tab, setTab] = useState<Tab>('staff');
-
-  if (!isSuperadmin) {
-    return <p className="text-brand-gray">Esta sección requiere permisos de superadmin.</p>;
-  }
+  const [tab, setTab] = useState<Tab>('content');
+  const tabs: Tab[] = isSuperadmin ? ['content', 'cards'] : ['content'];
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-bold text-primary">Configuración</h1>
+      <div>
+        <h1 className="text-2xl font-bold text-primary">Contenido del sitio</h1>
+        <p className="text-sm text-brand-gray">Textos e imágenes de la web y tarjetas para compartir. El equipo está en «Equipo» y la medición de anuncios en «Campañas y medición».</p>
+      </div>
       <div className="flex gap-2">
-        {(['staff', 'content', 'cards', 'audit'] as Tab[]).map((t) => (
+        {tabs.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium ${tab === t ? 'bg-primary text-white' : 'bg-light text-brand-gray'}`}
           >
-            {t === 'staff'
-              ? 'Staff'
-              : t === 'content'
-                ? 'Contenido'
-                : t === 'cards'
-                  ? 'Tarjetas de referido'
-                  : 'Auditoría'}
+            {t === 'content' ? 'Textos e imágenes' : 'Tarjetas de referido'}
           </button>
         ))}
       </div>
 
-      {tab === 'staff' && <StaffTab />}
       {tab === 'content' && <ContentTab />}
       {tab === 'cards' && <CardsTab />}
-      {tab === 'audit' && <AuditTab />}
-    </div>
-  );
-}
-
-function StaffTab() {
-  const { toast } = useToast();
-  const { data, loading, reload } = useAdminGet<StaffUser[]>('/admin/staff');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('admin');
-
-  async function create() {
-    if (!username || !password) {
-      toast('Usuario y contraseña requeridos', 'error');
-      return;
-    }
-    try {
-      await adminApi.post('/admin/staff', { username, password, role });
-      toast('Staff creado', 'success');
-      setUsername(''); setPassword('');
-      reload();
-    } catch (err) {
-      toast((err as Error).message, 'error');
-    }
-  }
-
-  async function toggle(s: StaffUser) {
-    try {
-      await adminApi.put(`/admin/staff/${s.id}`, { active: !s.active });
-      reload();
-    } catch (err) {
-      toast((err as Error).message, 'error');
-    }
-  }
-
-  return (
-    <div className="space-y-5">
-      <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-        <h3 className="text-lg text-primary">Crear usuario staff</h3>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <Input label="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <Input label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-primary">Rol</span>
-            <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full rounded-lg border border-black/15 bg-white px-4 py-3 text-sm">
-              <option value="admin">Admin</option>
-              <option value="advisor">Asesor (recibe leads)</option>
-              <option value="content">Contenido</option>
-              <option value="bosque">Gestora del Bosque (solo su módulo)</option>
-              <option value="superadmin">Superadmin</option>
-            </select>
-          </label>
-        </div>
-        <Button className="mt-4" onClick={create}>Crear</Button>
-      </div>
-
-      <div className="rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-        {loading && <p className="p-6 text-brand-gray">Cargando…</p>}
-        {(data ?? []).map((s) => (
-          <div key={s.id} className="flex items-center justify-between border-b border-black/5 px-6 py-3 last:border-0">
-            <div>
-              <span className="font-medium text-primary">{s.username}</span>
-              <span className="ml-2 text-xs text-brand-gray">{s.role}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Badge variant={s.active ? 'gold' : 'light'}>{s.active ? 'Activo' : 'Inactivo'}</Badge>
-              <Button size="sm" variant="outline" onClick={() => toggle(s)}>{s.active ? 'Desactivar' : 'Activar'}</Button>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
@@ -153,13 +84,13 @@ function ContentTab() {
   }
 
   if (loading) return <p className="text-brand-gray">Cargando contenido…</p>;
-  const sections = Object.entries(data ?? {});
+  const sections = Object.entries(data ?? {}).filter(([k]) => !HIDDEN_SECTIONS.has(k));
 
   return (
     <div className="space-y-5">
       {sections.map(([section, fields]) => (
         <div key={section} className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-          <h3 className="text-lg capitalize text-primary">{section}</h3>
+          <h3 className="text-lg text-primary">{SECTION_LABEL[section] ?? section}</h3>
           <div className="mt-4 space-y-3">
             {Object.entries(fields).map(([key, value]) =>
               IMAGE_FIELDS.has(`${section}.${key}`) ? (
@@ -359,7 +290,7 @@ function CampaignEditor({ campaign, onSaved }: { campaign: Campaign; onSaved: ()
   );
 }
 
-function AuditTab() {
+export function AuditTab() {
   const { data, loading } = useAdminGet<AuditLogRow[]>('/admin/audit-logs');
   return (
     <div className="rounded-xl bg-white shadow-sm ring-1 ring-black/5">

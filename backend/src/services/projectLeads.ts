@@ -44,6 +44,9 @@ interface LeadInput {
   visitorId?: string | null;
   lang?: string | null;
   utm?: Record<string, string> | null;
+  /** Importación: sin aviso push ni tarea automática, con su fecha original. */
+  silent?: boolean;
+  createdAt?: Date;
   /** Solo DEVELOPER se fuerza; si no, se deduce del código de referido. */
   source?: LeadSource;
 }
@@ -81,11 +84,12 @@ export async function registerLead(input: LeadInput) {
       visitorId: input.visitorId || null,
       lang: input.lang || null,
       ...(input.utm ? { utm: input.utm } : {}),
+      ...(input.createdAt ? { createdAt: input.createdAt } : {}),
       source,
     },
   });
   // CRM: historial y tarea «Contactar» (proyectos propios y de desarrolladores).
-  await onNewLead(lead.id, source).catch((e) => console.error('onNewLead', e));
+  await onNewLead(lead.id, source, { silent: input.silent }).catch((e) => console.error('onNewLead', e));
   return { lead, created: true };
 }
 

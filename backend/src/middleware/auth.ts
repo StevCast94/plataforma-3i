@@ -24,11 +24,39 @@ export function signStaffToken(payload: StaffPayload): string {
   return jwt.sign(payload, secret(), { expiresIn: '12h' });
 }
 
+// Permisos por rol. superadmin y admin acceden a todo (lo exclusivo de superadmin
+// lo controla requireSuperadmin). El resto, solo a estas rutas; `read` = solo GET.
 // Coincidencia por segmento completo: '/api/admin/me' NO debe dejar pasar '/api/admin/members'.
-const BOSQUE_ALLOWED = ['/api/admin/bosque', '/api/admin/me', '/api/admin/seed-images'];
-function bosqueAllowed(url: string): boolean {
+type Rule = { path: string; read?: boolean };
+const ROLE_ACCESS: Record<string, Rule[]> = {
+  // Gestora del Bosque: solo su módulo. Nunca ve ventas, socios ni comisiones.
+  bosque: [{ path: '/api/admin/bosque' }, { path: '/api/admin/me' }, { path: '/api/admin/seed-images' }],
+  // Asesor de ventas: su CRM y los proyectos (lotes, precios, 360°) para consultar.
+  advisor: [
+    { path: '/api/admin/me' },
+    { path: '/api/admin/crm' },
+    { path: '/api/admin/projects', read: true },
+    { path: '/api/admin/lots', read: true },
+    { path: '/api/admin/panoramas', read: true },
+  ],
+  // Contenido: proyectos, lotes, 360°, productos y textos del sitio.
+  content: [
+    { path: '/api/admin/me' },
+    { path: '/api/admin/projects' },
+    { path: '/api/admin/lots' },
+    { path: '/api/admin/panoramas' },
+    { path: '/api/admin/products' },
+    { path: '/api/admin/seed-images' },
+    { path: '/api/content' },
+    { path: '/api/projects' },
+    { path: '/api/products' },
+  ],
+};
+function roleAllowed(role: string, method: string, url: string): boolean {
+  const rules = ROLE_ACCESS[role];
+  if (!rules) return true;
   const path = url.split('?')[0];
-  return BOSQUE_ALLOWED.some((p) => path === p || path.startsWith(p + '/'));
+  return rules.some((r) => (path === r.path || path.startsWith(r.path + '/')) && (!r.read || method === 'GET'));
 }
 
 /** Requiere un staff autenticado y activo. */
@@ -58,10 +86,10 @@ export async function requireAdmin(
       return;
     }
     req.staff = { staffId: staff.id, username: staff.username, role: staff.role };
-    // Rol 'bosque' (gestora del Bosque): solo su módulo, subir imágenes y su sesión.
-    // Nunca ve ventas, socios ni comisiones del resto de Grupo 3i.
-    if (staff.role === 'bosque' && !bosqueAllowed(req.originalUrl)) {
-      res.status(403).json({ error: 'Tu usuario solo tiene acceso al módulo del Bosque' });
+    if (!roleAllowed(staff.role, req.method, req.originalUrl)) {
+      res.status(403).json({
+        error: staff.role === 'bosque' ? 'Tu usuario solo tiene acceso al módulo del Bosque' : 'Tu usuario no tiene acceso a esta sección',
+      });
       return;
     }
     next();

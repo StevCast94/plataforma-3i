@@ -62,7 +62,7 @@ export default function AdminProductsPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-primary">Productos</h1>
+        <h1 className="text-2xl font-bold text-primary">Productos y precios</h1>
         <Button onClick={openNew}>+ Nuevo producto</Button>
       </div>
 

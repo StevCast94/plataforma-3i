@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/shared/Toast';
-import { AdminDeveloperSales } from './AdminDeveloperSales';
 import { VerifyProjectModal } from './VerifyProjectModal';
 import { PUBLISH_LABEL, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, type PublishStatus, type DevLead } from '@/lib/developerApi';
 
@@ -125,7 +124,7 @@ export default function AdminDevelopersPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-primary">Desarrolladores</h1>
+          <h1 className="font-serif text-2xl font-bold text-primary">Desarrolladoras</h1>
           <p className="text-sm text-brand-gray">
             Proyectos de terceros en la vitrina. Portal de acceso: <code>/desarrollador</code>
             {pendingReviews > 0 && <strong className="ml-2 text-amber-700">· {pendingReviews} en revisión</strong>}
@@ -205,7 +204,7 @@ export default function AdminDevelopersPage() {
 
       <VerifyProjectModal projectId={verifying} onClose={() => setVerifying(null)} onSaved={load} />
 
-      <AdminDeveloperSales />
+      <p className="mt-8 text-sm text-brand-gray">Las ventas declaradas por las desarrolladoras y el cobro de comisiones están en <a href="/admin/ventas-terceros" className="text-secondary hover:underline">Ventas de terceros</a>.</p>
 
       {leads && leads.length > 0 && (
         <div className="mt-8">

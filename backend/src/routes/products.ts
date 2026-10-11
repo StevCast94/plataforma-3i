@@ -4,6 +4,7 @@ import { requireAdmin } from '../middleware/auth';
 import { resolveReferrerForPurchase } from '../services/referralTracking';
 import { refFromRequest } from './referral';
 import { ensureProvisionalMember } from '../services/preRegister';
+import { cleanUtm, registerLead } from '../services/projectLeads';
 import { pickAdvisor } from '../services/leadAssignment';
 
 export const productRoutes = Router();
@@ -124,6 +125,23 @@ productRoutes.post('/:id/inquiry', async (req, res) => {
 
       return { inquiryId: inquiry.id, purchaseId };
     });
+
+    // Bandeja única: la consulta también entra al CRM del proyecto del producto.
+    if (phone) {
+      const p = await prisma.product.findUnique({ where: { id: product.id }, select: { name: true, projectId: true } });
+      if (p?.projectId) {
+        await registerLead({
+          projectId: p.projectId,
+          name: String(name),
+          phone: String(phone),
+          email: String(email),
+          message: [`Consulta por ${p.name}`, message ? String(message) : null].filter(Boolean).join(': '),
+          channel: 'form',
+          referralCode: code,
+          utm: cleanUtm(req.body?.utm),
+        }).catch((e) => console.error('registerLead (inquiry)', e));
+      }
+    }
 
     // Pre-registro sin contraseña: quien pide info queda como miembro provisional
     // y puede activar su código creando su contraseña. Best-effort (no rompe el lead).

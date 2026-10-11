@@ -57,10 +57,12 @@ export async function sendPushToDeveloperUsers(
 }
 
 /** Avisos al equipo de Grupo 3i que atiende el CRM (no a la gestora del Bosque ni a contenido). */
-export async function sendPushToStaff(payload: { title: string; body: string; link?: string | null }): Promise<void> {
+/** Aviso al equipo del admin; con `staffIds`, solo a esas personas. */
+export async function sendPushToStaff(payload: { title: string; body: string; link?: string | null }, staffIds?: string[]): Promise<void> {
   if (!enabled) return;
+  if (staffIds && !staffIds.length) return;
   const subs = await prisma.staffPushSubscription.findMany({
-    where: { staff: { active: true, role: { in: ['superadmin', 'admin', 'advisor'] } } },
+    where: { staff: { active: true, role: { in: ['superadmin', 'admin', 'advisor'] } }, ...(staffIds ? { staffId: { in: staffIds } } : {}) },
   });
   const data = JSON.stringify({ title: payload.title, body: payload.body, url: payload.link || '/admin/crm' });
   await Promise.all(

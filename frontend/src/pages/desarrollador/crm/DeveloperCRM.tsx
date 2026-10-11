@@ -214,7 +214,18 @@ function Templates({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
-export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: DevProject[]; ownLeadRate: number; isOwner: boolean }) {
+/** `canSell`: botón «Venta» (declarar venta de terceros); en el admin las ventas propias van por «Ventas propias». */
+export function DeveloperCRM({
+  projects,
+  ownLeadRate,
+  isOwner,
+  canSell = isOwner,
+}: {
+  projects: DevProject[];
+  ownLeadRate: number;
+  isOwner: boolean;
+  canSell?: boolean;
+}) {
   const crm = useCrmClient();
   const { toast } = useToast();
   const [view, setView] = useState<View>('board');
@@ -331,7 +342,7 @@ export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: Dev
         ))}
       {view === 'agenda' && <Agenda key={tick} onOpen={setOpenId} />}
       {view === 'report' && <CrmReport projectId={projectId} />}
-      {view === 'list' && <DeveloperLeads key={tick} projects={projects} ownLeadRate={ownLeadRate} canSell={isOwner} />}
+      {view === 'list' && <DeveloperLeads key={tick} projects={projects} ownLeadRate={ownLeadRate} canSell={canSell} />}
 
       <LeadDrawer leadId={openId} onClose={() => setOpenId(null)} onChanged={load} team={isOwner ? team : null} />
       <Templates open={tplOpen} onClose={() => setTplOpen(false)} />

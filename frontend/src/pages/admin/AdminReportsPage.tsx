@@ -3,9 +3,12 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/components/shared/Toast';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { AuditTab } from './AdminSettingsPage';
 
 export default function AdminReportsPage() {
   const { toast } = useToast();
+  const { isSuperadmin } = useAdminAuth();
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
 
@@ -29,6 +32,7 @@ export default function AdminReportsPage() {
   }
 
   return (
+    <div className="space-y-8">
     <div className="max-w-2xl space-y-6">
       <h1 className="text-2xl font-bold text-primary">Reportes</h1>
 
@@ -54,6 +58,14 @@ export default function AdminReportsPage() {
           <Button className="mt-4" onClick={() => download('commissions')}>Exportar CSV</Button>
         </div>
       </div>
+    </div>
+    {isSuperadmin && (
+      <section>
+        <h2 className="mb-1 text-xl font-bold text-primary">Auditoría</h2>
+        <p className="mb-4 text-sm text-brand-gray">Quién hizo qué en el admin: ingresos, cambios de usuarios, contenido y ventas.</p>
+        <AuditTab />
+      </section>
+    )}
     </div>
   );
 }

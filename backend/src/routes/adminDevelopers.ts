@@ -6,6 +6,7 @@ import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
 import { confirmSale, cancelSale, collectInstallment, saleTotals } from '../services/developerSales';
 import { CHECKLIST, CHECKLIST_LABEL, isChecklistComplete, qualityFor } from '../services/projectQuality';
+import { INTERNAL_DEV_ID } from '../services/internalTeam';
 import { signedDocUrl } from '../lib/projectDocs';
 
 // Gestión de desarrolladores (terceros que publican en la vitrina) y revisión de sus proyectos.
@@ -32,6 +33,7 @@ const tempPassword = () => crypto.randomBytes(9).toString('base64url');
 // GET /api/admin/developers
 adminDeveloperRoutes.get('/', async (_req, res) => {
   const developers = await prisma.developer.findMany({
+    where: { id: { not: INTERNAL_DEV_ID } }, // el equipo interno de Grupo 3i no es una desarrolladora
     orderBy: { createdAt: 'desc' },
     include: {
       users: { select: { id: true, email: true, name: true, active: true, lastLoginAt: true } },

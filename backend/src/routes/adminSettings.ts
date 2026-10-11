@@ -3,6 +3,9 @@ import bcrypt from 'bcryptjs';
 import { v2 as cloudinary } from 'cloudinary';
 import { prisma } from '../prisma';
 import { requireAdmin, requireSuperadmin, type AuthedRequest } from '../middleware/auth';
+import crypto from 'node:crypto';
+import type { LeadStatus } from '@prisma/client';
+import { STAFF_ROLES, syncStaffCrmUser } from '../services/internalTeam';
 import { audit } from '../services/audit';
 
 export const adminSettingsRoutes = Router();
@@ -48,56 +51,88 @@ adminSettingsRoutes.post('/seed-images', async (req, res) => {
 });
 
 // ---------- STAFF USERS (solo superadmin) ----------
+// ---------- EQUIPO (usuarios del admin) ----------
+const STAFF_SELECT = {
+  id: true, username: true, fullName: true, whatsapp: true, role: true, active: true, lastLoginAt: true, createdAt: true,
+  crmUser: { select: { _count: { select: { leads: { where: { status: { notIn: ['WON', 'LOST'] as LeadStatus[] } } } } } } },
+  _count: { select: { pushSubs: true } },
+} as const;
+const cleanPhone = (v: unknown) => {
+  const t = String(v ?? '').trim();
+  return t.replace(/\D/g, '').length >= 8 ? t.slice(0, 30) : null;
+};
+const tempPassword = () => crypto.randomBytes(9).toString('base64url');
+
 // GET /api/admin/staff
 adminSettingsRoutes.get('/staff', requireSuperadmin, async (_req, res) => {
-  const staff = await prisma.staffUser.findMany({
-    select: { id: true, username: true, role: true, active: true, createdAt: true },
-    orderBy: { createdAt: 'asc' },
-  });
-  res.json(staff);
+  const staff = await prisma.staffUser.findMany({ select: STAFF_SELECT, orderBy: { createdAt: 'asc' } });
+  res.json(staff.map(({ crmUser, _count, ...s }) => ({ ...s, openLeads: crmUser?._count.leads ?? 0, pushEnabled: _count.pushSubs > 0 })));
 });
 
-// POST /api/admin/staff — crear
+// POST /api/admin/staff {username, fullName?, whatsapp?, role} — la contraseña temporal se muestra una vez
 adminSettingsRoutes.post('/staff', requireSuperadmin, async (req: AuthedRequest, res) => {
   try {
-    const { username, password, role } = req.body ?? {};
-    if (!username || !password) {
-      res.status(400).json({ error: 'Usuario y contraseña requeridos' });
+    const { username, fullName, whatsapp, role } = req.body ?? {};
+    const user = String(username ?? '').trim().toLowerCase();
+    if (!/^[a-z0-9._@-]{3,60}$/.test(user)) {
+      res.status(400).json({ error: 'Usuario inválido (letras, números, punto o guion; mínimo 3)' });
       return;
     }
-    const hash = await bcrypt.hash(String(password), 10);
+    const password = tempPassword();
     const staff = await prisma.staffUser.create({
       data: {
-        username: String(username).trim(),
-        password: hash,
-        role: role && ['superadmin', 'admin', 'content', 'advisor', 'bosque'].includes(role) ? role : 'admin',
+        username: user,
+        fullName: fullName ? String(fullName).trim().slice(0, 80) : null,
+        whatsapp: cleanPhone(whatsapp),
+        password: await bcrypt.hash(password, 10),
+        role: STAFF_ROLES.includes(role) ? role : 'advisor',
       },
-      select: { id: true, username: true, role: true, active: true },
+      select: { id: true, username: true },
     });
+    await syncStaffCrmUser(staff.id);
     await audit(req.staff?.staffId, 'create', 'staff', staff.id, { username: staff.username });
-    res.status(201).json(staff);
+    res.status(201).json({ ...staff, password });
   } catch (err) {
     console.error('POST /api/admin/staff', err);
-    res.status(400).json({ error: 'Error al crear staff (¿usuario duplicado?)' });
+    res.status(400).json({ error: 'No se pudo crear (¿usuario duplicado?)' });
   }
 });
 
-// PUT /api/admin/staff/:id — activar/desactivar o cambiar rol
+// PUT /api/admin/staff/:id {fullName?, whatsapp?, role?, active?}
 adminSettingsRoutes.put('/staff/:id', requireSuperadmin, async (req: AuthedRequest, res) => {
   try {
-    const { active, role } = req.body ?? {};
-    const staff = await prisma.staffUser.update({
+    const { active, role, fullName, whatsapp } = req.body ?? {};
+    const self = req.params.id === req.staff?.staffId;
+    if (self && (active === false || (role && role !== 'superadmin'))) {
+      res.status(400).json({ error: 'No puedes desactivarte ni quitarte el rol de superadmin' });
+      return;
+    }
+    await prisma.staffUser.update({
       where: { id: req.params.id },
       data: {
         ...(active !== undefined ? { active: !!active } : {}),
-        ...(role ? { role: String(role) } : {}),
+        ...(role && STAFF_ROLES.includes(role) ? { role: String(role) } : {}),
+        ...(fullName !== undefined ? { fullName: String(fullName).trim().slice(0, 80) || null } : {}),
+        ...(whatsapp !== undefined ? { whatsapp: cleanPhone(whatsapp) } : {}),
       },
-      select: { id: true, username: true, role: true, active: true },
     });
-    await audit(req.staff?.staffId, 'update', 'staff', staff.id);
-    res.json(staff);
+    await syncStaffCrmUser(req.params.id);
+    await audit(req.staff?.staffId, 'update', 'staff', req.params.id, { active, role });
+    res.json({ ok: true });
   } catch (err) {
     console.error('PUT /api/admin/staff/:id', err);
-    res.status(400).json({ error: 'Error al actualizar staff' });
+    res.status(400).json({ error: 'Error al actualizar el usuario' });
   }
+});
+
+// POST /api/admin/staff/:id/password — nueva contraseña temporal (se muestra una vez)
+adminSettingsRoutes.post('/staff/:id/password', requireSuperadmin, async (req: AuthedRequest, res) => {
+  const password = tempPassword();
+  const r = await prisma.staffUser.updateMany({ where: { id: req.params.id }, data: { password: await bcrypt.hash(password, 10) } });
+  if (!r.count) {
+    res.status(404).json({ error: 'Usuario no encontrado' });
+    return;
+  }
+  await audit(req.staff?.staffId, 'reset-password', 'staff', req.params.id);
+  res.json({ password });
 });

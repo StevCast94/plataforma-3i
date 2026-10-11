@@ -22,6 +22,7 @@ adminAuthRoutes.post('/login', async (req, res) => {
       return;
     }
     const token = signStaffToken({ staffId: staff.id, username: staff.username, role: staff.role });
+    await prisma.staffUser.update({ where: { id: staff.id }, data: { lastLoginAt: new Date() } });
     await audit(staff.id, 'login', 'staff', staff.id);
     res.json({
       token,

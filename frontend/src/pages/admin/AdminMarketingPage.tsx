@@ -47,7 +47,7 @@ export default function AdminMarketingPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-primary">Marketing y conversión</h1>
+      <h1 className="text-2xl font-bold text-primary">Embudo de referidos</h1>
 
       {/* Embudo */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

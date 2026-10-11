@@ -56,7 +56,13 @@ export default function AdminProjectsPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-primary">Proyectos</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-primary">Proyectos</h1>
+          <p className="text-sm text-brand-gray">
+            Ficha, lotes, vistas 360° y métricas de cada proyecto. Contenido de la propuesta a socios de Montañita View:{' '}
+            <a href="/admin/propuesta" className="text-secondary hover:underline">editar propuesta MV</a>.
+          </p>
+        </div>
         <Button onClick={() => { setEditing(null); setFormOpen(true); }}>+ Nuevo proyecto</Button>
       </div>
 

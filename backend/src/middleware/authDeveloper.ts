@@ -53,7 +53,7 @@ export async function requireDeveloper(req: DeveloperRequest, res: Response, nex
       where: { id: payload.developerUserId },
       select: { id: true, active: true, role: true, developerId: true, developer: { select: { status: true } } },
     });
-    if (!user || !user.active || user.developer.status === 'SUSPENDED') {
+    if (!user || !user.active || user.developerId === 'grupo3i-interno' || user.developer.status === 'SUSPENDED') {
       res.status(401).json({ error: 'Acceso desactivado' });
       return;
     }

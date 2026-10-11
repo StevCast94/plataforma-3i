@@ -1,5 +1,6 @@
 import type { LeadStatus } from '@prisma/client';
 import { prisma } from '../prisma';
+import { INTERNAL_DEV_ID, staffIdsForCrmUsers } from './internalTeam';
 import { sendPushToDeveloperUsers, sendPushToStaff } from './push';
 
 // CRM del desarrollador (inspirado en Kommo): historial, tareas y automatizaciones.
@@ -25,8 +26,14 @@ export function logActivity(leadId: string, kind: string, actor: string, body?: 
 }
 
 /** Al registrar un contacto nuevo en un proyecto de terceros. */
-export async function onNewLead(leadId: string, source: string) {
+export async function onNewLead(leadId: string, source: string, opts: { silent?: boolean } = {}) {
   await logActivity(leadId, 'created', 'system', null, { source });
+  if (opts.silent) {
+    // Importación de contactos antiguos: se reparten, sin aviso ni tarea nueva.
+    const l = await prisma.projectLead.findUnique({ where: { id: leadId }, select: { project: { select: { developerId: true } } } });
+    await autoAssign(leadId, l?.project.developerId ?? INTERNAL_DEV_ID);
+    return;
+  }
   await prisma.leadTask.create({
     data: { leadId, type: 'CALL', title: 'Contactar al cliente', dueAt: new Date(Date.now() + 24 * 3600_000), auto: true },
   });
@@ -108,9 +115,11 @@ export async function announceNewLead(leadId: string) {
   if (!lead) return;
   const developerId = lead.project.developerId;
   const body = `${lead.name} · ${lead.project.name}${lead.lotCode ? ` · solar ${lead.lotCode}` : ''}. Escríbele pronto.`;
-  // Proyecto propio de Grupo 3i: avisa al equipo del admin.
+  // Proyecto propio de Grupo 3i: se reparte entre los asesores del equipo; avisa al
+  // asesor asignado o, si no hay asesores, a los administradores.
   if (!developerId) {
-    await sendPushToStaff({ title: '🔔 Nuevo contacto', body, link: '/admin/crm' });
+    const assigned = await autoAssign(leadId, INTERNAL_DEV_ID);
+    await sendPushToStaff({ title: '🔔 Nuevo contacto', body, link: '/admin/crm' }, assigned ? await staffIdsForCrmUsers([assigned]) : undefined);
     return;
   }
   const assigned = await autoAssign(leadId, developerId);
@@ -141,7 +150,7 @@ export async function remindDueTasks(): Promise<number> {
     const msg = { title: late ? '⏰ Tarea vencida' : '⏰ Tarea por vencer', body: `${t.title} · ${t.lead.name}` };
     const devId = t.lead.project.developerId;
     if (devId) await sendPushToDeveloperUsers(await recipientsFor(devId, t.lead.assignedToId), { ...msg, link: '/desarrollador' });
-    else await sendPushToStaff({ ...msg, link: '/admin/crm' });
+    else await sendPushToStaff({ ...msg, link: '/admin/crm' }, t.lead.assignedToId ? await staffIdsForCrmUsers([t.lead.assignedToId]) : undefined);
     await prisma.leadTask.update({ where: { id: t.id }, data: { notifiedAt: new Date() } });
   }
   return tasks.length;

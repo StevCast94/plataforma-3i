@@ -53,6 +53,9 @@ const AdminProjectsPage = lazy(() => import('@/pages/admin/AdminProjectsPage'));
 const AdminLotsPage = lazy(() => import('@/pages/admin/AdminLotsPage'));
 const AdminPanoramasPage = lazy(() => import('@/pages/admin/AdminPanoramasPage'));
 const AdminFiestaPage = lazy(() => import('@/pages/admin/AdminFiestaPage'));
+const AdminDeveloperSalesPage = lazy(() => import('@/pages/admin/AdminDeveloperSales'));
+const AdminTeamPage = lazy(() => import('@/pages/admin/AdminTeamPage'));
+const AdminCampaignsPage = lazy(() => import('@/pages/admin/AdminCampaignsPage'));
 const AdminDevelopersPage = lazy(() => import('@/pages/admin/AdminDevelopersPage'));
 const ProjectMetricsPage = lazy(() => import('@/pages/admin/ProjectMetricsPage'));
 const AdminCrmPage = lazy(() => import('@/pages/admin/AdminCrmPage'));
@@ -61,7 +64,6 @@ const DeveloperPanelPage = lazy(() => import('@/pages/desarrollador/DeveloperPan
 const AdminPropuestaPage = lazy(() => import('@/pages/admin/AdminPropuestaPage'));
 const AdminMembersPage = lazy(() => import('@/pages/admin/AdminMembersPage'));
 const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPage'));
-const AdminLeadsPage = lazy(() => import('@/pages/admin/AdminLeadsPage'));
 const AdminMarketingPage = lazy(() => import('@/pages/admin/AdminMarketingPage'));
 const AdminPayoutsPage = lazy(() => import('@/pages/admin/AdminPayoutsPage'));
 const AdminPurchasesPage = lazy(() => import('@/pages/admin/AdminPurchasesPage'));
@@ -208,7 +210,11 @@ export default function App() {
                 <Route path="crm" element={<AdminCrmPage />} />
                 <Route path="propuesta" element={<AdminPropuestaPage />} />
                 <Route path="miembros" element={<AdminMembersPage />} />
-                <Route path="leads" element={<AdminLeadsPage />} />
+                {/* Leads se unificó en el CRM */}
+                <Route path="leads" element={<Navigate to="/admin/crm" replace />} />
+                <Route path="ventas-terceros" element={<AdminDeveloperSalesPage />} />
+                <Route path="equipo" element={<AdminTeamPage />} />
+                <Route path="campanas" element={<AdminCampaignsPage />} />
                 <Route path="marketing" element={<AdminMarketingPage />} />
                 <Route path="comisiones" element={<AdminCommissionsPage />} />
                 <Route path="retiros" element={<AdminPayoutsPage />} />

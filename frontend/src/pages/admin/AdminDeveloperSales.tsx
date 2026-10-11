@@ -137,3 +137,8 @@ export function AdminDeveloperSales() {
     </div>
   );
 }
+
+/** Página propia en el menú (Desarrolladoras → Ventas de terceros). */
+export default function AdminDeveloperSalesPage() {
+  return <AdminDeveloperSales />;
+}

@@ -49,7 +49,7 @@ export default function AdminTravelClaimsPage() {
       <div className="mb-5 flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-primary">
           <IconShield className="h-6 w-6 text-accent" />
-          Garantías de precio
+          Club de viajes · garantías de precio
         </h1>
         <select
           value={filter}

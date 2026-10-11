@@ -18,14 +18,16 @@ model SiteContent {
 }
 
 model ContactSubmission {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   name         String
   email        String
   phone        String?
-  message      String   @db.Text
+  message      String    @db.Text
   source       String? // landing, tienda, referencia
   referralCode String? // 3IP-XXXXXX capturado del query param ?ref=
-  createdAt    DateTime @default(now())
+  leadId       String? // contacto del CRM creado a partir de este formulario
+  archivedAt   DateTime? // descartado desde «Consultas web»
+  createdAt    DateTime  @default(now())
 }
 
 model Project {
@@ -393,6 +395,11 @@ model StaffUser {
   id                String                  @id @default(uuid())
   username          String                  @unique
   password          String // bcrypt hash
+  fullName          String?
+  whatsapp          String? // a donde se abre el chat de sus contactos asignados
+  lastLoginAt       DateTime?
+  crmUserId         String?                 @unique // su cuenta en el CRM (DeveloperUser de la desarrolladora interna)
+  crmUser           DeveloperUser?          @relation(fields: [crmUserId], references: [id])
   role              String                  @default("admin") // superadmin, admin, content, advisor
   active            Boolean                 @default(true)
   auditLogs         AuditLog[]
@@ -938,6 +945,7 @@ model DeveloperUser {
   whatsapp    String? // a donde se abre el chat de sus contactos asignados
   role        String                      @default("OWNER") // OWNER ve todo; SELLER solo sus contactos en el CRM
   pushSubs    DeveloperPushSubscription[]
+  staff       StaffUser?
   leads       ProjectLead[]
   createdAt   DateTime                    @default(now())
 }

@@ -105,8 +105,8 @@ export default function AdminPurchasesPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-primary">Compras</h1>
-        <Button onClick={() => setCreateOpen(true)}>+ Compra manual</Button>
+        <h1 className="text-2xl font-bold text-primary">Ventas propias</h1>
+        <Button onClick={() => setCreateOpen(true)}>+ Registrar venta</Button>
       </div>
 
       <div className="flex flex-wrap gap-2">

@@ -12,6 +12,7 @@ import { crmRoutes } from './crmShared';
 import { DEFAULT_TEMPLATES, TASK_TYPES, fillTemplate, logActivity, onStageChange } from '../services/crm';
 import { qualityFor } from '../services/projectQuality';
 import { DOC_KINDS, uploadProjectDocument } from '../lib/projectDocs';
+import { INTERNAL_DEV_ID } from '../services/internalTeam';
 import { v2 as cloudinary } from 'cloudinary';
 
 if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
@@ -51,7 +52,8 @@ developerRoutes.post('/login', async (req, res) => {
     return;
   }
   const user = await prisma.developerUser.findUnique({ where: { email }, include: { developer: true } });
-  if (!user || !user.active || user.developer.status === 'SUSPENDED' || !(await bcrypt.compare(password, user.password))) {
+  // Las cuentas del equipo interno de Grupo 3i entran solo por el admin.
+  if (!user || !user.active || user.developerId === INTERNAL_DEV_ID || user.developer.status === 'SUSPENDED' || !(await bcrypt.compare(password, user.password))) {
     res.status(401).json({ error: 'Credenciales inválidas' });
     return;
   }
