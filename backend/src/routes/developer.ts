@@ -6,6 +6,7 @@ import { slugify } from '../lib/slug';
 import { registerLead, phoneDigits } from '../services/projectLeads';
 import { feeRateForLead, installmentFee, saleTotals } from '../services/developerSales';
 import { projectMetrics } from '../services/projectMetrics';
+import { DEFAULT_TEMPLATES, TASK_TYPES, fillTemplate, logActivity, onStageChange } from '../services/crm';
 import { qualityFor } from '../services/projectQuality';
 import { DOC_KINDS, uploadProjectDocument } from '../lib/projectDocs';
 import { v2 as cloudinary } from 'cloudinary';
@@ -315,8 +316,8 @@ developerRoutes.patch('/leads/:leadId', async (req: DeveloperRequest, res) => {
     res.status(404).json({ error: 'Contacto no encontrado' });
     return;
   }
-  const { status, notes } = req.body ?? {};
-  const data: { status?: (typeof LEAD_STATUSES)[number]; notes?: string | null } = {};
+  const { status, notes, tags, budget } = req.body ?? {};
+  const data: { status?: (typeof LEAD_STATUSES)[number]; notes?: string | null; tags?: string[]; budget?: number | null } = {};
   if (status !== undefined) {
     if (!LEAD_STATUSES.includes(status)) {
       res.status(400).json({ error: 'Estado inválido' });
@@ -325,7 +326,10 @@ developerRoutes.patch('/leads/:leadId', async (req: DeveloperRequest, res) => {
     data.status = status;
   }
   if (notes !== undefined) data.notes = notes ? String(notes).slice(0, 4000) : null;
+  if (Array.isArray(tags)) data.tags = [...new Set(tags.map((t: unknown) => String(t).trim().slice(0, 30)).filter(Boolean))].slice(0, 12);
+  if (budget !== undefined) data.budget = budget === null || budget === '' ? null : Number(budget) || null;
   const updated = await prisma.projectLead.update({ where: { id: lead.id }, data });
+  if (data.status) await onStageChange(lead.id, lead.status, data.status, 'developer');
   res.json(updated);
 });
 
@@ -553,6 +557,8 @@ developerRoutes.post('/sales', async (req: DeveloperRequest, res) => {
     include: SALE_INCLUDE,
   });
   await prisma.projectLead.update({ where: { id: lead.id }, data: { status: 'NEGOTIATION' } });
+  await onStageChange(lead.id, lead.status, 'NEGOTIATION', 'developer');
+  await logActivity(lead.id, 'sale', 'developer', `Venta declarada: ${lotCode ? `solar ${lotCode}, ` : ''}$${price.toLocaleString('en-US')} (${paymentType === 'CASH' ? 'contado' : 'financiado'})`);
   res.status(201).json(withTotals(sale));
 });
 
@@ -638,4 +644,157 @@ developerRoutes.post('/projects/:id/documents', async (req: DeveloperRequest, re
     console.error('POST /api/developer/projects/:id/documents', err);
     res.status(500).json({ error: 'No se pudo subir el documento' });
   }
+});
+
+// ============================================================
+// CRM (inspirado en Kommo): ficha del cliente, historial, tareas, agenda y
+// plantillas de WhatsApp. Todo limitado a los proyectos del desarrollador.
+// ============================================================
+
+function ownLead(req: DeveloperRequest, id: string) {
+  return prisma.projectLead.findFirst({
+    where: { id, project: { developerId: req.developerId } },
+    include: { project: { select: { name: true } } },
+  });
+}
+
+// GET /api/developer/crm/board — contactos con su próxima tarea (para el embudo)
+developerRoutes.get('/crm/board', async (req: DeveloperRequest, res) => {
+  const leads = await prisma.projectLead.findMany({
+    where: {
+      project: { developerId: req.developerId },
+      ...(req.query.projectId ? { projectId: String(req.query.projectId) } : {}),
+    },
+    orderBy: { updatedAt: 'desc' },
+    take: 1000,
+    select: {
+      id: true, projectId: true, lotCode: true, name: true, phone: true, source: true, status: true, tags: true,
+      budget: true, createdAt: true, updatedAt: true, lastContactAt: true,
+      project: { select: { name: true } },
+      tasks: { where: { doneAt: null }, orderBy: { dueAt: 'asc' }, take: 1, select: { id: true, title: true, dueAt: true, type: true } },
+    },
+  });
+  res.json(leads.map(({ tasks, ...l }) => ({ ...l, nextTask: tasks[0] ?? null })));
+});
+
+// GET /api/developer/crm/leads/:id — ficha completa
+developerRoutes.get('/crm/leads/:id', async (req: DeveloperRequest, res) => {
+  const lead = await prisma.projectLead.findFirst({
+    where: { id: req.params.id, project: { developerId: req.developerId } },
+    select: {
+      id: true, projectId: true, lotCode: true, name: true, phone: true, email: true, message: true, source: true,
+      channel: true, status: true, notes: true, tags: true, budget: true, createdAt: true, lastContactAt: true, lang: true,
+      project: { select: { name: true } },
+      activities: { orderBy: { createdAt: 'desc' }, take: 200 },
+      tasks: { orderBy: [{ doneAt: 'asc' }, { dueAt: 'asc' }] },
+      sales: { select: { id: true, price: true, status: true, lotCode: true } },
+    },
+  });
+  if (!lead) {
+    res.status(404).json({ error: 'Contacto no encontrado' });
+    return;
+  }
+  res.json(lead);
+});
+
+// POST /api/developer/crm/leads/:id/notes {body}
+developerRoutes.post('/crm/leads/:id/notes', async (req: DeveloperRequest, res) => {
+  const lead = await ownLead(req, req.params.id);
+  const body = String(req.body?.body ?? '').trim();
+  if (!lead || !body) {
+    res.status(400).json({ error: 'Escribe la nota' });
+    return;
+  }
+  res.status(201).json(await logActivity(lead.id, 'note', 'developer', body.slice(0, 4000)));
+});
+
+// POST /api/developer/crm/leads/:id/tasks {type, title, dueAt}
+developerRoutes.post('/crm/leads/:id/tasks', async (req: DeveloperRequest, res) => {
+  const lead = await ownLead(req, req.params.id);
+  const { type, title, dueAt } = req.body ?? {};
+  const due = new Date(dueAt);
+  if (!lead || !TASK_TYPES.includes(type) || !String(title ?? '').trim() || Number.isNaN(due.getTime())) {
+    res.status(400).json({ error: 'Tipo, título y fecha son obligatorios' });
+    return;
+  }
+  const task = await prisma.leadTask.create({ data: { leadId: lead.id, type, title: String(title).trim().slice(0, 160), dueAt: due } });
+  await logActivity(lead.id, 'task', 'developer', task.title, { taskId: task.id, type, dueAt: due });
+  res.status(201).json(task);
+});
+
+// PATCH /api/developer/crm/tasks/:taskId {done?, dueAt?}
+developerRoutes.patch('/crm/tasks/:taskId', async (req: DeveloperRequest, res) => {
+  const task = await prisma.leadTask.findFirst({ where: { id: req.params.taskId, lead: { project: { developerId: req.developerId } } } });
+  if (!task) {
+    res.status(404).json({ error: 'Tarea no encontrada' });
+    return;
+  }
+  const data: { doneAt?: Date | null; dueAt?: Date } = {};
+  if (req.body?.done !== undefined) data.doneAt = req.body.done ? new Date() : null;
+  if (req.body?.dueAt) data.dueAt = new Date(req.body.dueAt);
+  const updated = await prisma.leadTask.update({ where: { id: task.id }, data });
+  if (data.doneAt) await logActivity(task.leadId, 'task_done', 'developer', task.title, { taskId: task.id });
+  res.json(updated);
+});
+
+// GET /api/developer/crm/tasks — agenda: pendientes (vencidas, hoy y próximas)
+developerRoutes.get('/crm/tasks', async (req: DeveloperRequest, res) => {
+  const tasks = await prisma.leadTask.findMany({
+    where: { doneAt: null, lead: { project: { developerId: req.developerId } } },
+    orderBy: { dueAt: 'asc' },
+    take: 300,
+    include: { lead: { select: { id: true, name: true, phone: true, lotCode: true, status: true, project: { select: { name: true } } } } },
+  });
+  res.json(tasks);
+});
+
+// POST /api/developer/crm/leads/:id/whatsapp {templateId?, body?} — arma el mensaje, lo registra y devuelve el enlace
+developerRoutes.post('/crm/leads/:id/whatsapp', async (req: DeveloperRequest, res) => {
+  const lead = await ownLead(req, req.params.id);
+  if (!lead) {
+    res.status(404).json({ error: 'Contacto no encontrado' });
+    return;
+  }
+  let body = String(req.body?.body ?? '').trim();
+  if (req.body?.templateId) {
+    const tpl = await prisma.whatsAppTemplate.findFirst({ where: { id: String(req.body.templateId), developerId: req.developerId } });
+    if (tpl) body = tpl.body;
+  }
+  if (!body) {
+    res.status(400).json({ error: 'Escribe el mensaje' });
+    return;
+  }
+  const text = fillTemplate(body, lead);
+  await logActivity(lead.id, 'whatsapp', 'developer', text.slice(0, 4000));
+  await prisma.projectLead.update({ where: { id: lead.id }, data: { lastContactAt: new Date() } });
+  res.json({ url: `https://wa.me/${phoneDigits(lead.phone)}?text=${encodeURIComponent(text)}`, text });
+});
+
+// GET /api/developer/crm/templates — si el desarrollador no tiene, se crean las de ejemplo
+developerRoutes.get('/crm/templates', async (req: DeveloperRequest, res) => {
+  let list = await prisma.whatsAppTemplate.findMany({ where: { developerId: req.developerId }, orderBy: { createdAt: 'asc' } });
+  if (!list.length) {
+    await prisma.whatsAppTemplate.createMany({ data: DEFAULT_TEMPLATES.map((t) => ({ ...t, developerId: req.developerId! })) });
+    list = await prisma.whatsAppTemplate.findMany({ where: { developerId: req.developerId }, orderBy: { createdAt: 'asc' } });
+  }
+  res.json(list);
+});
+
+// POST /api/developer/crm/templates {name, body}
+developerRoutes.post('/crm/templates', async (req: DeveloperRequest, res) => {
+  const name = String(req.body?.name ?? '').trim();
+  const body = String(req.body?.body ?? '').trim();
+  if (!name || !body) {
+    res.status(400).json({ error: 'Nombre y mensaje son obligatorios' });
+    return;
+  }
+  res.status(201).json(
+    await prisma.whatsAppTemplate.create({ data: { developerId: req.developerId!, name: name.slice(0, 60), body: body.slice(0, 2000) } }),
+  );
+});
+
+// DELETE /api/developer/crm/templates/:id
+developerRoutes.delete('/crm/templates/:id', async (req: DeveloperRequest, res) => {
+  await prisma.whatsAppTemplate.deleteMany({ where: { id: req.params.id, developerId: req.developerId } });
+  res.json({ ok: true });
 });

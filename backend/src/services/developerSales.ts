@@ -1,6 +1,7 @@
 import { prisma } from '../prisma';
 import { createCommission } from './commissionCalculator';
 import { notify } from './notifications';
+import { onStageChange } from './crm';
 
 // Ventas de proyectos de terceros.
 // - feeRate se fija al declarar: contacto propio → ownLeadRate (2 %); si no, la tasa
@@ -32,7 +33,9 @@ export async function confirmSale(saleId: string) {
     where: { id: saleId },
     data: { status: 'CONFIRMED', confirmedAt: new Date(), reviewNote: null },
   });
+  const before = await prisma.projectLead.findUnique({ where: { id: sale.leadId }, select: { status: true } });
   await prisma.projectLead.update({ where: { id: sale.leadId }, data: { status: 'WON' } });
+  if (before) await onStageChange(sale.leadId, before.status, 'WON', 'staff');
   if (sale.lotCode) {
     await prisma.lot.updateMany({
       where: { projectId: sale.projectId, code: sale.lotCode, status: { not: 'SOLD' } },

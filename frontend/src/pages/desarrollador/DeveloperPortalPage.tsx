@@ -6,7 +6,7 @@ import { Seo } from '@/components/shared/Seo';
 import { ImageUpload } from '@/components/shared/ImageUpload';
 import { useToast } from '@/components/shared/Toast';
 import { cld } from '@/lib/cloudinary';
-import { DeveloperLeads } from './DeveloperLeads';
+import { DeveloperCRM } from './crm/DeveloperCRM';
 import { DeveloperSales } from './DeveloperSales';
 import { DeveloperQuality } from './DeveloperQuality';
 import {
@@ -36,7 +36,7 @@ export function Shell({ children, onLogout }: { children: React.ReactNode; onLog
           )}
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+      <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
     </div>
   );
 }
@@ -261,7 +261,7 @@ function Portal({ onLogout }: { onLogout: () => void }) {
       )}
 
       <div className="mb-5 flex gap-1 rounded-xl bg-white p-1 shadow-sm">
-        {([['projects', 'Proyectos'], ['leads', 'Contactos'], ['sales', 'Ventas']] as const).map(([k, label]) => (
+        {([['projects', 'Proyectos'], ['leads', 'CRM'], ['sales', 'Ventas']] as const).map(([k, label]) => (
           <button
             key={k}
             onClick={() => setTab(k)}
@@ -277,7 +277,7 @@ function Portal({ onLogout }: { onLogout: () => void }) {
       {tab === 'sales' ? (
         <DeveloperSales />
       ) : tab === 'leads' && dev ? (
-        <DeveloperLeads projects={projects ?? []} ownLeadRate={dev.ownLeadRate} />
+        <DeveloperCRM projects={projects ?? []} ownLeadRate={dev.ownLeadRate} />
       ) : (
       <>
       <div className="mb-3 flex items-center justify-between">

@@ -167,3 +167,65 @@ export interface DevSale {
   installments: SaleInstallment[];
   totals: { paid: number; feeTotal: number; feeCollected: number };
 }
+
+// ---------- CRM ----------
+export type TaskType = 'CALL' | 'VISIT' | 'FOLLOW_UP' | 'OFFER' | 'OTHER';
+export const TASK_TYPE_LABEL: Record<TaskType, string> = {
+  CALL: '📞 Llamar',
+  VISIT: '📍 Visita',
+  FOLLOW_UP: '🔁 Seguimiento',
+  OFFER: '📄 Propuesta',
+  OTHER: '✳️ Otra',
+};
+export const PIPELINE: LeadStatus[] = ['NEW', 'CONTACTED', 'VISIT', 'NEGOTIATION', 'WON', 'LOST'];
+
+export interface CrmTask {
+  id: string;
+  type: TaskType;
+  title: string;
+  dueAt: string;
+  doneAt?: string | null;
+  auto?: boolean;
+}
+
+export interface BoardLead {
+  id: string;
+  projectId: string;
+  lotCode: string | null;
+  name: string;
+  phone: string;
+  source: LeadSource;
+  status: LeadStatus;
+  tags: string[];
+  budget: number | null;
+  createdAt: string;
+  updatedAt: string;
+  lastContactAt: string | null;
+  project: { name: string };
+  nextTask: CrmTask | null;
+}
+
+export interface LeadDetail extends Omit<BoardLead, 'nextTask' | 'updatedAt'> {
+  email: string | null;
+  message: string | null;
+  channel: string;
+  notes: string | null;
+  lang: string | null;
+  activities: { id: string; kind: string; body: string | null; actor: string; createdAt: string }[];
+  tasks: CrmTask[];
+  sales: { id: string; price: number; status: SaleStatus; lotCode: string | null }[];
+}
+
+export interface WaTemplate {
+  id: string;
+  name: string;
+  body: string;
+}
+
+export interface AgendaTask extends CrmTask {
+  lead: { id: string; name: string; phone: string; lotCode: string | null; status: LeadStatus; project: { name: string } };
+}
+
+/** Un contacto nuevo sin atender en 24 h (regla de la propuesta comercial). */
+export const isStale = (l: { status: LeadStatus; createdAt: string; lastContactAt: string | null }) =>
+  l.status === 'NEW' && !l.lastContactAt && Date.now() - new Date(l.createdAt).getTime() > 24 * 3600_000;

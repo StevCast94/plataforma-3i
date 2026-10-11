@@ -1,6 +1,7 @@
 import type { LeadSource } from '@prisma/client';
 import { prisma } from '../prisma';
 import { resolveReferrer } from './referralTracking';
+import { onNewLead } from './crm';
 
 // Registro de contactos por proyecto. Regla de oro: el PRIMERO que registra un
 // teléfono en un proyecto se queda con la atribución durante ATTRIBUTION_DAYS.
@@ -69,6 +70,9 @@ export async function registerLead(input: LeadInput) {
       source,
     },
   });
+  // CRM: historial y tarea «Contactar» para los proyectos de desarrolladores.
+  const isDeveloperProject = await prisma.project.count({ where: { id: input.projectId, developerId: { not: null } } });
+  if (isDeveloperProject) await onNewLead(lead.id, source).catch((e) => console.error('onNewLead', e));
   return { lead, created: true };
 }
 
