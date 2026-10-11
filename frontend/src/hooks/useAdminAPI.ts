@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { adminApi } from '@/lib/adminApi';
+import { usePanelClient } from '@/lib/panelClient';
 
 interface State<T> {
   data: T | null;
@@ -16,12 +16,13 @@ export function useAdminGet<T>(path: string | null): State<T> {
   const [tick, setTick] = useState(0);
 
   const reload = useCallback(() => setTick((t) => t + 1), []);
+  const client = usePanelClient();
 
   useEffect(() => {
     if (!path) return;
     let cancelled = false;
     setLoading(true);
-    adminApi
+    client
       .get<T>(path)
       .then((d) => !cancelled && setData(d))
       .catch((e: Error) => !cancelled && setError(e.message))
@@ -29,7 +30,7 @@ export function useAdminGet<T>(path: string | null): State<T> {
     return () => {
       cancelled = true;
     };
-  }, [path, tick]);
+  }, [path, tick, client]);
 
   return { data, loading, error, reload };
 }

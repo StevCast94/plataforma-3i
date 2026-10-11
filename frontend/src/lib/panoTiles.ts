@@ -1,4 +1,7 @@
 import { adminApi } from '@/lib/adminApi';
+
+/** Función que sube una imagen (admin o portal de desarrolladores). */
+export type UploadPost = <T>(path: string, body?: unknown) => Promise<T>;
 import type { Panorama } from '@shared/types';
 
 // ============================================================
@@ -37,11 +40,11 @@ function blobToDataUri(b: Blob): Promise<string> {
   });
 }
 
-async function upload(b: Blob, folder: string): Promise<string> {
+async function upload(b: Blob, folder: string, post: UploadPost): Promise<string> {
   const dataUri = await blobToDataUri(b);
   for (let attempt = 0; ; attempt++) {
     try {
-      const res = await adminApi.post<{ url: string }>('/admin/seed-images', { dataUri, folder });
+      const res = await post<{ url: string }>('/admin/seed-images', { dataUri, folder });
       return res.url;
     } catch (err) {
       if (attempt >= 2) throw err;
@@ -105,6 +108,7 @@ export async function buildPanoramaTiles(
   file: File,
   onProgress: (done: number, total: number) => void,
   hfov = 360,
+  post: UploadPost = adminApi.post,
 ): Promise<Panorama['tiles']> {
   const bmp = await createImageBitmap(file);
   const folder = `grupo3i/pano/${Date.now().toString(36)}`;
@@ -170,7 +174,7 @@ export async function buildPanoramaTiles(
   bctx.fillRect(0, 0, 2048, 1024);
   const bs = 2048 / fullW;
   bctx.drawImage(bmp, ox * bs, oy * bs, bmp.width * bs, bmp.height * bs);
-  const baseUrl = await upload(await toBlob(base, 0.8), folder);
+  const baseUrl = await upload(await toBlob(base, 0.8), folder, post);
   tick();
 
   const levels: Panorama['tiles']['levels'] = [];
@@ -189,7 +193,7 @@ export async function buildPanoramaTiles(
         ctx.fillStyle = BG;
         ctx.fillRect(0, 0, TILE, TILE);
         ctx.drawImage(bmp, j.sx, j.sy, j.sw, j.sh, j.dx, j.dy, j.dw, j.dh);
-        tiles[j.row * cols + j.col] = await upload(await toBlob(c), folder);
+        tiles[j.row * cols + j.col] = await upload(await toBlob(c), folder, post);
         tick();
       }
     };

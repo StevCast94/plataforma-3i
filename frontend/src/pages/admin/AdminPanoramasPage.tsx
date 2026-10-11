@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { useAdminGet } from '@/hooks/useAdminAPI';
-import { adminApi } from '@/lib/adminApi';
+import { usePanelClient } from '@/lib/panelClient';
 import { useToast } from '@/components/shared/Toast';
 import { buildPanoramaTiles, inspectEquirect, type EquirectInfo } from '@/lib/panoTiles';
 import type { AdminLot, Panorama } from '@shared/types';
@@ -28,6 +28,7 @@ const PIN = (active: boolean, selected: boolean) =>
  * norte mirando la vista.
  */
 export default function AdminPanoramasPage() {
+  const client = usePanelClient();
   const { projectId = '' } = useParams();
   const { toast } = useToast();
   const { data, reload } = useAdminGet<Panorama[]>(`/admin/panoramas?projectId=${projectId}`);
@@ -49,7 +50,7 @@ export default function AdminPanoramasPage() {
 
   async function patch(id: string, body: Partial<Panorama>, msg?: string) {
     try {
-      await adminApi.patch(`/admin/panoramas/${id}`, body);
+      await client.patch(`/admin/panoramas/${id}`, body);
       if (msg) toast(msg, 'success');
       reload();
     } catch (err) {
@@ -111,7 +112,7 @@ export default function AdminPanoramasPage() {
 
   async function remove(p: Panorama) {
     if (!window.confirm(`¿Eliminar la vista "${p.title}"?`)) return;
-    await adminApi.del(`/admin/panoramas/${p.id}`);
+    await client.del(`/admin/panoramas/${p.id}`);
     toast('Vista eliminada', 'success');
     reload();
   }
@@ -127,7 +128,7 @@ export default function AdminPanoramasPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <Link to="/admin/proyectos" className="text-sm text-accent hover:underline">
+          <Link to={client.backTo} className="text-sm text-accent hover:underline">
             ← Proyectos
           </Link>
           <h1 className="mt-1 text-2xl font-bold text-primary">Vistas 360° {project ? `· ${project.name}` : ''}</h1>
@@ -241,6 +242,7 @@ function UploadModal({
   projectId: string;
   onDone: (id: string) => void;
 }) {
+  const client = usePanelClient();
   const { toast } = useToast();
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -287,9 +289,9 @@ function UploadModal({
     if (!file || !title.trim()) return;
     try {
       const h = meta?.partial ? Math.min(360, Math.max(30, Number(hfov) || meta.hfov)) : 360;
-      const tiles = await buildPanoramaTiles(file, (d, t) => setProgress([d, t]), h);
+      const tiles = await buildPanoramaTiles(file, (d, t) => setProgress([d, t]), h, client.post);
       const located = meta?.lat != null && meta?.lng != null;
-      const p = await adminApi.post<Panorama>('/admin/panoramas', {
+      const p = await client.post<Panorama>('/admin/panoramas', {
         projectId,
         title: title.trim(),
         tiles,

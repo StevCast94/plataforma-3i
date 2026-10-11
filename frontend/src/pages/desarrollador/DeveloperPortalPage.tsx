@@ -17,7 +17,7 @@ import {
 const pct = (n: number) => `${Math.round(n * 1000) / 10} %`;
 const uploadImage = (dataUri: string) => devApi.post<{ url: string }>('/upload-image', { dataUri });
 
-function Shell({ children, onLogout }: { children: React.ReactNode; onLogout?: () => void }) {
+export function Shell({ children, onLogout }: { children: React.ReactNode; onLogout?: () => void }) {
   return (
     <div className="min-h-screen bg-light">
       <Seo title="Portal de desarrolladores — Grupo 3i" noindex />
@@ -307,6 +307,14 @@ function Portal({ onLogout }: { onLogout: () => void }) {
                     <Button size="sm" variant="outline" onClick={() => setEditing(p)}>
                       {p.publishStatus === 'REVIEW' ? 'Ver' : 'Editar'}
                     </Button>
+                    {(p._count?.lots ?? 0) > 0 && (
+                      <Link to={`/desarrollador/proyectos/${p.id}/lotes`} className="px-2 py-1.5 text-primary hover:underline">
+                        Lotes ({p._count?.lots})
+                      </Link>
+                    )}
+                    <Link to={`/desarrollador/proyectos/${p.id}/vistas-360`} className="px-2 py-1.5 text-primary hover:underline">
+                      360° ({p._count?.panoramas ?? 0})
+                    </Link>
                     {p.publishStatus === 'PUBLISHED' && (
                       <a href={`/proyectos/${p.slug}`} target="_blank" rel="noreferrer" className="px-2 py-1.5 text-secondary hover:underline">
                         Ver publicado ↗

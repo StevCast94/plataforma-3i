@@ -1,6 +1,6 @@
 import { resizeForUpload } from '@/lib/resizeImage';
 import { useState } from 'react';
-import { adminApi } from '@/lib/adminApi';
+import { usePanelClient } from '@/lib/panelClient';
 import { cld } from '@/lib/cloudinary';
 import { useToast } from '@/components/shared/Toast';
 
@@ -24,6 +24,7 @@ function fileToDataUri(file: Blob): Promise<string> {
 export function CloudinaryUpload({ value, onChange, single }: CloudinaryUploadProps) {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
+  const client = usePanelClient();
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -32,7 +33,7 @@ export function CloudinaryUpload({ value, onChange, single }: CloudinaryUploadPr
       const uploaded: string[] = [];
       for (const file of Array.from(files)) {
         const dataUri = await fileToDataUri(await resizeForUpload(file));
-        const res = await adminApi.post<{ url: string }>('/admin/seed-images', { dataUri });
+        const res = await client.post<{ url: string }>('/admin/seed-images', { dataUri });
         uploaded.push(res.url);
       }
       onChange(single ? uploaded.slice(-1) : [...value, ...uploaded]);

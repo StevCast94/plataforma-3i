@@ -47,6 +47,7 @@ const AdminPanoramasPage = lazy(() => import('@/pages/admin/AdminPanoramasPage')
 const AdminFiestaPage = lazy(() => import('@/pages/admin/AdminFiestaPage'));
 const AdminDevelopersPage = lazy(() => import('@/pages/admin/AdminDevelopersPage'));
 const DeveloperPortalPage = lazy(() => import('@/pages/desarrollador/DeveloperPortalPage'));
+const DeveloperPanelPage = lazy(() => import('@/pages/desarrollador/DeveloperPanelPage'));
 const AdminPropuestaPage = lazy(() => import('@/pages/admin/AdminPropuestaPage'));
 const AdminMembersPage = lazy(() => import('@/pages/admin/AdminMembersPage'));
 const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPage'));
@@ -132,6 +133,8 @@ export default function App() {
               {/* Activación de eventos: pantalla completa, sin menú */}
               <Route path="fiesta" element={<FiestaPage />} />
               <Route path="desarrollador" element={<DeveloperPortalPage />} />
+              <Route path="desarrollador/proyectos/:projectId/lotes" element={<DeveloperPanelPage view="lots" />} />
+              <Route path="desarrollador/proyectos/:projectId/vistas-360" element={<DeveloperPanelPage view="panoramas" />} />
               <Route element={<Layout />}>{publicRoutes()}</Route>
               <Route path="en" element={<Layout />}>{publicRoutes()}</Route>
 

@@ -7,7 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { CloudinaryUpload } from '@/components/admin/CloudinaryUpload';
 import { useAdminGet } from '@/hooks/useAdminAPI';
-import { adminApi } from '@/lib/adminApi';
+import { usePanelClient } from '@/lib/panelClient';
 import { useToast } from '@/components/shared/Toast';
 import { formatCurrency } from '@/lib/utils';
 import type { AdminLot, LotStatus } from '@shared/types';
@@ -33,6 +33,7 @@ const STATUS_BADGE: Record<LotStatus, 'gold' | 'light'> = {
  * nunca se exponen en /api/projects/:slug/lots).
  */
 export default function AdminLotsPage() {
+  const client = usePanelClient();
   const { projectId } = useParams();
   const { toast } = useToast();
   const [status, setStatus] = useState('');
@@ -86,7 +87,7 @@ export default function AdminLotsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <Link to="/admin/proyectos" className="text-sm text-accent hover:underline">← Proyectos</Link>
+        <Link to={client.backTo} className="text-sm text-accent hover:underline">← Proyectos</Link>
         <h1 className="mt-1 text-2xl font-bold text-primary">Lotes</h1>
         <p className="text-sm text-brand-gray">
           {lots.length} lotes · {lots.filter((l) => l.status === 'AVAILABLE').length} disponibles ·{' '}
@@ -114,6 +115,7 @@ export default function AdminLotsPage() {
 }
 
 function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose: () => void; onSaved: () => void }) {
+  const client = usePanelClient();
   const { toast } = useToast();
   const [form, setForm] = useState<Partial<AdminLot>>({});
   const [saving, setSaving] = useState(false);
@@ -125,7 +127,7 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
     if (!lot) return;
     setSaving(true);
     try {
-      await adminApi.put(`/admin/lots/${lot.id}`, {
+      await client.put(`/admin/lots/${lot.id}`, {
         status: form.status,
         price: form.price === null || form.price === undefined ? null : Number(form.price),
         pricePerM2: form.pricePerM2 === null || form.pricePerM2 === undefined ? null : Number(form.pricePerM2),

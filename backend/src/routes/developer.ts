@@ -285,3 +285,157 @@ developerRoutes.patch('/leads/:leadId', async (req: DeveloperRequest, res) => {
   const updated = await prisma.projectLead.update({ where: { id: lead.id }, data });
   res.json(updated);
 });
+
+// ============================================================
+// Lotes y vistas 360° (paso 3). Mismas rutas que el admin (sin /admin) para que
+// el portal reutilice sus pantallas; todo se limita a los proyectos del desarrollador.
+// La geometría de los lotes la carga Grupo 3i (DWG/GEO 3i); aquí solo lo comercial.
+// ============================================================
+
+async function ownsProject(req: DeveloperRequest, projectId: unknown) {
+  if (!projectId) return false;
+  return Boolean(await prisma.project.findFirst({ where: { id: String(projectId), developerId: req.developerId }, select: { id: true } }));
+}
+
+const LOT_FIELDS = ['status', 'price', 'pricePerM2', 'cashOnly', 'cadastralCode', 'ownerName', 'ownerPhone', 'notes', 'name', 'images', 'description', 'reservedUntil'] as const;
+
+// GET /api/developer/lots?projectId=&status=&block=&q=
+developerRoutes.get('/lots', async (req: DeveloperRequest, res) => {
+  const { projectId, status, block, q } = req.query;
+  if (!(await ownsProject(req, projectId))) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const lots = await prisma.lot.findMany({
+    where: {
+      projectId: String(projectId),
+      ...(status ? { status: status as never } : {}),
+      ...(block ? { block: String(block) } : {}),
+      ...(q ? { code: { contains: String(q), mode: 'insensitive' as const } } : {}),
+    },
+    orderBy: [{ block: 'asc' }, { code: 'asc' }],
+  });
+  res.json(lots);
+});
+
+// PUT /api/developer/lots/:id — solo datos comerciales
+developerRoutes.put('/lots/:id', async (req: DeveloperRequest, res) => {
+  const lot = await prisma.lot.findFirst({ where: { id: req.params.id, project: { developerId: req.developerId } } });
+  if (!lot) {
+    res.status(404).json({ error: 'Lote no encontrado' });
+    return;
+  }
+  const data: Record<string, unknown> = {};
+  for (const k of LOT_FIELDS) if (k in (req.body ?? {})) data[k] = req.body[k];
+  if (data.status && !['AVAILABLE', 'RESERVED', 'SOLD', 'NOT_FOR_SALE'].includes(String(data.status))) {
+    res.status(400).json({ error: 'Estado inválido' });
+    return;
+  }
+  try {
+    const updated = await prisma.lot.update({ where: { id: lot.id }, data: data as never });
+    res.json(updated);
+  } catch (err) {
+    console.error('PUT /api/developer/lots/:id', err);
+    res.status(400).json({ error: 'Error al actualizar el lote' });
+  }
+});
+
+/** { baseUrl, levels: [{ width, cols, rows, tiles: string[] }] } */
+function validTiles(t: unknown): boolean {
+  const x = t as { baseUrl?: unknown; levels?: { width?: number; cols?: number; rows?: number; tiles?: unknown[] }[] };
+  return Boolean(
+    x && typeof x.baseUrl === 'string' && Array.isArray(x.levels) && x.levels.length > 0 &&
+      x.levels.every((l) => l.width && l.cols && l.rows && Array.isArray(l.tiles) && l.tiles.length === l.cols * l.rows),
+  );
+}
+const num = (v: unknown) => (v === null || v === '' || v === undefined ? null : Number.isFinite(Number(v)) ? Number(v) : null);
+
+// GET /api/developer/panoramas?projectId=
+developerRoutes.get('/panoramas', async (req: DeveloperRequest, res) => {
+  if (!(await ownsProject(req, req.query.projectId))) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  res.json(
+    await prisma.panorama.findMany({
+      where: { projectId: String(req.query.projectId) },
+      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+    }),
+  );
+});
+
+// POST /api/developer/panoramas
+developerRoutes.post('/panoramas', async (req: DeveloperRequest, res) => {
+  const { projectId, title, description, lat, lng, tiles, northYaw, altitude } = req.body ?? {};
+  if (!(await ownsProject(req, projectId)) || !title || !validTiles(tiles)) {
+    res.status(400).json({ error: 'Proyecto, título y mosaicos son requeridos' });
+    return;
+  }
+  const count = await prisma.panorama.count({ where: { projectId } });
+  const p = await prisma.panorama.create({
+    data: {
+      projectId,
+      title: String(title),
+      description: description ? String(description) : null,
+      lat: num(lat),
+      lng: num(lng),
+      tiles,
+      northYaw: num(northYaw) ?? 0,
+      altitude: num(altitude),
+      sortOrder: count,
+    },
+  });
+  res.json(p);
+});
+
+async function ownPanorama(req: DeveloperRequest) {
+  return prisma.panorama.findFirst({ where: { id: req.params.id, project: { developerId: req.developerId } } });
+}
+
+// PATCH /api/developer/panoramas/:id
+developerRoutes.patch('/panoramas/:id', async (req: DeveloperRequest, res) => {
+  if (!(await ownPanorama(req))) {
+    res.status(404).json({ error: 'Vista no encontrada' });
+    return;
+  }
+  const b = req.body ?? {};
+  const data: Record<string, unknown> = {};
+  if (b.title !== undefined) data.title = String(b.title);
+  if (b.description !== undefined) data.description = b.description ? String(b.description) : null;
+  for (const k of ['lat', 'lng', 'altitude'] as const) if (b[k] !== undefined) data[k] = num(b[k]);
+  if (b.northYaw !== undefined) data.northYaw = num(b.northYaw) ?? 0;
+  if (b.sortOrder !== undefined) data.sortOrder = Number(b.sortOrder) || 0;
+  if (b.active !== undefined) data.active = Boolean(b.active);
+  res.json(await prisma.panorama.update({ where: { id: req.params.id }, data }));
+});
+
+// DELETE /api/developer/panoramas/:id
+developerRoutes.delete('/panoramas/:id', async (req: DeveloperRequest, res) => {
+  if (!(await ownPanorama(req))) {
+    res.status(404).json({ error: 'Vista no encontrada' });
+    return;
+  }
+  await prisma.panorama.delete({ where: { id: req.params.id } });
+  res.json({ ok: true });
+});
+
+// POST /api/developer/seed-images {dataUri} — mosaicos 360° y fotos de lotes.
+// La carpeta la fija el servidor: un desarrollador no escribe fuera de la suya.
+developerRoutes.post('/seed-images', async (req: DeveloperRequest, res) => {
+  try {
+    const { dataUri } = req.body ?? {};
+    if (!process.env.CLOUDINARY_URL || typeof dataUri !== 'string') {
+      res.status(400).json({ error: 'Imagen inválida' });
+      return;
+    }
+    const result = await cloudinary.uploader.upload(dataUri, {
+      folder: `grupo3i/desarrolladores/${req.developerId}`,
+      resource_type: 'image',
+      transformation: [{ width: 2400, height: 2400, crop: 'limit', quality: 'auto:good' }],
+    });
+    res.json({ url: result.secure_url, publicId: result.public_id });
+  } catch (err) {
+    console.error('POST /api/developer/seed-images', err);
+    res.status(500).json({ error: 'Error al subir la imagen' });
+  }
+});
