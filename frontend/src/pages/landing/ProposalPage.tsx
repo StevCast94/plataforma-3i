@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  BadgeCheck, BarChart3, Box, CalendarCheck, FileSignature, HandCoins, Languages, Map, MessageCircle, Printer, Search, Users,
+  Download,
+  BadgeCheck, BarChart3, Box, CalendarCheck, FileSignature, HandCoins, Languages, Map, MessageCircle, Search, Users,
 } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { useSectionContent } from '@/hooks/useSiteContent';
@@ -299,9 +300,14 @@ export default function ProposalPage() {
         <Link to="/publica-tu-proyecto" className="rounded-full bg-white/90 px-4 py-2 text-sm text-primary shadow">
           {tx.back}
         </Link>
-        <button onClick={() => window.print()} className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-primary shadow">
-          <Printer className="h-4 w-4" /> {tx.pdf}
-        </button>
+        {/* PDF generado (A4 horizontal, una lámina por página): tools/propuesta-pdf.mjs */}
+        <a
+          href={`/propuesta/propuesta-grupo3i-${lang === 'en' ? 'en' : 'es'}.pdf`}
+          download={lang === 'en' ? 'Grupo-3i-commercial-proposal.pdf' : 'Grupo-3i-propuesta-comercial.pdf'}
+          className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-primary shadow"
+        >
+          <Download className="h-4 w-4" /> {tx.pdf}
+        </a>
       </div>
 
       {/* 1. Portada */}
@@ -318,7 +324,7 @@ export default function ProposalPage() {
           src="/images/isotipo-light.svg"
           alt=""
           aria-hidden
-          className="pointer-events-none absolute right-12 top-1/2 hidden h-56 w-56 -translate-y-1/2 opacity-90 drop-shadow-2xl xl:block"
+          className="pointer-events-none absolute right-12 top-1/2 hidden h-56 w-56 -translate-y-1/2 opacity-90 drop-shadow-2xl 2xl:block"
         />
         <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="h-10 w-auto self-start" />
         <p className="mt-16 text-sm uppercase tracking-[0.3em] text-secondary">
