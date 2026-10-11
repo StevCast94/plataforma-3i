@@ -5,6 +5,8 @@ import { prisma } from '../prisma';
 import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
 import { confirmSale, cancelSale, collectInstallment, saleTotals } from '../services/developerSales';
+import { CHECKLIST, CHECKLIST_LABEL, isChecklistComplete, qualityFor } from '../services/projectQuality';
+import { signedDocUrl } from '../lib/projectDocs';
 
 // Gestión de desarrolladores (terceros que publican en la vitrina) y revisión de sus proyectos.
 export const adminDeveloperRoutes = Router();
@@ -34,7 +36,7 @@ adminDeveloperRoutes.get('/', async (_req, res) => {
     include: {
       users: { select: { id: true, email: true, name: true, active: true, lastLoginAt: true } },
       projects: {
-        select: { id: true, name: true, slug: true, publishStatus: true, active: true, reviewNote: true, updatedAt: true },
+        select: { id: true, name: true, slug: true, publishStatus: true, active: true, reviewNote: true, updatedAt: true, verifiedAt: true },
       },
     },
   });
@@ -111,6 +113,11 @@ adminDeveloperRoutes.post('/projects/:projectId/review', async (req: AuthedReque
     return;
   }
   const approve = decision === 'approve';
+  // Un proyecto de terceros solo se publica con el sello (checklist legal completo).
+  if (approve && project.developerId && !project.verifiedAt) {
+    res.status(409).json({ error: 'Primero completa la verificación legal del proyecto' });
+    return;
+  }
   if (!approve && !String(note ?? '').trim()) {
     res.status(400).json({ error: 'Indica qué debe corregir el desarrollador' });
     return;
@@ -226,4 +233,56 @@ adminDeveloperRoutes.get('/alerts', async (_req, res) => {
   });
   const declared = new Set(sales.map((s) => `${s.projectId}|${s.lotCode}`));
   res.json(sold.filter((l) => !declared.has(`${l.projectId}|${l.code.toUpperCase()}`)));
+});
+
+// ============================================================
+// Verificación legal (paso 6)
+// ============================================================
+
+// GET /api/admin/developers/projects/:projectId/verification — checklist, documentos (URL firmada) y puntaje
+adminDeveloperRoutes.get('/projects/:projectId/verification', async (req, res) => {
+  const project = await prisma.project.findUnique({
+    where: { id: req.params.projectId },
+    select: { id: true, name: true, verification: true, verifiedAt: true, documents: { orderBy: { createdAt: 'asc' } } },
+  });
+  if (!project) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const quality = (await qualityFor([project.id])).get(project.id);
+  res.json({
+    id: project.id,
+    name: project.name,
+    checklist: project.verification ?? {},
+    verifiedAt: project.verifiedAt,
+    labels: CHECKLIST_LABEL,
+    quality,
+    documents: project.documents.map((d) => ({
+      id: d.id,
+      kind: d.kind,
+      name: d.name,
+      uploadedBy: d.uploadedBy,
+      createdAt: d.createdAt,
+      url: signedDocUrl(d.publicId, d.format),
+    })),
+  });
+});
+
+// PUT /api/admin/developers/projects/:projectId/verification {checklist} — completo → sello
+adminDeveloperRoutes.put('/projects/:projectId/verification', async (req: AuthedRequest, res) => {
+  const raw = (req.body?.checklist ?? {}) as Record<string, unknown>;
+  const checklist = Object.fromEntries(CHECKLIST.map((k) => [k, raw[k] === true]));
+  const complete = isChecklistComplete(checklist);
+  const current = await prisma.project.findUnique({ where: { id: req.params.projectId }, select: { verifiedAt: true } });
+  if (!current) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const project = await prisma.project.update({
+    where: { id: req.params.projectId },
+    data: { verification: checklist, verifiedAt: complete ? (current.verifiedAt ?? new Date()) : null },
+    select: { id: true, verification: true, verifiedAt: true },
+  });
+  await audit(req.staff?.staffId, complete ? 'verify' : 'unverify', 'project', project.id, checklist);
+  res.json(project);
 });

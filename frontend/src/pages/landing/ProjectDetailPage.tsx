@@ -127,6 +127,12 @@ export default function ProjectDetailPage() {
               </div>
             )}
 
+            {project.verified && (
+              <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-primary">
+                ✓ {t('Verificado por Grupo 3i')}
+              </p>
+            )}
+
             {brand ? (
               <h1 className="mt-5">
                 <img

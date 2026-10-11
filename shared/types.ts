@@ -29,6 +29,8 @@ export interface Project {
   slug: string;
   /** Proyecto de un desarrollador externo (vitrina). null = propio de Grupo 3i. */
   developerId?: string | null;
+  /** Proyecto de terceros con verificación legal completa (sello). */
+  verified?: boolean;
   name: string;
   subtitle?: string | null;
   description: string;

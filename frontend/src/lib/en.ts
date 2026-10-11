@@ -120,6 +120,7 @@ export const EN: Record<string, string> = {
 
   // ---------- WhatsApp y formularios ----------
   'Contactar un asesor': 'Talk to an advisor',
+  'Verificado por Grupo 3i': 'Verified by Grupo 3i',
   'Habla con un asesor': 'Talk to an advisor',
   'Déjanos tus datos y abrimos el chat con el asesor del proyecto.': 'Leave your details and we will open the chat with the project advisor.',
   'Escribe tu nombre y tu WhatsApp con código de país.': 'Enter your name and WhatsApp number with country code.',

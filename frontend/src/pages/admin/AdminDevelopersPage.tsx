@@ -5,6 +5,7 @@ import { Input, Textarea } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/shared/Toast';
 import { AdminDeveloperSales } from './AdminDeveloperSales';
+import { VerifyProjectModal } from './VerifyProjectModal';
 import { PUBLISH_LABEL, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, type PublishStatus, type DevLead } from '@/lib/developerApi';
 
 type AdminLead = DevLead & { referralCode: string | null; project: { name: string; developer: { name: string } | null } };
@@ -13,7 +14,7 @@ type AdminLead = DevLead & { referralCode: string | null; project: { name: strin
 // comerciales, accesos al portal (/desarrollador) y revisión de sus proyectos.
 
 interface DevUser { id: string; email: string; name: string | null; active: boolean; lastLoginAt: string | null }
-interface DevProjectRow { id: string; name: string; slug: string; publishStatus: PublishStatus; reviewNote: string | null }
+interface DevProjectRow { id: string; name: string; slug: string; publishStatus: PublishStatus; reviewNote: string | null; verifiedAt: string | null }
 interface Developer {
   id: string;
   name: string;
@@ -54,6 +55,7 @@ export default function AdminDevelopersPage() {
   const [secret, setSecret] = useState<{ email: string; password: string } | null>(null);
   const [review, setReview] = useState<{ project: DevProjectRow; note: string } | null>(null);
   const [leads, setLeads] = useState<AdminLead[] | null>(null);
+  const [verifying, setVerifying] = useState<string | null>(null);
 
   const load = useCallback(() => {
     adminApi.get<Developer[]>('/admin/developers').then(setDevs).catch((e) => toast(e.message, 'error'));
@@ -183,6 +185,9 @@ export default function AdminDevelopersPage() {
                       <div key={p.id} className="flex items-center gap-2 rounded-lg bg-light px-3 py-2 text-sm">
                         <span className="font-medium text-primary">{p.name}</span>
                         <span className={`rounded-full px-2 py-0.5 text-xs ${st.cls}`}>{st.text}</span>
+                        <button onClick={() => setVerifying(p.id)} className={`text-xs hover:underline ${p.verifiedAt ? 'text-green-700' : 'text-brand-gray'}`}>
+                          {p.verifiedAt ? '✓ Verificado' : 'Verificar'}
+                        </button>
                         {p.publishStatus === 'REVIEW' && (
                           <button onClick={() => setReview({ project: p, note: '' })} className="text-xs font-semibold text-secondary hover:underline">
                             Revisar
@@ -197,6 +202,8 @@ export default function AdminDevelopersPage() {
           ))}
         </div>
       )}
+
+      <VerifyProjectModal projectId={verifying} onClose={() => setVerifying(null)} onSaved={load} />
 
       <AdminDeveloperSales />
 

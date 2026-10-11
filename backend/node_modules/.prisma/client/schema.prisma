@@ -29,20 +29,20 @@ model ContactSubmission {
 }
 
 model Project {
-  id              String          @id @default(uuid())
-  slug            String          @unique
+  id              String            @id @default(uuid())
+  slug            String            @unique
   name            String
   subtitle        String?
-  description     String          @db.Text
+  description     String            @db.Text
   location        String?
   coverImage      String? // Cloudinary URL
   images          String[] // Cloudinary URLs
   features        Json? // { bedrooms, bathrooms, m2, amenities... }
   priceFrom       Float?
   priceLabel      String? // "Desde $12,000", "Fracciones desde $5,000"
-  active          Boolean         @default(true)
-  featured        Boolean         @default(false)
-  showBrochure    Boolean         @default(false) // muestra el Brochure Digital premium en la ficha
+  active          Boolean           @default(true)
+  featured        Boolean           @default(false)
+  showBrochure    Boolean           @default(false) // muestra el Brochure Digital premium en la ficha
   mapLat          Float? // coordenadas para el mapa satelital del brochure
   mapLng          Float?
   brochureContent Json? // textos/cifras del Brochure Digital (ver frontend/src/lib/brochureContent.ts)
@@ -51,15 +51,18 @@ model Project {
   panoramas       Panorama[]
   leads           ProjectLead[]
   sales           DeveloperSale[]
+  documents       ProjectDocument[]
+  verification    Json? // { deed, liens, municipal, boundaries: boolean }
+  verifiedAt      DateTime? // sello «Verificado por Grupo 3i»
   events          ProjectEvent[]
   // Proyectos de terceros (vitrina curada). null = proyecto propio de Grupo 3i.
   developerId     String?
-  developer       Developer?      @relation(fields: [developerId], references: [id])
-  publishStatus   PublishStatus   @default(PUBLISHED)
+  developer       Developer?        @relation(fields: [developerId], references: [id])
+  publishStatus   PublishStatus     @default(PUBLISHED)
   reviewNote      String? // observaciones de Grupo 3i al devolver un borrador
   commissionRate  Float? // excepción por proyecto; si es null usa la del desarrollador
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   @@index([developerId])
 }
@@ -1036,4 +1039,24 @@ model SaleInstallment {
   voided      Boolean       @default(false)
   commissions Commission[]
   createdAt   DateTime      @default(now())
+}
+
+// ============================================================
+// VERIFICACIÓN LEGAL (Fase 1, paso 6)
+// Documentos PRIVADOS (Cloudinary authenticated, URL firmada de corta vida).
+// Al completar el checklist (Project.verification) se fija verifiedAt → sello público.
+// ============================================================
+
+model ProjectDocument {
+  id         String   @id @default(uuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  kind       String // deed | liens | municipal | boundaries | other
+  name       String
+  publicId   String
+  format     String
+  uploadedBy String // developer | staff
+  createdAt  DateTime @default(now())
+
+  @@index([projectId])
 }

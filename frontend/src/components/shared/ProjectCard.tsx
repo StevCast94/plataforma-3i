@@ -21,6 +21,11 @@ export function ProjectCard({ project }: { project: Project }) {
               {t('Destacado')}
             </Badge>
           )}
+          {project.verified && (
+            <Badge variant="gold" className="absolute right-4 top-4">
+              ✓ {t('Verificado por Grupo 3i')}
+            </Badge>
+          )}
         </div>
         <div className="p-6">
           {project.location && (

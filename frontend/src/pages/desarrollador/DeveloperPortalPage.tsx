@@ -8,6 +8,7 @@ import { useToast } from '@/components/shared/Toast';
 import { cld } from '@/lib/cloudinary';
 import { DeveloperLeads } from './DeveloperLeads';
 import { DeveloperSales } from './DeveloperSales';
+import { DeveloperQuality } from './DeveloperQuality';
 import {
   devApi, getDevToken, setDevToken, PUBLISH_LABEL, type DevMe, type DevProject,
 } from '@/lib/developerApi';
@@ -177,8 +178,9 @@ function Editor({ project, onBack, onSaved }: { project?: DevProject; onBack: ()
         </div>
       )}
       <p className="mt-4 text-xs text-brand-gray">
-        El mapa de lotes y los recorridos 360° los cargamos junto contigo durante el alta del proyecto.
+        El plano de lotes lo cargamos junto contigo durante el alta; luego tú mantienes precios, disponibilidad y vistas 360°.
       </p>
+      {project && <DeveloperQuality projectId={project.id} />}
     </div>
   );
 }

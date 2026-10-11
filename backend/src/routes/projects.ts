@@ -3,8 +3,15 @@ import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
 import { refFromRequest } from './referral';
 import { registerLead, leadWhatsapp, phoneDigits } from '../services/projectLeads';
+import { qualityFor } from '../services/projectQuality';
 
 export const projectRoutes = Router();
+
+/** Proyecto para el público: sin el checklist legal interno, con el sello como booleano. */
+function publicProject<T extends { verification?: unknown; verifiedAt: Date | null; developerId: string | null; developer?: unknown }>(p: T, qualityScore?: number) {
+  const { verification: _v, developer: _d, ...rest } = p;
+  return { ...rest, verified: Boolean(p.developerId && p.verifiedAt), ...(qualityScore != null ? { qualityScore } : {}) };
+}
 
 // GET /api/projects            -> lista (solo activos por defecto)
 // GET /api/projects?all=true   -> todos (admin / preview)
@@ -15,8 +22,16 @@ projectRoutes.get('/', async (req, res) => {
       // Borradores y proyectos en revisión de desarrolladores nunca salen al público.
       where: all ? { publishStatus: { in: ['PUBLISHED', 'PAUSED'] } } : { active: true, publishStatus: 'PUBLISHED' },
       orderBy: [{ featured: 'desc' }, { createdAt: 'asc' }],
+      include: { developer: { select: { featuredUntil: true } } },
     });
-    res.json(projects);
+    // Orden de la portada: destacados (propio o pagado por el desarrollador), luego puntaje de calidad.
+    const quality = await qualityFor(projects.map((p) => p.id));
+    const now = Date.now();
+    const isFeatured = (p: (typeof projects)[number]) => p.featured || (p.developer?.featuredUntil?.getTime() ?? 0) > now;
+    const rows = projects
+      .map((p) => ({ p, score: quality.get(p.id)?.score ?? 0 }))
+      .sort((a, b) => Number(isFeatured(b.p)) - Number(isFeatured(a.p)) || b.score - a.score);
+    res.json(rows.map(({ p, score }) => publicProject(p, score)));
   } catch (err) {
     console.error('GET /api/projects', err);
     res.status(500).json({ error: 'Error al obtener proyectos' });
@@ -34,7 +49,7 @@ projectRoutes.get('/:slug', async (req, res) => {
       res.status(404).json({ error: 'Proyecto no encontrado' });
       return;
     }
-    res.json(project);
+    res.json(publicProject(project));
   } catch (err) {
     console.error('GET /api/projects/:slug', err);
     res.status(500).json({ error: 'Error al obtener el proyecto' });

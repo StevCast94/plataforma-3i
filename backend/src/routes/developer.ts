@@ -6,6 +6,8 @@ import { slugify } from '../lib/slug';
 import { registerLead, phoneDigits } from '../services/projectLeads';
 import { feeRateForLead, installmentFee, saleTotals } from '../services/developerSales';
 import { projectMetrics } from '../services/projectMetrics';
+import { qualityFor } from '../services/projectQuality';
+import { DOC_KINDS, uploadProjectDocument } from '../lib/projectDocs';
 import { v2 as cloudinary } from 'cloudinary';
 
 if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
@@ -552,4 +554,49 @@ developerRoutes.get('/projects/:id/metrics', async (req: DeveloperRequest, res) 
   }
   const days = Math.min(365, Math.max(7, Number(req.query.days) || 30));
   res.json({ project: { id: project.id, name: project.name }, ...(await projectMetrics(project.id, days)) });
+});
+
+// ============================================================
+// Calidad y documentos legales (paso 6)
+// ============================================================
+
+// GET /api/developer/projects/:id/quality — puntaje, qué falta y documentos subidos (sin URL)
+developerRoutes.get('/projects/:id/quality', async (req: DeveloperRequest, res) => {
+  const project = await ownProject(req);
+  if (!project) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const quality = (await qualityFor([project.id])).get(project.id);
+  const documents = await prisma.projectDocument.findMany({
+    where: { projectId: project.id },
+    select: { id: true, kind: true, name: true, createdAt: true },
+    orderBy: { createdAt: 'asc' },
+  });
+  res.json({ ...quality, verifiedAt: project.verifiedAt, documents });
+});
+
+// POST /api/developer/projects/:id/documents {dataUri, kind, name}
+developerRoutes.post('/projects/:id/documents', async (req: DeveloperRequest, res) => {
+  const project = await ownProject(req);
+  if (!project) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const { dataUri, kind, name } = req.body ?? {};
+  if (typeof dataUri !== 'string' || !DOC_KINDS.includes(kind)) {
+    res.status(400).json({ error: 'Documento inválido' });
+    return;
+  }
+  try {
+    const { publicId, format } = await uploadProjectDocument(dataUri, project.id);
+    const doc = await prisma.projectDocument.create({
+      data: { projectId: project.id, kind, name: String(name || kind).slice(0, 120), publicId, format, uploadedBy: 'developer' },
+      select: { id: true, kind: true, name: true, createdAt: true },
+    });
+    res.status(201).json(doc);
+  } catch (err) {
+    console.error('POST /api/developer/projects/:id/documents', err);
+    res.status(500).json({ error: 'No se pudo subir el documento' });
+  }
 });
