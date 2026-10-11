@@ -7,6 +7,7 @@ import { ImageUpload } from '@/components/shared/ImageUpload';
 import { useToast } from '@/components/shared/Toast';
 import { cld } from '@/lib/cloudinary';
 import { DeveloperLeads } from './DeveloperLeads';
+import { DeveloperSales } from './DeveloperSales';
 import {
   devApi, getDevToken, setDevToken, PUBLISH_LABEL, type DevMe, type DevProject,
 } from '@/lib/developerApi';
@@ -187,7 +188,7 @@ function Portal({ onLogout }: { onLogout: () => void }) {
   const [me, setMe] = useState<DevMe | null>(null);
   const [projects, setProjects] = useState<DevProject[] | null>(null);
   const [editing, setEditing] = useState<DevProject | 'new' | null>(null);
-  const [tab, setTab] = useState<'projects' | 'leads'>('projects');
+  const [tab, setTab] = useState<'projects' | 'leads' | 'sales'>('projects');
 
   const load = useCallback(async () => {
     try {
@@ -258,7 +259,7 @@ function Portal({ onLogout }: { onLogout: () => void }) {
       )}
 
       <div className="mb-5 flex gap-1 rounded-xl bg-white p-1 shadow-sm">
-        {([['projects', 'Proyectos'], ['leads', 'Contactos']] as const).map(([k, label]) => (
+        {([['projects', 'Proyectos'], ['leads', 'Contactos'], ['sales', 'Ventas']] as const).map(([k, label]) => (
           <button
             key={k}
             onClick={() => setTab(k)}
@@ -271,7 +272,9 @@ function Portal({ onLogout }: { onLogout: () => void }) {
         ))}
       </div>
 
-      {tab === 'leads' && dev ? (
+      {tab === 'sales' ? (
+        <DeveloperSales />
+      ) : tab === 'leads' && dev ? (
         <DeveloperLeads projects={projects ?? []} ownLeadRate={dev.ownLeadRate} />
       ) : (
       <>

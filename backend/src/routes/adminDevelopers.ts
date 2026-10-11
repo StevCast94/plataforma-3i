@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { prisma } from '../prisma';
 import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
+import { confirmSale, cancelSale, collectInstallment, saleTotals } from '../services/developerSales';
 
 // Gestión de desarrolladores (terceros que publican en la vitrina) y revisión de sus proyectos.
 export const adminDeveloperRoutes = Router();
@@ -137,4 +138,92 @@ adminDeveloperRoutes.get('/leads', async (req, res) => {
     include: { project: { select: { name: true, developer: { select: { name: true } } } } },
   });
   res.json(leads);
+});
+
+// ============================================================
+// Ventas de desarrolladores (paso 4)
+// ============================================================
+
+// GET /api/admin/developers/sales — todas, con totales, comisiones y referidor
+adminDeveloperRoutes.get('/sales', async (_req, res) => {
+  const sales = await prisma.developerSale.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: {
+      lead: { select: { name: true, phone: true, source: true, referralCode: true } },
+      project: { select: { name: true, developer: { select: { name: true } } } },
+      installments: {
+        orderBy: { paidAt: 'asc' },
+        include: { commissions: { select: { amount: true, level: true, member: { select: { fullName: true } } } } },
+      },
+    },
+  });
+  const r2 = (n: number) => Math.round(n * 100) / 100;
+  res.json(
+    sales.map((s) => {
+      const totals = saleTotals(s.installments);
+      const commissions = s.installments.flatMap((i) => i.commissions).reduce((a, c) => a + c.amount, 0);
+      return { ...s, totals: { ...totals, commissions: r2(commissions), net: r2(totals.feeCollected - commissions) } };
+    }),
+  );
+});
+
+// POST /api/admin/developers/sales/:id/review {decision: 'confirm'|'reject'|'cancel', note}
+adminDeveloperRoutes.post('/sales/:id/review', async (req: AuthedRequest, res) => {
+  const { decision, note } = req.body ?? {};
+  const sale = await prisma.developerSale.findUnique({ where: { id: req.params.id } });
+  if (!sale) {
+    res.status(404).json({ error: 'Venta no encontrada' });
+    return;
+  }
+  if (decision === 'confirm') {
+    if (sale.status !== 'DECLARED') {
+      res.status(409).json({ error: 'Solo se confirma una venta declarada' });
+      return;
+    }
+    await confirmSale(sale.id);
+  } else if (decision === 'reject' || decision === 'cancel') {
+    if (!String(note ?? '').trim()) {
+      res.status(400).json({ error: 'Escribe el motivo' });
+      return;
+    }
+    if (decision === 'reject') {
+      if (sale.status !== 'DECLARED') {
+        res.status(409).json({ error: 'Solo se devuelve una venta declarada' });
+        return;
+      }
+      await prisma.developerSale.update({ where: { id: sale.id }, data: { status: 'REJECTED', reviewNote: String(note) } });
+    } else {
+      await cancelSale(sale.id, String(note));
+    }
+  } else {
+    res.status(400).json({ error: 'Decisión inválida' });
+    return;
+  }
+  await audit(req.staff?.staffId, decision, 'developer_sale', sale.id, { note });
+  res.json({ ok: true });
+});
+
+// POST /api/admin/developers/installments/:id/collect — Grupo 3i cobró su parte de la cuota
+adminDeveloperRoutes.post('/installments/:id/collect', async (req: AuthedRequest, res) => {
+  try {
+    const r = await collectInstallment(req.params.id);
+    await audit(req.staff?.staffId, 'collect', 'sale_installment', req.params.id, r);
+    res.json(r);
+  } catch (err) {
+    res.status(409).json({ error: (err as Error).message });
+  }
+});
+
+// GET /api/admin/developers/alerts — solares vendidos en proyectos de terceros sin venta declarada
+adminDeveloperRoutes.get('/alerts', async (_req, res) => {
+  const sold = await prisma.lot.findMany({
+    where: { status: 'SOLD', kind: 'LOT', project: { developerId: { not: null } } },
+    select: { code: true, projectId: true, updatedAt: true, project: { select: { name: true, developer: { select: { name: true } } } } },
+  });
+  const sales = await prisma.developerSale.findMany({
+    where: { status: { in: ['DECLARED', 'CONFIRMED'] }, lotCode: { not: null } },
+    select: { projectId: true, lotCode: true },
+  });
+  const declared = new Set(sales.map((s) => `${s.projectId}|${s.lotCode}`));
+  res.json(sold.filter((l) => !declared.has(`${l.projectId}|${l.code.toUpperCase()}`)));
 });

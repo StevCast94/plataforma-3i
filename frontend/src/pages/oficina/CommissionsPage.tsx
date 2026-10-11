@@ -113,9 +113,9 @@ export default function CommissionsPage() {
               />
               <Detail
                 label="Referido"
-                value={selected.referral?.referred.fullName ?? selected.purchase?.customerName ?? '—'}
+                value={selected.referral?.referred.fullName ?? selected.purchase?.customerName ?? selected.description?.split(' — ')[1] ?? '—'}
               />
-              <Detail label="Producto" value={selected.product?.name ?? '—'} />
+              <Detail label="Producto" value={selected.product?.name ?? selected.description?.split(' — ')[0] ?? '—'} />
               <Detail label="Nivel" value={`Nivel ${selected.level}`} />
               <Detail
                 label="Disponible"

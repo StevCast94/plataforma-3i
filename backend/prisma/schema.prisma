@@ -29,20 +29,20 @@ model ContactSubmission {
 }
 
 model Project {
-  id              String         @id @default(uuid())
-  slug            String         @unique
+  id              String          @id @default(uuid())
+  slug            String          @unique
   name            String
   subtitle        String?
-  description     String         @db.Text
+  description     String          @db.Text
   location        String?
   coverImage      String? // Cloudinary URL
   images          String[] // Cloudinary URLs
   features        Json? // { bedrooms, bathrooms, m2, amenities... }
   priceFrom       Float?
   priceLabel      String? // "Desde $12,000", "Fracciones desde $5,000"
-  active          Boolean        @default(true)
-  featured        Boolean        @default(false)
-  showBrochure    Boolean        @default(false) // muestra el Brochure Digital premium en la ficha
+  active          Boolean         @default(true)
+  featured        Boolean         @default(false)
+  showBrochure    Boolean         @default(false) // muestra el Brochure Digital premium en la ficha
   mapLat          Float? // coordenadas para el mapa satelital del brochure
   mapLng          Float?
   brochureContent Json? // textos/cifras del Brochure Digital (ver frontend/src/lib/brochureContent.ts)
@@ -50,15 +50,16 @@ model Project {
   lots            Lot[]
   panoramas       Panorama[]
   leads           ProjectLead[]
+  sales           DeveloperSale[]
   events          ProjectEvent[]
   // Proyectos de terceros (vitrina curada). null = proyecto propio de Grupo 3i.
   developerId     String?
-  developer       Developer?     @relation(fields: [developerId], references: [id])
-  publishStatus   PublishStatus  @default(PUBLISHED)
+  developer       Developer?      @relation(fields: [developerId], references: [id])
+  publishStatus   PublishStatus   @default(PUBLISHED)
   reviewNote      String? // observaciones de Grupo 3i al devolver un borrador
   commissionRate  Float? // excepción por proyecto; si es null usa la del desarrollador
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   @@index([developerId])
 }
@@ -333,6 +334,10 @@ model Commission {
   productId     String?
   product       Product?         @relation(fields: [productId], references: [id])
   transactionId String?
+  // Ventas de desarrolladores: la cuota que originó la comisión y un texto para mostrarla.
+  installmentId String?
+  installment   SaleInstallment? @relation(fields: [installmentId], references: [id])
+  description   String?
   level         Int              @default(1) // 1 o 2
   amount        Float
   rate          Float
@@ -942,25 +947,26 @@ enum LeadStatus {
 }
 
 model ProjectLead {
-  id           String     @id @default(uuid())
+  id           String          @id @default(uuid())
   projectId    String
-  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project      Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   lotCode      String?
   name         String
   phone        String
   phoneDigits  String // para deduplicar: el primero que registra el teléfono gana
   email        String?
-  message      String?    @db.Text
+  message      String?         @db.Text
   source       LeadSource
   channel      String // whatsapp | form | manual
   referralCode String?
   memberId     String? // referidor N1 resuelto al momento del contacto
   visitorId    String?
   lang         String?
-  status       LeadStatus @default(NEW)
-  notes        String?    @db.Text
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  status       LeadStatus      @default(NEW)
+  notes        String?         @db.Text
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  sales        DeveloperSale[]
 
   @@index([projectId, phoneDigits])
   @@index([projectId, createdAt])
@@ -980,4 +986,54 @@ model ProjectEvent {
 
   @@index([projectId, createdAt])
   @@index([projectId, type])
+}
+
+// ============================================================
+// VENTAS DE DESARROLLADORES (Fase 1, paso 4)
+// El desarrollador declara la venta de un contacto; Grupo 3i la confirma.
+// Cada pago del comprador (contado = uno solo) es una cuota: al cobrarle a
+// Grupo 3i su parte (feeAmount), se generan las comisiones de los referidores.
+// ============================================================
+
+enum DeveloperSaleStatus {
+  DECLARED // declarada por el desarrollador, por revisar
+  CONFIRMED // confirmada por Grupo 3i
+  REJECTED // devuelta con observaciones
+  CANCELLED // desistimiento: lo no cobrado se anula
+}
+
+model DeveloperSale {
+  id           String              @id @default(uuid())
+  projectId    String
+  project      Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  leadId       String
+  lead         ProjectLead         @relation(fields: [leadId], references: [id])
+  lotCode      String?
+  price        Float
+  paymentType  String // CASH | FINANCED
+  feeRate      Float // 8 % plataforma / 2 % contacto propio (fijado al declarar)
+  receiptUrl   String?
+  notes        String?             @db.Text
+  status       DeveloperSaleStatus @default(DECLARED)
+  reviewNote   String?
+  confirmedAt  DateTime?
+  installments SaleInstallment[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([projectId])
+}
+
+model SaleInstallment {
+  id          String        @id @default(uuid())
+  saleId      String
+  sale        DeveloperSale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  amount      Float // lo que pagó el comprador
+  feeAmount   Float // lo que se le cobra al desarrollador por esta cuota
+  paidAt      DateTime // fecha del pago del comprador
+  receiptUrl  String?
+  collectedAt DateTime? // Grupo 3i cobró su parte → comisiones generadas
+  voided      Boolean       @default(false)
+  commissions Commission[]
+  createdAt   DateTime      @default(now())
 }

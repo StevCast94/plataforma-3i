@@ -263,6 +263,8 @@ export interface Commission {
   product?: { name: string; type: ProductType } | null;
   referral?: { level: number; referred: { fullName: string } } | null;
   purchase?: { customerName: string } | null;
+  /** Ventas de desarrolladores: "Solar A3 · Proyecto — Cliente". */
+  description?: string | null;
 }
 
 export interface CommissionSummary {

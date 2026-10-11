@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { useToast } from '@/components/shared/Toast';
+import { DeclareSaleModal } from './DeveloperSales';
 import {
   devApi, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, type DevLead, type DevProject, type LeadStatus,
 } from '@/lib/developerApi';
@@ -20,6 +21,7 @@ export function DeveloperLeads({ projects, ownLeadRate }: { projects: DevProject
   const [filter, setFilter] = useState('');
   const [adding, setAdding] = useState(false);
   const [phone, setPhone] = useState('');
+  const [selling, setSelling] = useState<DevLead | null>(null);
 
   const load = useCallback(() => {
     devApi.get<DevLead[]>(`/leads${filter ? `?projectId=${filter}` : ''}`).then(setLeads).catch((e) => toast(e.message, 'error'));
@@ -114,6 +116,11 @@ export function DeveloperLeads({ projects, ownLeadRate }: { projects: DevProject
                       >
                         {Object.entries(LEAD_STATUS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                       </select>
+                      {l.status !== 'WON' && (
+                        <button onClick={() => setSelling(l)} className="ml-2 text-xs font-semibold text-secondary hover:underline">
+                          Venta
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );
@@ -122,6 +129,15 @@ export function DeveloperLeads({ projects, ownLeadRate }: { projects: DevProject
           </table>
         </div>
       )}
+
+      <DeclareSaleModal
+        lead={selling}
+        onClose={() => setSelling(null)}
+        onDone={() => {
+          setSelling(null);
+          load();
+        }}
+      />
 
       <Modal open={adding} onClose={() => setAdding(false)} title="Registrar contacto propio">
         <form onSubmit={addOwn} className="space-y-3">

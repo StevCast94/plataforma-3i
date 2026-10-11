@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/shared/Toast';
+import { AdminDeveloperSales } from './AdminDeveloperSales';
 import { PUBLISH_LABEL, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, type PublishStatus, type DevLead } from '@/lib/developerApi';
 
 type AdminLead = DevLead & { referralCode: string | null; project: { name: string; developer: { name: string } | null } };
@@ -196,6 +197,8 @@ export default function AdminDevelopersPage() {
           ))}
         </div>
       )}
+
+      <AdminDeveloperSales />
 
       {leads && leads.length > 0 && (
         <div className="mt-8">

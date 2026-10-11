@@ -133,3 +133,37 @@ export interface DevLead {
   createdAt: string;
   project: { name: string };
 }
+
+export type SaleStatus = 'DECLARED' | 'CONFIRMED' | 'REJECTED' | 'CANCELLED';
+
+export const SALE_STATUS_LABEL: Record<SaleStatus, { text: string; cls: string }> = {
+  DECLARED: { text: 'Por confirmar', cls: 'bg-amber-100 text-amber-800' },
+  CONFIRMED: { text: 'Confirmada', cls: 'bg-green-100 text-green-800' },
+  REJECTED: { text: 'Devuelta', cls: 'bg-red-100 text-red-700' },
+  CANCELLED: { text: 'Desistida', cls: 'bg-slate-200 text-slate-700' },
+};
+
+export interface SaleInstallment {
+  id: string;
+  amount: number;
+  feeAmount: number;
+  paidAt: string;
+  receiptUrl: string | null;
+  collectedAt: string | null;
+  voided: boolean;
+}
+
+export interface DevSale {
+  id: string;
+  lotCode: string | null;
+  price: number;
+  paymentType: 'CASH' | 'FINANCED';
+  feeRate: number;
+  status: SaleStatus;
+  reviewNote: string | null;
+  createdAt: string;
+  lead: { name: string; phone: string; source: LeadSource };
+  project: { name: string };
+  installments: SaleInstallment[];
+  totals: { paid: number; feeTotal: number; feeCollected: number };
+}

@@ -4,6 +4,7 @@ import { prisma } from '../prisma';
 import { requireDeveloper, signDeveloperToken, type DeveloperRequest } from '../middleware/authDeveloper';
 import { slugify } from '../lib/slug';
 import { registerLead, phoneDigits } from '../services/projectLeads';
+import { feeRateForLead, installmentFee, saleTotals } from '../services/developerSales';
 import { v2 as cloudinary } from 'cloudinary';
 
 if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
@@ -438,4 +439,105 @@ developerRoutes.post('/seed-images', async (req: DeveloperRequest, res) => {
     console.error('POST /api/developer/seed-images', err);
     res.status(500).json({ error: 'Error al subir la imagen' });
   }
+});
+
+// ============================================================
+// Ventas (paso 4). El desarrollador declara la venta de un contacto y registra
+// cada pago del comprador; Grupo 3i confirma y cobra su parte por cuota.
+// ============================================================
+
+const SALE_INCLUDE = {
+  lead: { select: { name: true, phone: true, source: true } },
+  project: { select: { name: true } },
+  installments: { orderBy: { paidAt: 'asc' as const } },
+};
+
+function withTotals<T extends { installments: Parameters<typeof saleTotals>[0] }>(s: T) {
+  return { ...s, totals: saleTotals(s.installments) };
+}
+
+// GET /api/developer/sales
+developerRoutes.get('/sales', async (req: DeveloperRequest, res) => {
+  const sales = await prisma.developerSale.findMany({
+    where: { project: { developerId: req.developerId } },
+    orderBy: { createdAt: 'desc' },
+    include: SALE_INCLUDE,
+  });
+  res.json(sales.map(withTotals));
+});
+
+// POST /api/developer/sales {leadId, lotCode?, price, paymentType, firstPayment?, paidAt?, receiptUrl?, notes?}
+developerRoutes.post('/sales', async (req: DeveloperRequest, res) => {
+  const b = req.body ?? {};
+  const lead = await prisma.projectLead.findFirst({ where: { id: String(b.leadId ?? ''), project: { developerId: req.developerId } } });
+  if (!lead) {
+    res.status(404).json({ error: 'Contacto no encontrado' });
+    return;
+  }
+  const price = Number(b.price);
+  const paymentType = b.paymentType === 'FINANCED' ? 'FINANCED' : 'CASH';
+  const firstPayment = paymentType === 'CASH' ? price : Number(b.firstPayment ?? 0);
+  if (!(price > 0) || !(firstPayment >= 0) || firstPayment > price) {
+    res.status(400).json({ error: 'Revisa el precio y el primer pago' });
+    return;
+  }
+  const lotCode = b.lotCode ? String(b.lotCode).trim().toUpperCase() : null;
+  if (lotCode) {
+    const dup = await prisma.developerSale.findFirst({
+      where: { projectId: lead.projectId, lotCode, status: { in: ['DECLARED', 'CONFIRMED'] } },
+    });
+    if (dup) {
+      res.status(409).json({ error: `El solar ${lotCode} ya tiene una venta declarada` });
+      return;
+    }
+  }
+  const feeRate = await feeRateForLead(lead.id);
+  const paidAt = b.paidAt ? new Date(b.paidAt) : new Date();
+  const sale = await prisma.developerSale.create({
+    data: {
+      projectId: lead.projectId,
+      leadId: lead.id,
+      lotCode,
+      price,
+      paymentType,
+      feeRate,
+      receiptUrl: b.receiptUrl || null,
+      notes: b.notes ? String(b.notes).slice(0, 4000) : null,
+      installments:
+        firstPayment > 0
+          ? { create: { amount: firstPayment, feeAmount: installmentFee(firstPayment, feeRate), paidAt, receiptUrl: b.receiptUrl || null } }
+          : undefined,
+    },
+    include: SALE_INCLUDE,
+  });
+  await prisma.projectLead.update({ where: { id: lead.id }, data: { status: 'NEGOTIATION' } });
+  res.status(201).json(withTotals(sale));
+});
+
+// POST /api/developer/sales/:id/installments {amount, paidAt?, receiptUrl?} — un pago del comprador
+developerRoutes.post('/sales/:id/installments', async (req: DeveloperRequest, res) => {
+  const sale = await prisma.developerSale.findFirst({
+    where: { id: req.params.id, project: { developerId: req.developerId } },
+    include: { installments: true },
+  });
+  if (!sale || !['DECLARED', 'CONFIRMED'].includes(sale.status)) {
+    res.status(409).json({ error: 'La venta no admite pagos' });
+    return;
+  }
+  const amount = Number(req.body?.amount);
+  const { paid } = saleTotals(sale.installments);
+  if (!(amount > 0) || paid + amount > sale.price + 0.01) {
+    res.status(400).json({ error: `El pago supera el saldo pendiente ($${(sale.price - paid).toLocaleString('en-US')})` });
+    return;
+  }
+  const inst = await prisma.saleInstallment.create({
+    data: {
+      saleId: sale.id,
+      amount,
+      feeAmount: installmentFee(amount, sale.feeRate),
+      paidAt: req.body?.paidAt ? new Date(req.body.paidAt) : new Date(),
+      receiptUrl: req.body?.receiptUrl || null,
+    },
+  });
+  res.status(201).json(inst);
 });
