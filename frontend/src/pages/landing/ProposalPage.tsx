@@ -272,9 +272,9 @@ const TOOL_IMAGES = [
   '/images/og/montanita-view-mapa.jpg',
   '/images/propuesta-mv/vista-desde-lobby.jpg',
   '/images/secciones/paso-comparte.jpg',
-  '/images/ibiza/galeria-01.jpg',
-  '/images/secciones/paso-gana.jpg',
-  '/images/secciones/paso-registro.jpg',
+  '/images/propuesta-dev/ingles.jpg',
+  '/images/propuesta-dev/metricas.jpg',
+  '/images/propuesta-dev/crm.jpg',
 ];
 
 /** Lámina: isotipo de marca de agua en la esquina y pie con isotipo + número. */
@@ -477,8 +477,8 @@ export default function ProposalPage() {
             const Icon = TOOL_ICONS[i];
             return (
               <div key={t} className="relative h-48 overflow-hidden rounded-2xl print:h-40">
-                <img src={TOOL_IMAGES[i]} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
+                <img src={TOOL_IMAGES[i]} alt="" className={`absolute inset-0 h-full w-full object-cover ${i === 5 ? "object-left" : "object-top"}`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary from-25% via-primary/50 via-50% to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                   <span className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-primary">
                     <Icon className="h-4 w-4" strokeWidth={2} />
