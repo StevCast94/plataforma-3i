@@ -273,7 +273,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
                 <label className="block">
                   <span className="mb-1 block font-medium text-primary">Plan pagado hasta</span>
                   <input type="date" value={mapPaidUntil} onChange={(e) => setMapPaidUntil(e.target.value)} className="w-full rounded-lg border border-black/15 px-3 py-2" />
-                  <span className="mt-1 block text-xs text-brand-gray">9/mes hasta 150 lotes · 9/mes con más. Vacío = sin vencimiento (cortesía o proyecto propio). Al vencer se apaga solo.</span>
+                  <span className="mt-1 block text-xs text-brand-gray">$49/mes hasta 150 lotes · $99/mes con más. Vacío = sin vencimiento (cortesía o proyecto propio). Al vencer se apaga solo.</span>
                 </label>
                 <label className="block">
                   <span className="mb-1 block font-medium text-primary">Dominio propio (opcional)</span>

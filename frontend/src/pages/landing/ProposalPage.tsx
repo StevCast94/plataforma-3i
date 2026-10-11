@@ -24,10 +24,8 @@ const TX = {
     preparedFor: 'Preparada para',
     aboutKicker: 'Quiénes somos',
     aboutTitle: 'Desarrollamos, verificamos y vendemos tierra en la costa',
-    about1:
-      'Grupo 3i es una empresa inmobiliaria con proyectos propios en la provincia de Santa Elena. Construimos nuestra plataforma para vender lotizaciones: mapa de cada solar, recorridos 360°, contacto directo por WhatsApp y una red de referidores que cobra por resultado.',
-    about2:
-      'Ahora abrimos esa misma plataforma a desarrolladores aliados. No somos un portal de clasificados: elegimos los proyectos, los verificamos legalmente y ganamos solo cuando tú vendes.',
+    about1: 'Inmobiliaria con proyectos propios en Santa Elena. Creamos esta plataforma para vender nuestros lotes y hoy la abrimos a desarrolladoras aliadas.',
+    about2: 'No somos un portal de avisos: elegimos los proyectos, los verificamos y ganamos solo cuando tú vendes.',
     stats: [
       ['112', 'solares mapeados en la plataforma'],
       ['360°', 'recorridos ubicados sobre el mapa'],
@@ -49,21 +47,21 @@ const TX = {
     stepsKicker: 'Cómo funciona',
     stepsTitle: 'De la firma a la venta, en cinco pasos',
     steps: [
-      ['Alta', 'Firmamos, cargamos tu plano de lotes, fotos y recorridos 360°. Pago único de $300.'],
-      ['Verificación', 'Revisamos escritura, gravámenes y aprobación municipal. Tu proyecto recibe el sello.'],
-      ['Publicación', 'Ficha en español e inglés, mapa interactivo y difusión por la red de referidores.'],
-      ['Contactos', 'Cada interesado queda registrado y llega a tu WhatsApp con nombre, solar y origen.'],
-      ['Venta', 'Declaras la venta y pagas la comisión a medida que tu cliente te paga.'],
+      ['Alta', 'Cargamos plano, fotos y 360°. Pago único de $300.'],
+      ['Verificación', 'Revisamos escritura y permisos. Recibes el sello.'],
+      ['Publicación', 'Ficha bilingüe, mapa y red de referidores.'],
+      ['Contactos', 'Te llegan al WhatsApp con nombre y solar.'],
+      ['Venta', 'Pagas la comisión a medida que cobras.'],
     ],
     toolsKicker: 'Herramientas incluidas',
     toolsTitle: 'Todo lo que tu proyecto necesita para venderse',
     tools: [
-      ['Mapa interactivo de lotes', 'Precio, medidas, linderos y disponibilidad en vivo. El cliente elige su solar desde el celular y lo comparte por WhatsApp.'],
-      ['Recorridos 360°', 'Panorámicas ubicadas y orientadas sobre el mapa. Se recorren con el dedo o moviendo el teléfono.'],
-      ['Red Refiere y gana', 'Socios que comparten tu proyecto con enlaces propios y cobran solo si se vende.'],
-      ['Bilingüe de verdad', 'Ficha, mapa, vistas previas en redes y formularios en español e inglés para el comprador extranjero.'],
-      ['Métricas en vivo', 'Visitas, solares vistos, aperturas del 360°, clics a WhatsApp, contactos y ventas, semana a semana.'],
-      ['CRM con tu equipo', 'Embudo por etapas, vendedores con reparto automático, tareas, plantillas de WhatsApp, avisos al celular y reportes.'],
+      ['Mapa interactivo de lotes', 'Precio y disponibilidad en vivo, desde el celular.'],
+      ['Recorridos 360°', 'El cliente recorre el terreno sin viajar.'],
+      ['Red Refiere y gana', 'Socios que comparten tu proyecto y cobran solo si se vende.'],
+      ['Español e inglés', 'Listo para el comprador extranjero.'],
+      ['Métricas en vivo', 'Visitas, solares vistos, contactos y ventas.'],
+      ['CRM con tu equipo', 'Embudo, vendedores, tareas y avisos al celular.'],
     ],
     portalKicker: 'Tu portal',
     portalTitle: 'Sabes qué funciona, cada semana',
@@ -109,12 +107,12 @@ const TX = {
     priceKicker: 'Tarifas',
     priceTitle: 'Un solo plan. Sin mensualidades.',
     prices: [
-      ['$300', 'Alta por proyecto', 'Pago único: carga del plano, fotos, 360°, traducción y verificación legal.'],
-      ['8 %', 'Venta por la plataforma', 'Contactos que llegan por la ficha, el mapa, los referidores o nuestras campañas. Incluye la comisión del referidor.'],
-      ['2 %', 'Venta a tus contactos', 'Clientes que tú consigues y registras en tu portal para usar nuestras herramientas.'],
+      ['$300', 'Alta por proyecto', 'Pago único. Incluye carga, 360°, traducción y verificación.'],
+      ['8 %', 'Si el cliente llega por nosotros', 'Ficha, mapa, referidores o campañas. Incluye al referidor.'],
+      ['2 %', 'Si el cliente es tuyo', 'Lo registras en tu portal y usas todas las herramientas.'],
     ],
-    mapPlanTitle: 'Plan Mapa para tu web',
-    mapPlan: 'Tu mapa interactivo de lotes con tu logo y tu color, dentro de tu web o en tu propio dominio, con CRM incluido. 9/mes hasta 150 lotes · 9/mes con más. También disponible sin publicar en la vitrina.',
+    mapPlanTitle: 'Opcional · Plan Mapa para tu web',
+    mapPlan: 'Tu mapa de lotes con tu logo, dentro de tu web o en tu dominio. CRM incluido. $49/mes hasta 150 lotes · $99/mes con más.',
     priceNote: 'Valores más impuestos de ley. Destaque en portada disponible como servicio adicional.',
     exKicker: 'Ejemplo',
     exTitle: (p: string) => `Un lote de ${p}, financiado`,
@@ -125,10 +123,10 @@ const TX = {
     rulesKicker: 'Reglas claras',
     rulesTitle: 'Transparencia para los dos lados',
     rules: [
-      ['Registro con fecha', 'Cada contacto queda registrado antes de llegar a ti, con fecha, número y origen. Lo ves en tu portal.'],
-      ['Atribución de 180 días', 'Si un contacto de la plataforma compra dentro de 180 días, la venta lleva comisión. Después queda libre.'],
-      ['Documentos privados', 'Tus escrituras y aprobaciones solo las ve nuestro equipo legal. El público ve el sello.'],
-      ['Sin letra pequeña', 'Contrato de un año, renovable, con 30 días de aviso para terminarlo.'],
+      ['Registro con fecha', 'Cada contacto queda registrado con fecha y origen. Lo ves en tu portal.'],
+      ['180 días', 'Si un contacto nuestro compra en ese plazo, lleva comisión. Después queda libre.'],
+      ['Documentos privados', 'Solo los ve nuestro equipo legal. El público ve el sello.'],
+      ['Sin letra pequeña', 'Contrato de un año, renovable, 30 días de aviso para salir.'],
     ],
     nextKicker: 'Siguiente paso',
     nextTitle: 'Agendemos una llamada de 20 minutos y revisamos tu proyecto',
@@ -147,10 +145,8 @@ const TX = {
     preparedFor: 'Prepared for',
     aboutKicker: 'Who we are',
     aboutTitle: 'We develop, verify and sell land on the coast',
-    about1:
-      'Grupo 3i is a real estate company with its own projects in the province of Santa Elena. We built our platform to sell land developments: a map of every lot, 360° tours, direct WhatsApp contact and a referral network paid on results.',
-    about2:
-      'Now we are opening the same platform to partner developers. We are not a listings portal: we select the projects, verify them legally and only earn when you sell.',
+    about1: 'A real estate company with its own projects in Santa Elena. We built this platform to sell our lots and now open it to partner developers.',
+    about2: 'We are not a listings portal: we select projects, verify them and only earn when you sell.',
     stats: [
       ['112', 'lots mapped on the platform'],
       ['360°', 'tours placed on the map'],
@@ -172,21 +168,21 @@ const TX = {
     stepsKicker: 'How it works',
     stepsTitle: 'From signing to selling, in five steps',
     steps: [
-      ['Onboarding', 'We sign, load your lot plan, photos and 360° tours. One-time fee of $300.'],
-      ['Verification', 'We review the deed, liens and municipal approval. Your project gets the seal.'],
-      ['Publishing', 'Listing in Spanish and English, interactive map and promotion through the referral network.'],
-      ['Leads', 'Every prospect is registered and reaches your WhatsApp with name, lot and source.'],
-      ['Sale', 'You report the sale and pay the commission as your buyer pays you.'],
+      ['Onboarding', 'We load plan, photos and 360°. One-time $300.'],
+      ['Verification', 'We review deed and permits. You get the seal.'],
+      ['Publishing', 'Bilingual listing, map and referral network.'],
+      ['Leads', 'They reach your WhatsApp with name and lot.'],
+      ['Sale', 'You pay commission as you collect.'],
     ],
     toolsKicker: 'Included tools',
     toolsTitle: 'Everything your project needs to sell',
     tools: [
-      ['Interactive lot map', 'Price, size, boundaries and live availability. Buyers pick their lot on their phone and share it on WhatsApp.'],
-      ['360° tours', 'Panoramas placed and oriented on the map. Explore by swiping or moving the phone.'],
-      ['Refer & Earn network', 'Members share your project with their own links and are paid only when it sells.'],
-      ['Truly bilingual', 'Listing, map, social previews and forms in Spanish and English for foreign buyers.'],
-      ['Live metrics', 'Visits, lots viewed, 360° opens, WhatsApp clicks, leads and sales, week by week.'],
-      ['CRM for your team', 'Stage pipeline, sales reps with automatic lead routing, tasks, WhatsApp templates, phone alerts and reports.'],
+      ['Interactive lot map', 'Live price and availability, on any phone.'],
+      ['360° tours', 'Buyers walk the land without traveling.'],
+      ['Refer & Earn network', 'Members share your project and are paid only on sales.'],
+      ['Spanish and English', 'Ready for foreign buyers.'],
+      ['Live metrics', 'Visits, lots viewed, leads and sales.'],
+      ['CRM for your team', 'Pipeline, sales reps, tasks and phone alerts.'],
     ],
     portalKicker: 'Your portal',
     portalTitle: 'Know what works, every week',
@@ -232,12 +228,12 @@ const TX = {
     priceKicker: 'Pricing',
     priceTitle: 'One plan. No monthly fees.',
     prices: [
-      ['$300', 'Onboarding per project', 'One-time: lot plan, photos, 360°, translation and legal verification.'],
-      ['8%', 'Platform sale', 'Leads that come through the listing, the map, referrers or our campaigns. Referral commission included.'],
-      ['2%', 'Sale to your own leads', 'Buyers you find yourself and register in your portal to use our tools.'],
+      ['$300', 'Onboarding per project', 'One-time. Includes setup, 360°, translation and verification.'],
+      ['8%', 'If the buyer comes through us', 'Listing, map, referrers or campaigns. Referrer included.'],
+      ['2%', 'If the buyer is yours', 'Register them in your portal and use every tool.'],
     ],
-    mapPlanTitle: 'Map plan for your website',
-    mapPlan: 'Your interactive lot map with your logo and color, inside your website or on your own domain, CRM included. 9/month up to 150 lots · 9/month above. Also available without listing on our showcase.',
+    mapPlanTitle: 'Optional · Map plan for your website',
+    mapPlan: 'Your lot map with your logo, inside your site or on your domain. CRM included. $49/month up to 150 lots · $99/month above.',
     priceNote: 'Plus applicable taxes. Homepage featuring available as an add-on.',
     exKicker: 'Example',
     exTitle: (p: string) => `A ${p} lot, financed`,
@@ -248,10 +244,10 @@ const TX = {
     rulesKicker: 'Clear rules',
     rulesTitle: 'Transparency on both sides',
     rules: [
-      ['Time-stamped leads', 'Every lead is registered before it reaches you, with date, number and source. You see it in your portal.'],
-      ['180-day attribution', 'If a platform lead buys within 180 days, the sale carries commission. After that it is free.'],
-      ['Private documents', 'Only our legal team sees your deeds and approvals. The public sees the seal.'],
-      ['No fine print', 'One-year agreement, renewable, with 30 days’ notice to terminate.'],
+      ['Time-stamped leads', 'Every lead is logged with date and source. You see it in your portal.'],
+      ['180 days', 'If one of our leads buys within that window, it carries commission. After that it is free.'],
+      ['Private documents', 'Only our legal team sees them. The public sees the seal.'],
+      ['No fine print', 'One-year agreement, renewable, 30 days’ notice to exit.'],
     ],
     nextKicker: 'Next step',
     nextTitle: 'Let’s book a 20-minute call and review your project',
@@ -272,13 +268,37 @@ const LOTS: [string, number, number][] = [
   ['C12', 44, 4],
 ];
 
-function Slide({ children, dark, bg }: { children: ReactNode; dark?: boolean; bg?: ReactNode }) {
+const TOOL_IMAGES = [
+  '/images/og/montanita-view-mapa.jpg',
+  '/images/propuesta-mv/vista-desde-lobby.jpg',
+  '/images/secciones/paso-comparte.jpg',
+  '/images/ibiza/galeria-01.jpg',
+  '/images/secciones/paso-gana.jpg',
+  '/images/secciones/paso-registro.jpg',
+];
+
+/** Lámina: isotipo de marca de agua en la esquina y pie con isotipo + número. */
+function Slide({ children, dark, bg, n }: { children: ReactNode; dark?: boolean; bg?: ReactNode; n?: number }) {
   return (
     <section className={`proposal-slide relative overflow-hidden ${dark ? 'bg-primary text-white' : 'bg-white text-primary'} print:h-[210mm]`}>
       {bg}
+      {!bg && (
+        <img
+          src={dark ? '/images/isotipo-light.svg' : '/images/isotipo.svg'}
+          alt=""
+          aria-hidden
+          className={`pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 ${dark ? 'opacity-[0.06]' : 'opacity-[0.04]'}`}
+        />
+      )}
       <div className="relative mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-center px-6 py-16 sm:px-12 print:min-h-0 print:h-full print:py-10">
         {children}
       </div>
+      {n && (
+        <div className={`absolute bottom-4 left-6 flex items-center gap-2 text-[11px] sm:left-12 ${dark ? 'text-white/50' : 'text-brand-gray'}`}>
+          <img src={dark ? '/images/isotipo-light.svg' : '/images/isotipo.svg'} alt="" className="h-4 w-4" />
+          Grupo 3i · {String(n).padStart(2, '0')}
+        </div>
+      )}
     </section>
   );
 }
@@ -359,6 +379,12 @@ export default function ProposalPage() {
           </>
         }
       >
+        <img
+          src="/images/isotipo-light.svg"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute right-6 top-1/2 hidden h-72 w-72 -translate-y-1/2 opacity-90 drop-shadow-2xl lg:block"
+        />
         <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="h-10 w-auto self-start" />
         <p className="mt-16 text-sm uppercase tracking-[0.3em] text-secondary">
           {tx.coverKicker} {year}
@@ -373,12 +399,19 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 2. Quiénes somos */}
-      <Slide>
-        <Kicker>{tx.aboutKicker}</Kicker>
-        <h2 className="max-w-3xl font-serif text-4xl font-bold">{tx.aboutTitle}</h2>
-        <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          <p className="text-lg leading-relaxed text-primary/80">{tx.about1}</p>
-          <p className="text-lg leading-relaxed text-primary/80">{tx.about2}</p>
+      <Slide n={2}>
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div>
+            <Kicker>{tx.aboutKicker}</Kicker>
+            <h2 className="font-serif text-4xl font-bold">{tx.aboutTitle}</h2>
+            <p className="mt-6 text-lg leading-relaxed text-primary/80">{tx.about1}</p>
+            <p className="mt-4 border-l-2 border-secondary pl-4 text-lg font-medium">{tx.about2}</p>
+          </div>
+          <div className="grid h-72 grid-cols-2 grid-rows-2 gap-2 sm:h-96">
+            <img src="/images/propuesta-mv/masterplan.jpg" alt="" className="row-span-2 h-full w-full rounded-2xl object-cover" />
+            <img src="/images/propuesta-mv/render-coral.jpg" alt="" className="h-full w-full rounded-2xl object-cover" />
+            <img src="/images/ibiza/portada.jpg" alt="" className="h-full w-full rounded-2xl object-cover" />
+          </div>
         </div>
         <div className="mt-12 grid grid-cols-3 gap-4 border-t border-black/10 pt-8 text-center">
           {tx.stats.map(([n, l]) => (
@@ -391,7 +424,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 3. Comparación */}
-      <Slide dark>
+      <Slide dark n={3}>
         <Kicker light>{tx.compareKicker}</Kicker>
         <h2 className="max-w-3xl font-serif text-4xl font-bold">{tx.compareTitle}</h2>
         <div className="mt-10 overflow-x-auto rounded-2xl bg-white text-primary">
@@ -417,7 +450,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 4. Cómo funciona */}
-      <Slide>
+      <Slide n={4}>
         <Kicker>{tx.stepsKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.stepsTitle}</h2>
         <ol className="mt-12 grid gap-4 sm:grid-cols-5">
@@ -436,17 +469,23 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 5. Herramientas */}
-      <Slide>
+      <Slide n={5}>
         <Kicker>{tx.toolsKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.toolsTitle}</h2>
-        <div className="mt-10 grid gap-5 sm:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {tx.tools.map(([t, d], i) => {
             const Icon = TOOL_ICONS[i];
             return (
-              <div key={t} className="rounded-2xl border border-black/10 p-5">
-                <Icon className="h-6 w-6 text-accent" strokeWidth={1.6} />
-                <p className="mt-3 font-semibold">{t}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-brand-gray">{d}</p>
+              <div key={t} className="relative h-48 overflow-hidden rounded-2xl print:h-40">
+                <img src={TOOL_IMAGES[i]} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+                  <span className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-primary">
+                    <Icon className="h-4 w-4" strokeWidth={2} />
+                  </span>
+                  <p className="font-semibold">{t}</p>
+                  <p className="text-sm text-white/80">{d}</p>
+                </div>
               </div>
             );
           })}
@@ -454,7 +493,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 6. Portal y métricas (ilustrativo) */}
-      <Slide>
+      <Slide n={6}>
         <Kicker>{tx.portalKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.portalTitle}</h2>
         <p className="mt-2 text-sm text-brand-gray">{tx.portalSub}</p>
@@ -497,7 +536,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 7. CRM */}
-      <Slide dark>
+      <Slide dark n={7}>
         <Kicker light>{tx.crmKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.crmTitle}</h2>
         <p className="mt-2 max-w-3xl text-white/70">{tx.crmSub}</p>
@@ -535,7 +574,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 8. Tarifas */}
-      <Slide dark>
+      <Slide dark n={8}>
         <Kicker light>{tx.priceKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.priceTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -555,7 +594,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 9. Ejemplo */}
-      <Slide>
+      <Slide n={9}>
         <Kicker>{tx.exKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.exTitle(money(price))}</h2>
         <p className="mt-3 max-w-3xl text-brand-gray">{tx.exSub}</p>
@@ -591,7 +630,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 10. Reglas */}
-      <Slide>
+      <Slide n={10}>
         <Kicker>{tx.rulesKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.rulesTitle}</h2>
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">
@@ -605,7 +644,16 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 11. Contacto */}
-      <Slide dark>
+      <Slide
+        dark
+        n={11}
+        bg={
+          <>
+            <img src="/images/secciones/hero-home.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/50" />
+          </>
+        }
+      >
         <Kicker light>{tx.nextKicker}</Kicker>
         <h2 className="max-w-3xl font-serif text-4xl font-bold">{tx.nextTitle}</h2>
         <div className="mt-10 flex flex-wrap gap-3 print:hidden">
