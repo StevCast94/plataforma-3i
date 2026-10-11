@@ -69,7 +69,7 @@ export function CrmReport({ projectId }: { projectId: string }) {
               ['Contactos nuevos', String(r.total)],
               ['Primera respuesta (mediana)', hours(r.firstResponseMedianHours)],
               ['Atendidos en 24 h', pct(r.contactedWithin24h, r.total)],
-              ['Sin atender', String(r.neverContacted)],
+              ['Sin atender en 24 h', String(r.neverContacted)],
             ].map(([l, v]) => (
               <div key={l} className="rounded-2xl bg-white p-4 shadow-sm">
                 <p className="text-xs text-brand-gray">{l}</p>

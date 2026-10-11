@@ -54,14 +54,20 @@ export async function projectMetrics(projectId: string, days: number) {
     lots.set(e.lotCode, r);
   }
 
+  // Por visitante único (su primer valor visto), para que sumen lo mismo que «Visitantes únicos».
   const count = (key: 'device' | 'lang') => {
+    const seen = new Map<string, string>();
+    for (const e of events) if (e.visitorId && !seen.has(e.visitorId)) seen.set(e.visitorId, e[key] || 'otro');
     const m = new Map<string, number>();
-    for (const e of events) if (e.type === 'view') m.set(e[key] || 'otro', (m.get(e[key] || 'otro') ?? 0) + 1);
+    for (const v of seen.values()) m.set(v, (m.get(v) ?? 0) + 1);
     return [...m.entries()].map(([k, n]) => ({ key: k, n })).sort((a, b) => b.n - a.n);
   };
 
+  const first = await prisma.projectEvent.findFirst({ where: { projectId }, orderBy: { createdAt: 'asc' }, select: { createdAt: true } });
+
   return {
     days,
+    trackingSince: first?.createdAt ?? null,
     visitors: new Set(events.map((e) => e.visitorId).filter(Boolean)).size,
     funnel,
     leads: {

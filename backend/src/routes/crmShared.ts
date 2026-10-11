@@ -162,6 +162,7 @@ crmRoutes.post('/crm/leads/:id/notes', async (req: DeveloperRequest, res) => {
     res.status(400).json({ error: 'Escribe la nota' });
     return;
   }
+  await prisma.projectLead.update({ where: { id: lead.id }, data: { lastContactAt: new Date() } });
   res.status(201).json(await logActivity(lead.id, 'note', 'developer', body.slice(0, 4000)));
 });
 
@@ -263,6 +264,10 @@ crmRoutes.delete('/crm/templates/:id', async (req: DeveloperRequest, res) => {
 // ============================================================
 
 const STAGE_ORDER = ['NEW', 'CONTACTED', 'VISIT', 'NEGOTIATION', 'WON'] as const;
+// Qué cuenta como «atender» a un contacto: lo mismo que fija lastContactAt
+// (WhatsApp, cambio de etapa o nota). Asignar o crear tareas no es atenderlo.
+const CONTACT_KINDS = new Set(['whatsapp', 'stage', 'note']);
+const DAY_MS = 86400_000;
 
 crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
   const days = Math.min(365, Math.max(7, Number(req.query.days) || 30));
@@ -270,7 +275,7 @@ crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
   const leads = await prisma.projectLead.findMany({
     where: { ...leadWhere(req), createdAt: { gte: since }, ...(req.query.projectId ? { projectId: String(req.query.projectId) } : {}) },
     select: {
-      id: true, status: true, lostReason: true, createdAt: true, assignedToId: true, source: true,
+      id: true, status: true, lostReason: true, createdAt: true, lastContactAt: true, assignedToId: true, source: true,
       assignedTo: { select: { name: true, email: true } },
       activities: { where: { actor: { not: 'system' } }, orderBy: { createdAt: 'asc' }, select: { kind: true, meta: true, createdAt: true } },
       sales: { where: { status: { in: ['DECLARED', 'CONFIRMED'] } }, select: { price: true } },
@@ -279,8 +284,9 @@ crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
 
   // Primera respuesta: desde que entra el contacto hasta la primera acción humana
   // (WhatsApp, cambio de etapa, nota o tarea).
+  const firstContact = (l: (typeof leads)[number]) => l.activities.find((a) => CONTACT_KINDS.has(a.kind));
   const firstHours = leads
-    .map((l) => (l.activities[0] ? (l.activities[0].createdAt.getTime() - l.createdAt.getTime()) / 3600_000 : null))
+    .map((l) => { const a = firstContact(l); return a ? (a.createdAt.getTime() - l.createdAt.getTime()) / 3600_000 : null; })
     .filter((h): h is number => h !== null);
   const median = (xs: number[]) => {
     if (!xs.length) return null;
@@ -309,7 +315,7 @@ crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
     const key = l.assignedToId ?? 'none';
     const r = bySeller.get(key) ?? { name: l.assignedTo ? (l.assignedTo.name ?? l.assignedTo.email) : 'Sin asignar', leads: 0, contacted24: 0, won: 0, amount: 0, hours: [] };
     r.leads++;
-    const first = l.activities[0];
+    const first = firstContact(l);
     if (first) {
       const h = (first.createdAt.getTime() - l.createdAt.getTime()) / 3600_000;
       r.hours.push(h);
@@ -325,7 +331,8 @@ crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
     total: leads.length,
     firstResponseMedianHours: median(firstHours),
     contactedWithin24h: firstHours.filter((h) => h <= 24).length,
-    neverContacted: leads.length - firstHours.length,
+    // Igual que la alerta del embudo: nuevo, sin contacto y con más de 24 h.
+    neverContacted: leads.filter((l) => l.status === 'NEW' && !l.lastContactAt && Date.now() - l.createdAt.getTime() > DAY_MS).length,
     funnel,
     lostReasons: [...lost.entries()].map(([reason, n]) => ({ reason, n })).sort((a, b) => b.n - a.n),
     sellers: [...bySeller.values()]

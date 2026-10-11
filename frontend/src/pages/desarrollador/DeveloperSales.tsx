@@ -128,7 +128,7 @@ export function DeveloperSales() {
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="font-serif text-xl font-bold text-primary">Ventas</h2>
-          <p className="text-xs text-brand-gray">Para declarar una venta, ve a Contactos y usa «Venta» en el cliente.</p>
+          <p className="text-xs text-brand-gray">Para declarar una venta, ve a CRM → Lista y usa «Venta» en la fila del cliente.</p>
         </div>
         <div className="rounded-xl bg-white px-4 py-2 text-right shadow-sm">
           <p className="text-xs text-brand-gray">Comisión pendiente de pago a Grupo 3i</p>

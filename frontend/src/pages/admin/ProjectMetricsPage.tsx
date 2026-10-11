@@ -17,6 +17,7 @@ interface Metrics {
   weekly: { week: string; views: number; leads: number; sales: number }[];
   topLots: { code: string; views: number; whatsapp: number }[];
   devices: { key: string; n: number }[];
+  trackingSince: string | null;
   langs: { key: string; n: number }[];
 }
 
@@ -190,7 +191,10 @@ export default function ProjectMetricsPage() {
               <HBars rows={m.langs.map((d) => ({ label: LANG[d.key.slice(0, 2)] ?? d.key, value: d.n }))} />
             </Card>
           </div>
-          <p className="text-xs text-brand-gray">Las métricas se registran desde el 10 de octubre de 2026. No incluyen robots ni vistas previas de enlaces.</p>
+          <p className="text-xs text-brand-gray">{m.trackingSince
+              ? `Las métricas de este proyecto se registran desde el ${new Date(m.trackingSince).toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' })}.`
+              : 'Aún no hay visitas registradas en este proyecto.'}{' '}
+            Dispositivo e idioma se cuentan por visitante único. No incluyen robots ni vistas previas de enlaces.</p>
         </div>
       )}
     </div>
