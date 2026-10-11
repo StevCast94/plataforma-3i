@@ -38,7 +38,13 @@ export default function EmbedMapPage({ slug: forcedSlug }: { slug?: string }) {
     const ro = new ResizeObserver(send);
     ro.observe(root.current);
     send();
-    return () => ro.disconnect();
+    // Respaldo: el mapa carga lotes y fotos después; si el navegador no dispara el
+    // observador (pestaña en segundo plano), se reenvía la altura unas veces más.
+    const timers = [500, 1500, 3000, 6000].map((ms) => setTimeout(send, ms));
+    return () => {
+      ro.disconnect();
+      timers.forEach(clearTimeout);
+    };
   }, [slug, info]);
 
   if (error) return <p className="p-8 text-center text-sm text-brand-gray">Este mapa no está disponible.</p>;
