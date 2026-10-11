@@ -21,6 +21,7 @@ const AboutPage = lazy(() => import('@/pages/landing/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
 const PublishProjectPage = lazy(() => import('@/pages/landing/PublishProjectPage'));
 const DeveloperManualPage = lazy(() => import('@/pages/landing/DeveloperManualPage'));
+const DeveloperGalleryPage = lazy(() => import('@/pages/landing/DeveloperGalleryPage'));
 const ProposalPage = lazy(() => import('@/pages/landing/ProposalPage'));
 const EmbedMapPage = lazy(() => import('@/pages/landing/EmbedMapPage'));
 const CustomDomainMap = lazy(() => import('@/pages/landing/CustomDomainMap'));
@@ -111,6 +112,7 @@ const publicRoutes = () => (
     <Route path="contacto" element={<ContactPage />} />
     <Route path="publica-tu-proyecto" element={<PublishProjectPage />} />
     <Route path="publica-tu-proyecto/manual" element={<DeveloperManualPage />} />
+    <Route path="publica-tu-proyecto/galeria" element={<DeveloperGalleryPage />} />
     <Route path="reglamento" element={<ReglamentoPage />} />
     <Route path="*" element={<NotFoundPage />} />
   </>

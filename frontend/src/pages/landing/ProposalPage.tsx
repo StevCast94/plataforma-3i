@@ -134,6 +134,7 @@ const TX = {
     waMsg: (para?: string) => `Hola, vi la propuesta comercial de Grupo 3i${para ? ` (${para})` : ''} y quiero publicar mi proyecto.`,
     apply: 'Solicitar el alta',
     manual: 'Manual de herramientas',
+    gallery: 'Galería del sistema',
   },
   en: {
     seo: 'Commercial proposal for developers',
@@ -255,6 +256,7 @@ const TX = {
     waMsg: (para?: string) => `Hi, I saw the Grupo 3i commercial proposal${para ? ` (${para})` : ''} and want to list my project.`,
     apply: 'Apply now',
     manual: 'Tools guide',
+    gallery: 'System gallery',
   },
 };
 
@@ -672,6 +674,9 @@ export default function ProposalPage() {
           </Link>
           <Link to="/publica-tu-proyecto/manual" className="rounded-lg border border-white/30 px-6 py-3 font-semibold text-white">
             {tx.manual}
+          </Link>
+          <Link to="/publica-tu-proyecto/galeria" className="rounded-lg border border-white/30 px-6 py-3 font-semibold text-white">
+            {tx.gallery}
           </Link>
         </div>
         <div className="mt-12 text-white/70">

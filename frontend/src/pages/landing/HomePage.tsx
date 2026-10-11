@@ -190,11 +190,12 @@ export default function HomePage() {
               {t('Mapa interactivo de lotes, recorridos 360°, CRM con vendedores y avisos al celular, verificación legal y una red de referidores que promociona tu proyecto.')}
             </p>
           </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { to: '/publica-tu-proyecto', title: t('Publica tu proyecto'), body: t('Beneficios, tarifas y solicitud de alta.') },
               { to: '/publica-tu-proyecto/propuesta', title: t('Propuesta comercial'), body: t('El modelo de pago por éxito, con ejemplos.') },
               { to: '/publica-tu-proyecto/manual', title: t('Manual de herramientas'), body: t('Todo lo que puedes hacer en la plataforma, paso a paso.') },
+              { to: '/publica-tu-proyecto/galeria', title: t('Galería del sistema'), body: t('Capturas reales de cada pantalla del portal.') },
             ].map((c) => (
               <Link key={c.to} to={c.to} className="group rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 transition hover:bg-white/10">
                 <p className="font-serif text-xl font-bold">{c.title}</p>

@@ -170,6 +170,8 @@ export const EN: Record<string, string> = {
   'Cuéntanos de tu proyecto': 'Tell us about your project',
   'Enviar solicitud': 'Send request',
   'Manual de herramientas': 'Tools guide',
+  'Galería del sistema': 'System gallery',
+  'Capturas reales de cada pantalla del portal.': 'Real screenshots of every portal screen.',
   'Para desarrolladoras inmobiliarias': 'For real estate developers',
   'Mapa interactivo de lotes, recorridos 360°, CRM con vendedores y avisos al celular, verificación legal y una red de referidores que promociona tu proyecto.': 'Interactive lot map, 360° tours, a CRM with sales team and phone alerts, legal verification and a referral network that promotes your project.',
   'Propuesta comercial': 'Commercial proposal',

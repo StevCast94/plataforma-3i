@@ -371,6 +371,7 @@ export default function DeveloperManualPage() {
               </li>
             ))}
           </ol>
+          <Link to="/publica-tu-proyecto/galeria" className="mt-5 inline-block rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-primary">Ver la galería del sistema →</Link>
           <div className="mt-6 space-y-2 text-sm">
             <Link to="/publica-tu-proyecto/propuesta" className="block text-accent hover:underline">Ver la propuesta comercial →</Link>
             <Link to="/publica-tu-proyecto#solicitud" className="block text-accent hover:underline">Solicitar el alta →</Link>
