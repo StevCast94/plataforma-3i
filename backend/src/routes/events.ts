@@ -17,7 +17,7 @@ export const EVENTS: Record<string, { title: string; place: string; endsAt: stri
   'halloween-cubata': {
     title: 'Halloween · Cubata',
     place: 'Lobby de Montañita View',
-    endsAt: '2026-10-11T12:00:00Z', // domingo 7:00 Ecuador
+    endsAt: '2026-10-18T12:00:00Z', // reabierto para pruebas hasta el domingo 18-oct 7:00 Ecuador
   },
 };
 export const CURRENT_EVENT = 'halloween-cubata';
