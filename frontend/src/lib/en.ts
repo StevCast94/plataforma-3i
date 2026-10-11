@@ -21,6 +21,7 @@ export const EN: Record<string, string> = {
   Navegación: 'Navigation',
   'Oficina Virtual': 'Virtual Office',
   'Refiere y gana': 'Refer & earn',
+  'Desarrolladoras': 'Developers',
   'Programa de referidos Grupo 3i': 'Grupo 3i referral programme',
   'Recomienda una inversión y gana hasta el 4%': 'Recommend an investment and earn up to 4%',
   'Si conoces a alguien que busca un solar en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.':
