@@ -59,6 +59,7 @@ model Project {
   embedBrand      Json? // { logo, color, name, whatsapp }
   customDomain    String?           @unique // mapa.sulotizadora.com → este mapa
   mapPaidUntil    DateTime? // plan mensual del mapa pagado hasta (se apaga solo al vencer)
+  mapRemindedAt   DateTime? // último aviso de vencimiento (uno por día como máximo)
   showcase        Boolean           @default(true) // false = cliente solo-mapa, no aparece en la vitrina
   events          ProjectEvent[]
   // Proyectos de terceros (vitrina curada). null = proyecto propio de Grupo 3i.

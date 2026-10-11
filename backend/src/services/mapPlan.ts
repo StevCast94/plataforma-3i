@@ -21,7 +21,7 @@ async function ownersOf(developerId: string | null) {
 export async function checkMapPlans(now = new Date()): Promise<{ reminded: number; disabled: number }> {
   const projects = await prisma.project.findMany({
     where: { embedEnabled: true, mapPaidUntil: { not: null } },
-    select: { id: true, name: true, developerId: true, mapPaidUntil: true },
+    select: { id: true, name: true, developerId: true, mapPaidUntil: true, mapRemindedAt: true },
   });
   let reminded = 0;
   let disabled = 0;
@@ -33,7 +33,8 @@ export async function checkMapPlans(now = new Date()): Promise<{ reminded: numbe
       await sendPushToDeveloperUsers(await ownersOf(p.developerId), { ...msg, link: '/desarrollador' });
       await sendPushToStaff({ ...msg, link: '/admin/proyectos' });
       disabled++;
-    } else if ([7, 3, 1].includes(daysLeft)) {
+    } else if ([7, 3, 1].includes(daysLeft) && (!p.mapRemindedAt || now.getTime() - p.mapRemindedAt.getTime() > 20 * 3600_000)) {
+      await prisma.project.update({ where: { id: p.id }, data: { mapRemindedAt: now } });
       const msg = {
         title: '🗺️ Tu mapa vence pronto',
         body: `El plan del mapa de ${p.name} vence en ${daysLeft} día${daysLeft === 1 ? '' : 's'}.`,
