@@ -67,6 +67,9 @@ export default function PublishProjectPage() {
         <Link to="/publica-tu-proyecto/propuesta" className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-black">
           {t('Ver la propuesta comercial')}
         </Link>
+        <Link to="/publica-tu-proyecto/manual" className="rounded-lg border border-black/15 px-6 py-3 text-sm font-semibold text-primary hover:bg-light">
+          {t('Manual de herramientas')}
+        </Link>
         <a href="#solicitud" className="rounded-lg border border-secondary px-6 py-3 text-sm font-semibold text-primary hover:bg-secondary">
           {t('Solicitar el alta')}
         </a>

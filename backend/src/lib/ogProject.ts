@@ -290,6 +290,30 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
       image: '/images/og/montanita-view-mapa.jpg',
     },
   },
+  '/publica-tu-proyecto/propuesta': {
+    es: {
+      title: 'Propuesta comercial para desarrolladoras · Grupo 3i',
+      description: 'Pagas solo cuando vendes: mapa interactivo de lotes, 360°, CRM con vendedores, verificación legal y red de referidores.',
+      image: '/images/og/montanita-view-mapa.jpg',
+    },
+    en: {
+      title: 'Commercial proposal for developers · Grupo 3i',
+      description: 'Pay only when you sell: interactive lot map, 360° tours, CRM with sales team, legal verification and a referral network.',
+      image: '/images/og/montanita-view-mapa.jpg',
+    },
+  },
+  '/publica-tu-proyecto/manual': {
+    es: {
+      title: 'Manual de herramientas para desarrolladoras · Grupo 3i',
+      description: 'Proyectos, mapa de lotes, 360°, CRM, vendedores, avisos, métricas, ventas y mapa para tu web, paso a paso.',
+      image: '/images/og/montanita-view-mapa.jpg',
+    },
+    en: {
+      title: 'Tools guide for developers · Grupo 3i',
+      description: 'Projects, lot map, 360°, CRM, sales team, alerts, metrics, sales and your website map, step by step.',
+      image: '/images/og/montanita-view-mapa.jpg',
+    },
+  },
   '/fiesta': {
     es: {
       title: 'Comparte y Grupo 3i te invita un trago 🍹',

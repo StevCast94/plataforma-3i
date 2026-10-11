@@ -180,6 +180,32 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* DESARROLLADORAS: vitrina, propuesta y manual */}
+      <section className="bg-primary text-white">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{t('Para desarrolladoras inmobiliarias')}</p>
+            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus lotes con la red de Grupo 3i. Pagas solo cuando vendes.')}</h2>
+            <p className="mt-4 text-white/70">
+              {t('Mapa interactivo de lotes, recorridos 360°, CRM con vendedores y avisos al celular, verificación legal y una red de referidores que promociona tu proyecto.')}
+            </p>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {[
+              { to: '/publica-tu-proyecto', title: t('Publica tu proyecto'), body: t('Beneficios, tarifas y solicitud de alta.') },
+              { to: '/publica-tu-proyecto/propuesta', title: t('Propuesta comercial'), body: t('El modelo de pago por éxito, con ejemplos.') },
+              { to: '/publica-tu-proyecto/manual', title: t('Manual de herramientas'), body: t('Todo lo que puedes hacer en la plataforma, paso a paso.') },
+            ].map((c) => (
+              <Link key={c.to} to={c.to} className="group rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 transition hover:bg-white/10">
+                <p className="font-serif text-xl font-bold">{c.title}</p>
+                <p className="mt-2 text-sm text-white/70">{c.body}</p>
+                <p className="mt-4 text-sm font-semibold text-secondary group-hover:underline">{t('Ver')} →</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CLUB 3i */}
       <CTASection
         title={t(club.title ?? 'Únete al Club 3i')}

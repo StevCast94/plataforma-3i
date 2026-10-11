@@ -43,7 +43,8 @@ const TX = {
       ['Lotización', 'Un aviso por inmueble', 'Mapa interactivo con todos los lotes'],
       ['Confianza del comprador', 'Sin revisión legal', 'Sello «Verificado por Grupo 3i»'],
       ['Comprador extranjero', 'Limitado', 'Todo en español e inglés'],
-      ['Seguimiento de clientes', 'Por tu cuenta', 'CRM incluido con embudo y tareas'],
+      ['Seguimiento de clientes', 'Por tu cuenta', 'CRM incluido con vendedores y avisos'],
+      ['Tu propia web', 'Enlace al aviso del portal', 'El mapa interactivo dentro de tu web, con tu marca'],
     ],
     stepsKicker: 'Cómo funciona',
     stepsTitle: 'De la firma a la venta, en cinco pasos',
@@ -62,7 +63,7 @@ const TX = {
       ['Red Refiere y gana', 'Socios que comparten tu proyecto con enlaces propios y cobran solo si se vende.'],
       ['Bilingüe de verdad', 'Ficha, mapa, vistas previas en redes y formularios en español e inglés para el comprador extranjero.'],
       ['Métricas en vivo', 'Visitas, solares vistos, aperturas del 360°, clics a WhatsApp, contactos y ventas, semana a semana.'],
-      ['CRM de ventas', 'Embudo por etapas, tareas con recordatorio, historial de cada cliente, plantillas de WhatsApp y agenda de visitas.'],
+      ['CRM con tu equipo', 'Embudo por etapas, vendedores con reparto automático, tareas, plantillas de WhatsApp, avisos al celular y reportes.'],
     ],
     portalKicker: 'Tu portal',
     portalTitle: 'Sabes qué funciona, cada semana',
@@ -98,13 +99,13 @@ const TX = {
       ['Sofía V.', 'Solar B11', 'Referido', 4],
     ] as [string, string, string, number][],
     crmFeatures: [
-      'Tareas con fecha y recordatorio: llamar, visita, enviar propuesta',
-      'Historial de cada cliente: notas, cambios de etapa y mensajes',
+      'Vendedores con reparto automático: cada uno ve solo sus clientes',
+      'Avisos al celular: contacto nuevo y tareas por vencer',
+      'Tareas, agenda de visitas e historial completo de cada cliente',
       'Plantillas de WhatsApp con el nombre, el proyecto y el solar',
-      'Agenda de visitas al terreno',
-      'Alerta de clientes sin atender en 24 horas',
+      'Reportes: primera respuesta, conversión, motivos de pérdida y ranking',
     ],
-    crmSoon: 'En construcción · disponible para los primeros aliados',
+    crmSoon: 'Disponible hoy · incluido sin costo adicional',
     priceKicker: 'Tarifas',
     priceTitle: 'Un solo plan. Sin mensualidades.',
     prices: [
@@ -112,6 +113,8 @@ const TX = {
       ['8 %', 'Venta por la plataforma', 'Contactos que llegan por la ficha, el mapa, los referidores o nuestras campañas. Incluye la comisión del referidor.'],
       ['2 %', 'Venta a tus contactos', 'Clientes que tú consigues y registras en tu portal para usar nuestras herramientas.'],
     ],
+    mapPlanTitle: 'Plan Mapa para tu web',
+    mapPlan: 'Tu mapa interactivo de lotes con tu logo y tu color, dentro de tu web o en tu propio dominio, con CRM incluido. 9/mes hasta 150 lotes · 9/mes con más. También disponible sin publicar en la vitrina.',
     priceNote: 'Valores más impuestos de ley. Destaque en portada disponible como servicio adicional.',
     exKicker: 'Ejemplo',
     exTitle: (p: string) => `Un lote de ${p}, financiado`,
@@ -132,6 +135,7 @@ const TX = {
     wa: 'Escríbenos por WhatsApp',
     waMsg: (para?: string) => `Hola, vi la propuesta comercial de Grupo 3i${para ? ` (${para})` : ''} y quiero publicar mi proyecto.`,
     apply: 'Solicitar el alta',
+    manual: 'Manual de herramientas',
   },
   en: {
     seo: 'Commercial proposal for developers',
@@ -162,7 +166,8 @@ const TX = {
       ['Land developments', 'One listing per property', 'Interactive map with every lot'],
       ['Buyer trust', 'No legal review', '“Verified by Grupo 3i” seal'],
       ['Foreign buyers', 'Limited', 'Everything in Spanish and English'],
-      ['Client follow-up', 'On your own', 'Built-in CRM with pipeline and tasks'],
+      ['Client follow-up', 'On your own', 'Built-in CRM with sales reps and alerts'],
+      ['Your own website', 'A link to the portal listing', 'The interactive map inside your site, with your brand'],
     ],
     stepsKicker: 'How it works',
     stepsTitle: 'From signing to selling, in five steps',
@@ -181,7 +186,7 @@ const TX = {
       ['Refer & Earn network', 'Members share your project with their own links and are paid only when it sells.'],
       ['Truly bilingual', 'Listing, map, social previews and forms in Spanish and English for foreign buyers.'],
       ['Live metrics', 'Visits, lots viewed, 360° opens, WhatsApp clicks, leads and sales, week by week.'],
-      ['Sales CRM', 'Stage pipeline, tasks with reminders, full client history, WhatsApp templates and a visit calendar.'],
+      ['CRM for your team', 'Stage pipeline, sales reps with automatic lead routing, tasks, WhatsApp templates, phone alerts and reports.'],
     ],
     portalKicker: 'Your portal',
     portalTitle: 'Know what works, every week',
@@ -217,13 +222,13 @@ const TX = {
       ['Sofía V.', 'Lot B11', 'Referral', 4],
     ] as [string, string, string, number][],
     crmFeatures: [
-      'Tasks with due dates and reminders: call, visit, send offer',
-      'Full client history: notes, stage changes and messages',
+      'Sales reps with automatic routing: each sees only their own leads',
+      'Phone alerts: new lead and tasks about to be due',
+      'Tasks, visit calendar and full client history',
       'WhatsApp templates with name, project and lot',
-      'Site visit calendar',
-      'Alert for leads not contacted within 24 hours',
+      'Reports: first response, conversion, loss reasons and leaderboard',
     ],
-    crmSoon: 'In development · available to our first partners',
+    crmSoon: 'Available today · included at no extra cost',
     priceKicker: 'Pricing',
     priceTitle: 'One plan. No monthly fees.',
     prices: [
@@ -231,6 +236,8 @@ const TX = {
       ['8%', 'Platform sale', 'Leads that come through the listing, the map, referrers or our campaigns. Referral commission included.'],
       ['2%', 'Sale to your own leads', 'Buyers you find yourself and register in your portal to use our tools.'],
     ],
+    mapPlanTitle: 'Map plan for your website',
+    mapPlan: 'Your interactive lot map with your logo and color, inside your website or on your own domain, CRM included. 9/month up to 150 lots · 9/month above. Also available without listing on our showcase.',
     priceNote: 'Plus applicable taxes. Homepage featuring available as an add-on.',
     exKicker: 'Example',
     exTitle: (p: string) => `A ${p} lot, financed`,
@@ -251,6 +258,7 @@ const TX = {
     wa: 'Message us on WhatsApp',
     waMsg: (para?: string) => `Hi, I saw the Grupo 3i commercial proposal${para ? ` (${para})` : ''} and want to list my project.`,
     apply: 'Apply now',
+    manual: 'Tools guide',
   },
 };
 
@@ -539,6 +547,10 @@ export default function ProposalPage() {
             </div>
           ))}
         </div>
+        <div className="mt-4 rounded-2xl bg-secondary/15 p-5 ring-1 ring-secondary/30">
+          <p className="font-semibold text-secondary">{tx.mapPlanTitle}</p>
+          <p className="mt-1 text-sm text-white/80">{tx.mapPlan}</p>
+        </div>
         <p className="mt-6 text-sm text-white/60">{tx.priceNote}</p>
       </Slide>
 
@@ -609,6 +621,9 @@ export default function ProposalPage() {
           )}
           <Link to="/publica-tu-proyecto#solicitud" className="rounded-lg bg-secondary px-6 py-3 font-semibold text-primary">
             {tx.apply}
+          </Link>
+          <Link to="/publica-tu-proyecto/manual" className="rounded-lg border border-white/30 px-6 py-3 font-semibold text-white">
+            {tx.manual}
           </Link>
         </div>
         <div className="mt-12 text-white/70">
