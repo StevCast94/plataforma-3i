@@ -584,13 +584,19 @@ function ownerOnly(req: DeveloperRequest, res: import('express').Response): bool
   return false;
 }
 
+/** Teléfono en formato libre; null si no tiene al menos 8 dígitos. */
+const cleanPhone = (v: unknown) => {
+  const s = String(v ?? '').trim();
+  return s.replace(/\D/g, '').length >= 8 ? s.slice(0, 30) : null;
+};
+
 // GET /api/developer/team — usuarios del desarrollador con su carga de contactos
 developerRoutes.get('/team', async (req: DeveloperRequest, res) => {
   const users = await prisma.developerUser.findMany({
     where: { developerId: req.developerId },
     orderBy: { createdAt: 'asc' },
     select: {
-      id: true, email: true, name: true, role: true, active: true, lastLoginAt: true,
+      id: true, email: true, name: true, role: true, active: true, lastLoginAt: true, whatsapp: true,
       _count: { select: { leads: { where: { status: { notIn: ['WON', 'LOST'] } } }, pushSubs: true } },
     },
   });
@@ -602,6 +608,7 @@ developerRoutes.post('/team', async (req: DeveloperRequest, res) => {
   if (!ownerOnly(req, res)) return;
   const email = String(req.body?.email ?? '').trim().toLowerCase();
   const name = String(req.body?.name ?? '').trim();
+  const whatsapp = cleanPhone(req.body?.whatsapp);
   if (!/^\S+@\S+\.\S+$/.test(email) || !name) {
     res.status(400).json({ error: 'Nombre y correo válidos son obligatorios' });
     return;
@@ -612,7 +619,7 @@ developerRoutes.post('/team', async (req: DeveloperRequest, res) => {
   }
   const password = crypto.randomBytes(9).toString('base64url');
   const user = await prisma.developerUser.create({
-    data: { developerId: req.developerId!, email, name: name.slice(0, 80), role: 'SELLER', password: await bcrypt.hash(password, 10) },
+    data: { developerId: req.developerId!, email, name: name.slice(0, 80), whatsapp, role: 'SELLER', password: await bcrypt.hash(password, 10) },
     select: { id: true, email: true },
   });
   res.status(201).json({ ...user, password });
@@ -621,6 +628,18 @@ developerRoutes.post('/team', async (req: DeveloperRequest, res) => {
 // PATCH /api/developer/team/:id {active?, role?}
 developerRoutes.patch('/team/:id', async (req: DeveloperRequest, res) => {
   if (!ownerOnly(req, res)) return;
+  // El WhatsApp de cada usuario (incluida la dueña) se puede cambiar siempre.
+  if (req.body?.whatsapp !== undefined) {
+    const r = await prisma.developerUser.updateMany({ where: { id: req.params.id, developerId: req.developerId }, data: { whatsapp: cleanPhone(req.body.whatsapp) } });
+    if (!r.count) {
+      res.status(404).json({ error: 'Usuario no encontrado' });
+      return;
+    }
+    if (req.body.active === undefined && req.body.role === undefined) {
+      res.json({ ok: true });
+      return;
+    }
+  }
   if (req.params.id === req.developerUserId) {
     res.status(400).json({ error: 'No puedes cambiar tu propio acceso' });
     return;

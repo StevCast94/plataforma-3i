@@ -935,6 +935,7 @@ model DeveloperUser {
   password    String // bcrypt
   active      Boolean                     @default(true)
   lastLoginAt DateTime?
+  whatsapp    String? // a donde se abre el chat de sus contactos asignados
   role        String                      @default("OWNER") // OWNER ve todo; SELLER solo sus contactos en el CRM
   pushSubs    DeveloperPushSubscription[]
   leads       ProjectLead[]
@@ -986,6 +987,7 @@ model ProjectLead {
   activities    LeadActivity[]
   tasks         LeadTask[]
   tags          String[]        @default([])
+  utm           Json? // { source, medium, campaign, term, content, gclid, fbclid, ttclid, landing }
   budget        Float?
   lastContactAt DateTime?
   lostReason    String?

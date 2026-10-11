@@ -11,6 +11,7 @@ import { ToastProvider } from '@/components/shared/Toast';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdminAuthProvider } from '@/context/AdminAuthContext';
 import { InstallAppBanner } from '@/components/shared/InstallAppBanner';
+import { Tracking } from '@/components/shared/Tracking';
 
 // Sitio público
 const HomePage = lazy(() => import('@/pages/landing/HomePage'));
@@ -127,6 +128,7 @@ export default function App() {
           <BrowserRouter>
             {/* Dentro del Router: el banner lee el idioma de la URL. */}
             <div className="print:hidden"><InstallAppBanner /></div>
+            <Tracking />
             {isCustomMapHost() ? (
               // Dominio propio de un mapa de lotes (Fase 3): solo el mapa.
               <Routes>

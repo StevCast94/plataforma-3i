@@ -145,6 +145,15 @@ export function LeadDrawer({
                   {LEAD_SOURCE_LABEL[lead.source].text}
                 </span>
                 {lead.lang === 'en' && <span className="ml-1 rounded-full bg-light px-2 py-0.5 text-xs">EN</span>}
+                {lead.utm && (
+                  <p className="mt-2 text-xs text-brand-gray">
+                    Campaña:{' '}
+                    <strong className="text-primary">
+                      {[lead.utm.source || (lead.utm.gclid ? 'google' : lead.utm.fbclid ? 'facebook' : lead.utm.ttclid ? 'tiktok' : ''), lead.utm.medium, lead.utm.campaign].filter(Boolean).join(' · ')}
+                    </strong>
+                    {lead.utm.content && <> · {lead.utm.content}</>}
+                  </p>
+                )}
               </div>
               <button onClick={onClose} aria-label="Cerrar" className="rounded-full p-1 hover:bg-light">
                 <X className="h-5 w-5" />

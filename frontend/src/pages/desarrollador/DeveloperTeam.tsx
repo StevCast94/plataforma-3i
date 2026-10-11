@@ -24,9 +24,20 @@ export function DeveloperTeam({ meId }: { meId: string }) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     try {
-      const r = await devApi.post<{ email: string; password: string }>('/team', { name: fd.get('name'), email: fd.get('email') });
+      const r = await devApi.post<{ email: string; password: string }>('/team', { name: fd.get('name'), email: fd.get('email'), whatsapp: fd.get('whatsapp') });
       setAdding(false);
       setSecret(r);
+      load();
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    }
+  }
+
+  async function editWhatsapp(u: TeamUser) {
+    const v = window.prompt(`WhatsApp de ${u.name ?? u.email} (con código de país, ej. +593 99 123 4567). Déjalo vacío para usar el de la empresa.`, u.whatsapp ?? '+593 ');
+    if (v === null) return;
+    try {
+      await devApi.patch(`/team/${u.id}`, { whatsapp: v });
       load();
     } catch (err) {
       toast((err as Error).message, 'error');
@@ -48,7 +59,7 @@ export function DeveloperTeam({ meId }: { meId: string }) {
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="font-serif text-xl font-bold text-primary">Equipo de ventas</h2>
-          <p className="text-xs text-brand-gray">Los contactos nuevos se reparten solos entre los vendedores activos. Cada vendedor ve solo el CRM y sus contactos.</p>
+          <p className="text-xs text-brand-gray">Los contactos nuevos se reparten solos entre los vendedores activos. Cada vendedor ve solo el CRM y sus contactos. Al dejar sus datos, el cliente abre el chat con el WhatsApp de su asesor (o el de la empresa si el asesor no tiene).</p>
         </div>
         <Button size="sm" onClick={() => setAdding(true)}>+ Vendedor</Button>
       </div>
@@ -62,6 +73,7 @@ export function DeveloperTeam({ meId }: { meId: string }) {
               <tr>
                 <th className="px-4 py-3">Usuario</th>
                 <th className="px-4 py-3">Rol</th>
+                <th className="px-4 py-3">WhatsApp</th>
                 <th className="px-4 py-3 text-right">Contactos abiertos</th>
                 <th className="px-4 py-3">Avisos</th>
                 <th className="px-4 py-3" />
@@ -77,6 +89,11 @@ export function DeveloperTeam({ meId }: { meId: string }) {
                     </p>
                   </td>
                   <td className="px-4 py-3">{u.role === 'OWNER' ? 'Dueño' : 'Vendedor'}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => editWhatsapp(u)} className={u.whatsapp ? 'text-primary hover:underline' : 'text-xs text-secondary hover:underline'}>
+                      {u.whatsapp ?? '+ Agregar'}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 text-right tabular-nums">{u._count.leads}</td>
                   <td className="px-4 py-3">{u._count.pushSubs ? '🔔 Activos' : <span className="text-xs text-brand-gray">Sin activar</span>}</td>
                   <td className="px-4 py-3 text-right">
@@ -97,6 +114,7 @@ export function DeveloperTeam({ meId }: { meId: string }) {
         <form onSubmit={add} className="space-y-3">
           <Input name="name" label="Nombre" required />
           <Input name="email" type="email" label="Correo" required />
+          <Input name="whatsapp" type="tel" label="WhatsApp (opcional)" placeholder="+593 99 123 4567" />
           <Button type="submit" className="w-full">Crear acceso</Button>
         </form>
       </Modal>

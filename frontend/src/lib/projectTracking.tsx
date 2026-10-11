@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect } from 'react';
 import { api } from '@/lib/api';
+import { adEvent, attribution } from '@/lib/ads';
 
 // Métricas y contactos por proyecto (vitrina de desarrolladores).
 // Los eventos van con sendBeacon para no frenar la navegación ni romperse si falla.
@@ -24,6 +25,10 @@ export type ProjectEventType = 'view' | 'lot_view' | 'pano_open' | 'wa_click' | 
 
 export function trackProject(slug: string, type: ProjectEventType, lotCode?: string) {
   if (!slug) return;
+  if (type === 'view') adEvent('view_project', { project: slug });
+  else if (type === 'lot_view') adEvent('view_lot', { project: slug, lot: lotCode });
+  else if (type === 'pano_open') adEvent('pano_open', { project: slug });
+  else if (type === 'wa_click') adEvent('wa_click', { project: slug, lot: lotCode });
   const body = JSON.stringify({ type, lotCode, visitorId: visitorId(), lang: document.documentElement.lang || undefined });
   const url = `${BASE}/api/projects/${encodeURIComponent(slug)}/events`;
   try {
@@ -53,11 +58,17 @@ export function submitProjectLead(
   slug: string,
   data: { name: string; phone: string; email?: string; message?: string; lotCode?: string; channel: 'whatsapp' | 'form'; embed?: boolean },
 ) {
-  return api.post<LeadResult>(`/projects/${encodeURIComponent(slug)}/leads`, {
-    ...data,
-    visitorId: visitorId(),
-    lang: document.documentElement.lang || undefined,
-  });
+  return api
+    .post<LeadResult>(`/projects/${encodeURIComponent(slug)}/leads`, {
+      ...data,
+      visitorId: visitorId(),
+      lang: document.documentElement.lang || undefined,
+      utm: data.embed ? undefined : attribution(),
+    })
+    .then((r) => {
+      if (!data.embed) adEvent('lead', { project: slug, lot: data.lotCode });
+      return r;
+    });
 }
 
 /**

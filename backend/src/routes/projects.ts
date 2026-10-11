@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
 import { refFromRequest } from './referral';
-import { registerLead, leadWhatsapp, phoneDigits } from '../services/projectLeads';
+import { registerLead, leadWhatsapp, leadChatWhatsapp, cleanUtm, phoneDigits } from '../services/projectLeads';
 import { qualityFor } from '../services/projectQuality';
 
 export const projectRoutes = Router();
@@ -231,7 +231,7 @@ projectRoutes.post('/:slug/events', async (req, res) => {
 // Registra el contacto y devuelve el WhatsApp al que se deriva.
 projectRoutes.post('/:slug/leads', async (req, res) => {
   try {
-    const { name, phone, email, message, lotCode, channel, visitorId, lang, embed } = req.body ?? {};
+    const { name, phone, email, message, lotCode, channel, visitorId, lang, embed, utm } = req.body ?? {};
     if (!name || !String(name).trim() || phoneDigits(String(phone ?? '')).length < 8) {
       res.status(400).json({ error: 'Nombre y WhatsApp son obligatorios' });
       return;
@@ -255,8 +255,9 @@ projectRoutes.post('/:slug/leads', async (req, res) => {
       ...(brand ? { source: 'DEVELOPER' as const } : {}),
       visitorId: visitorId ? String(visitorId).slice(0, 64) : null,
       lang: lang ? String(lang).slice(0, 5) : null,
+      utm: cleanUtm(utm),
     });
-    res.status(201).json({ ok: true, leadId: lead.id, whatsapp: brand?.whatsapp || (await leadWhatsapp(projectId)) });
+    res.status(201).json({ ok: true, leadId: lead.id, whatsapp: brand?.whatsapp || (await leadChatWhatsapp(lead.id, projectId)) });
   } catch (err) {
     console.error('POST /api/projects/:slug/leads', err);
     res.status(500).json({ error: 'No se pudo registrar el contacto' });

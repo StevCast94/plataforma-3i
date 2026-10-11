@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
 import { refFromRequest } from './referral';
-import { registerLead } from '../services/projectLeads';
+import { cleanUtm, registerLead } from '../services/projectLeads';
 
 export const contactRoutes = Router();
 
@@ -11,7 +11,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // POST /api/contact  (público) -> guardar formulario de contacto
 contactRoutes.post('/', async (req, res) => {
   try {
-    const { name, email, phone, message, source } = req.body ?? {};
+    const { name, email, phone, message, source, utm } = req.body ?? {};
     const referralCode = refFromRequest(req);
 
     if (!name || !email || !message) {
@@ -47,6 +47,7 @@ contactRoutes.post('/', async (req, res) => {
           message: String(message),
           channel: 'form',
           referralCode,
+          utm: cleanUtm(utm),
         }).catch((e) => console.error('registerLead (contact)', e));
       }
     }

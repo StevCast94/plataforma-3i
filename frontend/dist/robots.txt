@@ -1,2 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /desarrollador
+Disallow: /oficina/
+Disallow: /embed/
+Disallow: /fiesta
+
+Sitemap: https://grupo3i.com/sitemap.xml

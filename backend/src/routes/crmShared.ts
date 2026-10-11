@@ -138,7 +138,7 @@ crmRoutes.get('/crm/leads/:id', async (req: DeveloperRequest, res) => {
     where: { id: req.params.id, ...leadWhere(req) },
     select: {
       id: true, projectId: true, lotCode: true, name: true, phone: true, email: true, message: true, source: true,
-      channel: true, status: true, notes: true, tags: true, budget: true, createdAt: true, lastContactAt: true, lang: true,
+      channel: true, status: true, notes: true, tags: true, budget: true, createdAt: true, lastContactAt: true, lang: true, utm: true,
       assignedToId: true, assignedTo: { select: { name: true, email: true } },
       lostReason: true,
       project: { select: { name: true } },
@@ -275,7 +275,7 @@ crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
   const leads = await prisma.projectLead.findMany({
     where: { ...leadWhere(req), createdAt: { gte: since }, ...(req.query.projectId ? { projectId: String(req.query.projectId) } : {}) },
     select: {
-      id: true, status: true, lostReason: true, createdAt: true, lastContactAt: true, assignedToId: true, source: true,
+      id: true, status: true, lostReason: true, createdAt: true, lastContactAt: true, assignedToId: true, source: true, utm: true,
       assignedTo: { select: { name: true, email: true } },
       activities: { where: { actor: { not: 'system' } }, orderBy: { createdAt: 'asc' }, select: { kind: true, meta: true, createdAt: true } },
       sales: { where: { status: { in: ['DECLARED', 'CONFIRMED'] } }, select: { price: true } },
@@ -307,6 +307,18 @@ crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
   };
   const funnel = STAGE_ORDER.map((stage, i) => ({ stage, n: leads.filter((l) => reached(l) >= i).length }));
 
+  // Origen de campaña (utm_source, o la red deducida del identificador de clic).
+  const campaign = new Map<string, { leads: number; won: number }>();
+  for (const l of leads) {
+    const u = (l.utm ?? {}) as Record<string, string>;
+    const key = u.source || (u.gclid ? 'google' : u.fbclid ? 'facebook' : u.ttclid ? 'tiktok' : 'sin campaña');
+    const name = u.campaign ? `${key} · ${u.campaign}` : key;
+    const r = campaign.get(name) ?? { leads: 0, won: 0 };
+    r.leads++;
+    if (l.status === 'WON' || l.sales.length) r.won++;
+    campaign.set(name, r);
+  }
+
   const lost = new Map<string, number>();
   for (const l of leads) if (l.status === 'LOST') lost.set(l.lostReason || 'Sin motivo', (lost.get(l.lostReason || 'Sin motivo') ?? 0) + 1);
 
@@ -334,6 +346,7 @@ crmRoutes.get('/crm/report', async (req: DeveloperRequest, res) => {
     // Igual que la alerta del embudo: nuevo, sin contacto y con más de 24 h.
     neverContacted: leads.filter((l) => l.status === 'NEW' && !l.lastContactAt && Date.now() - l.createdAt.getTime() > DAY_MS).length,
     funnel,
+    campaigns: [...campaign.entries()].map(([name, r]) => ({ name, ...r })).sort((a, b) => b.leads - a.leads),
     lostReasons: [...lost.entries()].map(([reason, n]) => ({ reason, n })).sort((a, b) => b.n - a.n),
     sellers: [...bySeller.values()]
       .map(({ hours, ...r }) => ({ ...r, medianHours: median(hours) }))

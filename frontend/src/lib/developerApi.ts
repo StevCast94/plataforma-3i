@@ -219,6 +219,7 @@ export interface LeadDetail extends Omit<BoardLead, 'nextTask' | 'updatedAt'> {
   channel: string;
   notes: string | null;
   lang: string | null;
+  utm?: Record<string, string> | null;
   lostReason?: string | null;
   activities: { id: string; kind: string; body: string | null; actor: string; createdAt: string }[];
   tasks: CrmTask[];
@@ -245,6 +246,7 @@ export interface TeamUser {
   name: string | null;
   role: 'OWNER' | 'SELLER';
   active: boolean;
+  whatsapp: string | null;
   lastLoginAt: string | null;
   _count: { leads: number; pushSubs: number };
 }

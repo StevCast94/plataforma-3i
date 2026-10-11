@@ -230,6 +230,7 @@ const SECTIONS: Section[] = [
           items={[
             'En Equipo, toca «+ Vendedor» con su nombre y correo. Copia el mensaje con su acceso y envíaselo.',
             'Cada contacto nuevo va al vendedor activo con menos contactos abiertos.',
+            'Agrega el WhatsApp de cada vendedor (columna WhatsApp en Equipo): cuando un cliente deja sus datos, el chat se abre directo con su asesor asignado. Si el vendedor no tiene WhatsApp, se abre el de tu empresa.',
             'El vendedor solo ve el CRM con sus contactos y sus tareas. No ve proyectos, ventas ni comisiones.',
             'Como dueño ves todo, filtras el embudo por vendedor y reasignas desde la ficha del cliente.',
             'Si desactivas a un vendedor, sus contactos abiertos vuelven a ti.',

@@ -14,6 +14,7 @@ interface Report {
   neverContacted: number;
   funnel: { stage: LeadStatus; n: number }[];
   lostReasons: { reason: string; n: number }[];
+  campaigns: { name: string; leads: number; won: number }[];
   sellers: { name: string; leads: number; contacted24: number; won: number; amount: number; medianHours: number | null }[];
 }
 
@@ -93,6 +94,11 @@ export function CrmReport({ projectId }: { projectId: string }) {
               )}
             </section>
           </div>
+          <section className="rounded-2xl bg-white p-5 shadow-sm">
+            <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-primary">Origen de campaña</h3>
+            <p className="mb-4 text-xs text-brand-gray">De qué anuncio o red llegó cada contacto (enlaces con utm o clic en anuncios de Google, Meta y TikTok).</p>
+            <Bars rows={(r.campaigns ?? []).map((c) => ({ label: c.name, value: c.leads, note: c.won ? `${c.won} venta${c.won === 1 ? '' : 's'}` : undefined }))} />
+          </section>
           <section className="overflow-x-auto rounded-2xl bg-white p-5 shadow-sm">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">Desempeño por vendedor</h3>
             <table className="w-full text-left text-sm">

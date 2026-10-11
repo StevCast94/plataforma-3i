@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/Badge';
 import { api } from '@/lib/api';
 import { getReferralCode } from '@/hooks/useReferral';
 import { useAuth } from '@/hooks/useAuth';
+import { adEvent, attribution } from '@/lib/ads';
 import { useToast } from './Toast';
 
 interface ContactFormProps {
@@ -97,7 +98,9 @@ export function ContactForm({
         ...(isContact ? { source } : {}),
         ...(referralCode ? { referralCode } : {}),
         ...(extra ?? {}),
+        utm: attribution(),
       });
+      adEvent('lead', { project: typeof source === 'string' ? source : undefined });
       toast(t('¡Listo! Un asesor te contactará pronto.'), 'success');
       form.reset();
       setActivateEmail(res?.canActivate ? data.email : null);

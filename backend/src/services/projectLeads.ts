@@ -20,6 +20,18 @@ export function findActiveLead(projectId: string, digits: string) {
   });
 }
 
+/** Origen de campaña que manda el navegador (utm_*, gclid, fbclid, ttclid). Solo textos cortos conocidos. */
+const UTM_KEYS = ['source', 'medium', 'campaign', 'term', 'content', 'gclid', 'fbclid', 'ttclid', 'landing'] as const;
+export function cleanUtm(v: unknown): Record<string, string> | null {
+  if (!v || typeof v !== 'object') return null;
+  const out: Record<string, string> = {};
+  for (const k of UTM_KEYS) {
+    const x = (v as Record<string, unknown>)[k];
+    if (typeof x === 'string' && x.trim()) out[k] = x.trim().slice(0, k === 'landing' ? 300 : 150);
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 interface LeadInput {
   projectId: string;
   name: string;
@@ -31,6 +43,7 @@ interface LeadInput {
   referralCode?: string | null;
   visitorId?: string | null;
   lang?: string | null;
+  utm?: Record<string, string> | null;
   /** Solo DEVELOPER se fuerza; si no, se deduce del código de referido. */
   source?: LeadSource;
 }
@@ -67,12 +80,23 @@ export async function registerLead(input: LeadInput) {
       memberId,
       visitorId: input.visitorId || null,
       lang: input.lang || null,
+      ...(input.utm ? { utm: input.utm } : {}),
       source,
     },
   });
   // CRM: historial y tarea «Contactar» (proyectos propios y de desarrolladores).
   await onNewLead(lead.id, source).catch((e) => console.error('onNewLead', e));
   return { lead, created: true };
+}
+
+/**
+ * WhatsApp al que se abre el chat de un contacto: el del asesor asignado si lo
+ * tiene; si no, el de la desarrolladora; si no, el oficial de Grupo 3i.
+ */
+export async function leadChatWhatsapp(leadId: string, projectId: string): Promise<string | null> {
+  const l = await prisma.projectLead.findUnique({ where: { id: leadId }, select: { assignedTo: { select: { whatsapp: true, active: true } } } });
+  if (l?.assignedTo?.active && l.assignedTo.whatsapp) return l.assignedTo.whatsapp;
+  return leadWhatsapp(projectId);
 }
 
 /** WhatsApp al que se deriva el contacto: el del desarrollador o el oficial de Grupo 3i. */

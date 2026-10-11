@@ -45,6 +45,7 @@ import { metricsRoutes } from './routes/metrics';
 import { travelRoutes } from './routes/travel';
 import { adminTravelRoutes } from './routes/adminTravel';
 import { referralApiRoutes, referralRedirect } from './routes/referral';
+import { sitemapHandler, searchConsoleFile } from './lib/sitemap';
 import { lotOgHandler, pageOgHandler, PAGE_OG_PATHS, projectOgHandler } from './lib/ogProject';
 import { lotOgImage } from './lib/lotOgImage';
 
@@ -137,6 +138,13 @@ app.use('/api', (_req, res) => {
 
 // Enlaces de referido: /r/CÓDIGO?to=/tienda/slug → cookie + click + redirect al SPA
 app.get('/r/:code', referralRedirect);
+
+// SEO: mapa del sitio y verificación de Google Search Console.
+app.get('/sitemap.xml', sitemapHandler);
+app.get(/^\/google[a-z0-9]+\.html$/, (req, res, next) => {
+  req.params.file = req.path.slice(1);
+  searchConsoleFile(req, res, next);
+});
 
 // Servir el frontend estático (build de Vite commiteado en frontend/dist)
 const frontendPath = path.join(__dirname, '../../frontend/dist');
