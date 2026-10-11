@@ -383,7 +383,7 @@ export default function ProposalPage() {
           src="/images/isotipo-light.svg"
           alt=""
           aria-hidden
-          className="pointer-events-none absolute right-6 top-1/2 hidden h-72 w-72 -translate-y-1/2 opacity-90 drop-shadow-2xl lg:block"
+          className="pointer-events-none absolute right-12 top-1/2 hidden h-56 w-56 -translate-y-1/2 opacity-90 drop-shadow-2xl xl:block"
         />
         <img src="/images/logotipo-light.svg" alt="Grupo 3i" className="h-10 w-auto self-start" />
         <p className="mt-16 text-sm uppercase tracking-[0.3em] text-secondary">
