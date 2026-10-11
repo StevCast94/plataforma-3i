@@ -1,6 +1,6 @@
 import type { LeadStatus } from '@prisma/client';
 import { prisma } from '../prisma';
-import { sendPushToDeveloperUsers } from './push';
+import { sendPushToDeveloperUsers, sendPushToStaff } from './push';
 
 // CRM del desarrollador (inspirado en Kommo): historial, tareas y automatizaciones.
 // Automatizaciones:
@@ -105,8 +105,14 @@ export async function announceNewLead(leadId: string) {
     where: { id: leadId },
     select: { name: true, lotCode: true, project: { select: { name: true, developerId: true } } },
   });
-  const developerId = lead?.project.developerId;
-  if (!lead || !developerId) return;
+  if (!lead) return;
+  const developerId = lead.project.developerId;
+  const body = `${lead.name} · ${lead.project.name}${lead.lotCode ? ` · solar ${lead.lotCode}` : ''}. Escríbele pronto.`;
+  // Proyecto propio de Grupo 3i: avisa al equipo del admin.
+  if (!developerId) {
+    await sendPushToStaff({ title: '🔔 Nuevo contacto', body, link: '/admin/crm' });
+    return;
+  }
   const assigned = await autoAssign(leadId, developerId);
   const to = await recipientsFor(developerId, assigned);
   await sendPushToDeveloperUsers(to, {
@@ -126,19 +132,16 @@ export async function remindDueTasks(): Promise<number> {
       doneAt: null,
       notifiedAt: null,
       dueAt: { lte: new Date(Date.now() + 15 * 60_000) },
-      lead: { project: { developerId: { not: null } } },
     },
     take: 200,
     include: { lead: { select: { name: true, assignedToId: true, project: { select: { developerId: true } } } } },
   });
   for (const t of tasks) {
-    const to = await recipientsFor(t.lead.project.developerId!, t.lead.assignedToId);
     const late = t.dueAt.getTime() < Date.now() - 60_000;
-    await sendPushToDeveloperUsers(to, {
-      title: late ? '⏰ Tarea vencida' : '⏰ Tarea por vencer',
-      body: `${t.title} · ${t.lead.name}`,
-      link: '/desarrollador',
-    });
+    const msg = { title: late ? '⏰ Tarea vencida' : '⏰ Tarea por vencer', body: `${t.title} · ${t.lead.name}` };
+    const devId = t.lead.project.developerId;
+    if (devId) await sendPushToDeveloperUsers(await recipientsFor(devId, t.lead.assignedToId), { ...msg, link: '/desarrollador' });
+    else await sendPushToStaff({ ...msg, link: '/admin/crm' });
     await prisma.leadTask.update({ where: { id: t.id }, data: { notifiedAt: new Date() } });
   }
   return tasks.length;

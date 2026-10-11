@@ -188,7 +188,7 @@ function Editor({ project, onBack, onSaved }: { project?: DevProject; onBack: ()
 }
 
 /** Invita a activar los avisos al celular (contactos nuevos y tareas por vencer). */
-function PushBanner() {
+export function PushBanner({ scope = 'developer' }: { scope?: 'developer' | 'admin' }) {
   const [state, setState] = useState<'hidden' | 'ask' | 'denied'>('hidden');
   useEffect(() => {
     if (!pushSupported()) return;
@@ -205,7 +205,7 @@ function PushBanner() {
       {state === 'ask' && (
         <button
           onClick={async () => {
-            const r = await enablePush('developer');
+            const r = await enablePush(scope);
             setState(r === 'ok' ? 'hidden' : r === 'denied' ? 'denied' : 'ask');
           }}
           className="rounded-lg bg-primary px-4 py-2 font-semibold text-white"

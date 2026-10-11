@@ -3,6 +3,7 @@ import { adminApi } from '@/lib/adminApi';
 import { CrmClientContext, adminCrmClient } from '@/lib/crmClient';
 import type { DevProject } from '@/lib/developerApi';
 import { DeveloperCRM } from '@/pages/desarrollador/crm/DeveloperCRM';
+import { PushBanner } from '@/pages/desarrollador/DeveloperPortalPage';
 
 // CRM de Grupo 3i para sus proyectos propios (Montañita View, Ibiza): el mismo
 // CRM del portal de desarrolladores, con el cliente del admin.
@@ -21,6 +22,7 @@ export default function AdminCrmPage() {
         Contactos de los proyectos propios. Para que el botón de WhatsApp registre cada contacto aquí, activa «Registrar contactos en el CRM» en el
         proyecto.
       </p>
+      <PushBanner scope="admin" />
       <CrmClientContext.Provider value={adminCrmClient}>
         <DeveloperCRM projects={projects} ownLeadRate={0} isOwner />
       </CrmClientContext.Provider>

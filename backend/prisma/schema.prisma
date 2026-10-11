@@ -383,14 +383,15 @@ model Notification {
 // ============================================================
 
 model StaffUser {
-  id                String           @id @default(uuid())
-  username          String           @unique
+  id                String                  @id @default(uuid())
+  username          String                  @unique
   password          String // bcrypt hash
-  role              String           @default("admin") // superadmin, admin, content, advisor
-  active            Boolean          @default(true)
+  role              String                  @default("admin") // superadmin, admin, content, advisor
+  active            Boolean                 @default(true)
   auditLogs         AuditLog[]
   assignedInquiries ProductInquiry[]
-  createdAt         DateTime         @default(now())
+  pushSubs          StaffPushSubscription[]
+  createdAt         DateTime                @default(now())
 }
 
 model Purchase {
@@ -1131,4 +1132,17 @@ model DeveloperPushSubscription {
   createdAt       DateTime      @default(now())
 
   @@index([developerUserId])
+}
+
+// Avisos push del admin (equipo de Grupo 3i): CRM de proyectos propios.
+model StaffPushSubscription {
+  id        String    @id @default(uuid())
+  staffId   String
+  staff     StaffUser @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  endpoint  String    @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime  @default(now())
+
+  @@index([staffId])
 }

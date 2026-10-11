@@ -55,3 +55,23 @@ export async function sendPushToDeveloperUsers(
     }),
   );
 }
+
+/** Avisos al equipo de Grupo 3i que atiende el CRM (no a la gestora del Bosque ni a contenido). */
+export async function sendPushToStaff(payload: { title: string; body: string; link?: string | null }): Promise<void> {
+  if (!enabled) return;
+  const subs = await prisma.staffPushSubscription.findMany({
+    where: { staff: { active: true, role: { in: ['superadmin', 'admin', 'advisor'] } } },
+  });
+  const data = JSON.stringify({ title: payload.title, body: payload.body, url: payload.link || '/admin/crm' });
+  await Promise.all(
+    subs.map(async (s) => {
+      try {
+        await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, data, { TTL: 3600 });
+      } catch (err) {
+        const code = (err as { statusCode?: number }).statusCode;
+        if (code === 404 || code === 410) await prisma.staffPushSubscription.delete({ where: { id: s.id } }).catch(() => {});
+        else console.error('push staff', code ?? err);
+      }
+    }),
+  );
+}

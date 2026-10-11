@@ -6,6 +6,7 @@
 // ============================================================
 import { api } from '@/lib/api';
 import { devApi } from '@/lib/developerApi';
+import { adminApi } from '@/lib/adminApi';
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -73,14 +74,14 @@ export async function pushEnabled(): Promise<boolean> {
 }
 
 /** Pide permiso y suscribe este dispositivo. Devuelve el resultado para mostrarlo. */
-export async function enablePush(scope: 'member' | 'developer' = 'member'): Promise<'ok' | 'denied' | 'unsupported' | 'error'> {
+export async function enablePush(scope: 'member' | 'developer' | 'admin' = 'member'): Promise<'ok' | 'denied' | 'unsupported' | 'error'> {
   if (!pushSupported()) return 'unsupported';
   try {
     const perm = await Notification.requestPermission();
     if (perm !== 'granted') return 'denied';
     // Socios y portal de desarrolladores usan el mismo VAPID, cada uno con su sesión.
-    const client = scope === 'developer' ? devApi : api;
-    const base = scope === 'developer' ? '' : '/members';
+    const client = scope === 'developer' ? devApi : scope === 'admin' ? adminApi : api;
+    const base = scope === 'developer' ? '' : scope === 'admin' ? '/admin/crm' : '/members';
     const { key } = await client.get<{ key: string | null }>(`${base}/push/key`);
     if (!key) return 'error';
     const reg = await navigator.serviceWorker.ready;
