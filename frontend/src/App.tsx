@@ -45,6 +45,8 @@ const AdminProjectsPage = lazy(() => import('@/pages/admin/AdminProjectsPage'));
 const AdminLotsPage = lazy(() => import('@/pages/admin/AdminLotsPage'));
 const AdminPanoramasPage = lazy(() => import('@/pages/admin/AdminPanoramasPage'));
 const AdminFiestaPage = lazy(() => import('@/pages/admin/AdminFiestaPage'));
+const AdminDevelopersPage = lazy(() => import('@/pages/admin/AdminDevelopersPage'));
+const DeveloperPortalPage = lazy(() => import('@/pages/desarrollador/DeveloperPortalPage'));
 const AdminPropuestaPage = lazy(() => import('@/pages/admin/AdminPropuestaPage'));
 const AdminMembersPage = lazy(() => import('@/pages/admin/AdminMembersPage'));
 const AdminCommissionsPage = lazy(() => import('@/pages/admin/AdminCommissionsPage'));
@@ -129,6 +131,7 @@ export default function App() {
               {/* Sitio público con navbar/footer, en español (/) y en inglés (/en). */}
               {/* Activación de eventos: pantalla completa, sin menú */}
               <Route path="fiesta" element={<FiestaPage />} />
+              <Route path="desarrollador" element={<DeveloperPortalPage />} />
               <Route element={<Layout />}>{publicRoutes()}</Route>
               <Route path="en" element={<Layout />}>{publicRoutes()}</Route>
 
@@ -174,6 +177,7 @@ export default function App() {
                 <Route path="proyectos/:projectId/lotes" element={<AdminLotsPage />} />
                 <Route path="proyectos/:projectId/vistas-360" element={<AdminPanoramasPage />} />
                 <Route path="fiesta" element={<AdminFiestaPage />} />
+                <Route path="desarrolladores" element={<AdminDevelopersPage />} />
                 <Route path="propuesta" element={<AdminPropuestaPage />} />
                 <Route path="miembros" element={<AdminMembersPage />} />
                 <Route path="leads" element={<AdminLeadsPage />} />

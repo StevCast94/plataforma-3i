@@ -29,28 +29,36 @@ model ContactSubmission {
 }
 
 model Project {
-  id          String    @id @default(uuid())
-  slug        String    @unique
-  name        String
-  subtitle    String?
-  description String    @db.Text
-  location    String?
-  coverImage  String? // Cloudinary URL
-  images      String[] // Cloudinary URLs
-  features    Json? // { bedrooms, bathrooms, m2, amenities... }
-  priceFrom   Float?
-  priceLabel  String? // "Desde $12,000", "Fracciones desde $5,000"
-  active      Boolean   @default(true)
-  featured    Boolean   @default(false)
-  showBrochure Boolean  @default(false) // muestra el Brochure Digital premium en la ficha
-  mapLat      Float? // coordenadas para el mapa satelital del brochure
-  mapLng      Float?
+  id              String        @id @default(uuid())
+  slug            String        @unique
+  name            String
+  subtitle        String?
+  description     String        @db.Text
+  location        String?
+  coverImage      String? // Cloudinary URL
+  images          String[] // Cloudinary URLs
+  features        Json? // { bedrooms, bathrooms, m2, amenities... }
+  priceFrom       Float?
+  priceLabel      String? // "Desde $12,000", "Fracciones desde $5,000"
+  active          Boolean       @default(true)
+  featured        Boolean       @default(false)
+  showBrochure    Boolean       @default(false) // muestra el Brochure Digital premium en la ficha
+  mapLat          Float? // coordenadas para el mapa satelital del brochure
+  mapLng          Float?
   brochureContent Json? // textos/cifras del Brochure Digital (ver frontend/src/lib/brochureContent.ts)
-  products    Product[]
-  lots        Lot[]
-  panoramas   Panorama[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  products        Product[]
+  lots            Lot[]
+  panoramas       Panorama[]
+  // Proyectos de terceros (vitrina curada). null = proyecto propio de Grupo 3i.
+  developerId     String?
+  developer       Developer?    @relation(fields: [developerId], references: [id])
+  publishStatus   PublishStatus @default(PUBLISHED)
+  reviewNote      String? // observaciones de Grupo 3i al devolver un borrador
+  commissionRate  Float? // excepción por proyecto; si es null usa la del desarrollador
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([developerId])
 }
 
 // ============================================================
@@ -110,7 +118,7 @@ model Lot {
 
   // --- Presentación ---
   name        String? // "Cancha múltiple" (para amenidades)
-  description String? @db.Text
+  description String?  @db.Text
   images      String[]
 
   /// Ficha técnica pública calculada desde GEO 3i: lados, colindantes, perímetro, vértices UTM.
@@ -133,46 +141,46 @@ enum ProductType {
 }
 
 model Product {
-  id          String           @id @default(uuid())
-  slug        String           @unique
-  name        String
-  type        ProductType
-  price       Float
-  promoPrice  Float?
-  description String           @db.Text
-  features    Json? // ["Beneficio 1", "Beneficio 2", ...]
-  images      String[] // Cloudinary URLs
-  projectId   String?
-  project     Project?         @relation(fields: [projectId], references: [id])
-  active      Boolean          @default(true)
-  featured    Boolean          @default(false)
+  id                      String           @id @default(uuid())
+  slug                    String           @unique
+  name                    String
+  type                    ProductType
+  price                   Float
+  promoPrice              Float?
+  description             String           @db.Text
+  features                Json? // ["Beneficio 1", "Beneficio 2", ...]
+  images                  String[] // Cloudinary URLs
+  projectId               String?
+  project                 Project?         @relation(fields: [projectId], references: [id])
+  active                  Boolean          @default(true)
+  featured                Boolean          @default(false)
   // Comisión configurable por producto:
   //  - 'percentage' → usa las tasas globales del reglamento (4/2 Elite, 2/1 Premiere)
   //  - 'fixed'      → monto fijo nivel 1 por rango (N2 = 0)
-  commissionType     String  @default("percentage") // percentage | fixed
+  commissionType          String           @default("percentage") // percentage | fixed
   commissionFixedPremiere Float? // valor fijo N1 para referidor Premiere
   commissionFixedElite    Float? // valor fijo N1 para referidor Elite
-  inquiries   ProductInquiry[]
-  commissions Commission[]
-  purchases   Purchase[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  inquiries               ProductInquiry[]
+  commissions             Commission[]
+  purchases               Purchase[]
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
 }
 
 model ProductInquiry {
-  id           String   @id @default(uuid())
+  id           String     @id @default(uuid())
   productId    String
-  product      Product  @relation(fields: [productId], references: [id])
+  product      Product    @relation(fields: [productId], references: [id])
   name         String
   email        String
   phone        String?
-  message      String?  @db.Text
+  message      String?    @db.Text
   referralCode String? // 3IP-XXXXXX capturado del query param ?ref=
-  intent       String?  @default("info") // info | whatsapp | visit | meet | purchase
-  status       String   @default("pending") // pending, contacted, closed
+  intent       String?    @default("info") // info | whatsapp | visit | meet | purchase
+  status       String     @default("pending") // pending, contacted, closed
   assignedToId String? // FK StaffUser — asesor asignado (round-robin)
   assignedTo   StaffUser? @relation(fields: [assignedToId], references: [id])
-  createdAt    DateTime @default(now())
+  createdAt    DateTime   @default(now())
 
   @@index([assignedToId])
 }
@@ -210,37 +218,37 @@ enum CommissionStatus {
 }
 
 model ReferralMember {
-  id                    String           @id @default(uuid())
-  userId                String?          @unique // FK auth.users (Supabase) — nullable hasta Fase 3
+  id                    String             @id @default(uuid())
+  userId                String?            @unique // FK auth.users (Supabase) — nullable hasta Fase 3
   passwordHash          String? // null = pre-registro sin contraseña (lead aún no reclamado)
   fullName              String
-  email                 String           @unique
+  email                 String             @unique
   phone                 String?
-  docId                 String?          @unique // null hasta que reclama (crea contraseña)
-  docType               String           @default("cedula")
-  status                MemberStatus     @default(PREMIERE)
+  docId                 String?            @unique // null hasta que reclama (crea contraseña)
+  docType               String             @default("cedula")
+  status                MemberStatus       @default(PREMIERE)
   // Pre-registro: PENDING + claimed=false hasta que el lead crea su contraseña.
-  claimed               Boolean          @default(true)
+  claimed               Boolean            @default(true)
   referredByCode        String? // código de quien lo refirió (se atribuye al reclamar)
-  referralCode          String           @unique
+  referralCode          String             @unique
   // Slug legible para el enlace público (ej. "juan-perez-k3f9"): el código
   // 3IP-XXXXXX sigue siendo la clave interna/de atribución, pero nadie debería
   // ver ese código crudo en un link que comparte por WhatsApp.
-  referralSlug          String           @unique
+  referralSlug          String             @unique
   referrerId            String?
-  referrer              ReferralMember?  @relation("ReferralChain", fields: [referrerId], references: [id])
-  referrals             ReferralMember[] @relation("ReferralChain")
+  referrer              ReferralMember?    @relation("ReferralChain", fields: [referrerId], references: [id])
+  referrals             ReferralMember[]   @relation("ReferralChain")
   pushSubscriptions     PushSubscription[]
   eventGuests           EventGuest[]
-  walletBalance         Float            @default(0)
-  totalEarned           Float            @default(0)
-  totalReferrals        Int              @default(0)
+  walletBalance         Float              @default(0)
+  totalEarned           Float              @default(0)
+  totalReferrals        Int                @default(0)
   lastReferralAt        DateTime?
   inactiveSince         DateTime?
   eliteSince            DateTime?
   eliteBy               EliteBy?
-  referralsCountToElite Int              @default(0)
-  membershipAwarded     Boolean          @default(false)
+  referralsCountToElite Int                @default(0)
+  membershipAwarded     Boolean            @default(false)
   bankInfo              Json?
   payoutMethod          String?
   payoutEmail           String?
@@ -249,11 +257,11 @@ model ReferralMember {
   // kycStatus=APPROVED. kycStatus es la máquina de estados de la SOLICITUD:
   // permite distinguir "nunca envió nada" de "está en revisión" de "lo
   // rechazamos y debe reintentar", cosa que un booleano no puede expresar.
-  kycVerified           Boolean          @default(false)
+  kycVerified           Boolean            @default(false)
   kycVerifiedAt         DateTime?
-  kycStatus             KycStatus        @default(NOT_SUBMITTED)
+  kycStatus             KycStatus          @default(NOT_SUBMITTED)
   kycSubmittedAt        DateTime?
-  kycRejectReason       String?          @db.Text
+  kycRejectReason       String?            @db.Text
   // public_id de Cloudinary (recurso `type: authenticated`, NO accesible por
   // URL directa — ver backend/src/lib/kycStorage.ts). Documentos sensibles:
   // nunca se guarda ni se expone una URL pública de estos.
@@ -265,16 +273,16 @@ model ReferralMember {
   avatarUrl             String?
   location              String?
   interests             String[]
-  createdAt             DateTime         @default(now())
-  updatedAt             DateTime         @updatedAt
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
 
-  sentReferrals     Referral[]     @relation("Referrer")
-  receivedReferrals Referral[]     @relation("Referred")
+  sentReferrals     Referral[]         @relation("Referrer")
+  receivedReferrals Referral[]         @relation("Referred")
   commissions       Commission[]
   payouts           Payout[]
   links             ReferralLink[]
   notifications     Notification[]
-  purchases         Purchase[]     @relation("Purchases")
+  purchases         Purchase[]         @relation("Purchases")
   // Fase 5 — Motor de Viajes
   travelMemberships TravelMembership[]
   travelBookings    TravelBooking[]
@@ -364,14 +372,14 @@ model Notification {
 // ============================================================
 
 model StaffUser {
-  id        String     @id @default(uuid())
-  username  String     @unique
-  password  String // bcrypt hash
-  role      String     @default("admin") // superadmin, admin, content, advisor
-  active    Boolean    @default(true)
-  auditLogs AuditLog[]
+  id                String           @id @default(uuid())
+  username          String           @unique
+  password          String // bcrypt hash
+  role              String           @default("admin") // superadmin, admin, content, advisor
+  active            Boolean          @default(true)
+  auditLogs         AuditLog[]
   assignedInquiries ProductInquiry[]
-  createdAt DateTime   @default(now())
+  createdAt         DateTime         @default(now())
 }
 
 model Purchase {
@@ -408,16 +416,16 @@ model AuditLog {
 // socio abre WhatsApp con soporte y esto queda como registro visible para el
 // staff, que resetea la contraseña manualmente desde Admin > Soporte.
 model SupportRequest {
-  id        String   @id @default(uuid())
-  type      String   @default("password_reset") // password_reset | other
-  memberId  String? // FK ReferralMember si el email coincide con un socio
-  name      String?
-  email     String
-  phone     String?
-  message   String?  @db.Text
-  status    String   @default("pending") // pending | resolved
+  id         String    @id @default(uuid())
+  type       String    @default("password_reset") // password_reset | other
+  memberId   String? // FK ReferralMember si el email coincide con un socio
+  name       String?
+  email      String
+  phone      String?
+  message    String?   @db.Text
+  status     String    @default("pending") // pending | resolved
   resolvedAt DateTime?
-  createdAt DateTime @default(now())
+  createdAt  DateTime  @default(now())
 
   @@index([status])
 }
@@ -577,11 +585,11 @@ enum MembershipSource {
 // Acceso del socio al club de viajes. Otorgable por admin como premio.
 // hasTravelAccess() = existe una TravelMembership activa y no vencida.
 model TravelMembership {
-  id        String           @id @default(uuid())
-  memberId  String
-  member    ReferralMember   @relation(fields: [memberId], references: [id])
-  tier      String           @default("standard") // standard | premium (futuro)
-  source    MembershipSource @default(REWARD)
+  id         String           @id @default(uuid())
+  memberId   String
+  member     ReferralMember   @relation(fields: [memberId], references: [id])
+  tier       String           @default("standard") // standard | premium (futuro)
+  source     MembershipSource @default(REWARD)
   active     Boolean          @default(true)
   grantedBy  String? // staffId si fue otorgada manualmente
   purchaseId String? // Purchase que la originó (source=PURCHASE) — para revocar al cancelar
@@ -641,14 +649,14 @@ model TravelBooking {
   customerPhone String?
 
   // Dinero (centavos) — la transparencia interna que te protege.
-  netCents    Int // costo proveedor (o costo operativo si supplier="owned")
-  markupCents Int // tu margen bruto (recuperación de costo para socios)
-  taxesCents  Int @default(0)
-  totalCents  Int // lo que paga el cliente
+  netCents         Int // costo proveedor (o costo operativo si supplier="owned")
+  markupCents      Int // tu margen bruto (recuperación de costo para socios)
+  taxesCents       Int    @default(0)
+  totalCents       Int // lo que paga el cliente
   // Futuro (fraccionada): si supplier="owned", parte del ingreso se reparte al
   // propietario fraccionado que liberó su tiempo de uso/goce.
-  ownerPayoutCents Int @default(0)
-  currency    String @default("USD")
+  ownerPayoutCents Int    @default(0)
+  currency         String @default("USD")
 
   // Atribución a la red de referidos (reusa Fase 2).
   referralCode String?
@@ -856,4 +864,56 @@ model EventDrink {
   createdAt  DateTime   @default(now())
 
   @@unique([guestId, channel])
+}
+
+// ============================================================
+// DESARROLLADORES (vitrina curada de proyectos de terceros, Fase 1)
+// Pago por éxito: commissionRate sobre ventas atribuidas a la plataforma,
+// ownLeadRate sobre ventas a contactos que trajo el propio desarrollador.
+// ============================================================
+
+enum PublishStatus {
+  DRAFT // el desarrollador lo está armando
+  REVIEW // enviado a revisión de Grupo 3i
+  PUBLISHED // visible al público
+  PAUSED // retirado temporalmente
+}
+
+enum DeveloperStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+model Developer {
+  id             String          @id @default(uuid())
+  name           String // nombre comercial
+  legalName      String?
+  ruc            String?
+  contactName    String?
+  email          String?
+  whatsapp       String? // a donde se envían los contactos
+  status         DeveloperStatus @default(PENDING)
+  commissionRate Float           @default(0.08)
+  ownLeadRate    Float           @default(0.02)
+  onboardingFee  Float           @default(300)
+  onboardingPaid Boolean         @default(false)
+  featuredUntil  DateTime?
+  notes          String?         @db.Text
+  users          DeveloperUser[]
+  projects       Project[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model DeveloperUser {
+  id          String    @id @default(uuid())
+  developerId String
+  developer   Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  email       String    @unique
+  name        String?
+  password    String // bcrypt
+  active      Boolean   @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
 }

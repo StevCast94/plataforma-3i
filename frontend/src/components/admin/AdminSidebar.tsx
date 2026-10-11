@@ -6,6 +6,7 @@ const items = [
   { to: '/admin', label: 'Dashboard', icon: '📊', end: true },
   { to: '/admin/productos', label: 'Productos', icon: '📦' },
   { to: '/admin/proyectos', label: 'Proyectos', icon: '🏢' },
+  { to: '/admin/desarrolladores', label: 'Desarrolladores', icon: '🤝' },
   { to: '/admin/propuesta', label: 'Propuesta MV', icon: '📑' },
   { to: '/admin/miembros', label: 'Miembros', icon: '👥' },
   { to: '/admin/leads', label: 'Leads', icon: '📨' },

@@ -10,7 +10,8 @@ projectRoutes.get('/', async (req, res) => {
   try {
     const all = req.query.all === 'true';
     const projects = await prisma.project.findMany({
-      where: all ? undefined : { active: true },
+      // Borradores y proyectos en revisión de desarrolladores nunca salen al público.
+      where: all ? { publishStatus: { in: ['PUBLISHED', 'PAUSED'] } } : { active: true, publishStatus: 'PUBLISHED' },
       orderBy: [{ featured: 'desc' }, { createdAt: 'asc' }],
     });
     res.json(projects);
@@ -27,7 +28,7 @@ projectRoutes.get('/:slug', async (req, res) => {
       where: { slug: req.params.slug },
       include: { products: { where: { active: true } } },
     });
-    if (!project) {
+    if (!project || project.publishStatus === 'DRAFT' || project.publishStatus === 'REVIEW') {
       res.status(404).json({ error: 'Proyecto no encontrado' });
       return;
     }

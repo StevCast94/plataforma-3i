@@ -12,6 +12,8 @@ interface ImageUploadProps {
   single?: boolean;
   /** Máximo de imágenes (galería). */
   max?: number;
+  /** Endpoint de subida alternativo (p. ej. el portal de desarrolladores). */
+  upload?: (dataUri: string) => Promise<{ url: string }>;
 }
 
 function fileToDataUri(file: Blob): Promise<string> {
@@ -29,7 +31,7 @@ function fileToDataUri(file: Blob): Promise<string> {
  * de /api/admin/seed-images (auth de staff) — antes de esto, el único lugar
  * donde un socio podía "agregar una imagen" era pegando una URL a mano.
  */
-export function ImageUpload({ value, onChange, single, max }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, single, max, upload }: ImageUploadProps) {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
 
@@ -45,7 +47,9 @@ export function ImageUpload({ value, onChange, single, max }: ImageUploadProps) 
       for (const file of Array.from(files)) {
         if (max && value.length + uploaded.length >= max) break;
         const dataUri = await fileToDataUri(await resizeForUpload(file));
-        const res = await api.post<{ url: string }>('/members/upload-image', { dataUri });
+        const res = upload
+          ? await upload(dataUri)
+          : await api.post<{ url: string }>('/members/upload-image', { dataUri });
         uploaded.push(res.url);
       }
       onChange(single ? uploaded.slice(-1) : [...value, ...uploaded]);
