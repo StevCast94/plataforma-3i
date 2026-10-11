@@ -5,6 +5,7 @@
 // de la oficina.
 // ============================================================
 import { api } from '@/lib/api';
+import { devApi } from '@/lib/developerApi';
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -72,18 +73,21 @@ export async function pushEnabled(): Promise<boolean> {
 }
 
 /** Pide permiso y suscribe este dispositivo. Devuelve el resultado para mostrarlo. */
-export async function enablePush(): Promise<'ok' | 'denied' | 'unsupported' | 'error'> {
+export async function enablePush(scope: 'member' | 'developer' = 'member'): Promise<'ok' | 'denied' | 'unsupported' | 'error'> {
   if (!pushSupported()) return 'unsupported';
   try {
     const perm = await Notification.requestPermission();
     if (perm !== 'granted') return 'denied';
-    const { key } = await api.get<{ key: string | null }>('/members/push/key');
+    // Socios y portal de desarrolladores usan el mismo VAPID, cada uno con su sesión.
+    const client = scope === 'developer' ? devApi : api;
+    const base = scope === 'developer' ? '' : '/members';
+    const { key } = await client.get<{ key: string | null }>(`${base}/push/key`);
     if (!key) return 'error';
     const reg = await navigator.serviceWorker.ready;
     const sub =
       (await reg.pushManager.getSubscription()) ??
       (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(key) as BufferSource }));
-    await api.post('/members/push/subscribe', sub.toJSON());
+    await client.post(`${base}/push/subscribe`, sub.toJSON());
     return 'ok';
   } catch {
     return 'error';

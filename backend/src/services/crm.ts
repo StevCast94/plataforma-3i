@@ -1,5 +1,6 @@
 import type { LeadStatus } from '@prisma/client';
 import { prisma } from '../prisma';
+import { sendPushToDeveloperUsers } from './push';
 
 // CRM del desarrollador (inspirado en Kommo): historial, tareas y automatizaciones.
 // Automatizaciones:
@@ -29,6 +30,7 @@ export async function onNewLead(leadId: string, source: string) {
   await prisma.leadTask.create({
     data: { leadId, type: 'CALL', title: 'Contactar al cliente', dueAt: new Date(Date.now() + 24 * 3600_000), auto: true },
   });
+  await announceNewLead(leadId).catch((e) => console.error('announceNewLead', e));
 }
 
 /** Cambio de etapa: historial + automatizaciones. */
@@ -68,3 +70,76 @@ export const DEFAULT_TEMPLATES = [
   { name: 'Seguimiento', body: 'Hola {nombre}, ¿pudiste revisar la información de {proyecto}? Quedo atento a cualquier duda.' },
   { name: 'First contact (EN)', body: 'Hi {nombre}, this is the {proyecto} team. We saw your interest in lot {solar}. May I send you prices and payment options?' },
 ];
+
+// ============================================================
+// Equipo de ventas y avisos push
+// ============================================================
+
+/** Quién recibe avisos de un contacto: su vendedor, o los dueños si no tiene. */
+async function recipientsFor(developerId: string, assignedToId: string | null) {
+  if (assignedToId) return [assignedToId];
+  const owners = await prisma.developerUser.findMany({ where: { developerId, role: 'OWNER', active: true }, select: { id: true } });
+  return owners.map((o) => o.id);
+}
+
+/**
+ * Reparto automático (round-robin por carga): el vendedor activo con menos
+ * contactos abiertos. Sin vendedores, el contacto queda sin asignar (lo ven los dueños).
+ */
+export async function autoAssign(leadId: string, developerId: string): Promise<string | null> {
+  const sellers = await prisma.developerUser.findMany({
+    where: { developerId, role: 'SELLER', active: true },
+    select: { id: true, _count: { select: { leads: { where: { status: { notIn: ['WON', 'LOST'] } } } } } },
+  });
+  if (!sellers.length) return null;
+  sellers.sort((a, b) => a._count.leads - b._count.leads);
+  const id = sellers[0].id;
+  await prisma.projectLead.update({ where: { id: leadId }, data: { assignedToId: id } });
+  await logActivity(leadId, 'assign', 'system', 'Asignado automáticamente');
+  return id;
+}
+
+/** Contacto nuevo → asignación + aviso al celular. */
+export async function announceNewLead(leadId: string) {
+  const lead = await prisma.projectLead.findUnique({
+    where: { id: leadId },
+    select: { name: true, lotCode: true, project: { select: { name: true, developerId: true } } },
+  });
+  const developerId = lead?.project.developerId;
+  if (!lead || !developerId) return;
+  const assigned = await autoAssign(leadId, developerId);
+  const to = await recipientsFor(developerId, assigned);
+  await sendPushToDeveloperUsers(to, {
+    title: '🔔 Nuevo contacto',
+    body: `${lead.name} · ${lead.project.name}${lead.lotCode ? ` · solar ${lead.lotCode}` : ''}. Escríbele pronto.`,
+    link: '/desarrollador',
+  });
+}
+
+/**
+ * Tareas que vencen en los próximos 15 minutos (o ya vencidas) sin aviso:
+ * push a su responsable. Lo llama el scheduler cada 5 minutos.
+ */
+export async function remindDueTasks(): Promise<number> {
+  const tasks = await prisma.leadTask.findMany({
+    where: {
+      doneAt: null,
+      notifiedAt: null,
+      dueAt: { lte: new Date(Date.now() + 15 * 60_000) },
+      lead: { project: { developerId: { not: null } } },
+    },
+    take: 200,
+    include: { lead: { select: { name: true, assignedToId: true, project: { select: { developerId: true } } } } },
+  });
+  for (const t of tasks) {
+    const to = await recipientsFor(t.lead.project.developerId!, t.lead.assignedToId);
+    const late = t.dueAt.getTime() < Date.now() - 60_000;
+    await sendPushToDeveloperUsers(to, {
+      title: late ? '⏰ Tarea vencida' : '⏰ Tarea por vencer',
+      body: `${t.title} · ${t.lead.name}`,
+      link: '/desarrollador',
+    });
+    await prisma.leadTask.update({ where: { id: t.id }, data: { notifiedAt: new Date() } });
+  }
+  return tasks.length;
+}

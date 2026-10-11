@@ -8,6 +8,8 @@ import { useToast } from '@/components/shared/Toast';
 import { cld } from '@/lib/cloudinary';
 import { DeveloperCRM } from './crm/DeveloperCRM';
 import { DeveloperSales } from './DeveloperSales';
+import { DeveloperTeam } from './DeveloperTeam';
+import { enablePush, pushEnabled, pushSupported } from '@/lib/pwa';
 import { DeveloperQuality } from './DeveloperQuality';
 import {
   devApi, getDevToken, setDevToken, PUBLISH_LABEL, type DevMe, type DevProject,
@@ -185,12 +187,42 @@ function Editor({ project, onBack, onSaved }: { project?: DevProject; onBack: ()
   );
 }
 
+/** Invita a activar los avisos al celular (contactos nuevos y tareas por vencer). */
+function PushBanner() {
+  const [state, setState] = useState<'hidden' | 'ask' | 'denied'>('hidden');
+  useEffect(() => {
+    if (!pushSupported()) return;
+    pushEnabled().then((on) => !on && setState(Notification.permission === 'denied' ? 'denied' : 'ask'));
+  }, []);
+  if (state === 'hidden') return null;
+  return (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-secondary/15 p-4 text-sm">
+      <span>
+        🔔 {state === 'denied'
+          ? 'Los avisos están bloqueados en este navegador. Actívalos en la configuración del sitio.'
+          : 'Activa los avisos para enterarte al instante de cada contacto nuevo y de tus tareas por vencer.'}
+      </span>
+      {state === 'ask' && (
+        <button
+          onClick={async () => {
+            const r = await enablePush('developer');
+            setState(r === 'ok' ? 'hidden' : r === 'denied' ? 'denied' : 'ask');
+          }}
+          className="rounded-lg bg-primary px-4 py-2 font-semibold text-white"
+        >
+          Activar avisos
+        </button>
+      )}
+    </div>
+  );
+}
+
 function Portal({ onLogout }: { onLogout: () => void }) {
   const { toast } = useToast();
   const [me, setMe] = useState<DevMe | null>(null);
   const [projects, setProjects] = useState<DevProject[] | null>(null);
   const [editing, setEditing] = useState<DevProject | 'new' | null>(null);
-  const [tab, setTab] = useState<'projects' | 'leads' | 'sales'>('projects');
+  const [tab, setTab] = useState<'projects' | 'leads' | 'sales' | 'team'>('projects');
 
   const load = useCallback(async () => {
     try {
@@ -232,9 +264,23 @@ function Portal({ onLogout }: { onLogout: () => void }) {
   }
 
   const dev = me?.developer;
+  const seller = me?.role === 'SELLER';
+  // El vendedor solo usa el CRM.
+  const activeTab = seller ? 'leads' : tab;
+  const tabs = seller
+    ? ([['leads', 'CRM']] as const)
+    : ([['projects', 'Proyectos'], ['leads', 'CRM'], ['sales', 'Ventas'], ['team', 'Equipo']] as const);
   return (
     <Shell onLogout={onLogout}>
-      {dev && (
+      <PushBanner />
+      {seller && me && (
+        <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-widest text-brand-gray">{dev?.name}</p>
+          <h1 className="font-serif text-2xl font-bold text-primary">Hola, {me.name ?? me.email}</h1>
+          <p className="mt-1 text-sm text-brand-gray">Aquí ves los contactos que te asignan y tus tareas del día.</p>
+        </div>
+      )}
+      {dev && !seller && (
         <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
           <p className="text-xs uppercase tracking-widest text-brand-gray">Tu empresa</p>
           <h1 className="font-serif text-2xl font-bold text-primary">{dev.name}</h1>
@@ -261,12 +307,12 @@ function Portal({ onLogout }: { onLogout: () => void }) {
       )}
 
       <div className="mb-5 flex gap-1 rounded-xl bg-white p-1 shadow-sm">
-        {([['projects', 'Proyectos'], ['leads', 'CRM'], ['sales', 'Ventas']] as const).map(([k, label]) => (
+        {tabs.map(([k, label]) => (
           <button
             key={k}
             onClick={() => setTab(k)}
             className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium ${
-              tab === k ? 'bg-primary text-white' : 'text-brand-gray hover:text-primary'
+              activeTab === k ? 'bg-primary text-white' : 'text-brand-gray hover:text-primary'
             }`}
           >
             {label}
@@ -274,10 +320,12 @@ function Portal({ onLogout }: { onLogout: () => void }) {
         ))}
       </div>
 
-      {tab === 'sales' ? (
+      {activeTab === 'sales' ? (
         <DeveloperSales />
-      ) : tab === 'leads' && dev ? (
-        <DeveloperCRM projects={projects ?? []} ownLeadRate={dev.ownLeadRate} />
+      ) : activeTab === 'team' && me ? (
+        <DeveloperTeam meId={me.id} />
+      ) : activeTab === 'leads' && dev && me ? (
+        <DeveloperCRM projects={projects ?? []} ownLeadRate={dev.ownLeadRate} isOwner={!seller} />
       ) : (
       <>
       <div className="mb-3 flex items-center justify-between">

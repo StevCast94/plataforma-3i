@@ -1,6 +1,7 @@
 import { liquidateDueCommissions } from './liquidationService';
 import { processInactivity } from './inactivityService';
 import { backfillLaunchElite, closeLaunchPromo } from './launchPromo';
+import { remindDueTasks } from './crm';
 
 // ============================================================
 // SCHEDULER EN PROCESO (cron diario)
@@ -32,5 +33,9 @@ async function runDailyJobs(): Promise<void> {
 export function startScheduler(): void {
   setTimeout(runDailyJobs, BOOT_DELAY_MS);
   setInterval(runDailyJobs, DAY_MS);
+  // CRM: avisos de tareas por vencer, cada 5 minutos.
+  setInterval(() => {
+    remindDueTasks().catch((err) => console.error('[scheduler] remindDueTasks', err));
+  }, 5 * 60_000);
   console.log('[scheduler] jobs diarios programados');
 }

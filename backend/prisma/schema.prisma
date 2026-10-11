@@ -918,15 +918,18 @@ model Developer {
 }
 
 model DeveloperUser {
-  id          String    @id @default(uuid())
+  id          String                      @id @default(uuid())
   developerId String
-  developer   Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
-  email       String    @unique
+  developer   Developer                   @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  email       String                      @unique
   name        String?
   password    String // bcrypt
-  active      Boolean   @default(true)
+  active      Boolean                     @default(true)
   lastLoginAt DateTime?
-  createdAt   DateTime  @default(now())
+  role        String                      @default("OWNER") // OWNER ve todo; SELLER solo sus contactos en el CRM
+  pushSubs    DeveloperPushSubscription[]
+  leads       ProjectLead[]
+  createdAt   DateTime                    @default(now())
 }
 
 // ============================================================
@@ -976,6 +979,8 @@ model ProjectLead {
   tags          String[]        @default([])
   budget        Float?
   lastContactAt DateTime?
+  assignedToId  String? // vendedor del desarrollador (DeveloperUser)
+  assignedTo    DeveloperUser?  @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
 
   @@index([projectId, phoneDigits])
   @@index([projectId, createdAt])
@@ -1087,15 +1092,16 @@ model LeadActivity {
 }
 
 model LeadTask {
-  id        String      @id @default(uuid())
-  leadId    String
-  lead      ProjectLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  type      String // CALL | VISIT | FOLLOW_UP | OFFER | OTHER
-  title     String
-  dueAt     DateTime
-  doneAt    DateTime?
-  auto      Boolean     @default(false) // creada por una automatización
-  createdAt DateTime    @default(now())
+  id         String      @id @default(uuid())
+  leadId     String
+  lead       ProjectLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type       String // CALL | VISIT | FOLLOW_UP | OFFER | OTHER
+  title      String
+  dueAt      DateTime
+  doneAt     DateTime?
+  auto       Boolean     @default(false) // creada por una automatización
+  notifiedAt DateTime? // aviso push de vencimiento ya enviado
+  createdAt  DateTime    @default(now())
 
   @@index([leadId])
   @@index([dueAt, doneAt])
@@ -1110,4 +1116,17 @@ model WhatsAppTemplate {
   createdAt   DateTime  @default(now())
 
   @@index([developerId])
+}
+
+// Avisos push del portal de desarrolladores (mismo VAPID que el de socios).
+model DeveloperPushSubscription {
+  id              String        @id @default(uuid())
+  developerUserId String
+  developerUser   DeveloperUser @relation(fields: [developerUserId], references: [id], onDelete: Cascade)
+  endpoint        String        @unique
+  p256dh          String
+  auth            String
+  createdAt       DateTime      @default(now())
+
+  @@index([developerUserId])
 }

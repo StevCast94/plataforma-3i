@@ -6,7 +6,7 @@ import { useToast } from '@/components/shared/Toast';
 import { formatCurrency } from '@/lib/utils';
 import {
   devApi, isStale, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, PIPELINE, TASK_TYPE_LABEL,
-  type AgendaTask, type BoardLead, type DevProject, type LeadStatus, type WaTemplate,
+  type AgendaTask, type BoardLead, type DevProject, type LeadStatus, type TeamUser, type WaTemplate,
 } from '@/lib/developerApi';
 import { DeveloperLeads } from '../DeveloperLeads';
 import { LeadDrawer } from './LeadDrawer';
@@ -76,6 +76,11 @@ function Board({ leads, onOpen, onMove }: { leads: BoardLead[]; onOpen: (id: str
                     <div className="mt-1.5 flex flex-wrap items-center gap-1">
                       <span className={`rounded-full px-1.5 py-0.5 text-[10px] ${LEAD_SOURCE_LABEL[l.source].cls}`}>{LEAD_SOURCE_LABEL[l.source].text}</span>
                       {l.tags.slice(0, 2).map((t) => <span key={t} className="rounded-full bg-secondary/25 px-1.5 py-0.5 text-[10px]">{t}</span>)}
+                      {l.assignedTo && (
+                        <span title={l.assignedTo.name ?? l.assignedTo.email} className="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                          {(l.assignedTo.name ?? l.assignedTo.email).split(/s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase()}
+                        </span>
+                      )}
                     </div>
                     {stale ? (
                       <p className="mt-1.5 text-[11px] font-semibold text-red-600">⚠ Sin atender más de 24 h</p>
@@ -205,7 +210,7 @@ function Templates({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
-export function DeveloperCRM({ projects, ownLeadRate }: { projects: DevProject[]; ownLeadRate: number }) {
+export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: DevProject[]; ownLeadRate: number; isOwner: boolean }) {
   const { toast } = useToast();
   const [view, setView] = useState<View>('board');
   const [projectId, setProjectId] = useState('');
@@ -213,6 +218,12 @@ export function DeveloperCRM({ projects, ownLeadRate }: { projects: DevProject[]
   const [openId, setOpenId] = useState<string | null>(null);
   const [tplOpen, setTplOpen] = useState(false);
   const [tick, setTick] = useState(0);
+  const [team, setTeam] = useState<TeamUser[]>([]);
+  const [seller, setSeller] = useState('');
+
+  useEffect(() => {
+    if (isOwner) devApi.get<TeamUser[]>('/team').then(setTeam).catch(() => {});
+  }, [isOwner]);
 
   const load = useCallback(() => {
     devApi
@@ -237,14 +248,20 @@ export function DeveloperCRM({ projects, ownLeadRate }: { projects: DevProject[]
     }
   }
 
+  // El dueño puede ver el embudo de un vendedor o los contactos sin asignar.
+  const shown = useMemo(
+    () => (leads ?? []).filter((l) => !seller || (seller === 'none' ? !l.assignedToId : l.assignedToId === seller)),
+    [leads, seller],
+  );
+
   const stats = useMemo(() => {
-    const list = leads ?? [];
+    const list = shown;
     return {
       stale: list.filter(isStale).length,
       overdue: list.filter((l) => l.nextTask && new Date(l.nextTask.dueAt).getTime() < Date.now()).length,
       open: list.filter((l) => l.status !== 'WON' && l.status !== 'LOST').length,
     };
-  }, [leads]);
+  }, [shown]);
 
   return (
     <div>
@@ -261,6 +278,13 @@ export function DeveloperCRM({ projects, ownLeadRate }: { projects: DevProject[]
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
+          {view === 'board' && isOwner && team.some((u) => u.role === 'SELLER') && (
+            <select value={seller} onChange={(e) => setSeller(e.target.value)} className="rounded-lg border border-black/15 bg-white px-3 py-1.5 text-sm">
+              <option value="">Todo el equipo</option>
+              <option value="none">Sin asignar</option>
+              {team.filter((u) => u.active).map((u) => <option key={u.id} value={u.id}>{u.name ?? u.email}</option>)}
+            </select>
+          )}
           {view === 'board' && (
             <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="rounded-lg border border-black/15 bg-white px-3 py-1.5 text-sm">
               <option value="">Todos los proyectos</option>
@@ -288,13 +312,13 @@ export function DeveloperCRM({ projects, ownLeadRate }: { projects: DevProject[]
         ) : (
           <>
             <p className="mb-2 text-xs text-brand-gray">{stats.open} en curso · arrastra una tarjeta para cambiarla de etapa, tócala para abrir su ficha.</p>
-            <Board leads={leads} onOpen={setOpenId} onMove={move} />
+            <Board leads={shown} onOpen={setOpenId} onMove={move} />
           </>
         ))}
       {view === 'agenda' && <Agenda key={tick} onOpen={setOpenId} />}
-      {view === 'list' && <DeveloperLeads key={tick} projects={projects} ownLeadRate={ownLeadRate} />}
+      {view === 'list' && <DeveloperLeads key={tick} projects={projects} ownLeadRate={ownLeadRate} canSell={isOwner} />}
 
-      <LeadDrawer leadId={openId} onClose={() => setOpenId(null)} onChanged={load} />
+      <LeadDrawer leadId={openId} onClose={() => setOpenId(null)} onChanged={load} team={isOwner ? team : null} />
       <Templates open={tplOpen} onClose={() => setTplOpen(false)} />
     </div>
   );

@@ -87,6 +87,7 @@ export interface DevMe {
   id: string;
   email: string;
   name: string | null;
+  role: 'OWNER' | 'SELLER';
   developer: {
     id: string;
     name: string;
@@ -203,6 +204,8 @@ export interface BoardLead {
   lastContactAt: string | null;
   project: { name: string };
   nextTask: CrmTask | null;
+  assignedToId: string | null;
+  assignedTo: { name: string | null; email: string } | null;
 }
 
 export interface LeadDetail extends Omit<BoardLead, 'nextTask' | 'updatedAt'> {
@@ -229,3 +232,13 @@ export interface AgendaTask extends CrmTask {
 /** Un contacto nuevo sin atender en 24 h (regla de la propuesta comercial). */
 export const isStale = (l: { status: LeadStatus; createdAt: string; lastContactAt: string | null }) =>
   l.status === 'NEW' && !l.lastContactAt && Date.now() - new Date(l.createdAt).getTime() > 24 * 3600_000;
+
+export interface TeamUser {
+  id: string;
+  email: string;
+  name: string | null;
+  role: 'OWNER' | 'SELLER';
+  active: boolean;
+  lastLoginAt: string | null;
+  _count: { leads: number; pushSubs: number };
+}

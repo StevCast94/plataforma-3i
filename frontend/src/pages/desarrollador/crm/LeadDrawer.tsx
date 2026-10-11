@@ -4,14 +4,14 @@ import { useToast } from '@/components/shared/Toast';
 import { formatCurrency } from '@/lib/utils';
 import {
   devApi, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, PIPELINE, TASK_TYPE_LABEL,
-  type LeadDetail, type LeadStatus, type TaskType, type WaTemplate,
+  type LeadDetail, type LeadStatus, type TaskType, type TeamUser, type WaTemplate,
 } from '@/lib/developerApi';
 
 // Ficha del cliente (panel lateral): etapa, etiquetas, presupuesto, WhatsApp con
 // plantilla, tareas y el historial completo. Cada acción queda en el historial.
 
 const ACT_ICON: Record<string, string> = {
-  created: '✨', note: '📝', stage: '➡️', whatsapp: '💬', task: '📌', task_done: '✅', sale: '💰',
+  created: '✨', note: '📝', stage: '➡️', whatsapp: '💬', task: '📌', task_done: '✅', sale: '💰', assign: '👤',
 };
 
 const when = (d: string) =>
@@ -22,7 +22,9 @@ function localInput(d: Date) {
   return new Date(d.getTime() - off).toISOString().slice(0, 16);
 }
 
-export function LeadDrawer({ leadId, onClose, onChanged }: { leadId: string | null; onClose: () => void; onChanged: () => void }) {
+export function LeadDrawer({
+  leadId, onClose, onChanged, team,
+}: { leadId: string | null; onClose: () => void; onChanged: () => void; team: TeamUser[] | null }) {
   const { toast } = useToast();
   const [lead, setLead] = useState<LeadDetail | null>(null);
   const [templates, setTemplates] = useState<WaTemplate[]>([]);
@@ -47,6 +49,17 @@ export function LeadDrawer({ leadId, onClose, onChanged }: { leadId: string | nu
     if (!lead) return;
     try {
       await devApi.patch(`/leads/${lead.id}`, body);
+      load();
+      onChanged();
+    } catch (e) {
+      toast((e as Error).message, 'error');
+    }
+  }
+
+  async function assign(userId: string) {
+    if (!lead) return;
+    try {
+      await devApi.post(`/crm/leads/${lead.id}/assign`, { userId: userId || null });
       load();
       onChanged();
     } catch (e) {
@@ -137,6 +150,19 @@ export function LeadDrawer({ leadId, onClose, onChanged }: { leadId: string | nu
             </div>
 
             {lead.message && <p className="rounded-lg bg-light p-3 text-sm text-primary/80">«{lead.message}»</p>}
+
+            {/* Vendedor */}
+            {team && team.length > 1 ? (
+              <label className="flex items-center gap-2 text-sm">
+                <span className="text-brand-gray">Asignado a</span>
+                <select value={lead.assignedToId ?? ''} onChange={(e) => assign(e.target.value)} className="flex-1 rounded-md border border-black/15 px-2 py-1.5">
+                  <option value="">Sin asignar</option>
+                  {team.filter((u) => u.active).map((u) => <option key={u.id} value={u.id}>{u.name ?? u.email}</option>)}
+                </select>
+              </label>
+            ) : lead.assignedTo ? (
+              <p className="text-sm text-brand-gray">Asignado a {lead.assignedTo.name ?? lead.assignedTo.email}</p>
+            ) : null}
 
             {/* Etapa */}
             <div className="flex flex-wrap gap-1">

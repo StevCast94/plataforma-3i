@@ -15,7 +15,7 @@ import {
 
 const waLink = (phone: string) => `https://wa.me/${phone.replace(/\D/g, '')}`;
 
-export function DeveloperLeads({ projects, ownLeadRate }: { projects: DevProject[]; ownLeadRate: number }) {
+export function DeveloperLeads({ projects, ownLeadRate, canSell = true }: { projects: DevProject[]; ownLeadRate: number; canSell?: boolean }) {
   const { toast } = useToast();
   const [leads, setLeads] = useState<DevLead[] | null>(null);
   const [filter, setFilter] = useState('');
@@ -116,7 +116,7 @@ export function DeveloperLeads({ projects, ownLeadRate }: { projects: DevProject
                       >
                         {Object.entries(LEAD_STATUS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                       </select>
-                      {l.status !== 'WON' && (
+                      {canSell && l.status !== 'WON' && (
                         <button onClick={() => setSelling(l)} className="ml-2 text-xs font-semibold text-secondary hover:underline">
                           Venta
                         </button>

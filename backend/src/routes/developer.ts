@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../prisma';
-import { requireDeveloper, signDeveloperToken, type DeveloperRequest } from '../middleware/authDeveloper';
+import crypto from 'crypto';
+import { leadWhere, requireDeveloper, signDeveloperToken, type DeveloperRequest } from '../middleware/authDeveloper';
+import { sendPushToDeveloperUsers, vapidPublicKey } from '../services/push';
 import { slugify } from '../lib/slug';
 import { registerLead, phoneDigits } from '../services/projectLeads';
 import { feeRateForLead, installmentFee, saleTotals } from '../services/developerSales';
@@ -97,7 +99,7 @@ developerRoutes.get('/me', async (req: DeveloperRequest, res) => {
   const user = await prisma.developerUser.findUnique({
     where: { id: req.developerUserId },
     select: {
-      id: true, email: true, name: true,
+      id: true, email: true, name: true, role: true,
       developer: {
         select: {
           id: true, name: true, status: true, whatsapp: true, commissionRate: true,
@@ -263,7 +265,7 @@ const LEAD_STATUSES = ['NEW', 'CONTACTED', 'VISIT', 'NEGOTIATION', 'WON', 'LOST'
 developerRoutes.get('/leads', async (req: DeveloperRequest, res) => {
   const leads = await prisma.projectLead.findMany({
     where: {
-      project: { developerId: req.developerId },
+      ...leadWhere(req),
       ...(req.query.projectId ? { projectId: String(req.query.projectId) } : {}),
     },
     orderBy: { createdAt: 'desc' },
@@ -304,13 +306,14 @@ developerRoutes.post('/projects/:id/leads', async (req: DeveloperRequest, res) =
     return;
   }
   if (notes) await prisma.projectLead.update({ where: { id: lead.id }, data: { notes: String(notes) } });
+  if (req.developerRole === 'SELLER') await prisma.projectLead.update({ where: { id: lead.id }, data: { assignedToId: req.developerUserId } });
   res.status(201).json(lead);
 });
 
 // PATCH /api/developer/leads/:leadId {status?, notes?}
 developerRoutes.patch('/leads/:leadId', async (req: DeveloperRequest, res) => {
   const lead = await prisma.projectLead.findFirst({
-    where: { id: req.params.leadId, project: { developerId: req.developerId } },
+    where: { id: req.params.leadId, ...leadWhere(req) },
   });
   if (!lead) {
     res.status(404).json({ error: 'Contacto no encontrado' });
@@ -653,7 +656,7 @@ developerRoutes.post('/projects/:id/documents', async (req: DeveloperRequest, re
 
 function ownLead(req: DeveloperRequest, id: string) {
   return prisma.projectLead.findFirst({
-    where: { id, project: { developerId: req.developerId } },
+    where: { id, ...leadWhere(req) },
     include: { project: { select: { name: true } } },
   });
 }
@@ -662,14 +665,15 @@ function ownLead(req: DeveloperRequest, id: string) {
 developerRoutes.get('/crm/board', async (req: DeveloperRequest, res) => {
   const leads = await prisma.projectLead.findMany({
     where: {
-      project: { developerId: req.developerId },
+      ...leadWhere(req),
       ...(req.query.projectId ? { projectId: String(req.query.projectId) } : {}),
     },
     orderBy: { updatedAt: 'desc' },
     take: 1000,
     select: {
       id: true, projectId: true, lotCode: true, name: true, phone: true, source: true, status: true, tags: true,
-      budget: true, createdAt: true, updatedAt: true, lastContactAt: true,
+      budget: true, createdAt: true, updatedAt: true, lastContactAt: true, assignedToId: true,
+      assignedTo: { select: { name: true, email: true } },
       project: { select: { name: true } },
       tasks: { where: { doneAt: null }, orderBy: { dueAt: 'asc' }, take: 1, select: { id: true, title: true, dueAt: true, type: true } },
     },
@@ -680,10 +684,11 @@ developerRoutes.get('/crm/board', async (req: DeveloperRequest, res) => {
 // GET /api/developer/crm/leads/:id — ficha completa
 developerRoutes.get('/crm/leads/:id', async (req: DeveloperRequest, res) => {
   const lead = await prisma.projectLead.findFirst({
-    where: { id: req.params.id, project: { developerId: req.developerId } },
+    where: { id: req.params.id, ...leadWhere(req) },
     select: {
       id: true, projectId: true, lotCode: true, name: true, phone: true, email: true, message: true, source: true,
       channel: true, status: true, notes: true, tags: true, budget: true, createdAt: true, lastContactAt: true, lang: true,
+      assignedToId: true, assignedTo: { select: { name: true, email: true } },
       project: { select: { name: true } },
       activities: { orderBy: { createdAt: 'desc' }, take: 200 },
       tasks: { orderBy: [{ doneAt: 'asc' }, { dueAt: 'asc' }] },
@@ -724,7 +729,7 @@ developerRoutes.post('/crm/leads/:id/tasks', async (req: DeveloperRequest, res) 
 
 // PATCH /api/developer/crm/tasks/:taskId {done?, dueAt?}
 developerRoutes.patch('/crm/tasks/:taskId', async (req: DeveloperRequest, res) => {
-  const task = await prisma.leadTask.findFirst({ where: { id: req.params.taskId, lead: { project: { developerId: req.developerId } } } });
+  const task = await prisma.leadTask.findFirst({ where: { id: req.params.taskId, lead: leadWhere(req) } });
   if (!task) {
     res.status(404).json({ error: 'Tarea no encontrada' });
     return;
@@ -740,7 +745,7 @@ developerRoutes.patch('/crm/tasks/:taskId', async (req: DeveloperRequest, res) =
 // GET /api/developer/crm/tasks — agenda: pendientes (vencidas, hoy y próximas)
 developerRoutes.get('/crm/tasks', async (req: DeveloperRequest, res) => {
   const tasks = await prisma.leadTask.findMany({
-    where: { doneAt: null, lead: { project: { developerId: req.developerId } } },
+    where: { doneAt: null, lead: leadWhere(req) },
     orderBy: { dueAt: 'asc' },
     take: 300,
     include: { lead: { select: { id: true, name: true, phone: true, lotCode: true, status: true, project: { select: { name: true } } } } },
@@ -796,5 +801,108 @@ developerRoutes.post('/crm/templates', async (req: DeveloperRequest, res) => {
 // DELETE /api/developer/crm/templates/:id
 developerRoutes.delete('/crm/templates/:id', async (req: DeveloperRequest, res) => {
   await prisma.whatsAppTemplate.deleteMany({ where: { id: req.params.id, developerId: req.developerId } });
+  res.json({ ok: true });
+});
+
+// ============================================================
+// Equipo de ventas (solo el dueño) y avisos push
+// ============================================================
+
+function ownerOnly(req: DeveloperRequest, res: import('express').Response): boolean {
+  if (req.developerRole === 'OWNER') return true;
+  res.status(403).json({ error: 'Solo el dueño de la cuenta puede hacer esto' });
+  return false;
+}
+
+// GET /api/developer/team — usuarios del desarrollador con su carga de contactos
+developerRoutes.get('/team', async (req: DeveloperRequest, res) => {
+  const users = await prisma.developerUser.findMany({
+    where: { developerId: req.developerId },
+    orderBy: { createdAt: 'asc' },
+    select: {
+      id: true, email: true, name: true, role: true, active: true, lastLoginAt: true,
+      _count: { select: { leads: { where: { status: { notIn: ['WON', 'LOST'] } } }, pushSubs: true } },
+    },
+  });
+  res.json(users);
+});
+
+// POST /api/developer/team {email, name} — crea un vendedor; la contraseña temporal se muestra una vez
+developerRoutes.post('/team', async (req: DeveloperRequest, res) => {
+  if (!ownerOnly(req, res)) return;
+  const email = String(req.body?.email ?? '').trim().toLowerCase();
+  const name = String(req.body?.name ?? '').trim();
+  if (!/^\S+@\S+\.\S+$/.test(email) || !name) {
+    res.status(400).json({ error: 'Nombre y correo válidos son obligatorios' });
+    return;
+  }
+  if (await prisma.developerUser.findUnique({ where: { email } })) {
+    res.status(409).json({ error: 'Ese correo ya tiene acceso' });
+    return;
+  }
+  const password = crypto.randomBytes(9).toString('base64url');
+  const user = await prisma.developerUser.create({
+    data: { developerId: req.developerId!, email, name: name.slice(0, 80), role: 'SELLER', password: await bcrypt.hash(password, 10) },
+    select: { id: true, email: true },
+  });
+  res.status(201).json({ ...user, password });
+});
+
+// PATCH /api/developer/team/:id {active?, role?}
+developerRoutes.patch('/team/:id', async (req: DeveloperRequest, res) => {
+  if (!ownerOnly(req, res)) return;
+  if (req.params.id === req.developerUserId) {
+    res.status(400).json({ error: 'No puedes cambiar tu propio acceso' });
+    return;
+  }
+  const data: { active?: boolean; role?: string } = {};
+  if (req.body?.active !== undefined) data.active = Boolean(req.body.active);
+  if (req.body?.role === 'OWNER' || req.body?.role === 'SELLER') data.role = req.body.role;
+  const r = await prisma.developerUser.updateMany({ where: { id: req.params.id, developerId: req.developerId }, data });
+  if (!r.count) {
+    res.status(404).json({ error: 'Usuario no encontrado' });
+    return;
+  }
+  // Un vendedor desactivado deja sus contactos abiertos sin asignar (los ve el dueño).
+  if (data.active === false) {
+    await prisma.projectLead.updateMany({ where: { assignedToId: req.params.id, status: { notIn: ['WON', 'LOST'] } }, data: { assignedToId: null } });
+  }
+  res.json({ ok: true });
+});
+
+// POST /api/developer/crm/leads/:id/assign {userId|null} — reasignar (solo dueño)
+developerRoutes.post('/crm/leads/:id/assign', async (req: DeveloperRequest, res) => {
+  if (!ownerOnly(req, res)) return;
+  const lead = await prisma.projectLead.findFirst({ where: { id: req.params.id, project: { developerId: req.developerId } } });
+  const userId = req.body?.userId ? String(req.body.userId) : null;
+  const user = userId ? await prisma.developerUser.findFirst({ where: { id: userId, developerId: req.developerId, active: true } }) : null;
+  if (!lead || (userId && !user)) {
+    res.status(404).json({ error: 'Contacto o vendedor no encontrado' });
+    return;
+  }
+  await prisma.projectLead.update({ where: { id: lead.id }, data: { assignedToId: userId } });
+  await logActivity(lead.id, 'assign', 'developer', user ? `Asignado a ${user.name ?? user.email}` : 'Sin asignar');
+  if (user) {
+    await sendPushToDeveloperUsers([user.id], { title: '📥 Te asignaron un contacto', body: lead.name, link: '/desarrollador' });
+  }
+  res.json({ ok: true });
+});
+
+// GET /api/developer/push/key · POST /api/developer/push/subscribe
+developerRoutes.get('/push/key', (_req, res) => {
+  res.json({ key: vapidPublicKey() || null });
+});
+
+developerRoutes.post('/push/subscribe', async (req: DeveloperRequest, res) => {
+  const { endpoint, keys } = req.body ?? {};
+  if (typeof endpoint !== 'string' || !keys?.p256dh || !keys?.auth) {
+    res.status(400).json({ error: 'Suscripción inválida' });
+    return;
+  }
+  await prisma.developerPushSubscription.upsert({
+    where: { endpoint },
+    create: { endpoint, p256dh: keys.p256dh, auth: keys.auth, developerUserId: req.developerUserId! },
+    update: { p256dh: keys.p256dh, auth: keys.auth, developerUserId: req.developerUserId! },
+  });
   res.json({ ok: true });
 });

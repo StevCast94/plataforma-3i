@@ -34,3 +34,24 @@ export async function sendPushToMember(
     }),
   );
 }
+
+/** Avisos al portal de desarrolladores (dueños y vendedores). */
+export async function sendPushToDeveloperUsers(
+  userIds: string[],
+  payload: { title: string; body: string; link?: string | null },
+): Promise<void> {
+  if (!enabled || !userIds.length) return;
+  const subs = await prisma.developerPushSubscription.findMany({ where: { developerUserId: { in: userIds } } });
+  const data = JSON.stringify({ title: payload.title, body: payload.body, url: payload.link || '/desarrollador' });
+  await Promise.all(
+    subs.map(async (s) => {
+      try {
+        await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, data, { TTL: 3600 });
+      } catch (err) {
+        const code = (err as { statusCode?: number }).statusCode;
+        if (code === 404 || code === 410) await prisma.developerPushSubscription.delete({ where: { id: s.id } }).catch(() => {});
+        else console.error('push dev', code ?? err);
+      }
+    }),
+  );
+}
