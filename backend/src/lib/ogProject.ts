@@ -406,3 +406,76 @@ export function pageOgHandler(frontendPath: string) {
     }
   };
 }
+
+/**
+ * Tarjeta social de la página de aterrizaje (/l/:slug): pensada para anuncios y
+ * difusión. Título y descripción con datos vivos del inventario; imagen propia
+ * (images/og/l/<slug>-<lang>.jpg, generada con precios y CTA) o la portada.
+ */
+export function landingOgHandler(frontendPath: string) {
+  const indexPath = path.join(frontendPath, 'index.html');
+
+  return async (req: Request, res: Response) => {
+    try {
+      const slug = String(req.params.slug ?? '');
+      const project = await prisma.project.findUnique({
+        where: { slug },
+        select: { id: true, name: true, location: true, priceFrom: true, priceLabel: true, coverImage: true },
+      });
+      if (!project) {
+        res.sendFile(indexPath);
+        return;
+      }
+      const lang = req.path.startsWith('/en/') ? 'en' : 'es';
+      const lots = await prisma.lot.findMany({
+        where: { projectId: project.id, active: true, kind: 'LOT', status: 'AVAILABLE' },
+        select: { price: true },
+      });
+      const prices = lots.map((l) => l.price).filter((p): p is number => p != null);
+      const min = prices.length ? Math.min(...prices) : project.priceFrom;
+      const place = project.location?.split(',')[0] ?? '';
+
+      let title: string;
+      let description: string;
+      if (lang === 'en') {
+        title = lots.length && min != null ? `${project.name} · Lots from ${usd(min)} in 24 payments` : min != null ? `${project.name} · From ${usd(min)}` : project.name;
+        description = lots.length
+          ? `${lots.length} lots available in ${place}, Ecuador. Leave your WhatsApp and get prices, the lot plan and payment options.`
+          : `Leave your WhatsApp and get prices and payment options for ${project.name} in ${place}, Ecuador.`;
+      } else {
+        title = lots.length && min != null ? `${project.name} · Solares desde ${usd(min)} en 24 cuotas` : `${project.name} · ${project.priceLabel ?? 'Recibe precios'}`;
+        description = lots.length
+          ? `${lots.length} solares disponibles en ${place}. Déjanos tu WhatsApp y te enviamos precios, el plano de solares y las formas de pago.`
+          : `Déjanos tu WhatsApp y te enviamos precios y formas de pago de ${project.name} en ${place}.`;
+      }
+
+      const origin = publicBaseUrl();
+      const file = path.join(frontendPath, 'images', 'og', 'l', `${slug}-${lang}.jpg`);
+      const image = fs.existsSync(file)
+        ? `${origin}/images/og/l/${slug}-${lang}.jpg?v=${Math.round(fs.statSync(file).mtimeMs / 1000)}`
+        : /^https?:\/\//i.test(project.coverImage ?? '')
+          ? project.coverImage!
+          : `${origin}${project.coverImage ?? '/images/og-cover.png'}`;
+      const url = `${origin}${lang === 'en' ? '/en' : ''}/l/${slug}`;
+
+      let html = fs.readFileSync(indexPath, 'utf8');
+      html = html.replace(/<title>[^<]*<\/title>/i, `<title>${esc(title)}</title>`);
+      html = setMeta(html, 'name', 'description', description);
+      html = setMeta(html, 'property', 'og:url', url);
+      html = setMeta(html, 'property', 'og:title', title);
+      html = setMeta(html, 'property', 'og:description', description);
+      html = setMeta(html, 'property', 'og:image', image);
+      html = setMeta(html, 'property', 'og:image:secure_url', image);
+      html = setMeta(html, 'property', 'og:image:type', 'image/jpeg');
+      html = setMeta(html, 'property', 'og:image:alt', title);
+      html = setMeta(html, 'property', 'og:locale', lang === 'en' ? 'en_US' : 'es_EC');
+      html = setMeta(html, 'name', 'twitter:title', title);
+      html = setMeta(html, 'name', 'twitter:description', description);
+      html = setMeta(html, 'name', 'twitter:image', image);
+      res.type('html').send(html);
+    } catch (err) {
+      console.error('GET /l/:slug (tarjeta social)', err);
+      res.sendFile(indexPath);
+    }
+  };
+}
