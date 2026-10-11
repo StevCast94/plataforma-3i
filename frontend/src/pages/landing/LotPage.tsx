@@ -152,7 +152,7 @@ export default function LotPage() {
           )}
 
           <div className="mt-5 space-y-2 print:hidden">
-            <ProjectLeadContext.Provider value={{ slug, gated: Boolean(project?.developerId), lotCode: lot.code }}>
+            <ProjectLeadContext.Provider value={{ slug, gated: Boolean(project?.developerId || project?.captureLeads), lotCode: lot.code }}>
               <WhatsAppCTA message={waMsg} className="w-full" />
             </ProjectLeadContext.Provider>
             <ShareLot lot={lot} projectName={projectName} projectSlug={slug} showFullSheet={false} />

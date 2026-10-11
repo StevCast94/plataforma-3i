@@ -61,6 +61,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
   const [showBrochure, setShowBrochure] = useState(false);
+  const [captureLeads, setCaptureLeads] = useState(false);
   const [mapLat, setMapLat] = useState('');
   const [mapLng, setMapLng] = useState('');
   const [brochureContent, setBrochureContent] = useState<BrochureContent>({});
@@ -84,6 +85,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setActive(project?.active ?? true);
     setFeatured(project?.featured ?? false);
     setShowBrochure(project?.showBrochure ?? false);
+    setCaptureLeads(project?.captureLeads ?? false);
     setMapLat(project?.mapLat != null ? String(project.mapLat) : '');
     setMapLng(project?.mapLng != null ? String(project.mapLng) : '');
     // Precargar con lo que YA se está mostrando en la página (contenido propio +
@@ -135,6 +137,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       active,
       featured,
       showBrochure,
+      captureLeads,
       mapLat: mapLat ? Number(mapLat) : null,
       mapLng: mapLng ? Number(mapLng) : null,
       brochureContent: brochureContentPayload,
@@ -244,6 +247,9 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-primary">
             <input type="checkbox" checked={showBrochure} onChange={(e) => setShowBrochure(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Brochure Digital premium
+          </label>
+          <label className="flex items-center gap-2 text-sm" title="El botón de WhatsApp pide nombre y número antes de abrir el chat; el contacto entra al CRM.">
+            <input type="checkbox" checked={captureLeads} onChange={(e) => setCaptureLeads(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Registrar contactos en el CRM antes de WhatsApp
           </label>
         </div>
 

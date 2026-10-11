@@ -3,18 +3,20 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { useToast } from '@/components/shared/Toast';
+import { useCrmClient } from '@/lib/crmClient';
 import { formatCurrency } from '@/lib/utils';
 import {
-  devApi, isStale, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, PIPELINE, TASK_TYPE_LABEL,
+  askLostReason, isStale, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, PIPELINE, TASK_TYPE_LABEL,
   type AgendaTask, type BoardLead, type DevProject, type LeadStatus, type TeamUser, type WaTemplate,
 } from '@/lib/developerApi';
 import { DeveloperLeads } from '../DeveloperLeads';
 import { LeadDrawer } from './LeadDrawer';
+import { CrmReport } from './CrmReport';
 
 // CRM del desarrollador (inspirado en Kommo): embudo por etapas con arrastrar y
 // soltar, agenda de tareas, lista clásica y plantillas de WhatsApp.
 
-type View = 'board' | 'agenda' | 'list';
+type View = 'board' | 'agenda' | 'list' | 'report';
 
 const COL_TONE: Record<LeadStatus, string> = {
   NEW: 'border-sky-400',
@@ -103,14 +105,15 @@ function Board({ leads, onOpen, onMove }: { leads: BoardLead[]; onOpen: (id: str
 }
 
 function Agenda({ onOpen }: { onOpen: (id: string) => void }) {
+  const crm = useCrmClient();
   const [tasks, setTasks] = useState<AgendaTask[] | null>(null);
   const load = useCallback(() => {
-    devApi.get<AgendaTask[]>('/crm/tasks').then(setTasks).catch(() => setTasks([]));
+    crm.get<AgendaTask[]>('/crm/tasks').then(setTasks).catch(() => setTasks([]));
   }, []);
   useEffect(load, [load]);
 
   async function done(id: string) {
-    await devApi.patch(`/crm/tasks/${id}`, { done: true });
+    await crm.patch(`/crm/tasks/${id}`, { done: true });
     load();
   }
 
@@ -156,9 +159,10 @@ function Agenda({ onOpen }: { onOpen: (id: string) => void }) {
 }
 
 function Templates({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const crm = useCrmClient();
   const { toast } = useToast();
   const [list, setList] = useState<WaTemplate[]>([]);
-  const load = () => devApi.get<WaTemplate[]>('/crm/templates').then(setList).catch(() => {});
+  const load = () => crm.get<WaTemplate[]>('/crm/templates').then(setList).catch(() => {});
   useEffect(() => {
     if (open) load();
   }, [open]);
@@ -167,7 +171,7 @@ function Templates({ open, onClose }: { open: boolean; onClose: () => void }) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     try {
-      await devApi.post('/crm/templates', { name: fd.get('name'), body: fd.get('body') });
+      await crm.post('/crm/templates', { name: fd.get('name'), body: fd.get('body') });
       (e.target as HTMLFormElement).reset();
       load();
     } catch (err) {
@@ -188,7 +192,7 @@ function Templates({ open, onClose }: { open: boolean; onClose: () => void }) {
                 <p className="font-semibold text-primary">{t.name}</p>
                 <button
                   onClick={async () => {
-                    await devApi.del(`/crm/templates/${t.id}`);
+                    await crm.del(`/crm/templates/${t.id}`);
                     load();
                   }}
                   className="text-xs text-brand-gray hover:text-red-600"
@@ -211,6 +215,7 @@ function Templates({ open, onClose }: { open: boolean; onClose: () => void }) {
 }
 
 export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: DevProject[]; ownLeadRate: number; isOwner: boolean }) {
+  const crm = useCrmClient();
   const { toast } = useToast();
   const [view, setView] = useState<View>('board');
   const [projectId, setProjectId] = useState('');
@@ -222,11 +227,11 @@ export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: Dev
   const [seller, setSeller] = useState('');
 
   useEffect(() => {
-    if (isOwner) devApi.get<TeamUser[]>('/team').then(setTeam).catch(() => {});
+    if (isOwner) crm.get<TeamUser[]>('/team').then(setTeam).catch(() => {});
   }, [isOwner]);
 
   const load = useCallback(() => {
-    devApi
+    crm
       .get<BoardLead[]>(`/crm/board${projectId ? `?projectId=${projectId}` : ''}`)
       .then(setLeads)
       .catch((e) => toast(e.message, 'error'));
@@ -237,9 +242,15 @@ export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: Dev
   async function move(id: string, to: LeadStatus) {
     const lead = leads?.find((l) => l.id === id);
     if (!lead || lead.status === to) return;
+    let lostReason: string | undefined;
+    if (to === 'LOST') {
+      const r = askLostReason();
+      if (r === null) return;
+      lostReason = r;
+    }
     setLeads((xs) => xs?.map((l) => (l.id === id ? { ...l, status: to } : l)) ?? xs);
     try {
-      await devApi.patch(`/leads/${id}`, { status: to });
+      await crm.patch(`/leads/${id}`, { status: to, lostReason });
       if (to === 'WON') toast('Recuerda declarar la venta desde la vista Lista → «Venta».', 'info');
       load();
     } catch (e) {
@@ -267,7 +278,10 @@ export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: Dev
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <div className="flex gap-1 rounded-xl bg-white p-1 shadow-sm">
-          {([['board', 'Embudo'], ['agenda', 'Agenda'], ['list', 'Lista']] as const).map(([k, label]) => (
+          {(isOwner
+            ? ([['board', 'Embudo'], ['agenda', 'Agenda'], ['list', 'Lista'], ['report', 'Reportes']] as const)
+            : ([['board', 'Embudo'], ['agenda', 'Agenda'], ['list', 'Lista']] as const)
+          ).map(([k, label]) => (
             <button
               key={k}
               onClick={() => setView(k)}
@@ -285,7 +299,7 @@ export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: Dev
               {team.filter((u) => u.active).map((u) => <option key={u.id} value={u.id}>{u.name ?? u.email}</option>)}
             </select>
           )}
-          {view === 'board' && (
+          {(view === 'board' || view === 'report') && (
             <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="rounded-lg border border-black/15 bg-white px-3 py-1.5 text-sm">
               <option value="">Todos los proyectos</option>
               {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -316,6 +330,7 @@ export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: Dev
           </>
         ))}
       {view === 'agenda' && <Agenda key={tick} onOpen={setOpenId} />}
+      {view === 'report' && <CrmReport projectId={projectId} />}
       {view === 'list' && <DeveloperLeads key={tick} projects={projects} ownLeadRate={ownLeadRate} canSell={isOwner} />}
 
       <LeadDrawer leadId={openId} onClose={() => setOpenId(null)} onChanged={load} team={isOwner ? team : null} />

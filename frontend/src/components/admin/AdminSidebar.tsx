@@ -9,6 +9,7 @@ const items = [
   { to: '/admin/desarrolladores', label: 'Desarrolladores', icon: '🤝' },
   { to: '/admin/propuesta', label: 'Propuesta MV', icon: '📑' },
   { to: '/admin/miembros', label: 'Miembros', icon: '👥' },
+  { to: '/admin/crm', label: 'CRM de ventas', icon: '🗂️' },
   { to: '/admin/leads', label: 'Leads', icon: '📨' },
   { to: '/admin/marketing', label: 'Marketing', icon: '📈' },
   { to: '/admin/fiesta', label: 'Fiesta (en vivo)', icon: '🍹' },

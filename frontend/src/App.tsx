@@ -49,6 +49,7 @@ const AdminPanoramasPage = lazy(() => import('@/pages/admin/AdminPanoramasPage')
 const AdminFiestaPage = lazy(() => import('@/pages/admin/AdminFiestaPage'));
 const AdminDevelopersPage = lazy(() => import('@/pages/admin/AdminDevelopersPage'));
 const ProjectMetricsPage = lazy(() => import('@/pages/admin/ProjectMetricsPage'));
+const AdminCrmPage = lazy(() => import('@/pages/admin/AdminCrmPage'));
 const DeveloperPortalPage = lazy(() => import('@/pages/desarrollador/DeveloperPortalPage'));
 const DeveloperPanelPage = lazy(() => import('@/pages/desarrollador/DeveloperPanelPage'));
 const AdminPropuestaPage = lazy(() => import('@/pages/admin/AdminPropuestaPage'));
@@ -189,6 +190,7 @@ export default function App() {
                 <Route path="proyectos/:projectId/metricas" element={<ProjectMetricsPage />} />
                 <Route path="fiesta" element={<AdminFiestaPage />} />
                 <Route path="desarrolladores" element={<AdminDevelopersPage />} />
+                <Route path="crm" element={<AdminCrmPage />} />
                 <Route path="propuesta" element={<AdminPropuestaPage />} />
                 <Route path="miembros" element={<AdminMembersPage />} />
                 <Route path="leads" element={<AdminLeadsPage />} />

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { X } from 'lucide-react';
 import { useToast } from '@/components/shared/Toast';
+import { useCrmClient } from '@/lib/crmClient';
 import { formatCurrency } from '@/lib/utils';
 import {
-  devApi, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, PIPELINE, TASK_TYPE_LABEL,
+  askLostReason, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, PIPELINE, TASK_TYPE_LABEL,
   type LeadDetail, type LeadStatus, type TaskType, type TeamUser, type WaTemplate,
 } from '@/lib/developerApi';
 
@@ -25,6 +26,7 @@ function localInput(d: Date) {
 export function LeadDrawer({
   leadId, onClose, onChanged, team,
 }: { leadId: string | null; onClose: () => void; onChanged: () => void; team: TeamUser[] | null }) {
+  const crm = useCrmClient();
   const { toast } = useToast();
   const [lead, setLead] = useState<LeadDetail | null>(null);
   const [templates, setTemplates] = useState<WaTemplate[]>([]);
@@ -34,7 +36,7 @@ export function LeadDrawer({
 
   const load = useCallback(() => {
     if (!leadId) return;
-    devApi.get<LeadDetail>(`/crm/leads/${leadId}`).then(setLead).catch((e) => toast(e.message, 'error'));
+    crm.get<LeadDetail>(`/crm/leads/${leadId}`).then(setLead).catch((e) => toast(e.message, 'error'));
   }, [leadId, toast]);
 
   useEffect(() => {
@@ -42,13 +44,13 @@ export function LeadDrawer({
     load();
   }, [load]);
   useEffect(() => {
-    if (leadId && !templates.length) devApi.get<WaTemplate[]>('/crm/templates').then(setTemplates).catch(() => {});
+    if (leadId && !templates.length) crm.get<WaTemplate[]>('/crm/templates').then(setTemplates).catch(() => {});
   }, [leadId, templates.length]);
 
   async function patch(body: Record<string, unknown>) {
     if (!lead) return;
     try {
-      await devApi.patch(`/leads/${lead.id}`, body);
+      await crm.patch(`/leads/${lead.id}`, body);
       load();
       onChanged();
     } catch (e) {
@@ -59,7 +61,7 @@ export function LeadDrawer({
   async function assign(userId: string) {
     if (!lead) return;
     try {
-      await devApi.post(`/crm/leads/${lead.id}/assign`, { userId: userId || null });
+      await crm.post(`/crm/leads/${lead.id}/assign`, { userId: userId || null });
       load();
       onChanged();
     } catch (e) {
@@ -73,7 +75,7 @@ export function LeadDrawer({
     // La ventana se abre en el clic (sin esperar al servidor) para que el navegador no la bloquee.
     const win = window.open('', '_blank');
     try {
-      const r = await devApi.post<{ url: string }>(`/crm/leads/${lead.id}/whatsapp`, t ? { templateId: t.id } : { body: `Hola ${lead.name.split(' ')[0]}` });
+      const r = await crm.post<{ url: string }>(`/crm/leads/${lead.id}/whatsapp`, t ? { templateId: t.id } : { body: `Hola ${lead.name.split(' ')[0]}` });
       if (win) win.location.href = r.url;
       else window.location.href = r.url;
       load();
@@ -87,7 +89,7 @@ export function LeadDrawer({
   async function addNote(e: FormEvent) {
     e.preventDefault();
     if (!lead || !note.trim()) return;
-    await devApi.post(`/crm/leads/${lead.id}/notes`, { body: note });
+    await crm.post(`/crm/leads/${lead.id}/notes`, { body: note });
     setNote('');
     load();
   }
@@ -98,7 +100,7 @@ export function LeadDrawer({
     const fd = new FormData(e.currentTarget);
     const type = fd.get('type') as TaskType;
     try {
-      await devApi.post(`/crm/leads/${lead.id}/tasks`, {
+      await crm.post(`/crm/leads/${lead.id}/tasks`, {
         type,
         title: fd.get('title') || TASK_TYPE_LABEL[type].replace(/^\S+\s/, ''),
         dueAt: new Date(String(fd.get('dueAt'))).toISOString(),
@@ -112,7 +114,7 @@ export function LeadDrawer({
   }
 
   async function toggleTask(id: string, done: boolean) {
-    await devApi.patch(`/crm/tasks/${id}`, { done });
+    await crm.patch(`/crm/tasks/${id}`, { done });
     load();
     onChanged();
   }
@@ -169,13 +171,23 @@ export function LeadDrawer({
               {PIPELINE.map((s) => (
                 <button
                   key={s}
-                  onClick={() => s !== lead.status && patch({ status: s })}
+                  onClick={() => {
+                    if (s === lead.status) return;
+                    if (s === 'LOST') {
+                      const r = askLostReason();
+                      if (r !== null) patch({ status: s, lostReason: r });
+                    } else patch({ status: s });
+                  }}
                   className={`rounded-full px-3 py-1 text-xs ${lead.status === s ? 'bg-primary text-white' : 'bg-light text-brand-gray hover:text-primary'}`}
                 >
                   {LEAD_STATUS_LABEL[s as LeadStatus]}
                 </button>
               ))}
             </div>
+
+            {lead.status === 'LOST' && lead.lostReason && (
+              <p className="text-sm text-brand-gray">Motivo de pérdida: <strong className="text-primary">{lead.lostReason}</strong></p>
+            )}
 
             {/* WhatsApp */}
             <div className="rounded-xl border border-black/10 p-3">

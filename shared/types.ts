@@ -31,6 +31,8 @@ export interface Project {
   developerId?: string | null;
   /** Proyecto de terceros con verificación legal completa (sello). */
   verified?: boolean;
+  /** Proyecto propio: pedir nombre y WhatsApp antes de abrir el chat (CRM). */
+  captureLeads?: boolean;
   name: string;
   subtitle?: string | null;
   description: string;

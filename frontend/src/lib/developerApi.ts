@@ -214,6 +214,7 @@ export interface LeadDetail extends Omit<BoardLead, 'nextTask' | 'updatedAt'> {
   channel: string;
   notes: string | null;
   lang: string | null;
+  lostReason?: string | null;
   activities: { id: string; kind: string; body: string | null; actor: string; createdAt: string }[];
   tasks: CrmTask[];
   sales: { id: string; price: number; status: SaleStatus; lotCode: string | null }[];
@@ -241,4 +242,13 @@ export interface TeamUser {
   active: boolean;
   lastLoginAt: string | null;
   _count: { leads: number; pushSubs: number };
+}
+
+/** Motivos de pérdida sugeridos (se pueden escribir otros). */
+export const LOST_REASONS = ['Precio', 'Financiamiento', 'Ubicación', 'No responde', 'Compró en otro lugar', 'Solo curiosidad'];
+
+/** Pide el motivo al marcar un contacto como Perdido. null = canceló. */
+export function askLostReason(): string | null {
+  const r = window.prompt(`¿Por qué se perdió? (${LOST_REASONS.join(', ')})`, LOST_REASONS[0]);
+  return r === null ? null : r.trim() || 'Sin motivo';
 }

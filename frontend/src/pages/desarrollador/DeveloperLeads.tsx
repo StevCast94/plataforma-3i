@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { useToast } from '@/components/shared/Toast';
+import { useCrmClient } from '@/lib/crmClient';
 import { DeclareSaleModal } from './DeveloperSales';
 import {
-  devApi, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, type DevLead, type DevProject, type LeadStatus,
+  LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, type DevLead, type DevProject, type LeadStatus,
 } from '@/lib/developerApi';
 
 // Contactos de los proyectos del desarrollador. Los de la plataforma llegan solos;
@@ -16,6 +17,7 @@ import {
 const waLink = (phone: string) => `https://wa.me/${phone.replace(/\D/g, '')}`;
 
 export function DeveloperLeads({ projects, ownLeadRate, canSell = true }: { projects: DevProject[]; ownLeadRate: number; canSell?: boolean }) {
+  const crm = useCrmClient();
   const { toast } = useToast();
   const [leads, setLeads] = useState<DevLead[] | null>(null);
   const [filter, setFilter] = useState('');
@@ -24,13 +26,13 @@ export function DeveloperLeads({ projects, ownLeadRate, canSell = true }: { proj
   const [selling, setSelling] = useState<DevLead | null>(null);
 
   const load = useCallback(() => {
-    devApi.get<DevLead[]>(`/leads${filter ? `?projectId=${filter}` : ''}`).then(setLeads).catch((e) => toast(e.message, 'error'));
+    crm.get<DevLead[]>(`/leads${filter ? `?projectId=${filter}` : ''}`).then(setLeads).catch((e) => toast(e.message, 'error'));
   }, [filter, toast]);
   useEffect(load, [load]);
 
   async function setStatus(l: DevLead, status: LeadStatus) {
     try {
-      await devApi.patch(`/leads/${l.id}`, { status });
+      await crm.patch(`/leads/${l.id}`, { status });
       setLeads((xs) => xs?.map((x) => (x.id === l.id ? { ...x, status } : x)) ?? xs);
     } catch (e) {
       toast((e as Error).message, 'error');
@@ -41,7 +43,7 @@ export function DeveloperLeads({ projects, ownLeadRate, canSell = true }: { proj
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     try {
-      await devApi.post(`/projects/${fd.get('projectId')}/leads`, {
+      await crm.post(`/projects/${fd.get('projectId')}/leads`, {
         name: fd.get('name'),
         phone,
         email: fd.get('email') || undefined,
@@ -142,7 +144,7 @@ export function DeveloperLeads({ projects, ownLeadRate, canSell = true }: { proj
       <Modal open={adding} onClose={() => setAdding(false)} title="Registrar contacto propio">
         <form onSubmit={addOwn} className="space-y-3">
           <p className="text-sm text-brand-gray">
-            Para clientes que tú consigues por tu cuenta. Si compran, la comisión es del {Math.round(ownLeadRate * 1000) / 10} %.
+            Para clientes que tú consigues por tu cuenta.{ownLeadRate > 0 && ` Si compran, la comisión es del ${Math.round(ownLeadRate * 1000) / 10} %.`}
             Si el número ya llegó por la plataforma, se mantiene el registro original.
           </p>
           <label className="block text-sm">

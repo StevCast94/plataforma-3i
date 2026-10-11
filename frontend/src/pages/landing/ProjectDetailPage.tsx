@@ -78,7 +78,7 @@ export default function ProjectDetailPage() {
   };
 
   return (
-    <ProjectLeadContext.Provider value={{ slug: project.slug, gated: Boolean(project.developerId) }}>
+    <ProjectLeadContext.Provider value={{ slug: project.slug, gated: Boolean(project.developerId || project.captureLeads) }}>
       <Seo
         title={project.name}
         description={tb(project.subtitle ?? project.description)}

@@ -70,9 +70,8 @@ export async function registerLead(input: LeadInput) {
       source,
     },
   });
-  // CRM: historial y tarea «Contactar» para los proyectos de desarrolladores.
-  const isDeveloperProject = await prisma.project.count({ where: { id: input.projectId, developerId: { not: null } } });
-  if (isDeveloperProject) await onNewLead(lead.id, source).catch((e) => console.error('onNewLead', e));
+  // CRM: historial y tarea «Contactar» (proyectos propios y de desarrolladores).
+  await onNewLead(lead.id, source).catch((e) => console.error('onNewLead', e));
   return { lead, created: true };
 }
 

@@ -54,6 +54,7 @@ model Project {
   documents       ProjectDocument[]
   verification    Json? // { deed, liens, municipal, boundaries: boolean }
   verifiedAt      DateTime? // sello «Verificado por Grupo 3i»
+  captureLeads    Boolean           @default(false) // proyectos propios: pedir datos antes de abrir WhatsApp
   events          ProjectEvent[]
   // Proyectos de terceros (vitrina curada). null = proyecto propio de Grupo 3i.
   developerId     String?
@@ -979,6 +980,7 @@ model ProjectLead {
   tags          String[]        @default([])
   budget        Float?
   lastContactAt DateTime?
+  lostReason    String?
   assignedToId  String? // vendedor del desarrollador (DeveloperUser)
   assignedTo    DeveloperUser?  @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
 
@@ -1108,12 +1110,12 @@ model LeadTask {
 }
 
 model WhatsAppTemplate {
-  id          String    @id @default(uuid())
-  developerId String
-  developer   Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  id          String     @id @default(uuid())
+  developerId String? // null = plantillas de Grupo 3i (admin)
+  developer   Developer? @relation(fields: [developerId], references: [id], onDelete: Cascade)
   name        String
-  body        String    @db.Text // variables: {nombre} {proyecto} {solar}
-  createdAt   DateTime  @default(now())
+  body        String     @db.Text // variables: {nombre} {proyecto} {solar}
+  createdAt   DateTime   @default(now())
 
   @@index([developerId])
 }

@@ -106,6 +106,7 @@ export interface AdminProject {
   active: boolean;
   featured: boolean;
   showBrochure: boolean;
+  captureLeads?: boolean;
   mapLat?: number | null;
   mapLng?: number | null;
   brochureContent?: Record<string, unknown> | null;
