@@ -137,6 +137,7 @@ export default function App() {
               {/* Activación de eventos: pantalla completa, sin menú */}
               <Route path="fiesta" element={<FiestaPage />} />
               <Route path="publica-tu-proyecto/propuesta" element={<ProposalPage />} />
+              <Route path="en/publica-tu-proyecto/propuesta" element={<ProposalPage />} />
               <Route path="desarrollador" element={<DeveloperPortalPage />} />
               <Route path="desarrollador/proyectos/:projectId/lotes" element={<DeveloperPanelPage view="lots" />} />
               <Route path="desarrollador/proyectos/:projectId/vistas-360" element={<DeveloperPanelPage view="panoramas" />} />
