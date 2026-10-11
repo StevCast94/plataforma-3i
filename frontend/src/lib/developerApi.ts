@@ -82,6 +82,8 @@ export interface DevProject {
   updatedAt: string;
   _count?: { lots: number; panoramas: number };
   embedEnabled?: boolean;
+  mapPaidUntil?: string | null;
+  customDomain?: string | null;
   embedBrand?: { logo?: string | null; color?: string | null; name?: string | null; whatsapp?: string | null } | null;
 }
 

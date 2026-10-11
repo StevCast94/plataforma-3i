@@ -43,6 +43,12 @@ adminProjectRoutes.put('/:id', async (req: AuthedRequest, res) => {
     delete data.createdAt;
     delete data.updatedAt;
     delete data.products;
+    // Dominio propio del mapa: minúsculas, sin protocolo ni www; vacío = sin dominio.
+    if ('customDomain' in data) {
+      const d = String(data.customDomain ?? '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '');
+      data.customDomain = d || null;
+    }
+    if ('mapPaidUntil' in data) data.mapPaidUntil = data.mapPaidUntil ? new Date(data.mapPaidUntil) : null;
     const project = await prisma.project.update({ where: { id: req.params.id }, data });
     await audit(req.staff?.staffId, 'update', 'project', project.id);
     res.json(project);

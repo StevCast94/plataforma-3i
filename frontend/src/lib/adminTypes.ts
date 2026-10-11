@@ -108,6 +108,9 @@ export interface AdminProject {
   showBrochure: boolean;
   captureLeads?: boolean;
   embedEnabled?: boolean;
+  customDomain?: string | null;
+  mapPaidUntil?: string | null;
+  showcase?: boolean;
   mapLat?: number | null;
   mapLng?: number | null;
   brochureContent?: Record<string, unknown> | null;

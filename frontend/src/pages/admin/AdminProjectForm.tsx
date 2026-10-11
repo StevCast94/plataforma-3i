@@ -64,6 +64,9 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [showBrochure, setShowBrochure] = useState(false);
   const [captureLeads, setCaptureLeads] = useState(false);
   const [embedEnabled, setEmbedEnabled] = useState(false);
+  const [customDomain, setCustomDomain] = useState('');
+  const [mapPaidUntil, setMapPaidUntil] = useState('');
+  const [showcase, setShowcase] = useState(true);
   const [mapLat, setMapLat] = useState('');
   const [mapLng, setMapLng] = useState('');
   const [brochureContent, setBrochureContent] = useState<BrochureContent>({});
@@ -89,6 +92,9 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setShowBrochure(project?.showBrochure ?? false);
     setCaptureLeads(project?.captureLeads ?? false);
     setEmbedEnabled(project?.embedEnabled ?? false);
+    setCustomDomain(project?.customDomain ?? '');
+    setMapPaidUntil(project?.mapPaidUntil ? project.mapPaidUntil.slice(0, 10) : '');
+    setShowcase(project?.showcase ?? true);
     setMapLat(project?.mapLat != null ? String(project.mapLat) : '');
     setMapLng(project?.mapLng != null ? String(project.mapLng) : '');
     // Precargar con lo que YA se está mostrando en la página (contenido propio +
@@ -142,6 +148,9 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       showBrochure,
       captureLeads,
       embedEnabled,
+      customDomain,
+      mapPaidUntil: mapPaidUntil || null,
+      showcase,
       mapLat: mapLat ? Number(mapLat) : null,
       mapLng: mapLng ? Number(mapLng) : null,
       brochureContent: brochureContentPayload,
@@ -258,11 +267,26 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
           <label className="flex items-center gap-2 text-sm" title="Plan mensual del mapa con marca propia: 9 hasta 150 lotes, 9 más de 150.">
             <input type="checkbox" checked={embedEnabled} onChange={(e) => setEmbedEnabled(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Mapa insertable con marca propia (plan mensual)
           </label>
-          {embedEnabled && project?.slug && (
-            <div className="w-full rounded-xl bg-light p-3">
-              <EmbedSnippet slug={project.slug} />
+          {embedEnabled && (
+            <div className="w-full space-y-3 rounded-xl bg-light p-3 text-sm">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block">
+                  <span className="mb-1 block font-medium text-primary">Plan pagado hasta</span>
+                  <input type="date" value={mapPaidUntil} onChange={(e) => setMapPaidUntil(e.target.value)} className="w-full rounded-lg border border-black/15 px-3 py-2" />
+                  <span className="mt-1 block text-xs text-brand-gray">9/mes hasta 150 lotes · 9/mes con más. Vacío = sin vencimiento (cortesía o proyecto propio). Al vencer se apaga solo.</span>
+                </label>
+                <label className="block">
+                  <span className="mb-1 block font-medium text-primary">Dominio propio (opcional)</span>
+                  <input value={customDomain} onChange={(e) => setCustomDomain(e.target.value)} placeholder="mapa.sulotizadora.com" className="w-full rounded-lg border border-black/15 px-3 py-2" />
+                  <span className="mt-1 block text-xs text-brand-gray">El cliente crea un CNAME hacia el dominio de Railway; luego agregamos el dominio en Railway.</span>
+                </label>
+              </div>
+              {project?.slug && <EmbedSnippet slug={project.slug} />}
             </div>
           )}
+          <label className="flex items-center gap-2 text-sm" title="Desmárcalo para clientes que solo contratan el mapa: no aparecen en grupo3i.com.">
+            <input type="checkbox" checked={showcase} onChange={(e) => setShowcase(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Mostrar en la vitrina de grupo3i.com
+          </label>
         </div>
 
         {showBrochure && (

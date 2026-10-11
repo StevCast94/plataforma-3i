@@ -1,3 +1,4 @@
+import { isCustomMapHost } from '@/lib/mapHost';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLang } from '@/hooks/useLang';
@@ -53,7 +54,7 @@ export function InstallAppBanner() {
 
   // El Bosque tiene marca propia: ahí no se ofrece la app de Grupo 3i.
   // En la oficina se encarga la tarjeta "Prepara tu app" (AppSetupSteps).
-  if (!visible || inBosque || pathname.startsWith('/oficina') || pathname.startsWith('/fiesta') || pathname.startsWith('/embed')) return null;
+  if (!visible || inBosque || pathname.startsWith('/oficina') || pathname.startsWith('/fiesta') || pathname.startsWith('/embed') || isCustomMapHost()) return null;
 
   return (
     <div

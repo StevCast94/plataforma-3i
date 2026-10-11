@@ -62,7 +62,22 @@ export function EmbedSettings({ project }: { project: DevProject }) {
       </Button>
       <div className="mt-5 rounded-xl bg-light p-4">
         {project.embedEnabled ? (
-          <EmbedSnippet slug={project.slug} />
+          <>
+            {(project.mapPaidUntil || project.customDomain) && (
+              <p className="mb-3 text-sm text-primary">
+                {project.mapPaidUntil && <>Plan activo hasta el <strong>{new Date(project.mapPaidUntil).toLocaleDateString('es-EC')}</strong>. </>}
+                {project.customDomain && (
+                  <>
+                    También en{' '}
+                    <a href={`https://${project.customDomain}`} target="_blank" rel="noreferrer" className="text-secondary hover:underline">
+                      {project.customDomain}
+                    </a>
+                  </>
+                )}
+              </p>
+            )}
+            <EmbedSnippet slug={project.slug} />
+          </>
         ) : (
           <p className="text-sm text-brand-gray">
             El mapa para tu web se activa con el plan mensual ($49/mes hasta 150 lotes · $99/mes más de 150). Escríbenos para activarlo.

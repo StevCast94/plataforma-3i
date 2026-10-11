@@ -20,7 +20,8 @@ projectRoutes.get('/', async (req, res) => {
     const all = req.query.all === 'true';
     const projects = await prisma.project.findMany({
       // Borradores y proyectos en revisión de desarrolladores nunca salen al público.
-      where: all ? { publishStatus: { in: ['PUBLISHED', 'PAUSED'] } } : { active: true, publishStatus: 'PUBLISHED' },
+      // Los clientes solo-mapa (showcase = false) no aparecen en la vitrina.
+      where: all ? { showcase: true, publishStatus: { in: ['PUBLISHED', 'PAUSED'] } } : { showcase: true, active: true, publishStatus: 'PUBLISHED' },
       orderBy: [{ featured: 'desc' }, { createdAt: 'asc' }],
       include: { developer: { select: { featuredUntil: true } } },
     });
@@ -36,6 +37,17 @@ projectRoutes.get('/', async (req, res) => {
     console.error('GET /api/projects', err);
     res.status(500).json({ error: 'Error al obtener proyectos' });
   }
+});
+
+// GET /api/projects/by-domain?host= — dominio propio de un mapa (Fase 3) → slug
+projectRoutes.get('/by-domain', async (req, res) => {
+  const host = String(req.query.host ?? '').toLowerCase().replace(/^www\./, '').slice(0, 200);
+  const p = host ? await prisma.project.findUnique({ where: { customDomain: host }, select: { slug: true, embedEnabled: true } }) : null;
+  if (!p || !p.embedEnabled) {
+    res.status(404).json({ error: 'Dominio no configurado' });
+    return;
+  }
+  res.json({ slug: p.slug });
 });
 
 // GET /api/projects/:slug -> detalle por slug

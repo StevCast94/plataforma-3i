@@ -5,6 +5,7 @@ import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { isBosqueHost } from '@/lib/bosque';
+import { isCustomMapHost } from '@/lib/mapHost';
 import { CommunityLayout } from '@/components/comunidad/CommunityLayout';
 import { ToastProvider } from '@/components/shared/Toast';
 import { AuthProvider } from '@/context/AuthContext';
@@ -21,6 +22,7 @@ const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
 const PublishProjectPage = lazy(() => import('@/pages/landing/PublishProjectPage'));
 const ProposalPage = lazy(() => import('@/pages/landing/ProposalPage'));
 const EmbedMapPage = lazy(() => import('@/pages/landing/EmbedMapPage'));
+const CustomDomainMap = lazy(() => import('@/pages/landing/CustomDomainMap'));
 const ProductDetailPage = lazy(() => import('@/pages/tienda/ProductDetailPage'));
 const ClubPage = lazy(() => import('@/pages/club/ClubPage'));
 const ViajesPage = lazy(() => import('@/pages/club/ViajesPage'));
@@ -121,7 +123,12 @@ export default function App() {
           <BrowserRouter>
             {/* Dentro del Router: el banner lee el idioma de la URL. */}
             <div className="print:hidden"><InstallAppBanner /></div>
-            {isBosqueHost() ? (
+            {isCustomMapHost() ? (
+              // Dominio propio de un mapa de lotes (Fase 3): solo el mapa.
+              <Routes>
+                <Route path="*" element={<CustomDomainMap />} />
+              </Routes>
+            ) : isBosqueHost() ? (
               // Dominio propio del Bosque: la landing vive en la raíz.
               <Routes>
                 <Route element={<BosqueLayout />}>
