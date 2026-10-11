@@ -168,6 +168,8 @@ export const EN: Record<string, string> = {
   'Número de lotes o unidades': 'Number of lots or units',
   'Cuéntanos de tu proyecto': 'Tell us about your project',
   'Enviar solicitud': 'Send request',
+  'Ver la propuesta comercial': 'View the commercial proposal',
+  'Solicitar el alta': 'Apply now',
   'Habla con un asesor': 'Talk to an advisor',
   'Déjanos tus datos y abrimos el chat con el asesor del proyecto.': 'Leave your details and we will open the chat with the project advisor.',
   'Escribe tu nombre y tu WhatsApp con código de país.': 'Enter your name and WhatsApp number with country code.',

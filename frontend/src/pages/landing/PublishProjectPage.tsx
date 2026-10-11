@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
+import { Link } from 'react-router-dom';
 
 // «Publica tu proyecto»: vitrina curada para desarrolladores externos. El
 // formulario crea un desarrollador en estado «En alta» (admin → Desarrolladores).
@@ -61,6 +62,15 @@ export default function PublishProjectPage() {
         subtitle={t('Vende tus lotes con la red de Grupo 3i. Pagas solo cuando vendes.')}
         image="/images/secciones/header-nosotros.jpg"
       />
+
+      <div className="mx-auto mt-8 flex max-w-6xl flex-wrap justify-center gap-3 px-4">
+        <Link to="/publica-tu-proyecto/propuesta" className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-black">
+          {t('Ver la propuesta comercial')}
+        </Link>
+        <a href="#solicitud" className="rounded-lg border border-secondary px-6 py-3 text-sm font-semibold text-primary hover:bg-secondary">
+          {t('Solicitar el alta')}
+        </a>
+      </div>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

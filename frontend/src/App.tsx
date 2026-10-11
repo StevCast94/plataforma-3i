@@ -19,6 +19,7 @@ const PropuestaMontanitaPage = lazy(() => import('@/pages/landing/PropuestaMonta
 const AboutPage = lazy(() => import('@/pages/landing/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
 const PublishProjectPage = lazy(() => import('@/pages/landing/PublishProjectPage'));
+const ProposalPage = lazy(() => import('@/pages/landing/ProposalPage'));
 const ProductDetailPage = lazy(() => import('@/pages/tienda/ProductDetailPage'));
 const ClubPage = lazy(() => import('@/pages/club/ClubPage'));
 const ViajesPage = lazy(() => import('@/pages/club/ViajesPage'));
@@ -135,6 +136,7 @@ export default function App() {
               {/* Sitio público con navbar/footer, en español (/) y en inglés (/en). */}
               {/* Activación de eventos: pantalla completa, sin menú */}
               <Route path="fiesta" element={<FiestaPage />} />
+              <Route path="publica-tu-proyecto/propuesta" element={<ProposalPage />} />
               <Route path="desarrollador" element={<DeveloperPortalPage />} />
               <Route path="desarrollador/proyectos/:projectId/lotes" element={<DeveloperPanelPage view="lots" />} />
               <Route path="desarrollador/proyectos/:projectId/vistas-360" element={<DeveloperPanelPage view="panoramas" />} />
