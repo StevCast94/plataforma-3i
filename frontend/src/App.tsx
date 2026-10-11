@@ -18,6 +18,7 @@ const ProjectDetailPage = lazy(() => import('@/pages/landing/ProjectDetailPage')
 const PropuestaMontanitaPage = lazy(() => import('@/pages/landing/PropuestaMontanitaPage'));
 const AboutPage = lazy(() => import('@/pages/landing/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
+const PublishProjectPage = lazy(() => import('@/pages/landing/PublishProjectPage'));
 const ProductDetailPage = lazy(() => import('@/pages/tienda/ProductDetailPage'));
 const ClubPage = lazy(() => import('@/pages/club/ClubPage'));
 const ViajesPage = lazy(() => import('@/pages/club/ViajesPage'));
@@ -102,6 +103,7 @@ const publicRoutes = () => (
     <Route path="club/viajes" element={<ViajesPage />} />
     <Route path="sobre-nosotros" element={<AboutPage />} />
     <Route path="contacto" element={<ContactPage />} />
+    <Route path="publica-tu-proyecto" element={<PublishProjectPage />} />
     <Route path="reglamento" element={<ReglamentoPage />} />
     <Route path="*" element={<NotFoundPage />} />
   </>

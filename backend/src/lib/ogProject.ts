@@ -278,6 +278,18 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
       image: '/images/og/og-refiere.jpg',
     },
   },
+  '/publica-tu-proyecto': {
+    es: {
+      title: 'Publica tu proyecto en Grupo 3i',
+      description: 'Vende tus lotes con mapa interactivo, recorridos 360°, sello de verificación y red de referidores. Pagas solo cuando vendes.',
+      image: '/images/og/montanita-view-mapa.jpg',
+    },
+    en: {
+      title: 'List your project on Grupo 3i',
+      description: 'Sell your lots with an interactive map, 360° tours, a verification seal and a referral network. Pay only when you sell.',
+      image: '/images/og/montanita-view-mapa.jpg',
+    },
+  },
   '/fiesta': {
     es: {
       title: 'Comparte y Grupo 3i te invita un trago 🍹',

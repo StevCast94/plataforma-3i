@@ -50,6 +50,45 @@ developerRoutes.post('/login', async (req, res) => {
   res.json({ token: signDeveloperToken(user.id, user.developerId) });
 });
 
+// POST /api/developer/apply — solicitud pública desde «Publica tu proyecto».
+// Crea el desarrollador en estado PENDING (sin acceso); Grupo 3i lo contacta y le crea el acceso.
+developerRoutes.post('/apply', async (req, res) => {
+  const b = req.body ?? {};
+  if (b.website) {
+    res.json({ ok: true }); // trampa para robots
+    return;
+  }
+  const name = String(b.company ?? '').trim();
+  const contactName = String(b.name ?? '').trim();
+  const whatsapp = String(b.whatsapp ?? '').trim();
+  if (!name || !contactName || phoneDigits(whatsapp).length < 8) {
+    res.status(400).json({ error: 'Empresa, nombre y WhatsApp son obligatorios' });
+    return;
+  }
+  // Una solicitud por número al día: evita duplicados por doble envío.
+  const recent = await prisma.developer.count({ where: { whatsapp, createdAt: { gte: new Date(Date.now() - 86400_000) } } });
+  if (!recent) {
+    const lines = [
+      b.project && `Proyecto: ${String(b.project).slice(0, 200)}`,
+      b.location && `Ubicación: ${String(b.location).slice(0, 200)}`,
+      b.units && `Unidades: ${String(b.units).slice(0, 50)}`,
+      b.message && `Mensaje: ${String(b.message).slice(0, 2000)}`,
+      `Solicitud web ${new Date().toISOString().slice(0, 10)}${b.lang ? ` (${String(b.lang).slice(0, 2)})` : ''}`,
+    ].filter(Boolean);
+    await prisma.developer.create({
+      data: {
+        name: name.slice(0, 120),
+        contactName: contactName.slice(0, 120),
+        whatsapp: whatsapp.slice(0, 40),
+        email: b.email ? String(b.email).trim().slice(0, 160) : null,
+        status: 'PENDING',
+        notes: lines.join('\n'),
+      },
+    });
+  }
+  res.status(201).json({ ok: true });
+});
+
 developerRoutes.use(requireDeveloper);
 
 // GET /api/developer/me — usuario, empresa y condiciones comerciales
