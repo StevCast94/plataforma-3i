@@ -93,7 +93,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 export default function ProjectMetricsPage() {
   const { projectId = '' } = useParams();
   const client = usePanelClient();
-  const [days, setDays] = useState(30);
+  const [days, setDays] = useState(90);
   const [m, setM] = useState<Metrics | null>(null);
   const [error, setError] = useState('');
 

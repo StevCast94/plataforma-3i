@@ -24,7 +24,7 @@ export const developerRoutes = Router();
 // estado de publicación los controla Grupo 3i.
 const EDITABLE = [
   'name', 'subtitle', 'description', 'location', 'coverImage', 'images', 'features',
-  'priceFrom', 'priceLabel', 'mapLat', 'mapLng',
+  'priceFrom', 'priceLabel', 'mapLat', 'mapLng', 'textEn',
 ] as const;
 
 function pick(body: Record<string, unknown>) {
@@ -33,6 +33,11 @@ function pick(body: Record<string, unknown>) {
   for (const k of ['priceFrom', 'mapLat', 'mapLng'] as const) {
     if (data[k] === '') data[k] = null;
     else if (data[k] != null) data[k] = Number(data[k]);
+  }
+  if ('textEn' in data) {
+    const t = (data.textEn ?? {}) as Record<string, unknown>;
+    const str = (v: unknown, max: number) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined);
+    data.textEn = { subtitle: str(t.subtitle, 200), description: str(t.description, 8000), priceLabel: str(t.priceLabel, 120) };
   }
   return data;
 }

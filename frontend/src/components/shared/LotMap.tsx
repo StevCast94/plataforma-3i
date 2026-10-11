@@ -352,9 +352,19 @@ export function LotMap({
     const map = mapRef.current;
     if (!map || !panos.length) return;
     const group = L.layerGroup().addTo(map);
-    for (const p of panos) {
-      if (p.lat == null || p.lng == null) continue;
-      L.marker([p.lat, p.lng], { icon: PANO_ICON, zIndexOffset: 1000, title: p.title })
+    // Puntos a menos de ~25 m se separan en círculo para que se puedan tocar.
+    const placed = panos.filter((p) => p.lat != null && p.lng != null);
+    const near = (a: Panorama, b: Panorama) =>
+      Math.hypot((a.lat! - b.lat!) * 111_000, (a.lng! - b.lng!) * 111_000 * Math.cos((a.lat! * Math.PI) / 180)) < 25;
+    const iconFor = (p: Panorama) => {
+      const cluster = placed.filter((q) => near(p, q));
+      if (cluster.length < 2) return PANO_ICON;
+      const ang = (2 * Math.PI * cluster.indexOf(p)) / cluster.length - Math.PI / 2;
+      const r = 22;
+      return L.divIcon({ className: 'pano-pin', html: '<span>360°</span>', iconSize: [40, 40], iconAnchor: [20 - Math.cos(ang) * r, 20 - Math.sin(ang) * r] });
+    };
+    for (const p of placed) {
+      L.marker([p.lat!, p.lng!], { icon: iconFor(p), zIndexOffset: 1000, title: p.title })
         .bindTooltip(p.title, { direction: 'top', offset: [0, -18] })
         .on('click', () => {
           setPanoOpen(p.id);

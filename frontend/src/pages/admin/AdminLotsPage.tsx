@@ -59,8 +59,9 @@ export default function AdminLotsPage() {
     { header: 'Manzana', cell: (l) => l.block ?? '—' },
     { header: 'Área m²', cell: (l) => l.areaM2?.toLocaleString('en-US', { maximumFractionDigits: 1 }) ?? '—' },
     { header: 'Estado', cell: (l) => <Badge variant={STATUS_BADGE[l.status]}>{STATUS_LABEL[l.status]}</Badge> },
-    { header: 'Precio', cell: (l) => (l.price != null ? formatCurrency(l.price) : '—') },
-    { header: 'Uso', cell: (l) => l.name ?? '—' },
+    { header: 'Precio', cell: (l) => (l.price != null ? formatCurrency(l.price) : <span className="text-brand-gray">{l.status === 'SOLD' ? 'sin precio registrado' : '—'}</span>) },
+    // «Uso» solo si algún lote lo tiene (áreas comunales, proyectos de negocio).
+    ...(lots.some((l) => l.name) ? [{ header: 'Uso', cell: (l: AdminLot) => l.name ?? '—' }] : []),
     {
       header: '',
       cell: (l) => (

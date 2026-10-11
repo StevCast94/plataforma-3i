@@ -306,12 +306,12 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
     es: {
       title: 'Galería del sistema para desarrolladoras · Grupo 3i',
       description: 'Capturas reales del portal: proyecto, mapa de lotes, 360°, CRM, vendedores, métricas, ventas y mapa para tu web.',
-      image: '/images/galeria-dev/09-crm-embudo.jpg',
+      image: '/images/propuesta-dev/crm.jpg',
     },
     en: {
       title: 'System gallery for developers · Grupo 3i',
       description: 'Real screenshots of the portal: project, lot map, 360°, CRM, sales team, metrics, sales and a map for your website.',
-      image: '/images/galeria-dev/09-crm-embudo.jpg',
+      image: '/images/propuesta-dev/crm.jpg',
     },
   },
   '/publica-tu-proyecto/manual': {

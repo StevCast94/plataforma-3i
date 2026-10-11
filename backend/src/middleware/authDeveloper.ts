@@ -20,6 +20,8 @@ export function signDeveloperToken(developerUserId: string, developerId: string)
 
 /** Lo que un vendedor puede usar: su sesión, el CRM, sus contactos y avisos. */
 function sellerAllowed(method: string, path: string): boolean {
+  // Plantillas: el vendedor las usa, pero solo el dueño las crea o borra.
+  if (path.startsWith('/crm/templates')) return method === 'GET';
   if (path === '/me' || path === '/password' || path.startsWith('/crm/') || path.startsWith('/push/')) return true;
   if (path === '/leads' || path.startsWith('/leads/')) return true;
   if (method === 'GET' && path === '/projects') return true;

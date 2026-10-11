@@ -39,6 +39,16 @@ export function useLang() {
           .split('\n')
           .map((l) => (l.trim() ? translate(lang, l.trim()) : l))
           .join('\n'),
+      /**
+       * Texto de un proyecto: en inglés usa lo que escribió la desarrolladora
+       * (textEn) y, si no hay, el diccionario.
+       */
+      pt: (p: { subtitle?: string | null; description?: string | null; priceLabel?: string | null; textEn?: Partial<Record<'subtitle' | 'description' | 'priceLabel', string>> | null }, key: 'subtitle' | 'description' | 'priceLabel') => {
+        const own = lang === 'en' ? p.textEn?.[key] : undefined;
+        if (own) return own;
+        const es = p[key] ?? '';
+        return key === 'description' ? es.split('\n').map((l) => (l.trim() ? translate(lang, l.trim()) : l)).join('\n') : es ? translate(lang, es) : '';
+      },
       /** Añade el prefijo de idioma a una ruta interna. */
       path: (p: string) => localizePath(p, lang),
       /** La misma página en el otro idioma. */

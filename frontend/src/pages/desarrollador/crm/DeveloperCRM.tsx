@@ -305,7 +305,7 @@ export function DeveloperCRM({ projects, ownLeadRate, isOwner }: { projects: Dev
               {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           )}
-          <Button size="sm" variant="outline" onClick={() => setTplOpen(true)}>Plantillas</Button>
+          {isOwner && <Button size="sm" variant="outline" onClick={() => setTplOpen(true)}>Plantillas</Button>}
         </div>
       </div>
 

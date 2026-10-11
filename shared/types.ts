@@ -42,6 +42,8 @@ export interface Project {
   features?: ProjectFeatures | null;
   priceFrom?: number | null;
   priceLabel?: string | null;
+  /** Textos en inglés que escribe la desarrolladora (si no hay, se usa el diccionario). */
+  textEn?: { subtitle?: string; description?: string; priceLabel?: string } | null;
   active: boolean;
   featured: boolean;
   showBrochure: boolean;

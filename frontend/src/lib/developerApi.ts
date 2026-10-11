@@ -75,6 +75,7 @@ export interface DevProject {
   images: string[];
   priceFrom: number | null;
   priceLabel: string | null;
+  textEn: { subtitle?: string; description?: string; priceLabel?: string } | null;
   mapLat: number | null;
   mapLng: number | null;
   publishStatus: PublishStatus;

@@ -121,7 +121,15 @@ export function DeveloperSales() {
     }
   }
 
+  const live = (sales ?? []).filter((s) => s.status !== 'REJECTED' && s.status !== 'CANCELLED');
+  const sum = (f: (s: DevSale) => number) => live.reduce((a, s) => a + f(s), 0);
   const owed = (sales ?? []).filter((s) => s.status !== 'REJECTED').reduce((a, s) => a + s.totals.feeTotal - s.totals.feeCollected, 0);
+  const summary: [string, number][] = [
+    ['Vendido', sum((s) => s.price)],
+    ['Cobrado a tus clientes', sum((s) => s.totals.paid)],
+    ['Comisión pagada', sum((s) => s.totals.feeCollected)],
+    ['Comisión pendiente de pago', owed],
+  ];
 
   return (
     <div>
@@ -130,11 +138,17 @@ export function DeveloperSales() {
           <h2 className="font-serif text-xl font-bold text-primary">Ventas</h2>
           <p className="text-xs text-brand-gray">Para declarar una venta, ve a CRM → Lista y usa «Venta» en la fila del cliente.</p>
         </div>
-        <div className="rounded-xl bg-white px-4 py-2 text-right shadow-sm">
-          <p className="text-xs text-brand-gray">Comisión pendiente de pago a Grupo 3i</p>
-          <p className="text-lg font-bold text-primary">{formatCurrency(owed)}</p>
-        </div>
       </div>
+      {live.length > 0 && (
+        <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {summary.map(([l, v]) => (
+            <div key={l} className="rounded-xl bg-white px-4 py-3 shadow-sm">
+              <p className="text-xs text-brand-gray">{l}</p>
+              <p className="text-lg font-bold text-primary">{formatCurrency(v)}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {sales === null ? (
         <p className="text-sm text-brand-gray">Cargando…</p>

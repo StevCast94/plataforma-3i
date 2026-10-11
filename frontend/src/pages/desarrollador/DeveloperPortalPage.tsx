@@ -89,6 +89,7 @@ function Login({ onDone }: { onDone: () => void }) {
 }
 
 type Draft = Pick<DevProject, 'name' | 'subtitle' | 'description' | 'location' | 'coverImage' | 'images' | 'priceLabel'> & {
+  textEn: { subtitle: string; description: string; priceLabel: string };
   priceFrom: string;
   mapLat: string;
   mapLng: string;
@@ -102,6 +103,7 @@ const toDraft = (p?: DevProject): Draft => ({
   coverImage: p?.coverImage ?? null,
   images: p?.images ?? [],
   priceLabel: p?.priceLabel ?? '',
+  textEn: { subtitle: p?.textEn?.subtitle ?? '', description: p?.textEn?.description ?? '', priceLabel: p?.textEn?.priceLabel ?? '' },
   priceFrom: p?.priceFrom != null ? String(p.priceFrom) : '',
   mapLat: p?.mapLat != null ? String(p.mapLat) : '',
   mapLng: p?.mapLng != null ? String(p.mapLng) : '',
@@ -162,6 +164,17 @@ function Editor({ project, onBack, onSaved }: { project?: DevProject; onBack: ()
         <div className="grid grid-cols-2 gap-2">
           <Input label="Latitud" value={d.mapLat} onChange={(e) => set('mapLat', e.target.value)} />
           <Input label="Longitud" value={d.mapLng} onChange={(e) => set('mapLng', e.target.value)} />
+        </div>
+        <div className="rounded-xl bg-light p-4 sm:col-span-2">
+          <p className="font-semibold text-primary">Versión en inglés</p>
+          <p className="mb-3 text-xs text-brand-gray">Lo que ve el comprador extranjero en la ficha en inglés. Si lo dejas vacío, verá el texto en español.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Input label="Subtitle" value={d.textEn.subtitle} onChange={(e) => set('textEn', { ...d.textEn, subtitle: e.target.value })} />
+            <Input label="Price text" placeholder="Lots from $25,000" value={d.textEn.priceLabel} onChange={(e) => set('textEn', { ...d.textEn, priceLabel: e.target.value })} />
+            <div className="sm:col-span-2">
+              <Textarea label="Description" rows={5} value={d.textEn.description} onChange={(e) => set('textEn', { ...d.textEn, description: e.target.value })} />
+            </div>
+          </div>
         </div>
         <div>
           <span className="mb-1.5 block text-sm font-medium text-primary">Portada *</span>

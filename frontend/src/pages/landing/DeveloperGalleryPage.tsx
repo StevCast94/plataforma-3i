@@ -17,6 +17,7 @@ const GROUPS: { id: string; title: string; intro: string; shots: Shot[] }[] = [
     shots: [
       ['01-portal-proyectos', 'Portal de la desarrolladora', 'Tus proyectos, tu comisión y el estado de publicación.'],
       ['02-editar-proyecto', 'Ficha del proyecto', 'Nombre, descripción, precio, ubicación y fotos.'],
+      ['02b-version-ingles', 'Versión en inglés', 'Subtítulo, descripción y precio para el comprador extranjero.'],
       ['03-puntaje-calidad', 'Puntaje de la ficha', 'Te dice qué completar para aparecer entre los primeros.'],
       ['03b-documentos-legales', 'Documentos legales', 'Privados: solo los ve el equipo legal para darte el sello.'],
       ['05-editor-lotes', 'Inventario de lotes', 'Precio, área y estado de cada solar, con filtros.'],
@@ -73,7 +74,7 @@ const GROUPS: { id: string; title: string; intro: string; shots: Shot[] }[] = [
 ];
 
 const ALL = GROUPS.flatMap((g) => g.shots);
-const src = (f: string) => `/images/galeria-dev/${f}.jpg`;
+const src = (f: string) => `/images/galeria-dev/${f}.webp`;
 
 export default function DeveloperGalleryPage() {
   const [open, setOpen] = useState<number | null>(null);

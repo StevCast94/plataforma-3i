@@ -55,6 +55,7 @@ export function EmbedSettings({ project }: { project: DevProject }) {
           </label>
           <Input label="Nombre que se muestra" placeholder={project.name} value={name} onChange={(e) => setName(e.target.value)} />
           <PhoneField label="WhatsApp que recibe los contactos" defaultValue={whatsapp || '+593 '} onChange={setWhatsapp} />
+          <p className="-mt-1 text-xs text-brand-gray">Si lo dejas vacío, los contactos llegan al WhatsApp de tu empresa registrado en Grupo 3i.</p>
         </div>
       </div>
       <Button onClick={save} disabled={busy} variant="outline" className="mt-4">

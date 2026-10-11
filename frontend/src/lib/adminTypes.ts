@@ -103,6 +103,7 @@ export interface AdminProject {
   features?: Record<string, unknown> | null;
   priceFrom?: number | null;
   priceLabel?: string | null;
+  textEn?: { subtitle?: string; description?: string; priceLabel?: string } | null;
   active: boolean;
   featured: boolean;
   showBrochure: boolean;

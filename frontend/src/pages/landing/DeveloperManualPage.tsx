@@ -78,6 +78,7 @@ const SECTIONS: Section[] = [
           items={[
             'En Proyectos, toca «+ Nuevo proyecto».',
             'Completa nombre, descripción (mínimo 80 caracteres), ubicación, precio desde, coordenadas, portada y galería. Las fotos se optimizan solas al subirlas.',
+            'En «Versión en inglés» escribe el subtítulo, la descripción y el texto de precio para el comprador extranjero. Si lo dejas vacío, la ficha en inglés muestra el texto en español.',
             'Toca «Guardar y enviar a revisión». Mientras está en revisión no se puede editar.',
             'Si Grupo 3i te devuelve el proyecto, verás las observaciones en amarillo. Corrige y vuelve a enviarlo.',
             'Una vez publicado puedes editarlo cuando quieras, o pausarlo y reactivarlo.',
@@ -96,7 +97,7 @@ const SECTIONS: Section[] = [
       <>
         <Bullets
           items={[
-            'Puntaje: portada (10), galería de 6 fotos o más (15), descripción de 300 caracteres o más (10), subtítulo y ubicación (5), coordenadas (5), plano de lotes (15), precios en todos los lotes (15), 3 vistas 360° (10) y verificación (15).',
+            'Puntaje: portada (10), galería de 6 fotos o más (10), descripción de 300 caracteres o más (10), subtítulo y ubicación (5), coordenadas (5), plano de lotes (10), precios en todos los lotes (15), 3 vistas 360° (10), versión en inglés (10) y verificación (15).',
             'Al editar el proyecto ves tu puntaje y un consejo para cada punto que te falta. Con 90 o más apareces entre los primeros.',
             'Documentos legales: sube escritura inscrita, certificado de gravámenes, aprobación municipal y plano (PDF o foto). Son privados: solo los ve el equipo legal de Grupo 3i.',
             'Con la revisión completa, tu proyecto muestra el sello «✓ Verificado por Grupo 3i» en su tarjeta y en su ficha.',
@@ -209,7 +210,7 @@ const SECTIONS: Section[] = [
         <Bullets
           items={[
             'Vienen cuatro de ejemplo: primer contacto, agendar visita, seguimiento y una en inglés.',
-            'En CRM → «Plantillas» puedes crear las tuyas o borrar las que no uses.',
+            'En CRM → «Plantillas» la dueña puede crear las suyas o borrar las que no use. Los vendedores las usan, pero no las modifican.',
             <>
               Variables que se reemplazan solas: <code>{'{nombre}'}</code>, <code>{'{proyecto}'}</code> y <code>{'{solar}'}</code>.
             </>,

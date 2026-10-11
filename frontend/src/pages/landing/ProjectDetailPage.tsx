@@ -24,7 +24,7 @@ import { formatCurrency } from '@/lib/utils';
 import { ProjectLeadContext, useTrackView } from '@/lib/projectTracking';
 
 export default function ProjectDetailPage() {
-  const { t, tb } = useLang();
+  const { t, pt } = useLang();
   const { slug } = useParams();
   const navigate = useNavigate();
   const { data: project, loading, error } = useProject(slug);
@@ -81,7 +81,7 @@ export default function ProjectDetailPage() {
     <ProjectLeadContext.Provider value={{ slug: project.slug, gated: Boolean(project.developerId || project.captureLeads) }}>
       <Seo
         title={project.name}
-        description={tb(project.subtitle ?? project.description)}
+        description={project.subtitle ? pt(project, 'subtitle') : pt(project, 'description')}
         image={project.coverImage}
       />
 
@@ -149,7 +149,7 @@ export default function ProjectDetailPage() {
 
             {project.subtitle && (
               <p className="mt-5 max-w-xl text-base font-light leading-relaxed text-white/85 sm:text-xl">
-                {t(project.subtitle)}
+                {pt(project, 'subtitle')}
               </p>
             )}
 
@@ -163,7 +163,7 @@ export default function ProjectDetailPage() {
                   <p className="mt-1 font-serif text-3xl font-bold text-secondary sm:text-4xl">
                     {project.priceFrom != null
                       ? formatCurrency(project.priceFrom)
-                      : t(project.priceLabel ?? '')}
+                      : pt(project, 'priceLabel')}
                   </p>
                 </div>
               )}
@@ -248,7 +248,7 @@ export default function ProjectDetailPage() {
             <h2 className="text-3xl font-bold text-primary sm:text-4xl">{t('Sobre el proyecto')}</h2>
             {project.description && (
               <p className="mx-auto mt-5 max-w-2xl whitespace-pre-line text-left leading-relaxed text-primary/80 sm:text-center">
-                {tb(project.description)}
+                {pt(project, 'description')}
               </p>
             )}
             {typeof project.features?.retorno === 'string' && (

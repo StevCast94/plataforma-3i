@@ -43,7 +43,7 @@ function Bars({ rows }: { rows: { label: string; value: number; note?: string }[
 
 export function CrmReport({ projectId }: { projectId: string }) {
   const crm = useCrmClient();
-  const [days, setDays] = useState(30);
+  const [days, setDays] = useState(90);
   const [r, setR] = useState<Report | null>(null);
 
   useEffect(() => {

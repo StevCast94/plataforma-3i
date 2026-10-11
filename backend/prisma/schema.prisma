@@ -40,6 +40,7 @@ model Project {
   features        Json? // { bedrooms, bathrooms, m2, amenities... }
   priceFrom       Float?
   priceLabel      String? // "Desde $12,000", "Fracciones desde $5,000"
+  textEn          Json? // { subtitle, description, priceLabel } en inglés (lo escribe el desarrollador)
   active          Boolean           @default(true)
   featured        Boolean           @default(false)
   showBrochure    Boolean           @default(false) // muestra el Brochure Digital premium en la ficha

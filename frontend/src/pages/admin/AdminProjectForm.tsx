@@ -52,6 +52,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [subtitle, setSubtitle] = useState('');
+  const [textEn, setTextEn] = useState({ subtitle: '', description: '', priceLabel: '' });
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [coverImage, setCoverImage] = useState<string[]>([]);
@@ -80,6 +81,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setName(project?.name ?? '');
     setSlug(project?.slug ?? '');
     setSubtitle(project?.subtitle ?? '');
+    setTextEn({ subtitle: project?.textEn?.subtitle ?? '', description: project?.textEn?.description ?? '', priceLabel: project?.textEn?.priceLabel ?? '' });
     setDescription(project?.description ?? '');
     setLocation(project?.location ?? '');
     setCoverImage(project?.coverImage ? [project.coverImage] : []);
@@ -143,6 +145,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       features: kvToFeatures(kvs),
       priceFrom: priceFrom ? Number(priceFrom) : null,
       priceLabel: priceLabel || null,
+      textEn: { subtitle: textEn.subtitle.trim() || undefined, description: textEn.description.trim() || undefined, priceLabel: textEn.priceLabel.trim() || undefined },
       active,
       featured,
       showBrochure,
@@ -190,6 +193,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       images,
       priceFrom: priceFrom ? Number(priceFrom) : null,
       priceLabel: priceLabel || null,
+      textEn: { subtitle: textEn.subtitle.trim() || undefined, description: textEn.description.trim() || undefined, priceLabel: textEn.priceLabel.trim() || undefined },
       active,
       featured,
       showBrochure: true,
@@ -209,6 +213,14 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
         <Input label="Subtítulo" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
         <Textarea label="Descripción" value={description} onChange={(e) => setDescription(e.target.value)} />
         <Input label="Ubicación" value={location} onChange={(e) => setLocation(e.target.value)} />
+        <details className="rounded-lg bg-light p-3">
+          <summary className="cursor-pointer text-sm font-medium text-primary">Versión en inglés (opcional; si no, se usa el diccionario)</summary>
+          <div className="mt-3 space-y-3">
+            <Input label="Subtitle" value={textEn.subtitle} onChange={(e) => setTextEn({ ...textEn, subtitle: e.target.value })} />
+            <Textarea label="Description" value={textEn.description} onChange={(e) => setTextEn({ ...textEn, description: e.target.value })} />
+            <Input label="Price text" value={textEn.priceLabel} onChange={(e) => setTextEn({ ...textEn, priceLabel: e.target.value })} />
+          </div>
+        </details>
 
         <div>
           <span className="mb-1.5 block text-sm font-medium text-primary">Imagen de portada</span>

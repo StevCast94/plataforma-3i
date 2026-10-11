@@ -5,7 +5,7 @@ import { cld } from '@/lib/cloudinary';
 import type { Project } from '@shared/types';
 
 export function ProjectCard({ project }: { project: Project }) {
-  const { t } = useLang();
+  const { t, pt } = useLang();
   return (
     <Link to={`/proyectos/${project.slug}`}>
       <Card className="group h-full">
@@ -35,10 +35,10 @@ export function ProjectCard({ project }: { project: Project }) {
           )}
           <h3 className="mt-1 text-2xl text-primary">{project.name}</h3>
           {project.subtitle && (
-            <p className="mt-1 text-sm text-brand-gray">{t(project.subtitle)}</p>
+            <p className="mt-1 text-sm text-brand-gray">{pt(project, 'subtitle')}</p>
           )}
           {project.priceLabel && (
-            <p className="mt-4 font-semibold text-accent">{t(project.priceLabel)}</p>
+            <p className="mt-4 font-semibold text-accent">{pt(project, 'priceLabel')}</p>
           )}
         </div>
       </Card>
