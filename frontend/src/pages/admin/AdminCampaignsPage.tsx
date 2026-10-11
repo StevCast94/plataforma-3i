@@ -44,7 +44,7 @@ export default function AdminCampaignsPage() {
   const [report, setReport] = useState<Report | null>(null);
 
   // Generador de enlaces
-  const [page, setPage] = useState('/proyectos/montanita-view');
+  const [page, setPage] = useState('/l/montanita-view');
   const [src, setSrc] = useState(0);
   const [campaign, setCampaign] = useState('');
   const [content, setContent] = useState('');
@@ -114,18 +114,29 @@ export default function AdminCampaignsPage() {
 
       <section className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5">
         <h2 className="mb-1 text-lg font-semibold text-primary">2 · Enlace para cada anuncio</h2>
-        <p className="mb-4 text-sm text-brand-gray">Usa este enlace como destino del anuncio: así el contacto llega al CRM con el nombre de la campaña.</p>
+        <p className="mb-4 text-sm text-brand-gray">
+          Usa este enlace como destino del anuncio: así el contacto llega al CRM con el nombre de la campaña. La <strong>página de aterrizaje</strong> (/l/…) tiene el formulario arriba y sin menú: suele convertir mejor que la ficha completa.
+        </p>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="block text-sm">
             <span className="mb-1.5 block font-medium text-primary">Página de destino</span>
             <select value={page} onChange={(e) => setPage(e.target.value)} className="w-full rounded-lg border border-black/15 bg-white px-4 py-3 text-sm">
-              {(projects ?? []).map((p) => (
-                <option key={p.slug} value={`/proyectos/${p.slug}`}>{p.name}</option>
-              ))}
+              <optgroup label="Página de aterrizaje (recomendada para anuncios)">
+                {(projects ?? []).map((p) => (
+                  <option key={p.slug} value={`/l/${p.slug}`}>{p.name} · aterrizaje</option>
+                ))}
+              </optgroup>
+              <optgroup label="Ficha completa">
+                {(projects ?? []).map((p) => (
+                  <option key={p.slug} value={`/proyectos/${p.slug}`}>{p.name} · ficha</option>
+                ))}
+              </optgroup>
+              <optgroup label="Otras">
               <option value="/proyectos">Todos los proyectos</option>
               <option value="/publica-tu-proyecto">Para desarrolladoras</option>
               <option value="/oficina">Refiere y gana</option>
               <option value="/club">Club 3i</option>
+              </optgroup>
             </select>
           </label>
           <label className="block text-sm">

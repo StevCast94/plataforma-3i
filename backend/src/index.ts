@@ -164,7 +164,7 @@ if (hasBuild) {
 
   // Tarjeta social por proyecto: WhatsApp y Facebook no ejecutan JS, así que las
   // meta tags se escriben en el HTML antes de enviarlo (ver lib/ogProject.ts).
-  app.get(['/proyectos/:slug', '/en/proyectos/:slug'], projectOgHandler(frontendPath));
+  app.get(['/proyectos/:slug', '/en/proyectos/:slug', '/l/:slug', '/en/l/:slug'], projectOgHandler(frontendPath));
   app.get(['/proyectos/:slug/solar/:code', '/en/proyectos/:slug/solar/:code'], lotOgHandler(frontendPath));
   app.get(PAGE_OG_PATHS, pageOgHandler(frontendPath));
 

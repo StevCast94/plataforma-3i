@@ -49,8 +49,8 @@ const ZONE_STYLE = {
   via: { color: '#facc15', label: 'Vías' },
 };
 
-export const DOWN_PAYMENT = 0.3;
-export const INSTALLMENTS = 24;
+export { DOWN_PAYMENT, INSTALLMENTS, monthly } from '@/lib/lotFinance';
+import { DOWN_PAYMENT, INSTALLMENTS, monthly } from '@/lib/lotFinance';
 
 type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
 
@@ -764,10 +764,6 @@ export function CashOnlyNote() {
       🏷️ {t('Precio promocional válido solo con pago de contado. No aplica el plan de financiamiento.')}
     </p>
   );
-}
-
-export function monthly(price: number) {
-  return (price * (1 - DOWN_PAYMENT)) / INSTALLMENTS;
 }
 
 /** Fotos del solar cargadas desde el panel de administración. */

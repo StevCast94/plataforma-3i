@@ -72,6 +72,7 @@ const AdminSettingsPage = lazy(() => import('@/pages/admin/AdminSettingsPage'));
 const AdminTravelClaimsPage = lazy(() => import('@/pages/admin/AdminTravelClaimsPage'));
 const AdminSupportPage = lazy(() => import('@/pages/admin/AdminSupportPage'));
 const LotPage = lazy(() => import('@/pages/landing/LotPage'));
+const CampaignLandingPage = lazy(() => import('@/pages/landing/CampaignLandingPage'));
 const FiestaPage = lazy(() => import('@/pages/landing/FiestaPage'));
 const AdminBosquePage = lazy(() => import('@/pages/admin/AdminBosquePage'));
 
@@ -154,6 +155,9 @@ export default function App() {
               {/* Activación de eventos: pantalla completa, sin menú */}
               <Route path="fiesta" element={<FiestaPage />} />
               <Route path="embed/:slug" element={<EmbedMapPage />} />
+              {/* Página de aterrizaje para anuncios: sin menú */}
+              <Route path="l/:slug" element={<CampaignLandingPage />} />
+              <Route path="en/l/:slug" element={<CampaignLandingPage />} />
               <Route path="publica-tu-proyecto/propuesta" element={<ProposalPage />} />
               <Route path="en/publica-tu-proyecto/propuesta" element={<ProposalPage />} />
               <Route path="desarrollador" element={<DeveloperPortalPage />} />
