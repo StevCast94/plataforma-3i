@@ -2,7 +2,7 @@
 // Datos reales de grupo3i.com. Volver a correr si cambian precios o disponibilidad.
 import puppeteer from 'puppeteer-core';
 // Uso: npm i -g puppeteer-core (o en una carpeta temporal) y: node tools/og-landing.mjs
-const OUT = new URL('../frontend/public/images/og/l/', import.meta.url).pathname.replace(/^/([A-Z]:)/, '$1');
+const OUT = new URL('../frontend/public/images/og/l/', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1');
 const API = 'https://grupo3i.com/api';
 const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 const projects = (await fetch(API + '/projects').then((r) => r.json()));
