@@ -8,6 +8,7 @@ import { cld } from '@/lib/cloudinary';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/shared/Toast';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
+import { trackProject } from '@/lib/projectTracking';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { useLang } from '@/hooks/useLang';
 import { useVisualViewport } from '@/hooks/useVisualViewport';
@@ -355,7 +356,10 @@ export function LotMap({
       if (p.lat == null || p.lng == null) continue;
       L.marker([p.lat, p.lng], { icon: PANO_ICON, zIndexOffset: 1000, title: p.title })
         .bindTooltip(p.title, { direction: 'top', offset: [0, -18] })
-        .on('click', () => setPanoOpen(p.id))
+        .on('click', () => {
+          setPanoOpen(p.id);
+          trackProject(projectSlug, 'pano_open');
+        })
         .addTo(group);
     }
     // Precarga el visor (three.js) en segundo plano y la versión liviana (2048 px)
@@ -951,7 +955,7 @@ function LotPanel({
       </dl>
 
       {/* Vía más rápida: abre WhatsApp con el solar ya escrito, sin llenar nada. */}
-      <WhatsAppCTA message={waMsg} className="mt-4 w-full" />
+      <WhatsAppCTA message={waMsg} lotCode={lot.code} className="mt-4 w-full" />
       <ShareLot lot={lot} projectName={projectName} projectSlug={projectSlug} className="mt-2" />
 
       <LotSheet lot={lot} />

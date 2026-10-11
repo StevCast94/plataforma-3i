@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/shared/Toast';
-import { PUBLISH_LABEL, type PublishStatus } from '@/lib/developerApi';
+import { PUBLISH_LABEL, LEAD_SOURCE_LABEL, LEAD_STATUS_LABEL, type PublishStatus, type DevLead } from '@/lib/developerApi';
+
+type AdminLead = DevLead & { referralCode: string | null; project: { name: string; developer: { name: string } | null } };
 
 // Desarrolladores externos que publican en la vitrina de Grupo 3i: condiciones
 // comerciales, accesos al portal (/desarrollador) y revisión de sus proyectos.
@@ -50,9 +52,11 @@ export default function AdminDevelopersPage() {
   const [editing, setEditing] = useState<{ id?: string; form: Form } | null>(null);
   const [secret, setSecret] = useState<{ email: string; password: string } | null>(null);
   const [review, setReview] = useState<{ project: DevProjectRow; note: string } | null>(null);
+  const [leads, setLeads] = useState<AdminLead[] | null>(null);
 
   const load = useCallback(() => {
     adminApi.get<Developer[]>('/admin/developers').then(setDevs).catch((e) => toast(e.message, 'error'));
+    adminApi.get<AdminLead[]>('/admin/developers/leads').then(setLeads).catch(() => setLeads([]));
   }, [toast]);
   useEffect(load, [load]);
 
@@ -190,6 +194,43 @@ export default function AdminDevelopersPage() {
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {leads && leads.length > 0 && (
+        <div className="mt-8">
+          <h2 className="mb-3 font-serif text-xl font-bold text-primary">Contactos de proyectos de terceros</h2>
+          <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-black/5 text-xs uppercase tracking-wide text-brand-gray">
+                <tr>
+                  <th className="px-4 py-3">Fecha</th>
+                  <th className="px-4 py-3">Contacto</th>
+                  <th className="px-4 py-3">Proyecto</th>
+                  <th className="px-4 py-3">Origen</th>
+                  <th className="px-4 py-3">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leads.map((l) => (
+                  <tr key={l.id} className="border-b border-black/5 last:border-0">
+                    <td className="whitespace-nowrap px-4 py-2 text-brand-gray">{new Date(l.createdAt).toLocaleDateString('es-EC')}</td>
+                    <td className="px-4 py-2">{l.name} <span className="text-xs text-brand-gray">{l.phone}</span></td>
+                    <td className="px-4 py-2">
+                      {l.project.name}
+                      {l.lotCode && <span className="text-xs text-brand-gray"> · {l.lotCode}</span>}
+                      <div className="text-xs text-brand-gray">{l.project.developer?.name}</div>
+                    </td>
+                    <td className="px-4 py-2">
+                      <span className={`rounded-full px-2 py-0.5 text-xs ${LEAD_SOURCE_LABEL[l.source].cls}`}>{LEAD_SOURCE_LABEL[l.source].text}</span>
+                      {l.referralCode && <div className="text-xs text-brand-gray">{l.referralCode}</div>}
+                    </td>
+                    <td className="px-4 py-2">{LEAD_STATUS_LABEL[l.status]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

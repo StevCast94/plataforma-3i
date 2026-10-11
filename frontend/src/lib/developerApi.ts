@@ -51,6 +51,7 @@ export const devApi = {
   post: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: 'POST', body: body ? JSON.stringify(body) : undefined }),
   put: <T>(path: string, body?: unknown) => request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
+  patch: <T>(path: string, body?: unknown) => request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
 };
 
 export type PublishStatus = 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'PAUSED';
@@ -96,4 +97,38 @@ export interface DevMe {
     onboardingPaid: boolean;
     featuredUntil: string | null;
   };
+}
+
+export type LeadStatus = 'NEW' | 'CONTACTED' | 'VISIT' | 'NEGOTIATION' | 'WON' | 'LOST';
+export type LeadSource = 'REFERRAL' | 'PLATFORM' | 'DEVELOPER';
+
+export const LEAD_STATUS_LABEL: Record<LeadStatus, string> = {
+  NEW: 'Nuevo',
+  CONTACTED: 'Contactado',
+  VISIT: 'Visita',
+  NEGOTIATION: 'Negociación',
+  WON: 'Venta',
+  LOST: 'Perdido',
+};
+
+export const LEAD_SOURCE_LABEL: Record<LeadSource, { text: string; cls: string }> = {
+  REFERRAL: { text: 'Referido', cls: 'bg-purple-100 text-purple-800' },
+  PLATFORM: { text: 'Plataforma', cls: 'bg-sky-100 text-sky-800' },
+  DEVELOPER: { text: 'Propio', cls: 'bg-gray-100 text-gray-700' },
+};
+
+export interface DevLead {
+  id: string;
+  projectId: string;
+  lotCode: string | null;
+  name: string;
+  phone: string;
+  email: string | null;
+  message: string | null;
+  source: LeadSource;
+  channel: string;
+  status: LeadStatus;
+  notes: string | null;
+  createdAt: string;
+  project: { name: string };
 }

@@ -60,7 +60,7 @@ export function ContactForm({
       else if (!EMAIL_RE.test(data.email)) e.email = t('Email inválido');
       // El WhatsApp es el canal por el que responde el asesor: sin él, el lead
       // se queda esperando un correo que casi nadie abre.
-      if (data.phone.replace(/D/g, '').length < 7) e.phone = t('Ingresa tu WhatsApp');
+      if (data.phone.replace(/\D/g, '').length < 7) e.phone = t('Ingresa tu WhatsApp');
     }
     if (isContact && withMessage && !data.message.trim())
       e.message = t('Cuéntanos qué necesitas');

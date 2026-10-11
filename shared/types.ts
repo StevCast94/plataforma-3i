@@ -27,6 +27,8 @@ export interface ProjectFeatures {
 export interface Project {
   id: string;
   slug: string;
+  /** Proyecto de un desarrollador externo (vitrina). null = propio de Grupo 3i. */
+  developerId?: string | null;
   name: string;
   subtitle?: string | null;
   description: string;

@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
+import { refFromRequest } from './referral';
+import { registerLead, leadWhatsapp, phoneDigits } from '../services/projectLeads';
 
 export const projectRoutes = Router();
 
@@ -146,5 +148,85 @@ projectRoutes.delete('/:id', requireAdmin, async (req, res) => {
   } catch (err) {
     console.error('DELETE /api/projects/:id', err);
     res.status(400).json({ error: 'Error al eliminar el proyecto' });
+  }
+});
+
+// ============================================================
+// Contactos y eventos por proyecto (vitrina de desarrolladores)
+// ============================================================
+
+const EVENT_TYPES = new Set(['view', 'lot_view', 'pano_open', 'wa_click', 'share', 'brochure']);
+
+async function publicProjectId(slug: string): Promise<string | null> {
+  const p = await prisma.project.findUnique({ where: { slug }, select: { id: true, publishStatus: true } });
+  return p && p.publishStatus === 'PUBLISHED' ? p.id : null;
+}
+
+// POST /api/projects/:slug/events {type, lotCode?, visitorId?, lang?} — métricas, sin auth
+projectRoutes.post('/:slug/events', async (req, res) => {
+  try {
+    const { type, lotCode, visitorId, lang } = req.body ?? {};
+    if (!EVENT_TYPES.has(String(type))) {
+      res.status(400).json({ error: 'Tipo inválido' });
+      return;
+    }
+    const projectId = await publicProjectId(req.params.slug);
+    if (!projectId) {
+      res.status(404).json({ error: 'Proyecto no encontrado' });
+      return;
+    }
+    const ua = String(req.headers['user-agent'] ?? '');
+    if (/bot|crawler|spider|facebookexternalhit|whatsapp/i.test(ua)) {
+      res.json({ ok: true });
+      return;
+    }
+    await prisma.projectEvent.create({
+      data: {
+        projectId,
+        type: String(type),
+        lotCode: lotCode ? String(lotCode).slice(0, 40) : null,
+        visitorId: visitorId ? String(visitorId).slice(0, 64) : null,
+        refCode: refFromRequest(req),
+        lang: lang ? String(lang).slice(0, 5) : null,
+        device: /Mobi|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop',
+      },
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('POST /api/projects/:slug/events', err);
+    res.status(500).json({ error: 'Error' });
+  }
+});
+
+// POST /api/projects/:slug/leads {name, phone, email?, message?, lotCode?, channel, visitorId?, lang?}
+// Registra el contacto y devuelve el WhatsApp al que se deriva.
+projectRoutes.post('/:slug/leads', async (req, res) => {
+  try {
+    const { name, phone, email, message, lotCode, channel, visitorId, lang } = req.body ?? {};
+    if (!name || !String(name).trim() || phoneDigits(String(phone ?? '')).length < 8) {
+      res.status(400).json({ error: 'Nombre y WhatsApp son obligatorios' });
+      return;
+    }
+    const projectId = await publicProjectId(req.params.slug);
+    if (!projectId) {
+      res.status(404).json({ error: 'Proyecto no encontrado' });
+      return;
+    }
+    const { lead } = await registerLead({
+      projectId,
+      name: String(name),
+      phone: String(phone),
+      email: email ? String(email) : null,
+      message: message ? String(message).slice(0, 2000) : null,
+      lotCode: lotCode ? String(lotCode).slice(0, 40) : null,
+      channel: channel === 'form' ? 'form' : 'whatsapp',
+      referralCode: refFromRequest(req),
+      visitorId: visitorId ? String(visitorId).slice(0, 64) : null,
+      lang: lang ? String(lang).slice(0, 5) : null,
+    });
+    res.status(201).json({ ok: true, leadId: lead.id, whatsapp: await leadWhatsapp(projectId) });
+  } catch (err) {
+    console.error('POST /api/projects/:slug/leads', err);
+    res.status(500).json({ error: 'No se pudo registrar el contacto' });
   }
 });

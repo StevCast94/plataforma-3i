@@ -6,6 +6,7 @@ import { Seo } from '@/components/shared/Seo';
 import { ImageUpload } from '@/components/shared/ImageUpload';
 import { useToast } from '@/components/shared/Toast';
 import { cld } from '@/lib/cloudinary';
+import { DeveloperLeads } from './DeveloperLeads';
 import {
   devApi, getDevToken, setDevToken, PUBLISH_LABEL, type DevMe, type DevProject,
 } from '@/lib/developerApi';
@@ -186,6 +187,7 @@ function Portal({ onLogout }: { onLogout: () => void }) {
   const [me, setMe] = useState<DevMe | null>(null);
   const [projects, setProjects] = useState<DevProject[] | null>(null);
   const [editing, setEditing] = useState<DevProject | 'new' | null>(null);
+  const [tab, setTab] = useState<'projects' | 'leads'>('projects');
 
   const load = useCallback(async () => {
     try {
@@ -255,6 +257,24 @@ function Portal({ onLogout }: { onLogout: () => void }) {
         </div>
       )}
 
+      <div className="mb-5 flex gap-1 rounded-xl bg-white p-1 shadow-sm">
+        {([['projects', 'Proyectos'], ['leads', 'Contactos']] as const).map(([k, label]) => (
+          <button
+            key={k}
+            onClick={() => setTab(k)}
+            className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium ${
+              tab === k ? 'bg-primary text-white' : 'text-brand-gray hover:text-primary'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'leads' && dev ? (
+        <DeveloperLeads projects={projects ?? []} ownLeadRate={dev.ownLeadRate} />
+      ) : (
+      <>
       <div className="mb-3 flex items-center justify-between">
         <h2 className="font-serif text-xl font-bold text-primary">Mis proyectos</h2>
         <Button size="sm" onClick={() => setEditing('new')}>+ Nuevo proyecto</Button>
@@ -303,6 +323,8 @@ function Portal({ onLogout }: { onLogout: () => void }) {
             );
           })}
         </div>
+      )}
+      </>
       )}
     </Shell>
   );

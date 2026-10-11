@@ -123,3 +123,18 @@ adminDeveloperRoutes.post('/projects/:projectId/review', async (req: AuthedReque
   await audit(req.staff?.staffId, approve ? 'approve' : 'reject', 'project', project.id, { note });
   res.json(updated);
 });
+
+// GET /api/admin/developers/leads?projectId= — todos los contactos de proyectos de terceros,
+// con el referidor (que el desarrollador no ve).
+adminDeveloperRoutes.get('/leads', async (req, res) => {
+  const leads = await prisma.projectLead.findMany({
+    where: {
+      project: { developerId: { not: null } },
+      ...(req.query.projectId ? { projectId: String(req.query.projectId) } : {}),
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 500,
+    include: { project: { select: { name: true, developer: { select: { name: true } } } } },
+  });
+  res.json(leads);
+});

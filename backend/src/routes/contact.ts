@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
 import { refFromRequest } from './referral';
+import { registerLead } from '../services/projectLeads';
 
 export const contactRoutes = Router();
 
@@ -32,6 +33,23 @@ contactRoutes.post('/', async (req, res) => {
         referralCode: referralCode ? String(referralCode).trim() : null,
       },
     });
+
+    // Formulario dentro de la ficha de un proyecto: también queda como contacto del proyecto.
+    const slug = typeof source === 'string' && source.startsWith('proyecto:') ? source.slice(9) : null;
+    if (slug && phone) {
+      const project = await prisma.project.findUnique({ where: { slug }, select: { id: true, publishStatus: true } });
+      if (project?.publishStatus === 'PUBLISHED') {
+        await registerLead({
+          projectId: project.id,
+          name: String(name),
+          phone: String(phone),
+          email: String(email),
+          message: String(message),
+          channel: 'form',
+          referralCode,
+        }).catch((e) => console.error('registerLead (contact)', e));
+      }
+    }
 
     res.status(201).json({ ok: true, id: submission.id });
   } catch (err) {

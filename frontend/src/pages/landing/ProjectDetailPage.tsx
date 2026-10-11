@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { cld } from '@/lib/cloudinary';
 import { formatCurrency } from '@/lib/utils';
+import { ProjectLeadContext, useTrackView } from '@/lib/projectTracking';
 
 export default function ProjectDetailPage() {
   const { t, tb } = useLang();
@@ -29,6 +30,7 @@ export default function ProjectDetailPage() {
   const { data: project, loading, error } = useProject(slug);
   const { data: allProjects } = useProjects();
   const [open, setOpen] = useState(false);
+  useTrackView(project?.slug, 'view');
 
   if (loading) return <DetailSkeleton />;
   if (error) return <ErrorState message={error} onRetry={() => location.reload()} />;
@@ -76,7 +78,7 @@ export default function ProjectDetailPage() {
   };
 
   return (
-    <>
+    <ProjectLeadContext.Provider value={{ slug: project.slug, gated: Boolean(project.developerId) }}>
       <Seo
         title={project.name}
         description={tb(project.subtitle ?? project.description)}
@@ -326,7 +328,7 @@ export default function ProjectDetailPage() {
       <p className="mx-auto max-w-6xl px-4 pb-10 text-xs text-brand-gray">
         * {t('Cifras referenciales. No constituyen garantía de retorno.')}
       </p>
-    </>
+    </ProjectLeadContext.Provider>
   );
 }
 

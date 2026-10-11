@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../prisma';
 import { requireDeveloper, signDeveloperToken, type DeveloperRequest } from '../middleware/authDeveloper';
 import { slugify } from '../lib/slug';
+import { registerLead, phoneDigits } from '../services/projectLeads';
 import { v2 as cloudinary } from 'cloudinary';
 
 if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
@@ -205,4 +206,82 @@ developerRoutes.post('/upload-image', async (req: DeveloperRequest, res) => {
     console.error('POST /api/developer/upload-image', err);
     res.status(500).json({ error: 'Error al subir la imagen' });
   }
+});
+
+// ============================================================
+// Contactos (paso 2). El desarrollador ve los contactos de SUS proyectos y puede
+// registrar los propios (comisión reducida). No ve quién es el referidor.
+// ============================================================
+
+const LEAD_STATUSES = ['NEW', 'CONTACTED', 'VISIT', 'NEGOTIATION', 'WON', 'LOST'] as const;
+
+// GET /api/developer/leads?projectId=
+developerRoutes.get('/leads', async (req: DeveloperRequest, res) => {
+  const leads = await prisma.projectLead.findMany({
+    where: {
+      project: { developerId: req.developerId },
+      ...(req.query.projectId ? { projectId: String(req.query.projectId) } : {}),
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 500,
+    select: {
+      id: true, projectId: true, lotCode: true, name: true, phone: true, email: true, message: true,
+      source: true, channel: true, status: true, notes: true, createdAt: true,
+      project: { select: { name: true } },
+    },
+  });
+  res.json(leads);
+});
+
+// POST /api/developer/projects/:id/leads {name, phone, email?, notes?} — contacto propio
+developerRoutes.post('/projects/:id/leads', async (req: DeveloperRequest, res) => {
+  const project = await ownProject(req);
+  if (!project) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const { name, phone, email, notes } = req.body ?? {};
+  if (!name || !String(name).trim() || phoneDigits(String(phone ?? '')).length < 8) {
+    res.status(400).json({ error: 'Nombre y WhatsApp son obligatorios' });
+    return;
+  }
+  const { lead, created } = await registerLead({
+    projectId: project.id,
+    name: String(name),
+    phone: String(phone),
+    email: email ? String(email) : null,
+    channel: 'manual',
+    source: 'DEVELOPER',
+  });
+  if (!created) {
+    res.status(409).json({
+      error: `Ese contacto ya está registrado desde el ${lead.createdAt.toLocaleDateString('es-EC')} y su atribución sigue vigente.`,
+    });
+    return;
+  }
+  if (notes) await prisma.projectLead.update({ where: { id: lead.id }, data: { notes: String(notes) } });
+  res.status(201).json(lead);
+});
+
+// PATCH /api/developer/leads/:leadId {status?, notes?}
+developerRoutes.patch('/leads/:leadId', async (req: DeveloperRequest, res) => {
+  const lead = await prisma.projectLead.findFirst({
+    where: { id: req.params.leadId, project: { developerId: req.developerId } },
+  });
+  if (!lead) {
+    res.status(404).json({ error: 'Contacto no encontrado' });
+    return;
+  }
+  const { status, notes } = req.body ?? {};
+  const data: { status?: (typeof LEAD_STATUSES)[number]; notes?: string | null } = {};
+  if (status !== undefined) {
+    if (!LEAD_STATUSES.includes(status)) {
+      res.status(400).json({ error: 'Estado inválido' });
+      return;
+    }
+    data.status = status;
+  }
+  if (notes !== undefined) data.notes = notes ? String(notes).slice(0, 4000) : null;
+  const updated = await prisma.projectLead.update({ where: { id: lead.id }, data });
+  res.json(updated);
 });

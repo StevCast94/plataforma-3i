@@ -11,6 +11,7 @@ import { useProject } from '@/hooks/useProjects';
 import { useReferral } from '@/hooks/useReferral';
 import { Seo } from '@/components/shared/Seo';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
+import { ProjectLeadContext, useTrackView } from '@/lib/projectTracking';
 import { ShareLot } from '@/components/shared/ShareLot';
 import {
   DOWN_PAYMENT,
@@ -51,6 +52,7 @@ export default function LotPage() {
     };
   }, []);
   const { data: project } = useProject(slug);
+  useTrackView(slug, 'lot_view', code.toUpperCase());
   const [lots, setLots] = useState<PublicLot[] | null>(null);
 
   useEffect(() => {
@@ -150,7 +152,9 @@ export default function LotPage() {
           )}
 
           <div className="mt-5 space-y-2 print:hidden">
-            <WhatsAppCTA message={waMsg} className="w-full" />
+            <ProjectLeadContext.Provider value={{ slug, gated: Boolean(project?.developerId), lotCode: lot.code }}>
+              <WhatsAppCTA message={waMsg} className="w-full" />
+            </ProjectLeadContext.Provider>
             <ShareLot lot={lot} projectName={projectName} projectSlug={slug} showFullSheet={false} />
             <button
               type="button"

@@ -1,7 +1,9 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { useLang } from '@/hooks/useLang';
 import { getReferralCode } from '@/hooks/useReferral';
+import { trackProject, useProjectLead } from '@/lib/projectTracking';
+import { LeadGateModal } from '@/components/shared/LeadGateModal';
 
 // ============================================================
 // Botón de WhatsApp al número oficial de la página (SiteContent contact.whatsapp).
@@ -42,6 +44,8 @@ interface Props {
   variant?: 'solid' | 'outline';
   size?: 'sm' | 'md';
   className?: string;
+  /** Solar al que se refiere el contacto (dentro del mapa). */
+  lotCode?: string;
 }
 
 export function WhatsAppCTA({
@@ -51,10 +55,15 @@ export function WhatsAppCTA({
   variant = 'solid',
   size = 'md',
   className = '',
+  lotCode,
 }: Props) {
   const { t } = useLang();
   const href = useWhatsAppHref(message, whatsapp);
-  if (!href) return null;
+  // Dentro de la ficha de un proyecto: se cuenta el clic y, si es de un desarrollador
+  // externo, se piden los datos antes de abrir su WhatsApp.
+  const lead = useProjectLead();
+  const [gate, setGate] = useState(false);
+  if (!href && !lead?.gated) return null;
 
   const look =
     variant === 'solid'
@@ -62,8 +71,17 @@ export function WhatsAppCTA({
       : 'border border-black/15 bg-white text-primary hover:bg-light';
 
   return (
+    <>
     <a
-      href={href}
+      href={lead?.gated ? '#' : href ?? '#'}
+      onClick={(e) => {
+        if (!lead) return;
+        trackProject(lead.slug, 'wa_click', lotCode ?? lead.lotCode);
+        if (lead.gated) {
+          e.preventDefault();
+          setGate(true);
+        }
+      }}
       target="_blank"
       rel="noreferrer"
       className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors print:hidden ${look} ${
@@ -73,5 +91,9 @@ export function WhatsAppCTA({
       <span className={variant === 'solid' ? '' : 'text-[#25D366]'}>{WA_ICON}</span>
       {children ?? t('Contactar un asesor')}
     </a>
+    {lead?.gated && (
+      <LeadGateModal open={gate} onClose={() => setGate(false)} slug={lead.slug} lotCode={lotCode ?? lead.lotCode} message={message} />
+    )}
+    </>
   );
 }
