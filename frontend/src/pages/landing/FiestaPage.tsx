@@ -172,7 +172,8 @@ function initialLang(): Lang {
   if (q === 'es' || q === 'en') return q;
   const saved = store.get(LANG_KEY);
   if (saved === 'es' || saved === 'en') return saved;
-  return /^es\b/i.test(navigator.language) ? 'es' : 'en';
+  // Fiesta de Halloween: la mayoría de asistentes son de Norteamérica → inglés por defecto.
+  return 'en';
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -426,7 +427,7 @@ export default function FiestaPage() {
                 placeholder={tx.namePh}
               />
             </label>
-            <PhoneField label={tx.phone} required onChange={setPhone} />
+            <PhoneField key={lang} label={tx.phone} required defaultValue={lang === 'en' ? '+1 ' : '+593 '} onChange={setPhone} />
             <label className="flex items-start gap-2 text-xs text-brand-gray">
               <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5" />
               <span>{tx.consent}</span>
