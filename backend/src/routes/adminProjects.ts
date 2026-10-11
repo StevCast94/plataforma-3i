@@ -3,6 +3,7 @@ import { prisma } from '../prisma';
 import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
 import { slugify } from '../lib/slug';
+import { projectMetrics } from '../services/projectMetrics';
 
 export const adminProjectRoutes = Router();
 adminProjectRoutes.use(requireAdmin);
@@ -61,4 +62,15 @@ adminProjectRoutes.delete('/:id', async (req: AuthedRequest, res) => {
     console.error('DELETE /api/admin/projects/:id', err);
     res.status(400).json({ error: 'Error al desactivar el proyecto' });
   }
+});
+
+// GET /api/admin/projects/:id/metrics?days=30 — cualquier proyecto (propios y de terceros)
+adminProjectRoutes.get('/:id/metrics', async (req, res) => {
+  const project = await prisma.project.findUnique({ where: { id: req.params.id }, select: { id: true, name: true } });
+  if (!project) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const days = Math.min(365, Math.max(7, Number(req.query.days) || 30));
+  res.json({ project, ...(await projectMetrics(project.id, days)) });
 });

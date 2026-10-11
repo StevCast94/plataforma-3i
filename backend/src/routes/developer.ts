@@ -5,6 +5,7 @@ import { requireDeveloper, signDeveloperToken, type DeveloperRequest } from '../
 import { slugify } from '../lib/slug';
 import { registerLead, phoneDigits } from '../services/projectLeads';
 import { feeRateForLead, installmentFee, saleTotals } from '../services/developerSales';
+import { projectMetrics } from '../services/projectMetrics';
 import { v2 as cloudinary } from 'cloudinary';
 
 if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
@@ -540,4 +541,15 @@ developerRoutes.post('/sales/:id/installments', async (req: DeveloperRequest, re
     },
   });
   res.status(201).json(inst);
+});
+
+// GET /api/developer/projects/:id/metrics?days=30 (paso 5)
+developerRoutes.get('/projects/:id/metrics', async (req: DeveloperRequest, res) => {
+  const project = await ownProject(req);
+  if (!project) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const days = Math.min(365, Math.max(7, Number(req.query.days) || 30));
+  res.json({ project: { id: project.id, name: project.name }, ...(await projectMetrics(project.id, days)) });
 });

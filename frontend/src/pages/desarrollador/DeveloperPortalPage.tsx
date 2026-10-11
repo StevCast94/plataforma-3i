@@ -315,6 +315,11 @@ function Portal({ onLogout }: { onLogout: () => void }) {
                         Lotes ({p._count?.lots})
                       </Link>
                     )}
+                    {p.publishStatus !== 'DRAFT' && (
+                      <Link to={`/desarrollador/proyectos/${p.id}/metricas`} className="px-2 py-1.5 text-primary hover:underline">
+                        Métricas
+                      </Link>
+                    )}
                     <Link to={`/desarrollador/proyectos/${p.id}/vistas-360`} className="px-2 py-1.5 text-primary hover:underline">
                       360° ({p._count?.panoramas ?? 0})
                     </Link>
