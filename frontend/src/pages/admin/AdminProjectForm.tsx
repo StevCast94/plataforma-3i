@@ -1,3 +1,4 @@
+import { EmbedSnippet } from '@/components/shared/EmbedSnippet';
 import { useEffect, useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Input, Textarea } from '@/components/ui/Input';
@@ -62,6 +63,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [featured, setFeatured] = useState(false);
   const [showBrochure, setShowBrochure] = useState(false);
   const [captureLeads, setCaptureLeads] = useState(false);
+  const [embedEnabled, setEmbedEnabled] = useState(false);
   const [mapLat, setMapLat] = useState('');
   const [mapLng, setMapLng] = useState('');
   const [brochureContent, setBrochureContent] = useState<BrochureContent>({});
@@ -86,6 +88,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setFeatured(project?.featured ?? false);
     setShowBrochure(project?.showBrochure ?? false);
     setCaptureLeads(project?.captureLeads ?? false);
+    setEmbedEnabled(project?.embedEnabled ?? false);
     setMapLat(project?.mapLat != null ? String(project.mapLat) : '');
     setMapLng(project?.mapLng != null ? String(project.mapLng) : '');
     // Precargar con lo que YA se está mostrando en la página (contenido propio +
@@ -138,6 +141,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       featured,
       showBrochure,
       captureLeads,
+      embedEnabled,
       mapLat: mapLat ? Number(mapLat) : null,
       mapLng: mapLng ? Number(mapLng) : null,
       brochureContent: brochureContentPayload,
@@ -251,6 +255,14 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
           <label className="flex items-center gap-2 text-sm" title="El botón de WhatsApp pide nombre y número antes de abrir el chat; el contacto entra al CRM.">
             <input type="checkbox" checked={captureLeads} onChange={(e) => setCaptureLeads(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Registrar contactos en el CRM antes de WhatsApp
           </label>
+          <label className="flex items-center gap-2 text-sm" title="Plan mensual del mapa con marca propia: 9 hasta 150 lotes, 9 más de 150.">
+            <input type="checkbox" checked={embedEnabled} onChange={(e) => setEmbedEnabled(e.target.checked)} className="h-4 w-4 accent-[var(--color-secondary)]" /> Mapa insertable con marca propia (plan mensual)
+          </label>
+          {embedEnabled && project?.slug && (
+            <div className="w-full rounded-xl bg-light p-3">
+              <EmbedSnippet slug={project.slug} />
+            </div>
+          )}
         </div>
 
         {showBrochure && (

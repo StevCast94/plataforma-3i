@@ -1,0 +1,1 @@
+ALTER TABLE "Project" ADD COLUMN "embedEnabled" BOOLEAN NOT NULL DEFAULT false, ADD COLUMN "embedBrand" JSONB;

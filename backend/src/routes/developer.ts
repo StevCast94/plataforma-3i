@@ -671,3 +671,23 @@ developerRoutes.post('/push/subscribe', async (req: DeveloperRequest, res) => {
   });
   res.json({ ok: true });
 });
+
+// PUT /api/developer/projects/:id/embed-brand {logo, color, name, whatsapp} — marca del mapa insertable.
+// La activación (embedEnabled) la hace Grupo 3i según el plan contratado.
+developerRoutes.put('/projects/:id/embed-brand', async (req: DeveloperRequest, res) => {
+  const project = await ownProject(req);
+  if (!project) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  const b = req.body ?? {};
+  const color = typeof b.color === 'string' && /^#[0-9a-f]{6}$/i.test(b.color) ? b.color : null;
+  const brand = {
+    logo: typeof b.logo === 'string' && b.logo.startsWith('https://') ? b.logo.slice(0, 500) : null,
+    color,
+    name: b.name ? String(b.name).slice(0, 80) : null,
+    whatsapp: b.whatsapp ? String(b.whatsapp).slice(0, 40) : null,
+  };
+  const updated = await prisma.project.update({ where: { id: project.id }, data: { embedBrand: brand }, select: { embedEnabled: true, embedBrand: true } });
+  res.json(updated);
+});

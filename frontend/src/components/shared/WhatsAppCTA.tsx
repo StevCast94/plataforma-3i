@@ -92,7 +92,7 @@ export function WhatsAppCTA({
       {children ?? t('Contactar un asesor')}
     </a>
     {lead?.gated && (
-      <LeadGateModal open={gate} onClose={() => setGate(false)} slug={lead.slug} lotCode={lotCode ?? lead.lotCode} message={message} />
+      <LeadGateModal open={gate} onClose={() => setGate(false)} slug={lead.slug} lotCode={lotCode ?? lead.lotCode} message={message} embed={lead.embed} />
     )}
     </>
   );

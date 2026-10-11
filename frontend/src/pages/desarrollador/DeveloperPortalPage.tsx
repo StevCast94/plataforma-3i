@@ -11,6 +11,7 @@ import { DeveloperSales } from './DeveloperSales';
 import { DeveloperTeam } from './DeveloperTeam';
 import { enablePush, pushEnabled, pushSupported } from '@/lib/pwa';
 import { DeveloperQuality } from './DeveloperQuality';
+import { EmbedSettings } from './EmbedSettings';
 import {
   devApi, getDevToken, setDevToken, PUBLISH_LABEL, type DevMe, type DevProject,
 } from '@/lib/developerApi';
@@ -183,6 +184,7 @@ function Editor({ project, onBack, onSaved }: { project?: DevProject; onBack: ()
         El plano de lotes lo cargamos junto contigo durante el alta; luego tú mantienes precios, disponibilidad y vistas 360°.
       </p>
       {project && <DeveloperQuality projectId={project.id} />}
+      {project && project.publishStatus !== 'DRAFT' && <EmbedSettings project={project} />}
     </div>
   );
 }

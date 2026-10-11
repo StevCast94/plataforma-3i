@@ -107,6 +107,7 @@ export interface AdminProject {
   featured: boolean;
   showBrochure: boolean;
   captureLeads?: boolean;
+  embedEnabled?: boolean;
   mapLat?: number | null;
   mapLng?: number | null;
   brochureContent?: Record<string, unknown> | null;

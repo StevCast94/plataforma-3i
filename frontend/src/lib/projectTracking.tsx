@@ -51,7 +51,7 @@ export interface LeadResult {
 
 export function submitProjectLead(
   slug: string,
-  data: { name: string; phone: string; email?: string; message?: string; lotCode?: string; channel: 'whatsapp' | 'form' },
+  data: { name: string; phone: string; email?: string; message?: string; lotCode?: string; channel: 'whatsapp' | 'form'; embed?: boolean },
 ) {
   return api.post<LeadResult>(`/projects/${encodeURIComponent(slug)}/leads`, {
     ...data,
@@ -68,6 +68,8 @@ export interface ProjectLeadCtx {
   slug: string;
   gated: boolean;
   lotCode?: string;
+  /** Mapa insertado en la web del desarrollador: el contacto es suyo. */
+  embed?: boolean;
 }
 
 export const ProjectLeadContext = createContext<ProjectLeadCtx | null>(null);

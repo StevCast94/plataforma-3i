@@ -27,7 +27,7 @@ interface LeadInput {
   email?: string | null;
   message?: string | null;
   lotCode?: string | null;
-  channel: 'whatsapp' | 'form' | 'manual';
+  channel: 'whatsapp' | 'form' | 'manual' | 'embed';
   referralCode?: string | null;
   visitorId?: string | null;
   lang?: string | null;

@@ -25,9 +25,10 @@ interface Props {
   slug: string;
   lotCode?: string;
   message: string;
+  embed?: boolean;
 }
 
-export function LeadGateModal({ open, onClose, slug, lotCode, message }: Props) {
+export function LeadGateModal({ open, onClose, slug, lotCode, message, embed }: Props) {
   const { t } = useLang();
   const prev = saved();
   const [name, setName] = useState(prev?.name ?? '');
@@ -45,7 +46,7 @@ export function LeadGateModal({ open, onClose, slug, lotCode, message }: Props) 
     }
     setBusy(true);
     try {
-      const r = await submitProjectLead(slug, { name, phone, lotCode, channel: 'whatsapp', message });
+      const r = await submitProjectLead(slug, { name, phone, lotCode, channel: 'whatsapp', message, embed });
       try {
         localStorage.setItem(SAVED, JSON.stringify({ name, phone }));
       } catch {

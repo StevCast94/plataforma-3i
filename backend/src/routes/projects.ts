@@ -217,7 +217,7 @@ projectRoutes.post('/:slug/events', async (req, res) => {
 // Registra el contacto y devuelve el WhatsApp al que se deriva.
 projectRoutes.post('/:slug/leads', async (req, res) => {
   try {
-    const { name, phone, email, message, lotCode, channel, visitorId, lang } = req.body ?? {};
+    const { name, phone, email, message, lotCode, channel, visitorId, lang, embed } = req.body ?? {};
     if (!name || !String(name).trim() || phoneDigits(String(phone ?? '')).length < 8) {
       res.status(400).json({ error: 'Nombre y WhatsApp son obligatorios' });
       return;
@@ -227,6 +227,8 @@ projectRoutes.post('/:slug/leads', async (req, res) => {
       res.status(404).json({ error: 'Proyecto no encontrado' });
       return;
     }
+    // Desde el mapa insertado en la web del desarrollador: el contacto es suyo (propio).
+    const brand = embed ? await embedBrandOf(projectId) : null;
     const { lead } = await registerLead({
       projectId,
       name: String(name),
@@ -234,14 +236,46 @@ projectRoutes.post('/:slug/leads', async (req, res) => {
       email: email ? String(email) : null,
       message: message ? String(message).slice(0, 2000) : null,
       lotCode: lotCode ? String(lotCode).slice(0, 40) : null,
-      channel: channel === 'form' ? 'form' : 'whatsapp',
-      referralCode: refFromRequest(req),
+      channel: brand ? 'embed' : channel === 'form' ? 'form' : 'whatsapp',
+      referralCode: brand ? null : refFromRequest(req),
+      ...(brand ? { source: 'DEVELOPER' as const } : {}),
       visitorId: visitorId ? String(visitorId).slice(0, 64) : null,
       lang: lang ? String(lang).slice(0, 5) : null,
     });
-    res.status(201).json({ ok: true, leadId: lead.id, whatsapp: await leadWhatsapp(projectId) });
+    res.status(201).json({ ok: true, leadId: lead.id, whatsapp: brand?.whatsapp || (await leadWhatsapp(projectId)) });
   } catch (err) {
     console.error('POST /api/projects/:slug/leads', err);
     res.status(500).json({ error: 'No se pudo registrar el contacto' });
   }
+});
+
+// ============================================================
+// Mapa insertable con marca propia (Fase 3): /embed/:slug y dominios propios.
+// ============================================================
+
+interface EmbedBrand {
+  logo?: string | null;
+  color?: string | null;
+  name?: string | null;
+  whatsapp?: string | null;
+}
+
+async function embedBrandOf(projectId: string): Promise<EmbedBrand | null> {
+  const p = await prisma.project.findUnique({ where: { id: projectId }, select: { embedEnabled: true, embedBrand: true } });
+  return p?.embedEnabled ? ((p.embedBrand ?? {}) as EmbedBrand) : null;
+}
+
+// GET /api/projects/:slug/embed — datos mínimos para pintar el mapa con la marca del cliente
+projectRoutes.get('/:slug/embed', async (req, res) => {
+  const p = await prisma.project.findUnique({
+    where: { slug: req.params.slug },
+    select: { id: true, slug: true, name: true, mapLat: true, mapLng: true, publishStatus: true, embedEnabled: true, embedBrand: true },
+  });
+  if (!p || !p.embedEnabled || p.publishStatus !== 'PUBLISHED') {
+    res.status(404).json({ error: 'Mapa no disponible' });
+    return;
+  }
+  const b = (p.embedBrand ?? {}) as EmbedBrand;
+  // El WhatsApp no se expone: se entrega solo después de registrar el contacto.
+  res.json({ slug: p.slug, name: b.name || p.name, projectName: p.name, mapLat: p.mapLat, mapLng: p.mapLng, logo: b.logo ?? null, color: b.color ?? null });
 });

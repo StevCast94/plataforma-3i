@@ -55,6 +55,8 @@ model Project {
   verification    Json? // { deed, liens, municipal, boundaries: boolean }
   verifiedAt      DateTime? // sello «Verificado por Grupo 3i»
   captureLeads    Boolean           @default(false) // proyectos propios: pedir datos antes de abrir WhatsApp
+  embedEnabled    Boolean           @default(false) // mapa insertable con marca propia (Fase 3)
+  embedBrand      Json? // { logo, color, name, whatsapp }
   events          ProjectEvent[]
   // Proyectos de terceros (vitrina curada). null = proyecto propio de Grupo 3i.
   developerId     String?

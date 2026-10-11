@@ -81,6 +81,8 @@ export interface DevProject {
   reviewNote: string | null;
   updatedAt: string;
   _count?: { lots: number; panoramas: number };
+  embedEnabled?: boolean;
+  embedBrand?: { logo?: string | null; color?: string | null; name?: string | null; whatsapp?: string | null } | null;
 }
 
 export interface DevMe {
