@@ -15,6 +15,7 @@ import { EmbedSettings } from './EmbedSettings';
 import {
   devApi, getDevToken, setDevToken, PUBLISH_LABEL, type DevMe, type DevProject,
 } from '@/lib/developerApi';
+import { TypePicker } from '@/components/admin/TypePicker';
 
 // Portal del desarrollador (/desarrollador): terceros que publican sus proyectos en
 // la vitrina de Grupo 3i. Arman un borrador, lo envían a revisión y Grupo 3i lo publica.
@@ -90,6 +91,7 @@ function Login({ onDone }: { onDone: () => void }) {
 
 type Draft = Pick<DevProject, 'name' | 'subtitle' | 'description' | 'location' | 'coverImage' | 'images' | 'priceLabel'> & {
   textEn: { subtitle: string; description: string; priceLabel: string };
+  propertyTypes: string[];
   priceFrom: string;
   mapLat: string;
   mapLng: string;
@@ -104,6 +106,7 @@ const toDraft = (p?: DevProject): Draft => ({
   images: p?.images ?? [],
   priceLabel: p?.priceLabel ?? '',
   textEn: { subtitle: p?.textEn?.subtitle ?? '', description: p?.textEn?.description ?? '', priceLabel: p?.textEn?.priceLabel ?? '' },
+  propertyTypes: p?.propertyTypes ?? [],
   priceFrom: p?.priceFrom != null ? String(p.priceFrom) : '',
   mapLat: p?.mapLat != null ? String(p.mapLat) : '',
   mapLng: p?.mapLng != null ? String(p.mapLng) : '',
@@ -157,6 +160,9 @@ function Editor({ project, onBack, onSaved }: { project?: DevProject; onBack: ()
             onChange={(e) => set('description', e.target.value)}
           />
           <p className="mt-1 text-xs text-brand-gray">{d.description.trim().length} caracteres</p>
+        </div>
+        <div className="sm:col-span-2">
+          <TypePicker value={d.propertyTypes} onChange={(v) => set('propertyTypes', v)} />
         </div>
         <Input label="Ubicación *" placeholder="Olón, Santa Elena" value={d.location ?? ''} onChange={(e) => set('location', e.target.value)} />
         <Input label="Precio desde (USD)" type="number" value={d.priceFrom} onChange={(e) => set('priceFrom', e.target.value)} />
@@ -375,11 +381,9 @@ function Portal({ onLogout }: { onLogout: () => void }) {
                     <Button size="sm" variant="outline" onClick={() => setEditing(p)}>
                       {p.publishStatus === 'REVIEW' ? 'Ver' : 'Editar'}
                     </Button>
-                    {(p._count?.lots ?? 0) > 0 && (
-                      <Link to={`/desarrollador/proyectos/${p.id}/lotes`} className="px-2 py-1.5 text-primary hover:underline">
-                        Lotes ({p._count?.lots})
-                      </Link>
-                    )}
+                    <Link to={`/desarrollador/proyectos/${p.id}/lotes`} className="px-2 py-1.5 text-primary hover:underline">
+                      Inventario ({p._count?.lots ?? 0})
+                    </Link>
                     {p.publishStatus !== 'DRAFT' && (
                       <Link to={`/desarrollador/proyectos/${p.id}/metricas`} className="px-2 py-1.5 text-primary hover:underline">
                         Métricas

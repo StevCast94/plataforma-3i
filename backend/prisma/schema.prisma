@@ -42,6 +42,7 @@ model Project {
   features        Json? // { bedrooms, bathrooms, m2, amenities... }
   priceFrom       Float?
   priceLabel      String? // "Desde $12,000", "Fracciones desde $5,000"
+  propertyTypes   String[]          @default([]) // ids de frontend/src/lib/propertyTypes.ts: lotes, casas, departamentos…
   textEn          Json? // { subtitle, description, priceLabel } en inglés (lo escribe el desarrollador)
   active          Boolean           @default(true)
   featured        Boolean           @default(false)
@@ -111,12 +112,22 @@ model Lot {
   block  String? // manzana: "MZ-A"
   kind   LotKind   @default(LOT)
   status LotStatus @default(AVAILABLE)
+  /// Tipo de unidad (ids de propertyTypes.ts). Un «Lot» es cualquier unidad del inventario.
+  unitType String @default("lotes")
+
+  // --- Edificación (casas, departamentos, locales…) ---
+  builtM2   Float? // área construida
+  bedrooms  Int?
+  bathrooms Float?
+  parking   Int?
+  floor     String? // piso o nivel ("3", "PB")
 
   // --- Geometría (fuente: DWG / GEO 3i) ---
   /// GeoJSON Polygon en lon/lat WGS84 (reproyectado desde UTM 17S).
-  geometry    Json
-  centroidLat Float
-  centroidLng Float
+  /// null = unidad sin plano (departamento, local…): se lista pero no se dibuja en el mapa.
+  geometry    Json?
+  centroidLat Float?
+  centroidLng Float?
   areaM2      Float?
   frontM      Float? // frente
   depthM      Float? // fondo

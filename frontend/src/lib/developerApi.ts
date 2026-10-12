@@ -65,6 +65,7 @@ export const PUBLISH_LABEL: Record<PublishStatus, { text: string; cls: string }>
 };
 
 export interface DevProject {
+  propertyTypes?: string[];
   id: string;
   slug: string;
   name: string;

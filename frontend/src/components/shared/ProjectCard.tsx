@@ -2,6 +2,7 @@ import { Link, useLang } from '@/hooks/useLang';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { cld } from '@/lib/cloudinary';
+import { typeInfo } from '@/lib/propertyTypes';
 import type { Project } from '@shared/types';
 
 export function ProjectCard({ project }: { project: Project }) {
@@ -36,6 +37,13 @@ export function ProjectCard({ project }: { project: Project }) {
           <h3 className="mt-1 text-2xl text-primary">{project.name}</h3>
           {project.subtitle && (
             <p className="mt-1 text-sm text-brand-gray">{pt(project, 'subtitle')}</p>
+          )}
+          {(project.propertyTypes?.length ?? 0) > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {project.propertyTypes!.map((id) => (
+                <span key={id} className="rounded-full bg-light px-2.5 py-0.5 text-xs font-medium text-primary">{t(typeInfo(id).label)}</span>
+              ))}
+            </div>
           )}
           {project.priceLabel && (
             <p className="mt-4 font-semibold text-accent">{pt(project, 'priceLabel')}</p>

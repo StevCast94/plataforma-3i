@@ -24,6 +24,7 @@ import {
   monthly,
   CashOnlyNote,
 } from '@/components/shared/LotMap';
+import { unitWord, isBuilt } from '@/lib/propertyTypes';
 import { BrandLoader } from '@/components/brand/Isotipo';
 
 /**
@@ -75,10 +76,13 @@ export default function LotPage() {
   const projectName = project?.name ?? 'Montañita View';
   const status = STATUS_STYLE[lot.status];
   const precio = lot.price != null ? `, ${formatCurrency(lot.price)}` : '';
-  const waMsg = t('Hola, me interesa el *lote {code}* de {p} ({area}{precio}). Quiero más información.', {
+  const word = t(unitWord(lot.unitType));
+  const built = isBuilt(lot.unitType);
+  const waMsg = t('Hola, me interesa: *{unit} {code}* de {p} ({area}{precio}). Quiero más información.', {
+    unit: word,
     code: lot.code,
     p: projectName,
-    area: fmtArea(lot.areaM2),
+    area: fmtArea(built ? lot.builtM2 ?? lot.areaM2 : lot.areaM2),
     precio,
   });
   const dest = lot.centroidLat != null && lot.centroidLng != null ? `${lot.centroidLat},${lot.centroidLng}` : null;
@@ -86,8 +90,8 @@ export default function LotPage() {
   return (
     <div className="lot-print bg-light print:bg-white">
       <Seo
-        title={`${t('Lote')} ${lot.code} · ${projectName}`}
-        description={`${fmtArea(lot.areaM2)}${precio}. ${t('Forma, ubicación, medidas y linderos del lote.')}`}
+        title={`${word} ${lot.code} · ${projectName}`}
+        description={`${fmtArea(built ? lot.builtM2 ?? lot.areaM2 : lot.areaM2)}${precio}. ${lot.geometry ? t('Forma, ubicación, medidas y linderos del lote.') : t('Precio, medidas y disponibilidad de la unidad.')}`}
       />
       <div className="mx-auto max-w-3xl px-4 pb-16 pt-6 sm:px-6 print:max-w-none print:p-0">
         <Link
@@ -108,7 +112,7 @@ export default function LotPage() {
               {lot.block ? ` · ${lot.block.replace('MZ-', `${t('Manzana')} `)}` : ''}
             </p>
             <h1 className="font-serif text-4xl font-bold text-primary sm:text-5xl">
-              {t('Lote')} {lot.code}
+              {word} {lot.code}
             </h1>
             {lot.name && <p className="mt-1 text-sm text-accent">{t('Uso proyectado')}: {t(lot.name)}</p>}
           </div>
@@ -117,8 +121,8 @@ export default function LotPage() {
           </span>
         </header>
 
-        <LotMiniMap lots={lots} lot={lot} />
-        <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm print:hidden">
+        {lot.geometry && <LotMiniMap lots={lots} lot={lot} />}
+        {lot.geometry && <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm print:hidden">
           <Link to={`/proyectos/${slug}?lote=${encodeURIComponent(lot.code)}`} className="inline-flex items-center gap-1.5 font-medium text-accent underline-offset-4 hover:underline">
             <MapIcon className="h-4 w-4" />
             {t('Ver en el mapa del proyecto')}
@@ -134,11 +138,16 @@ export default function LotPage() {
               {t('Cómo llegar al lote')}
             </a>
           )}
-        </div>
+        </div>}
 
         <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <Stat label={t('Área')} value={fmtArea(lot.areaM2)} />
+            {built && lot.builtM2 != null && <Stat label={t('Área construida')} value={fmtArea(lot.builtM2)} />}
+            {(!built || lot.areaM2 != null) && <Stat label={built ? t('Terreno') : t('Área')} value={fmtArea(lot.areaM2)} />}
+            {lot.bedrooms != null && <Stat label={t('Dormitorios')} value={String(lot.bedrooms)} />}
+            {lot.bathrooms != null && <Stat label={t('Baños')} value={String(lot.bathrooms)} />}
+            {lot.parking != null && <Stat label={t('Parqueaderos')} value={String(lot.parking)} />}
+            {lot.floor && <Stat label={t('Piso')} value={lot.floor} />}
             {lot.price != null && <Stat label={lot.cashOnly ? t('Precio de contado') : t('Precio')} value={formatCurrency(lot.price)} strong />}
             {lot.price != null && !lot.cashOnly && (
               <Stat label={t('{n} cuotas sin interés de', { n: INSTALLMENTS })} value={formatCurrency(monthly(lot.price))} />
@@ -173,9 +182,14 @@ export default function LotPage() {
           </section>
         )}
 
-        <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">
-          <LotSheet lot={lot} />
-        </section>
+        {lot.geometry && (
+          <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">
+            <LotSheet lot={lot} />
+          </section>
+        )}
+        {lot.description && !lot.geometry && (
+          <section className="mt-6 whitespace-pre-line rounded-2xl bg-white p-5 text-sm text-primary shadow-sm sm:p-6">{lot.description}</section>
+        )}
 
         <p className="mt-8 hidden text-center text-xs text-brand-gray print:block">
           {window.location.origin}
@@ -215,9 +229,9 @@ function LotMiniMap({ lots, lot }: { lots: PublicLot[]; lot: PublicLot }) {
       maxNativeZoom: 18,
       attribution: '© Esri',
     }).addTo(map);
-    const ring = (l: PublicLot) => l.geometry.coordinates[0].map(([lng, lat]) => [lat, lng] as [number, number]);
+    const ring = (l: PublicLot) => l.geometry!.coordinates[0].map(([lng, lat]) => [lat, lng] as [number, number]);
     for (const n of lots) {
-      if (n.id === lot.id || n.approximateGeometry || n.kind !== 'LOT') continue;
+      if (n.id === lot.id || n.approximateGeometry || n.kind !== 'LOT' || !n.geometry) continue;
       L.polygon(ring(n), { color: '#ffffff', weight: 1, opacity: 0.7, fill: false, interactive: false }).addTo(map);
     }
     const main = L.polygon(ring(lot), { color: '#ffffff', weight: 3, fillColor: '#ffc428', fillOpacity: 0.5 }).addTo(map);

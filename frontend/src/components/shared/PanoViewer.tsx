@@ -146,7 +146,7 @@ export default function PanoViewer({ panoramas, startId, lots, onClose, onSetNor
       maxNativeZoom: 18,
     }).addTo(map);
     for (const l of lots ?? []) {
-      if (l.kind !== 'LOT' || l.approximateGeometry) continue;
+      if (l.kind !== 'LOT' || l.approximateGeometry || !l.geometry) continue;
       L.polygon(
         l.geometry.coordinates[0].map(([lng, lat]) => [lat, lng] as [number, number]),
         { color: '#ffffff', weight: 1, opacity: 0.8, fill: false, interactive: false },

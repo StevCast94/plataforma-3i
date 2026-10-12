@@ -122,6 +122,9 @@ const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
  * Tarjeta social de la ficha de un lote (/proyectos/:slug/lote/:code): título con
  * el código, el área y el precio, e imagen satelital con la forma del lote.
  */
+const UNIT_ES: Record<string, string> = { lotes: 'Lote', casas: 'Casa', departamentos: 'Departamento', suites: 'Suite', locales: 'Local', oficinas: 'Oficina', bodegas: 'Bodega', macrolotes: 'Macrolote' };
+const UNIT_EN: Record<string, string> = { lotes: 'Lot', casas: 'Home', departamentos: 'Condo', suites: 'Suite', locales: 'Retail unit', oficinas: 'Office', bodegas: 'Warehouse', macrolotes: 'Land parcel' };
+
 export function lotOgHandler(frontendPath: string) {
   const indexPath = path.join(frontendPath, 'index.html');
 
@@ -132,8 +135,8 @@ export function lotOgHandler(frontendPath: string) {
       const project = await prisma.project.findUnique({ where: { slug }, select: { id: true, name: true } });
       const lot = project
         ? await prisma.lot.findFirst({
-            where: { projectId: project.id, code, active: true },
-            select: { code: true, areaM2: true, price: true, status: true, name: true, cashOnly: true },
+            where: { projectId: project.id, code: { equals: code, mode: 'insensitive' }, active: true },
+            select: { code: true, unitType: true, builtM2: true, areaM2: true, price: true, status: true, name: true, cashOnly: true },
           })
         : null;
       if (!project || !lot) {
@@ -142,9 +145,10 @@ export function lotOgHandler(frontendPath: string) {
       }
       const en = req.path.startsWith('/en/');
       const origin = publicBaseUrl();
-      const label = en ? `Lot ${lot.code}` : `Lote ${lot.code}`;
+      const label = `${(en ? UNIT_EN : UNIT_ES)[lot.unitType] ?? (en ? 'Lot' : 'Lote')} ${lot.code}`;
       const parts = [label];
-      if (lot.areaM2) parts.push(`${Math.round(lot.areaM2).toLocaleString('en-US')} m²`);
+      const area = lot.builtM2 ?? lot.areaM2;
+      if (area) parts.push(`${Math.round(area).toLocaleString('en-US')} m²`);
       if (lot.price && lot.status === 'AVAILABLE') parts.push(usd(lot.price));
       const title = `${parts.join(' · ')} — ${project.name}`;
       const status =

@@ -220,7 +220,7 @@ export function LotMap({
       return;
     }
     const area = L.latLngBounds([]);
-    lots.forEach((l) => l.geometry.coordinates[0].forEach(([lng, lat]) => area.extend([lat, lng])));
+    lots.forEach((l) => l.geometry?.coordinates[0].forEach(([lng, lat]) => area.extend([lat, lng])));
     setLoc('asking');
     setLocMsg('');
     watchRef.current = navigator.geolocation.watchPosition(
@@ -339,7 +339,8 @@ export function LotMap({
   }, [full]);
 
   useEffect(() => {
-    api.get<PublicLot[]>(`/projects/${projectSlug}/lots`).then(setLots).catch(() => setLots([]));
+    // Las unidades sin plano (departamentos, locales…) van en UnitList, no en el mapa.
+    api.get<PublicLot[]>(`/projects/${projectSlug}/lots`).then((r) => setLots(r.filter((l) => l.geometry))).catch(() => setLots([]));
   }, [projectSlug]);
 
   // Vistas 360° del proyecto: puntos en el mapa que abren el visor.
@@ -454,7 +455,7 @@ export function LotMap({
     layer.clearLayers();
     const bounds = L.latLngBounds([]);
     for (const lot of visible) {
-      if (lot.approximateGeometry) continue; // placeholder sin levantamiento: solo en la tabla
+      if (lot.approximateGeometry || !lot.geometry) continue; // placeholder sin levantamiento: solo en la tabla
       const ring = lot.geometry.coordinates[0].map(([lng, lat]) => [lat, lng] as [number, number]);
       const style = STATUS_STYLE[lot.status];
       const poly = L.polygon(ring, {

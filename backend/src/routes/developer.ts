@@ -14,6 +14,7 @@ import { qualityFor } from '../services/projectQuality';
 import { DOC_KINDS, uploadProjectDocument } from '../lib/projectDocs';
 import { INTERNAL_DEV_ID } from '../services/internalTeam';
 import { v2 as cloudinary } from 'cloudinary';
+import { unitFields, newUnit, cleanTypes } from '../lib/units';
 
 if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
 
@@ -25,7 +26,7 @@ export const developerRoutes = Router();
 // estado de publicación los controla Grupo 3i.
 const EDITABLE = [
   'name', 'subtitle', 'description', 'location', 'coverImage', 'images', 'features',
-  'priceFrom', 'priceLabel', 'mapLat', 'mapLng', 'textEn',
+  'priceFrom', 'priceLabel', 'mapLat', 'mapLng', 'textEn', 'propertyTypes',
 ] as const;
 
 function pick(body: Record<string, unknown>) {
@@ -35,6 +36,7 @@ function pick(body: Record<string, unknown>) {
     if (data[k] === '') data[k] = null;
     else if (data[k] != null) data[k] = Number(data[k]);
   }
+  if ('propertyTypes' in data) data.propertyTypes = cleanTypes(data.propertyTypes) ?? [];
   if ('textEn' in data) {
     const t = (data.textEn ?? {}) as Record<string, unknown>;
     const str = (v: unknown, max: number) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined);
@@ -279,7 +281,7 @@ const LOT_FIELDS = ['status', 'price', 'pricePerM2', 'cashOnly', 'cadastralCode'
 
 // GET /api/developer/lots?projectId=&status=&block=&q=
 developerRoutes.get('/lots', async (req: DeveloperRequest, res) => {
-  const { projectId, status, block, q } = req.query;
+  const { projectId, status, block, q, unitType } = req.query;
   if (!(await ownsProject(req, projectId))) {
     res.status(404).json({ error: 'Proyecto no encontrado' });
     return;
@@ -289,11 +291,38 @@ developerRoutes.get('/lots', async (req: DeveloperRequest, res) => {
       projectId: String(projectId),
       ...(status ? { status: status as never } : {}),
       ...(block ? { block: String(block) } : {}),
+      ...(unitType ? { unitType: String(unitType) } : {}),
       ...(q ? { code: { contains: String(q), mode: 'insensitive' as const } } : {}),
     },
     orderBy: [{ block: 'asc' }, { code: 'asc' }],
   });
   res.json(lots);
+});
+
+// POST /api/developer/lots — nueva unidad sin plano (casa, departamento, local…)
+developerRoutes.post('/lots', async (req: DeveloperRequest, res) => {
+  if (!(await ownsProject(req, req.body?.projectId))) {
+    res.status(404).json({ error: 'Proyecto no encontrado' });
+    return;
+  }
+  try {
+    const lot = await prisma.lot.create({ data: { projectId: String(req.body.projectId), ...newUnit(req.body) } as never });
+    res.status(201).json(lot);
+  } catch (err) {
+    const msg = (err as { code?: string }).code === 'P2002' ? 'Ya existe una unidad con ese código' : (err as Error).message;
+    res.status(400).json({ error: msg });
+  }
+});
+
+// DELETE /api/developer/lots/:id — solo unidades sin plano y sin venta
+developerRoutes.delete('/lots/:id', async (req: DeveloperRequest, res) => {
+  const lot = await prisma.lot.findFirst({ where: { id: req.params.id, project: { developerId: req.developerId } } });
+  if (!lot || lot.geometry !== null || lot.status === 'SOLD') {
+    res.status(400).json({ error: 'Solo se pueden borrar unidades sin plano que no estén vendidas' });
+    return;
+  }
+  await prisma.lot.delete({ where: { id: lot.id } });
+  res.json({ ok: true });
 });
 
 // PUT /api/developer/lots/:id — solo datos comerciales
@@ -305,6 +334,12 @@ developerRoutes.put('/lots/:id', async (req: DeveloperRequest, res) => {
   }
   const data: Record<string, unknown> = {};
   for (const k of LOT_FIELDS) if (k in (req.body ?? {})) data[k] = req.body[k];
+  try {
+    Object.assign(data, unitFields(req.body ?? {}));
+  } catch (err) {
+    res.status(400).json({ error: (err as Error).message });
+    return;
+  }
   if (data.status && !['AVAILABLE', 'RESERVED', 'SOLD', 'NOT_FOR_SALE'].includes(String(data.status))) {
     res.status(400).json({ error: 'Estado inválido' });
     return;

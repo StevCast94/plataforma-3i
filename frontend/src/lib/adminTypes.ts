@@ -92,6 +92,7 @@ export interface AdminProduct {
 }
 
 export interface AdminProject {
+  propertyTypes?: string[];
   id: string;
   slug: string;
   name: string;

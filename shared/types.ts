@@ -42,6 +42,8 @@ export interface Project {
   features?: ProjectFeatures | null;
   priceFrom?: number | null;
   priceLabel?: string | null;
+  /** Tipos de unidad que vende (ids de frontend/src/lib/propertyTypes.ts). */
+  propertyTypes?: string[];
   /** Textos en inglés que escribe la desarrolladora (si no hay, se usa el diccionario). */
   textEn?: { subtitle?: string; description?: string; priceLabel?: string } | null;
   active: boolean;
@@ -71,9 +73,17 @@ export interface PublicLot {
   block?: string | null;
   kind: LotKind;
   status: LotStatus;
-  geometry: LotGeometry;
-  centroidLat: number;
-  centroidLng: number;
+  /** null = unidad sin plano (departamento, local…): se lista, no se dibuja en el mapa. */
+  geometry: LotGeometry | null;
+  centroidLat: number | null;
+  centroidLng: number | null;
+  /** Tipo de unidad (ids de propertyTypes.ts). */
+  unitType?: string;
+  builtM2?: number | null;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  parking?: number | null;
+  floor?: string | null;
   areaM2?: number | null;
   frontM?: number | null;
   depthM?: number | null;
