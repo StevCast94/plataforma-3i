@@ -17,7 +17,7 @@ for (const pr of projects) {
   for (const lang of ['es', 'en']) {
     const T = lang === 'en'
       ? { head: av.length ? 'Get pricing and the site plan' : 'Get pricing and payment options', from: 'From', pay: '24 monthly payments of', avail: 'Lots available', size: 'From', cta: 'Get details on WhatsApp →', units: pr.slug.includes('ibiza') ? 'Fractions from' : 'From' }
-      : { head: av.length ? 'Recibe precios y el plano de solares' : 'Recibe precios y formas de pago', from: 'Desde', pay: '24 cuotas de', avail: 'Solares disponibles', size: 'Desde', cta: 'Déjanos tu WhatsApp →', units: pr.slug.includes('ibiza') ? 'Fracciones desde' : 'Desde' };
+      : { head: av.length ? 'Recibe precios y el plano de lotes' : 'Recibe precios y formas de pago', from: 'Desde', pay: '24 cuotas de', avail: 'Lotes disponibles', size: 'Desde', cta: 'Déjanos tu WhatsApp →', units: pr.slug.includes('ibiza') ? 'Fracciones desde' : 'Desde' };
     const chips = [[T.units, usd(min), true]];
     if (av.length) chips.push([T.pay, usd(min * 0.7 / 24)], [T.avail, String(av.length)], [T.size, Math.round(Math.min(...area)) + ' m²']);
     const html = `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
