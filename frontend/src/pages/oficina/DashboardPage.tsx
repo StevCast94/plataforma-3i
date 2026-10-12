@@ -82,15 +82,15 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Próximo pago */}
         <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-          <h3 className="text-lg font-semibold text-primary">Próximo pago</h3>
+          <h3 className="text-lg font-semibold text-primary">Disponible para retirar</h3>
           <p className="mt-2 text-sm text-brand-gray">
-            Frecuencia:{' '}
-            {member.status === 'ELITE' ? 'Quincenal (días 5 y 20)' : 'Mensual (día 15)'}
+            Retíralo cuando quieras desde {member.status === 'ELITE' ? '$50' : '$100'} por transferencia o{' '}
+            {member.status === 'ELITE' ? '$25' : '$50'} por PayPal.
           </p>
           <p className="mt-4 font-serif text-2xl font-bold text-accent">
             {formatCurrency(summary?.liquidated ?? 0)}
           </p>
-          <p className="text-xs text-brand-gray">Monto liquidado listo para el próximo ciclo.</p>
+          <Link to="/oficina/pagos" className="text-xs text-accent hover:underline">Solicitar un retiro →</Link>
         </div>
 
         {/* Últimos referidos */}
