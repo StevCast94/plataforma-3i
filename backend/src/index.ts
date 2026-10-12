@@ -138,6 +138,38 @@ app.use('/api', (_req, res) => {
   res.status(404).json({ error: 'Endpoint no encontrado' });
 });
 
+// SEO: una sola versión de cada página. www → dominio principal y sin barra final
+// (301), y etiqueta canónica en el HTML que leen los buscadores (no ejecutan JS).
+const CANONICAL_ORIGIN = 'https://grupo3i.com';
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  const host = String(req.headers.host ?? '').toLowerCase();
+  if (host === 'www.grupo3i.com') {
+    res.redirect(301, CANONICAL_ORIGIN + req.originalUrl);
+    return;
+  }
+  if (host !== 'grupo3i.com' || req.path.startsWith('/api') || /\.[a-z0-9]+$/i.test(req.path)) return next();
+  if (req.path.length > 1 && req.path.endsWith('/')) {
+    const q = req.originalUrl.slice(req.path.length);
+    res.redirect(301, req.path.replace(/\/+$/, '') + q);
+    return;
+  }
+  const tag = `<link rel="canonical" href="${CANONICAL_ORIGIN}${req.path}" data-rh="true" />`;
+  const inject = (html: string) => (html.includes('rel="canonical"') ? html : html.replace('</head>', `  ${tag}\n  </head>`));
+  const send = res.send.bind(res);
+  res.send = (body?: unknown) => send(typeof body === 'string' && body.includes('</head>') ? inject(body) : body);
+  const sendFile = res.sendFile.bind(res) as (p: string, ...rest: unknown[]) => void;
+  (res as unknown as { sendFile: (p: string, ...rest: unknown[]) => void }).sendFile = (p: string, ...rest: unknown[]) => {
+    if (p.endsWith('index.html')) {
+      res.type('html');
+      send(inject(fs.readFileSync(p, 'utf8')));
+      return;
+    }
+    sendFile(p, ...rest);
+  };
+  next();
+});
+
 // Enlaces de referido: /r/CÓDIGO?to=/tienda/slug → cookie + click + redirect al SPA
 app.get('/r/:code', referralRedirect);
 
