@@ -1,4 +1,5 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { Seo } from '@/components/shared/Seo';
 import { useLang } from '@/hooks/useLang';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { ContactForm } from '@/components/shared/ContactForm';
@@ -10,6 +11,7 @@ export default function ContactPage() {
 
   return (
     <>
+      <Seo title={t('Contacto')} description={t('Escríbenos por WhatsApp o déjanos tus datos y un asesor te contacta en menos de 24 horas.')} />
       <PageHeader
         title={t(data?.title ?? 'Contacto')}
         subtitle={

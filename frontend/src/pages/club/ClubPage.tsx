@@ -1,4 +1,5 @@
 import { Link, useLang } from '@/hooks/useLang';
+import { Seo } from '@/components/shared/Seo';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -16,6 +17,7 @@ export default function ClubPage() {
 
   return (
     <>
+      <Seo title={t('Club 3i — viajes, beneficios y comunidad')} description={t('Membresía de viajes con hasta 70% de descuento en hoteles, beneficios para socios y una comunidad de inversionistas.')} />
       {/* HERO CLUB */}
       <section className="relative isolate overflow-hidden bg-primary text-white">
         <img

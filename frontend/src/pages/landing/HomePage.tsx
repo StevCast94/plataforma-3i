@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Seo } from '@/components/shared/Seo';
 import { Link, useLang } from '@/hooks/useLang';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
@@ -64,6 +65,7 @@ export default function HomePage() {
 
   return (
     <>
+      <Seo title={t('Grupo 3i — Invierte en la costa ecuatoriana')} description={t('Fracciones en Ibiza Condohotel desde $12,000 y solares con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.')} />
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-primary text-white">
         <ImageCrossfade

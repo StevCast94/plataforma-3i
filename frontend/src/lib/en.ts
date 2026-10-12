@@ -8,6 +8,13 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'Fracciones en Ibiza Condohotel desde $12,000 y solares con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.': 'Ibiza Condohotel shares from $12,000 and ocean-view lots at Montañita View from $41,721, with interest-free financing.',
+  'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (solares con vista al mar desde $41,721) en Santa Elena, Ecuador.': 'Ibiza Condohotel (shares from $12,000) and Montañita View (ocean-view lots from $41,721) in Santa Elena, Ecuador.',
+  'Membresía de viajes con hasta 70% de descuento en hoteles, beneficios para socios y una comunidad de inversionistas.': 'A travel membership with up to 70% off hotels, members-only perks and a community of investors.',
+  'Club 3i — viajes, beneficios y comunidad': 'Club 3i — travel, perks and community',
+  'Escríbenos por WhatsApp o déjanos tus datos y un asesor te contacta en menos de 24 horas.': 'Message us on WhatsApp or leave your details and an agent will reach out within 24 hours.',
+  'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, solares con vista al mar y membresías de viaje.': 'A real estate group on Ecuador’s coast: fractional ownership, ocean-view lots and travel memberships.',
+  'Grupo 3i — Invierte en la costa ecuatoriana': 'Grupo 3i — Real estate on Ecuador’s coast',
   'WhatsApp': 'WhatsApp',
   'Grupo 3i': 'Grupo 3i',
   'Pantalla completa': 'Full screen',
@@ -555,7 +562,7 @@ export const EN: Record<string, string> = {
   'Instalar la app de Grupo 3i': 'Install the Grupo 3i app',
 
   // ---------- Propuesta Montañita View ----------
-  'Propuesta exclusiva — Montañita View': 'Private offering — Montañita View',
+  'Propuesta exclusiva — Montañita View': 'Montañita View — private investment offering',
   'Tres formas de invertir en Montañita View: un solar, sociedad en el Lobby o la compra total.':
     'Three ways to invest in Montañita View: a lot, a partnership in the Lobby, or the whole purchase.',
   'Propuesta exclusiva · Documento privado': 'Exclusive proposal · Private document',
@@ -884,7 +891,7 @@ export const EN: Record<string, string> = {
 
 
   // ---------- Refiere y gana: portada, registro e inicio de sesión ----------
-  'Refiere y gana — Programa de referidos': 'Refer & Earn — Grupo 3i referral program',
+  'Refiere y gana — Programa de referidos': 'Refer & Earn with Grupo 3i',
   'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta.': 'Refer a buyer for a Montañita View lot or an Ibiza Condohotel share and earn up to 4% of the sale.',
   'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis, sin inversión propia.': 'Refer a buyer for a Montañita View lot or an Ibiza Condohotel share and earn up to 4% of the sale. Free to join, no money down.',
   'Programa de referidos': 'Referral program',

@@ -1,4 +1,5 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { Seo } from '@/components/shared/Seo';
 import { useLang } from '@/hooks/useLang';
 import { CTASection } from '@/components/shared/CTASection';
 import { useSectionContent } from '@/hooks/useSiteContent';
@@ -27,6 +28,7 @@ export default function AboutPage() {
 
   return (
     <>
+      <Seo title={t('Sobre Grupo 3i')} description={t('Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, solares con vista al mar y membresías de viaje.')} />
       <PageHeader
         title={t(data?.title ?? 'Sobre Grupo 3i')}
         subtitle={t('Inversión inmobiliaria inteligente.')}

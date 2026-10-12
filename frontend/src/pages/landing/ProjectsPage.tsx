@@ -1,4 +1,5 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { Seo } from '@/components/shared/Seo';
 import { useLang } from '@/hooks/useLang';
 import { ProjectCard } from '@/components/shared/ProjectCard';
 import { CardSkeleton } from '@/components/ui/Skeleton';
@@ -10,6 +11,7 @@ export default function ProjectsPage() {
 
   return (
     <>
+      <Seo title={t('Proyectos')} description={t('Ibiza Condohotel (fracciones desde $12,000) y Montañita View (solares con vista al mar desde $41,721) en Santa Elena, Ecuador.')} />
       <PageHeader
         title={t('Proyectos')}
         subtitle={t('Proyectos seleccionados y verificados en la costa ecuatoriana.')}

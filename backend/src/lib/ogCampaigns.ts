@@ -44,7 +44,7 @@ export const DEFAULT_CAMPAIGNS: Record<string, OgCampaign> = {
   montanita: {
     label: 'Montañita View — mapa de solares',
     title: '{nombre} te invita a elegir tu solar en Montañita View',
-    description: 'Lotes con vista al mar en Manglaralto desde $41,721, con financiamiento a 24 meses sin intereses.',
+    description: 'Solares con vista al mar en Manglaralto desde $41,721, con financiamiento a 24 meses sin intereses.',
     image: '/images/og/og-camp-montanita.jpg',
     message:
       'Mira los solares de Montañita View en el mapa interactivo: eliges el tuyo, ves su precio y su cuota, y lo pagas en 24 meses sin intereses. Te dejo mi enlace:',
@@ -53,7 +53,7 @@ export const DEFAULT_CAMPAIGNS: Record<string, OgCampaign> = {
   'montanita-en': {
     label: 'Montañita View — lots map (English)',
     title: '{nombre} invites you to choose your lot at Montañita View',
-    description: 'Ocean-view lots on the Ecuadorian coast from $41,721, with 24 months of interest-free financing.',
+    description: 'Ocean-view lots on Ecuador’s coast from $41,721, with 24 months of interest-free financing.',
     image: '/images/og/og-camp-montanita-en.jpg',
     message:
       'Check out the Montañita View lots on the interactive map: pick yours, see its price and monthly payment, and pay it over 24 months interest-free. Here is my link:',
@@ -173,7 +173,7 @@ export async function loadCampaigns(): Promise<Record<string, OgCampaign>> {
 
 const EMPTY_CAMPAIGN: OgCampaign = {
   label: '',
-  title: 'Grupo 3i — Inversión Inmobiliaria Inteligente',
+  title: 'Grupo 3i — Inversión inmobiliaria en la costa ecuatoriana',
   description:
     'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
   image: '/images/og-cover.png',

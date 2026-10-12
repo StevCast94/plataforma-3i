@@ -19,13 +19,13 @@ const OVERRIDES: Record<string, { title: string; description: string; image: str
   'montanita-view': {
     title: 'Montañita View — mapa interactivo de solares',
     description:
-      'Explora los 90 solares disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, su clave catastral, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $85/m².',
+      'Explora los 90 solares disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $85/m².',
     image: '/images/og/og-montanita-view.jpg',
   },
   'ibiza-condohotel': {
     title: 'Ibiza Condohotel — fracciones desde $12,000',
     description:
-      'Propiedad fraccionada en un condohotel a 300 m del mar en la costa ecuatoriana: disfruta tus 4 semanas al año, gana con la plusvalía y hereda tu patrimonio.',
+      'Propiedad fraccionada en un condohotel a 300 m del mar en la costa ecuatoriana: disfruta tus 4 semanas al año, gana con la plusvalía y deja un patrimonio a tu familia.',
     image: '/images/og/og-ibiza.jpg',
   },
 };
@@ -35,13 +35,13 @@ const OVERRIDES_EN: Record<string, { title: string; description: string; image: 
   'montanita-view': {
     title: 'Montañita View — interactive lot map',
     description:
-      'Explore the 90 available lots on the satellite map: tap any one to see its price, monthly payment, cadastral reference, boundaries and street frontage. Manglaralto, Ruta del Spondylus, from $85/m².',
+      'Explore all 90 available lots on the satellite map — tap any lot to see its price, monthly payment, boundaries and street frontage. Manglaralto, on the Ruta del Spondylus, from $85/m².',
     image: '/images/og/og-montanita-view.jpg',
   },
   'ibiza-condohotel': {
-    title: 'Ibiza Condohotel — fractions from $12,000',
+    title: 'Ibiza Condohotel — shares from $12,000',
     description:
-      'Fractional ownership in a condo-hotel 300 m from the sea on the Ecuadorian coast: enjoy your 4 weeks a year, gain appreciation and pass it on.',
+      'Own a share of a condo-hotel 300 m from the beach on Ecuador’s coast: enjoy 4 weeks a year, build equity and pass it on to your family.',
     image: '/images/og/og-ibiza.jpg',
   },
 };
@@ -203,90 +203,85 @@ interface PageMeta {
 const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/': {
     es: {
-      title: 'Grupo 3i — Invierte en un paraíso',
-      description:
-        'Propiedad fraccionada, lotes con vista al mar y experiencias premium en la costa ecuatoriana. Ibiza Condohotel desde $12,000 · Montañita View desde $41,721.',
+      title: 'Grupo 3i — Invierte en la costa ecuatoriana',
+      description: 'Fracciones en Ibiza Condohotel desde $12,000 y solares con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.',
       image: '/images/og/og-home.jpg',
     },
     en: {
-      title: 'Grupo 3i — Invest in paradise',
-      description: 'Fractional property, sea-view lots and premium experiences on the Ecuadorian coast.',
+      title: 'Grupo 3i — Real estate on Ecuador’s coast',
+      description: 'Ibiza Condohotel shares from $12,000 and ocean-view lots at Montañita View from $41,721, with interest-free financing.',
       image: '/images/og/og-home.jpg',
     },
   },
   '/proyectos': {
     es: {
       title: 'Proyectos de Grupo 3i',
-      description:
-        'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (lotes con vista al mar desde $41,721) en Santa Elena, Ecuador.',
+      description: 'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (solares con vista al mar desde $41,721) en Santa Elena, Ecuador.',
       image: '/images/og/og-proyectos.jpg',
     },
     en: {
       title: 'Grupo 3i projects',
-      description:
-        'Ibiza Condohotel (fractions from $12,000) and Montañita View (sea-view lots from $41,721) in Santa Elena, Ecuador.',
+      description: 'Ibiza Condohotel (shares from $12,000) and Montañita View (ocean-view lots from $41,721) in Santa Elena, Ecuador.',
       image: '/images/og/og-proyectos.jpg',
     },
   },
   '/propuesta/montanita-view': {
     es: {
-      title: 'Montañita View — Propuesta exclusiva de inversión',
-      description: 'Compra de la lotización, del Lobby o de ambos proyectos completos en Manglaralto, Santa Elena.',
+      title: 'Montañita View — propuesta de inversión',
+      description: 'La lotización completa, el Lobby completo o ambos proyectos en una sola operación, en Manglaralto, Santa Elena.',
       image: '/images/og/og-propuesta-montanita.jpg',
     },
     en: {
-      title: 'Montañita View — Exclusive investment proposal',
-      description: 'Purchase of the lot development, the Lobby or both complete projects in Manglaralto, Santa Elena.',
+      title: 'Montañita View — private investment offering',
+      description: 'Buy the entire subdivision, the entire Lobby, or both in one deal — in Manglaralto, Santa Elena, Ecuador.',
       image: '/images/og/og-propuesta-montanita.jpg',
     },
   },
   '/club': {
     es: {
       title: 'Club 3i — viajes, beneficios y comunidad',
-      description:
-        'Membresía de viajes con hasta 70% de descuento en hoteles, beneficios exclusivos y una comunidad de inversionistas.',
+      description: 'Membresía de viajes con hasta 70% de descuento en hoteles, beneficios para socios y una comunidad de inversionistas.',
       image: '/images/og/og-club.jpg',
     },
     en: {
       title: 'Club 3i — travel, perks and community',
-      description: 'Travel membership with up to 70% off hotels, exclusive perks and a community of investors.',
+      description: 'A travel membership with up to 70% off hotels, members-only perks and a community of investors.',
       image: '/images/og/og-club.jpg',
     },
   },
   '/club/viajes': {
     es: {
       title: 'Club de Viajes 3i — hasta 70% de descuento',
-      description:
-        'Descuentos en hoteles y experiencias en todo el mundo y un certificado vacacional anual en 120+ destinos.',
+      description: 'Descuentos en hoteles y experiencias en todo el mundo, y un certificado vacacional cada año en más de 120 destinos.',
       image: '/images/og/og-viajes-club.jpg',
     },
     en: {
-      title: '3i Travel Club — up to 70% off',
-      description: 'Discounts on hotels and experiences worldwide and a yearly vacation certificate in 120+ destinations.',
+      title: 'Club 3i Travel — save up to 70%',
+      description: 'Discounts on hotels and experiences worldwide, plus a vacation certificate every year in 120+ destinations.',
       image: '/images/og/og-viajes-club.jpg',
     },
   },
   '/oficina': {
     es: {
       title: 'Refiere y gana con Grupo 3i',
-      description: 'Gana comisiones recomendando los proyectos de Grupo 3i. Registro sin costo.',
+      description: 'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis.',
       image: '/images/og/og-refiere.jpg',
     },
     en: {
-      title: 'Refer and earn with Grupo 3i',
-      description: 'Earn commissions recommending Grupo 3i projects. Free to join.',
+      title: 'Refer & Earn with Grupo 3i',
+      description: 'Refer a buyer for a Montañita View lot or an Ibiza Condohotel share and earn up to 4% of the sale. Free to join.',
       image: '/images/og/og-refiere.jpg',
     },
   },
   '/publica-tu-proyecto': {
     es: {
       title: 'Publica tu proyecto en Grupo 3i',
-      description: 'Vende tus lotes con mapa interactivo, recorridos 360°, sello de verificación y red de referidores. Pagas solo cuando vendes.',
+      description: 'Vende tus solares con mapa interactivo, recorridos 360°, sello de verificación y una red de referidores. Pagas solo cuando vendes.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
     en: {
       title: 'List your project on Grupo 3i',
-      description: 'Sell your lots with an interactive map, 360° tours, a verification seal and a referral network. Pay only when you sell.',
+      description: 'Sell your lots with an interactive map, 360° tours, a verification seal and a referral network. You only pay when you sell.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
   },
@@ -298,32 +293,68 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
     },
     en: {
       title: 'Partner proposal for developers · Grupo 3i',
-      description: 'You only pay when you sell: interactive lot map, 360° tours, a CRM for your agents, legal verification and a referral network.',
+      description: 'You only pay when you sell: an interactive lot map, 360° tours, a CRM for your agents, legal vetting and a referral network.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
   },
   '/publica-tu-proyecto/galeria': {
     es: {
       title: 'Galería del sistema para desarrolladoras · Grupo 3i',
-      description: 'Capturas reales del portal: proyecto, mapa de lotes, 360°, CRM, vendedores, métricas, ventas y mapa para tu web.',
+      description: 'Capturas reales del portal: proyecto, mapa de solares, 360°, CRM, asesores, métricas, ventas y mapa para tu web.',
       image: '/images/propuesta-dev/crm.jpg',
     },
     en: {
-      title: 'System gallery for developers · Grupo 3i',
-      description: 'Real screenshots of the portal: project, lot map, 360°, CRM, sales team, metrics, sales and a map for your website.',
+      title: 'Developer portal screenshot gallery · Grupo 3i',
+      description: 'Real screenshots of the portal: listings, lot map, 360° tours, CRM, agents, analytics, sales and a map for your website.',
       image: '/images/propuesta-dev/crm.jpg',
     },
   },
   '/publica-tu-proyecto/manual': {
     es: {
       title: 'Manual de herramientas para desarrolladoras · Grupo 3i',
-      description: 'Proyectos, mapa de lotes, 360°, CRM, vendedores, avisos, métricas, ventas y mapa para tu web, paso a paso.',
+      description: 'Proyectos, mapa de solares, 360°, CRM, asesores, avisos, métricas, ventas y mapa para tu web, paso a paso.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
     en: {
-      title: 'Tools guide for developers · Grupo 3i',
-      description: 'Projects, lot map, 360°, CRM, sales team, alerts, metrics, sales and your website map, step by step.',
+      title: 'Developer platform guide · Grupo 3i',
+      description: 'Listings, lot map, 360° tours, CRM, agents, notifications, analytics, sales and your website map — step by step.',
       image: '/images/og/montanita-view-mapa.jpg',
+    },
+  },
+  '/sobre-nosotros': {
+    es: {
+      title: 'Sobre Grupo 3i',
+      description: 'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, solares con vista al mar y membresías de viaje.',
+      image: '/images/og/og-home.jpg',
+    },
+    en: {
+      title: 'About Grupo 3i',
+      description: 'A real estate group on Ecuador’s coast: fractional ownership, ocean-view lots and travel memberships.',
+      image: '/images/og/og-home.jpg',
+    },
+  },
+  '/contacto': {
+    es: {
+      title: 'Contacto · Grupo 3i',
+      description: 'Escríbenos por WhatsApp o déjanos tus datos y un asesor te contacta en menos de 24 horas.',
+      image: '/images/og/og-home.jpg',
+    },
+    en: {
+      title: 'Contact · Grupo 3i',
+      description: 'Message us on WhatsApp or leave your details and an agent will reach out within 24 hours.',
+      image: '/images/og/og-home.jpg',
+    },
+  },
+  '/reglamento': {
+    es: {
+      title: 'Reglamento de Refiere y gana · Grupo 3i',
+      description: 'Reglas oficiales del programa: comisiones, niveles, ascensos, incentivos, liquidación y retiros.',
+      image: '/images/og/og-refiere.jpg',
+    },
+    en: {
+      title: 'Refer & Earn program terms · Grupo 3i',
+      description: 'Official program rules: commissions, tiers, upgrades, rewards, payouts and withdrawals.',
+      image: '/images/og/og-refiere.jpg',
     },
   },
   '/fiesta': {
@@ -357,8 +388,6 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
 const PAGE_ALIAS: Record<string, string> = {
   '/oficina/registro': '/oficina',
   '/oficina/login': '/oficina',
-  '/sobre-nosotros': '/',
-  '/contacto': '/',
   '/tienda/membresia-viajes-club-3i': '/club/viajes',
 };
 
