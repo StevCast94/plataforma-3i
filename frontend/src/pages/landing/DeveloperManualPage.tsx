@@ -56,7 +56,7 @@ function Sub({ children, first }: { children: ReactNode; first?: boolean }) {
 
 const VARS = (
   <>
-    <code>{'{nombre}'}</code>, <code>{'{proyecto}'}</code> <span>y</span> <code>{'{solar}'}</code>
+    <code>{'{nombre}'}</code>, <code>{'{proyecto}'}</code> <span>y</span> <code>{'{lote}'}</code>
   </>
 );
 
@@ -90,23 +90,23 @@ const ES_SECTIONS: Section[] = [
     id: 'calidad', icon: BadgeCheck, title: 'Puntaje de calidad y sello «Verificado»',
     intro: 'Cada proyecto tiene un puntaje de 0 a 100 que define su orden en la portada. El sello legal es obligatorio para publicar.',
     body: <Bullets items={[
-      'Puntaje: portada (10), galería de 6 fotos o más (10), descripción de 300 caracteres o más (10), subtítulo y ubicación (5), coordenadas (5), plano de solares (10), precios en todos los solares (15), 3 vistas 360° (10), versión en inglés (10) y verificación (15).',
+      'Puntaje: portada (10), galería de 6 fotos o más (10), descripción de 300 caracteres o más (10), subtítulo y ubicación (5), coordenadas (5), plano de lotes (10), precios en todos los lotes (15), 3 vistas 360° (10), versión en inglés (10) y verificación (15).',
       'Al editar el proyecto ves tu puntaje y un consejo para cada punto que te falta. Con 90 o más apareces entre los primeros.',
       'Documentos legales: sube la escritura inscrita, el certificado de gravámenes, la aprobación municipal y el plano (PDF o foto). Son privados: solo los ve el equipo legal de Grupo 3i.',
       'Con la revisión completa, tu proyecto muestra el sello «✓ Verificado por Grupo 3i» en su tarjeta y en su ficha.',
     ]} />,
   },
   {
-    id: 'lotes', icon: Map, title: 'Mapa interactivo de solares',
-    intro: 'Cada solar con su forma real, precio, medidas, linderos y disponibilidad en vivo.',
+    id: 'lotes', icon: Map, title: 'Mapa interactivo de lotes',
+    intro: 'Cada lote con su forma real, precio, medidas, linderos y disponibilidad en vivo.',
     body: <>
       <Bullets items={[
-        'El plano (DWG o KMZ) lo cargamos nosotros durante el alta, con la geometría exacta de cada solar.',
+        'El plano (DWG o KMZ) lo cargamos nosotros durante el alta, con la geometría exacta de cada lote.',
         'Tú manejas la parte comercial desde «Lotes» en tu proyecto: estado (disponible, reservado, vendido, no comercializable), precio, precio por m², «solo contado», fotos y notas privadas.',
-        'El comprador filtra por manzana, tamaño o disponibilidad, toca un solar y ve su ficha, comparte el enlace por WhatsApp o pide «Cómo llegar».',
-        'Cada solar tiene su propia página para compartir, con vista previa en redes y una versión para imprimir con la ficha técnica.',
+        'El comprador filtra por manzana, tamaño o disponibilidad, toca un lote y ve su ficha, comparte el enlace por WhatsApp o pide «Cómo llegar».',
+        'Cada lote tiene su propia página para compartir, con vista previa en redes y una versión para imprimir con la ficha técnica.',
       ]} />
-      <Tip>Marca un solar como vendido apenas se venda: el mapa se actualiza al instante para todos.</Tip>
+      <Tip>Marca un lote como vendido apenas se venda: el mapa se actualiza al instante para todos.</Tip>
     </>,
   },
   {
@@ -114,7 +114,7 @@ const ES_SECTIONS: Section[] = [
     intro: 'Panorámicas ubicadas sobre el mapa, para recorrer el terreno antes de visitarlo.',
     body: <>
       <Steps items={[
-        'Toma la foto con el modo panorámico del celular (o con una cámara 360°), parado en el solar.',
+        'Toma la foto con el modo panorámico del celular (o con una cámara 360°), parado en el lote.',
         'En tu proyecto, abre «360°» y sube la imagen (JPG). Se divide en mosaicos para que cargue rápido.',
         'Si la foto trae ubicación y brújula, queda ubicada y orientada sola. Si no, arrastra el punto en el mapa y fija el norte mirando la vista.',
         'Puedes renombrar, ocultar o borrar cada vista.',
@@ -126,7 +126,7 @@ const ES_SECTIONS: Section[] = [
     id: 'contactos', icon: MessageCircle, title: 'Cómo llegan los contactos',
     intro: 'Cada interesado queda registrado, con fecha y origen, antes de llegar a tu WhatsApp.',
     body: <Bullets items={[
-      'Cuando alguien toca «Contactar un asesor» en tu proyecto, deja su nombre y su WhatsApp, y se abre el chat con tu número con el solar ya escrito.',
+      'Cuando alguien toca «Contactar un asesor» en tu proyecto, deja su nombre y su WhatsApp, y se abre el chat con tu número con el lote ya escrito.',
       'Origen: «Referido» (llegó por el enlace de un socio de Refiere y gana), «Plataforma» (llegó por grupo3i.com) o «Propio» (lo registraste tú).',
       'Plazo de 180 días: manda el primer registro de cada número. Si un contacto de la plataforma compra dentro de ese plazo, la venta paga la comisión del 8 %.',
       'Registra a tus propios clientes en CRM → Lista → «+ Contacto propio». Si compran, la comisión es del 2 %.',
@@ -200,8 +200,8 @@ const ES_SECTIONS: Section[] = [
     body: <>
       <Sub first>Métricas del proyecto</Sub>
       <Bullets items={[
-        'Embudo: vieron el proyecto → vieron un solar → abrieron un 360° → tocaron WhatsApp → dejaron sus datos → compraron.',
-        'Visitas y contactos por semana, solares más vistos, celular o computador, español o inglés.',
+        'Embudo: vieron el proyecto → vieron un lote → abrieron un 360° → tocaron WhatsApp → dejaron sus datos → compraron.',
+        'Visitas y contactos por semana, lotes más vistos, celular o computador, español o inglés.',
         'Períodos de 7, 30 o 90 días, o un año.',
       ]} />
       <Sub>Reportes del CRM</Sub>
@@ -217,8 +217,8 @@ const ES_SECTIONS: Section[] = [
     intro: 'Pagas solo cuando vendes, y a medida que tu cliente te paga.',
     body: <>
       <Steps items={[
-        'En CRM → Lista, toca «Venta» en el cliente: solar, precio, contado o financiado, entrada y comprobante.',
-        'Grupo 3i confirma la venta: el solar pasa a Vendido y el cliente a Venta.',
+        'En CRM → Lista, toca «Venta» en el cliente: lote, precio, contado o financiado, entrada y comprobante.',
+        'Grupo 3i confirma la venta: el lote pasa a Vendido y el cliente a Venta.',
         'Si es financiado, registra cada pago del cliente en Ventas → «+ Registrar pago».',
         'Con cada pago se calcula la comisión (8 % o 2 %, según el origen del contacto). En Ventas ves lo generado, lo pagado y lo pendiente.',
       ]} />
@@ -227,7 +227,7 @@ const ES_SECTIONS: Section[] = [
   },
   {
     id: 'mapa-web', icon: Code2, title: 'Mapa para tu web',
-    intro: 'Tu mapa interactivo de solares, con tu logo y tu color, dentro de tu propia página.',
+    intro: 'Tu mapa interactivo de lotes, con tu logo y tu color, dentro de tu propia página.',
     body: <>
       <Steps items={[
         'En tu proyecto, sección «Mapa para tu web»: sube tu logo y elige tu color, el nombre y el WhatsApp que recibe los contactos.',
@@ -235,7 +235,7 @@ const ES_SECTIONS: Section[] = [
         'El mapa ajusta su altura solo y funciona en el celular.',
         'Los contactos que lleguen desde tu web entran a tu CRM como propios.',
       ]} />
-      <p className="mt-4 text-sm text-brand-gray">Plan mensual: $49 al mes hasta 150 solares; $99 al mes si tienes más. Si no se renueva, el mapa se apaga solo al vencer.</p>
+      <p className="mt-4 text-sm text-brand-gray">Plan mensual: $49 al mes hasta 150 lotes; $99 al mes si tienes más. Si no se renueva, el mapa se apaga solo al vencer.</p>
     </>,
   },
   {
@@ -253,7 +253,7 @@ const ES_SECTIONS: Section[] = [
     body: <Bullets items={[
       'Tus documentos legales se guardan en privado; los enlaces de revisión caducan en 10 minutos.',
       'No ves la identidad de los referidores de Grupo 3i, y ellos no ven a tus clientes.',
-      'Cada asesor ve solo lo suyo. Los datos de los propietarios de los solares nunca son públicos.',
+      'Cada asesor ve solo lo suyo. Los datos de los propietarios de los lotes nunca son públicos.',
       'Contrato de un año, renovable, con 30 días de aviso para terminarlo.',
     ]} />,
   },
@@ -365,7 +365,7 @@ const EN_SECTIONS: Section[] = [
     body: <Bullets items={[
       'You start with four samples: first contact, booking a visit, follow-up and one in English.',
       'Under CRM → «Plantillas» (Templates), the account owner can add new ones or delete the ones you don’t use. Agents can use them but not edit them.',
-      <>Placeholders fill themselves in: <code>{'{nombre}'}</code> (name), <code>{'{proyecto}'}</code> (project) and <code>{'{solar}'}</code> (lot).</>,
+      <>Placeholders fill themselves in: <code>{'{nombre}'}</code> (name), <code>{'{proyecto}'}</code> (project) and <code>{'{lote}'}</code> (lot).</>,
     ]} />,
   },
   {
@@ -461,7 +461,7 @@ const EN_SECTIONS: Section[] = [
 const UI = {
   es: {
     seoTitle: 'Manual de herramientas para desarrolladoras',
-    seoDesc: 'Guía completa del portal de Grupo 3i: proyectos, mapa de solares, 360°, CRM, asesores, avisos, métricas, ventas y mapa para tu web.',
+    seoDesc: 'Guía completa del portal de Grupo 3i: proyectos, mapa de lotes, 360°, CRM, asesores, avisos, métricas, ventas y mapa para tu web.',
     title: 'Manual de herramientas', subtitle: 'Todo lo que tu desarrolladora puede hacer en Grupo 3i, paso a paso.',
     contents: 'Contenido', gallery: 'Ver la galería del sistema →', proposal: 'Ver la propuesta comercial →', apply: 'Solicitar el alta',
     print: 'Imprimir o guardar en PDF', ready: '¿Listo para publicar tu proyecto?', reply: 'Te escribimos por WhatsApp en menos de 24 horas.',

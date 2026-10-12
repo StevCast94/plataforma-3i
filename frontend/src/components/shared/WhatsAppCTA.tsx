@@ -9,8 +9,8 @@ import { LeadGateModal } from '@/components/shared/LeadGateModal';
 // Botón de WhatsApp al número oficial de la página (SiteContent contact.whatsapp).
 //
 // El mensaje se arma en el punto donde se toca el botón: nombra lo que la
-// persona está viendo (el solar, la propuesta, el proyecto) para que el asesor
-// no tenga que preguntar "¿cuál solar?". Sin emojis: WhatsApp Web los recibe
+// persona está viendo (el lote, la propuesta, el proyecto) para que el asesor
+// no tenga que preguntar "¿cuál lote?". Sin emojis: WhatsApp Web los recibe
 // rotos cuando vienen en el texto prellenado del enlace.
 // ============================================================
 
@@ -44,7 +44,7 @@ interface Props {
   variant?: 'solid' | 'outline';
   size?: 'sm' | 'md';
   className?: string;
-  /** Solar al que se refiere el contacto (dentro del mapa). */
+  /** Lote al que se refiere el contacto (dentro del mapa). */
   lotCode?: string;
 }
 

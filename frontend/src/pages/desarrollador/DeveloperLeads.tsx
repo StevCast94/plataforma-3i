@@ -104,7 +104,7 @@ export function DeveloperLeads({ projects, ownLeadRate, canSell = true }: { proj
                     </td>
                     <td className="px-4 py-3">
                       {l.project.name}
-                      {l.lotCode && <div className="text-xs text-brand-gray">Solar {l.lotCode}</div>}
+                      {l.lotCode && <div className="text-xs text-brand-gray">Lote {l.lotCode}</div>}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2 py-0.5 text-xs ${src.cls}`}>{src.text}</span>

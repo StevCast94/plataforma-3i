@@ -223,7 +223,7 @@ adminDeveloperRoutes.post('/installments/:id/collect', async (req: AuthedRequest
   }
 });
 
-// GET /api/admin/developers/alerts — solares vendidos en proyectos de terceros sin venta declarada
+// GET /api/admin/developers/alerts — lotes vendidos en proyectos de terceros sin venta declarada
 adminDeveloperRoutes.get('/alerts', async (_req, res) => {
   const sold = await prisma.lot.findMany({
     where: { status: 'SOLD', kind: 'LOT', project: { developerId: { not: null } } },

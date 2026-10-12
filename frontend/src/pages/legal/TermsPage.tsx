@@ -19,7 +19,7 @@ const ES: LegalText = {
       <>Grupo 3i es un grupo inmobiliario con operaciones en Manglaralto, provincia de Santa Elena, Ecuador. Contacto: {mail} o WhatsApp +593 98 487 5050.</>,
     ] },
     { title: '2. La información del sitio es referencial', body: [
-      'Publicamos precios, disponibilidad, medidas, fotos, renders, proyecciones y cuotas con el mayor cuidado, pero son referenciales y pueden cambiar sin aviso. Un solar puede venderse mientras lo estás mirando.',
+      'Publicamos precios, disponibilidad, medidas, fotos, renders, proyecciones y cuotas con el mayor cuidado, pero son referenciales y pueden cambiar sin aviso. Un lote puede venderse mientras lo estás mirando.',
       'Las cifras de plusvalía, rentabilidad o retorno son estimaciones y no garantizan resultados. Las medidas y linderos definitivos son los que constan en la escritura.',
       'Nada de lo publicado es una oferta vinculante. Una compra solo queda firme con la firma del contrato correspondiente (reserva, promesa de compraventa o escritura), que prevalece sobre lo que diga el sitio.',
     ] },

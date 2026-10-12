@@ -6,8 +6,8 @@
 // traducción la página no se rompe: muestra el español. El inglés vive en
 // `en.ts`, en un único diccionario plano.
 //
-//   t('Elige tu solar')                    → "Choose your lot"
-//   t('{n} solares disponibles', { n: 89 }) → "89 lots available"
+//   t('Elige tu lote')                    → "Choose your lot"
+//   t('{n} lotes disponibles', { n: 89 }) → "89 lots available"
 // ============================================================
 
 import { EN } from './en';

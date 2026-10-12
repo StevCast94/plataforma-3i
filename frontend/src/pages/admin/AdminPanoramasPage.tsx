@@ -58,7 +58,7 @@ export default function AdminPanoramasPage() {
     }
   }
 
-  // Mapa satelital con los solares
+  // Mapa satelital con los lotes
   useEffect(() => {
     if (!mapEl.current || mapRef.current || !lots) return;
     const map = L.map(mapEl.current, { scrollWheelZoom: true });

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { PhoneField } from '@/components/shared/PhoneField';
 import { Link, useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
+import { PROPERTY_TYPES } from '@/lib/propertyTypes';
 
 // «Publica tu proyecto»: vitrina de proyectos seleccionados y verificados de desarrolladoras externas. El
 // formulario crea un desarrollador en estado «En alta» (admin → Desarrolladores).
@@ -15,16 +16,16 @@ import { api } from '@/lib/api';
 const BENEFITS = [
   { icon: HandCoins, title: 'Pagas solo cuando vendes', body: '8 % sobre las ventas que llegan por la plataforma, que pagas a medida que tu cliente te paga. Sin mensualidades ni planes por anuncio.' },
   { icon: Users, title: 'Una red que vende por ti', body: 'Los socios de Refiere y gana recomiendan tu proyecto a sus contactos, en español e inglés, y ganan solo si vendes.' },
-  { icon: Map, title: 'Mapa interactivo de solares', body: 'Cada solar con su precio, medidas y disponibilidad en vivo. El cliente elige su solar desde el celular.' },
-  { icon: Box, title: 'Recorridos 360°', body: 'Tus panorámicas ubicadas sobre el mapa: el cliente recorre el terreno antes de visitarlo.' },
-  { icon: BadgeCheck, title: 'Sello «Verificado por Grupo 3i»', body: 'Revisamos escrituras, gravámenes y aprobaciones. Es lo que más pesa en la decisión de quien compra un solar en la costa.' },
+  { icon: Map, title: 'Inventario en vivo', body: 'Cada unidad con su precio, medidas y disponibilidad al día. En lotizaciones y proyectos de casas, el cliente elige la suya en un mapa interactivo desde el celular.' },
+  { icon: Box, title: 'Recorridos 360°', body: 'Tus panorámicas ubicadas sobre el mapa: el cliente recorre el proyecto antes de visitarlo.' },
+  { icon: BadgeCheck, title: 'Sello «Verificado por Grupo 3i»', body: 'Revisamos escrituras, gravámenes y aprobaciones. Es lo que más pesa en la decisión de quien compra una propiedad en la costa.' },
   { icon: BarChart3, title: 'Tu portal y tus métricas', body: 'Contactos, ventas, pagos y el embudo de tu proyecto en un solo lugar.' },
 ];
 
 const COMPARE: [string, string, string][] = [
   ['Cómo pagas', 'Por anuncio, vendas o no', 'Solo cuando vendes'],
   ['Quién lo promociona', 'Solo el buscador del portal', 'Nuestra web y una red de referidores'],
-  ['Solares', 'Un anuncio por propiedad', 'Mapa interactivo con disponibilidad en vivo'],
+  ['Inventario', 'Un anuncio por propiedad', 'Todo el proyecto con disponibilidad en vivo'],
   ['Confianza', 'Nadie revisa los papeles', 'Sello de verificación legal'],
   ['Compradores extranjeros', 'Poco o nada en inglés', 'Todo en español e inglés'],
 ];
@@ -42,7 +43,7 @@ export default function PublishProjectPage() {
     const fd = new FormData(e.currentTarget);
     setBusy(true);
     try {
-      await api.post('/developer/apply', { ...Object.fromEntries(fd.entries()), whatsapp: phone, lang });
+      await api.post('/developer/apply', { ...Object.fromEntries(fd.entries()), types: fd.getAll('types').join(', '), whatsapp: phone, lang });
       setSent(true);
     } catch (err) {
       setError((err as Error).message);
@@ -55,11 +56,11 @@ export default function PublishProjectPage() {
     <>
       <Seo
         title={t('Publica tu proyecto inmobiliario')}
-        description={t('Vende tus solares con la red de Grupo 3i: mapa interactivo, recorridos 360°, verificación legal y pago solo por venta.')}
+        description={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i: lotes, casas, departamentos, locales, oficinas y macrolotes. Pagas solo cuando vendes.')}
       />
       <PageHeader
         title={t('Publica tu proyecto')}
-        subtitle={t('Vende tus solares con la red de Grupo 3i. Pagas solo cuando vendes.')}
+        subtitle={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i. Pagas solo cuando vendes.')}
         image="/images/secciones/header-nosotros.jpg"
       />
 
@@ -77,6 +78,15 @@ export default function PublishProjectPage() {
           {t('Solicitar el alta')}
         </a>
       </div>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
+        <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-brand-gray">{t('Publicamos proyectos de')}</p>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          {PROPERTY_TYPES.map((p) => (
+            <span key={p.id} className="rounded-full bg-white px-4 py-1.5 text-sm font-medium text-primary shadow-sm ring-1 ring-black/5">{t(p.label)}</span>
+          ))}
+        </div>
+      </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -143,7 +153,18 @@ export default function PublishProjectPage() {
             <Input name="email" type="email" label={t('Correo')} />
             <Input name="project" label={t('Nombre del proyecto')} />
             <Input name="location" label={t('Ubicación')} />
-            <Input name="units" label={t('Número de lotes o unidades')} />
+            <Input name="units" label={t('Número de unidades')} />
+            <fieldset className="sm:col-span-2">
+              <legend className="mb-2 text-sm font-medium text-primary">{t('Tipo de proyecto')}</legend>
+              <div className="flex flex-wrap gap-2">
+                {PROPERTY_TYPES.map((p) => (
+                  <label key={p.id} className="flex cursor-pointer items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-sm text-primary has-[:checked]:border-secondary has-[:checked]:bg-secondary/15">
+                    <input type="checkbox" name="types" value={p.label} className="accent-secondary" />
+                    {t(p.label)}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             <div className="hidden" aria-hidden>
               <input name="website" tabIndex={-1} autoComplete="off" />
             </div>

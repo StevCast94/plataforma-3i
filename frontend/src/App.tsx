@@ -108,6 +108,7 @@ const publicRoutes = () => (
     <Route index element={<HomePage />} />
     <Route path="proyectos" element={<ProjectsPage />} />
     <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
+    <Route path="proyectos/:slug/lote/:code" element={<LotPage />} />
     <Route path="proyectos/:slug/solar/:code" element={<LotPage />} />
     <Route path="propuesta/montanita-view" element={<PropuestaMontanitaPage />} />
     <Route path="tienda" element={<Navigate to=".." replace />} />

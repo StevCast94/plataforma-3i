@@ -1,5 +1,5 @@
-// Condiciones de financiamiento de los solares (las usan el mapa, la ficha del
-// solar y la página de aterrizaje). Módulo liviano: no arrastra Leaflet.
+// Condiciones de financiamiento de los lotes (las usan el mapa, la ficha del
+// lote y la página de aterrizaje). Módulo liviano: no arrastra Leaflet.
 export const DOWN_PAYMENT = 0.3;
 export const INSTALLMENTS = 24;
 

@@ -70,8 +70,8 @@ export default function ProjectDetailPage() {
   // "Quiero invertir" lleva directo a solicitar la compra en vez de abrir el formulario genérico.
   const investProduct = project.products?.[0];
   const goInvest = () => {
-    // Si hay mapa de solares, el precio real está ahí (por solar), no en un producto genérico.
-    const map = document.getElementById('mapa-solares');
+    // Si hay mapa de lotes, el precio real está ahí (por lote), no en un producto genérico.
+    const map = document.getElementById('mapa-lotes');
     if (map) map.scrollIntoView({ behavior: 'smooth' });
     else if (investProduct) navigate(`/tienda/${investProduct.slug}`);
     else setOpen(true);
@@ -221,7 +221,7 @@ export default function ProjectDetailPage() {
         </motion.div>
       </section>
 
-      {/* 2. LO PRINCIPAL, JUSTO DESPUÉS DEL HERO: el mapa de solares (si hay lotes)
+      {/* 2. LO PRINCIPAL, JUSTO DESPUÉS DEL HERO: el mapa de lotes (si hay lotes)
           y el brochure digital (si está activo). */}
       <LotMap projectSlug={project.slug} projectName={project.name} mapLat={project.mapLat} mapLng={project.mapLng} />
 

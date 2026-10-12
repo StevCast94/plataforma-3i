@@ -11,7 +11,7 @@ export default function ProjectsPage() {
 
   return (
     <>
-      <Seo title={t('Proyectos')} description={t('Ibiza Condohotel (fracciones desde $12,000) y Montañita View (solares con vista al mar desde $41,721) en Santa Elena, Ecuador.')} />
+      <Seo title={t('Proyectos')} description={t('Ibiza Condohotel (fracciones desde $12,000) y Montañita View (lotes con vista al mar desde $41,721) en Santa Elena, Ecuador.')} />
       <PageHeader
         title={t('Proyectos')}
         subtitle={t('Proyectos seleccionados y verificados en la costa ecuatoriana.')}

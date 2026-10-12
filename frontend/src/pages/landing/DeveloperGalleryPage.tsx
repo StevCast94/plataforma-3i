@@ -13,26 +13,26 @@ type Group = { id: string; title: string; intro: string; shots: Shot[] };
 
 const ES = {
   seoTitle: 'Galería del sistema para desarrolladoras',
-  seoDesc: 'Capturas reales del portal de Grupo 3i: proyecto, mapa de solares, 360°, CRM, asesores, métricas, ventas y mapa para tu web.',
+  seoDesc: 'Capturas reales del portal de Grupo 3i: proyecto, mapa de lotes, 360°, CRM, asesores, métricas, ventas y mapa para tu web.',
   title: 'Galería del sistema',
   subtitle: 'Así se ve cada pantalla del portal para desarrolladoras.',
   note: 'Capturas del sistema real con una desarrolladora de demostración; nombres, cifras y ventas son ficticios.',
   apply: 'Solicitar el alta', guide: 'Manual de herramientas', proposal: 'Propuesta comercial',
   close: 'Cerrar', prev: 'Anterior', next: 'Siguiente',
   groups: [
-    { id: 'proyecto', title: 'Tu proyecto', intro: 'Creas la ficha, cargas los solares y las vistas 360°, y ves qué te falta para aparecer entre los primeros.', shots: [
+    { id: 'proyecto', title: 'Tu proyecto', intro: 'Creas la ficha, cargas los lotes y las vistas 360°, y ves qué te falta para aparecer entre los primeros.', shots: [
       ['01-portal-proyectos', 'Portal de la desarrolladora', 'Tus proyectos, tu comisión y el estado de publicación.'],
       ['02-editar-proyecto', 'Ficha del proyecto', 'Nombre, descripción, precio, ubicación y fotos.'],
       ['02b-version-ingles', 'Versión en inglés', 'Subtítulo, descripción y precio para el comprador extranjero.'],
       ['03-puntaje-calidad', 'Puntaje de la ficha', 'Te dice qué completar para aparecer entre los primeros.'],
       ['03b-documentos-legales', 'Documentos legales', 'Privados: solo los ve nuestro equipo legal para darte el sello.'],
-      ['05-editor-lotes', 'Inventario de solares', 'Precio, área y estado de cada solar, con filtros.'],
+      ['05-editor-lotes', 'Inventario de lotes', 'Precio, área y estado de cada lote, con filtros.'],
       ['06-vistas-360', 'Vistas 360°', 'Sube las panorámicas, ubícalas en el mapa y fija el norte.'],
     ] },
-    { id: 'comprador', title: 'Lo que ve tu comprador', intro: 'Una ficha en español e inglés, con el mapa de solares en vivo, desde cualquier celular.', shots: [
+    { id: 'comprador', title: 'Lo que ve tu comprador', intro: 'Una ficha en español e inglés, con el mapa de lotes en vivo, desde cualquier celular.', shots: [
       ['20-ficha-proyecto', 'Ficha pública', 'Con el sello «Verificado por Grupo 3i».'],
       ['21-mapa-lotes', 'Mapa interactivo', 'Disponibilidad en vivo y puntos 360° sobre el terreno.'],
-      ['22-ficha-solar', 'Ficha de cada solar', 'Área, precio, cuota mensual y cómo llegar.'],
+      ['22-ficha-lote', 'Ficha de cada lote', 'Área, precio, cuota mensual y cómo llegar.'],
       ['24-captura-contacto', 'Datos antes del chat', 'Antes de abrir WhatsApp, el cliente deja su nombre y número: no se pierde ningún contacto.'],
       ['23-ficha-ingles', 'En inglés', 'Toda la experiencia para el comprador extranjero.'],
       ['26-celular-mapa', 'Desde el celular', 'Pensado primero para el teléfono.'],
@@ -42,14 +42,14 @@ const ES = {
       ['10-crm-ficha-contacto', 'Ficha del cliente', 'Asesor, etapa, WhatsApp con plantilla, tareas e historial.'],
       ['11-crm-agenda', 'Agenda', 'Tareas vencidas, de hoy y próximas.'],
       ['12-crm-lista', 'Lista', 'Todos los contactos, con filtros y búsqueda.'],
-      ['15-crm-plantillas', 'Plantillas de WhatsApp', 'Mensajes listos con el nombre del cliente, el proyecto y el solar.'],
+      ['15-crm-plantillas', 'Plantillas de WhatsApp', 'Mensajes listos con el nombre del cliente, el proyecto y el lote.'],
       ['14-crm-reportes-equipo', 'Reportes', 'Tiempo de primera respuesta, conversión, motivos de pérdida y ranking.'],
     ] },
     { id: 'equipo', title: 'Equipo, métricas y ventas', intro: 'Sabes qué funciona, quién vende y cuánto debes de comisión.', shots: [
       ['17-equipo-vendedores', 'Equipo de asesores', 'Los contactos se reparten solos entre tus asesores.'],
       ['18-vendedor-crm', 'Vista del asesor', 'Cada asesor ve solo sus clientes y sus tareas.'],
       ['07-metricas', 'Métricas', 'Visitas, embudo, origen de los contactos y ventas.'],
-      ['08-metricas-solares', 'Solares más vistos', 'Qué solares miran más, desde qué dispositivo y en qué idioma.'],
+      ['08-metricas-lotes', 'Lotes más vistos', 'Qué lotes miran más, desde qué dispositivo y en qué idioma.'],
       ['16-ventas-comisiones', 'Ventas y comisiones', 'Registras los pagos del cliente y la comisión se calcula sola.'],
     ] },
     { id: 'web', title: 'Mapa para tu web', intro: 'El mismo mapa dentro de tu página, con tu marca.', shots: [
@@ -80,7 +80,7 @@ const EN: typeof ES = {
     { id: 'comprador', title: 'What your buyers see', intro: 'A listing in English and Spanish with a live lot map, on any phone.', shots: [
       ['20-ficha-proyecto', 'Public listing', 'With the “Verified by Grupo 3i” seal.'],
       ['21-mapa-lotes', 'Interactive map', 'Real-time availability and 360° points across the property.'],
-      ['22-ficha-solar', 'Lot details', 'Size, price, monthly payment and directions.'],
+      ['22-ficha-lote', 'Lot details', 'Size, price, monthly payment and directions.'],
       ['24-captura-contacto', 'Lead capture', 'Buyers leave their name and number before WhatsApp opens — no lead gets lost.'],
       ['23-ficha-ingles', 'In English', 'The full experience for international buyers.'],
       ['26-celular-mapa', 'On mobile', 'Built for phones first.'],
@@ -97,7 +97,7 @@ const EN: typeof ES = {
       ['17-equipo-vendedores', 'Sales team', 'Leads are shared out among your agents automatically.'],
       ['18-vendedor-crm', 'Agent view', 'Each agent sees only their own leads and tasks.'],
       ['07-metricas', 'Analytics', 'Visitors, funnel, lead sources and sales.'],
-      ['08-metricas-solares', 'Most-viewed lots', 'Which lots get the most attention, on what device and in which language.'],
+      ['08-metricas-lotes', 'Most-viewed lots', 'Which lots get the most attention, on what device and in which language.'],
       ['16-ventas-comisiones', 'Sales and commissions', 'Log the buyer’s payments and the commission works itself out.'],
     ] },
     { id: 'web', title: 'Map for your website', intro: 'The same map, embedded in your own site with your branding.', shots: [

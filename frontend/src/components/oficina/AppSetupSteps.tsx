@@ -180,7 +180,7 @@ export function AppSetupSteps() {
         text={
           s.locationBlocked
             ? 'Está bloqueada: actívala en los ajustes del navegador para grupo3i.com.'
-            : 'Para verte en el mapa de los solares cuando visites los proyectos con tus clientes.'
+            : 'Para verte en el mapa de los lotes cuando visites los proyectos con tus clientes.'
         }
         action={
           !s.locationBlocked ? (

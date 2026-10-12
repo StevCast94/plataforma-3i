@@ -135,7 +135,7 @@ export function LeadDrawer({
                 <h2 className="font-serif text-2xl font-bold text-primary">{lead.name}</h2>
                 <p className="text-sm text-brand-gray">
                   {lead.project.name}
-                  {lead.lotCode && ` · Solar ${lead.lotCode}`}
+                  {lead.lotCode && ` · Lote ${lead.lotCode}`}
                 </p>
                 <p className="mt-1 text-sm">
                   <a href={`tel:${lead.phone}`} className="text-primary hover:underline">{lead.phone}</a>

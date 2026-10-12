@@ -20,16 +20,18 @@ const TX = {
     back: '← Volver',
     pdf: 'Descargar PDF',
     coverKicker: 'Propuesta comercial',
-    coverTitle: 'Vende tus solares con la red de Grupo 3i',
+    coverTitle: 'Vende tus proyectos inmobiliarios con la red de Grupo 3i',
+    typesLabel: 'Publicamos proyectos de',
+    types: ['Lotes', 'Casas', 'Departamentos', 'Suites', 'Locales comerciales', 'Oficinas', 'Bodegas y galpones', 'Macrolotes'],
     coverSub: 'Seleccionamos y verificamos cada proyecto que publicamos en la costa ecuatoriana. Tú pagas solo cuando vendes.',
     preparedFor: 'Preparada para',
     aboutKicker: 'Quiénes somos',
     aboutTitle: 'Desarrollamos, verificamos y comercializamos proyectos inmobiliarios en la costa',
-    about1: 'Somos una inmobiliaria con proyectos propios en Santa Elena. Creamos esta plataforma para vender nuestros solares y hoy la abrimos a otras desarrolladoras.',
+    about1: 'Somos una inmobiliaria con proyectos propios en Santa Elena. Creamos esta plataforma para vender nuestros proyectos y hoy la abrimos a otras desarrolladoras: lotes, casas, departamentos, locales, oficinas y macrolotes.',
     about2: 'No somos un portal de anuncios: elegimos con quién trabajamos, verificamos cada proyecto y solo ganamos cuando tú vendes.',
     stats: [
-      ['112', 'solares en el mapa interactivo'],
-      ['360°', 'recorridos sobre el terreno'],
+      ['112', 'lotes en el mapa interactivo'],
+      ['360°', 'recorridos de cada proyecto'],
       ['ES · EN', 'toda la experiencia en español e inglés'],
     ],
     compareKicker: 'Portal de anuncios vs. Grupo 3i',
@@ -39,7 +41,7 @@ const TX = {
       ['Cómo pagas', 'Un plan mensual, vendas o no', 'Una comisión, solo cuando vendes'],
       ['Si no vendes', 'Pagas el plan igual', 'No pagas comisión (solo el alta)'],
       ['Quién promociona tu proyecto', 'Solo el buscador del portal', 'Nuestra plataforma, nuestras campañas y la red de referidores'],
-      ['Lotizaciones', 'Un anuncio por cada solar', 'Un mapa interactivo con todos tus solares'],
+      ['Tu inventario', 'Un anuncio por cada unidad', 'Todo el proyecto con disponibilidad en vivo y, en lotizaciones y casas, en un mapa interactivo'],
       ['Confianza del comprador', 'Nadie revisa los papeles', 'Sello «Verificado por Grupo 3i»'],
       ['Comprador extranjero', 'Poco o nada en inglés', 'Todo en español e inglés'],
       ['Seguimiento de clientes', 'Por tu cuenta', 'CRM incluido: cada cliente llega al WhatsApp de su asesor'],
@@ -48,20 +50,20 @@ const TX = {
     stepsKicker: 'Cómo funciona',
     stepsTitle: 'De la firma a la venta, en cinco pasos',
     steps: [
-      ['Alta', 'Cargamos el plano, las fotos y los recorridos 360°. Pago único de $300.'],
+      ['Alta', 'Cargamos tu inventario, los planos, las fotos y los recorridos 360°. Pago único de $300.'],
       ['Verificación', 'Revisamos escritura y permisos, y tu proyecto recibe el sello.'],
       ['Publicación', 'Tu ficha sale en español e inglés, con su mapa, y la difundimos.'],
-      ['Contactos', 'Cada interesado llega al WhatsApp de tu asesor, con su nombre y el solar que le interesa.'],
+      ['Contactos', 'Cada interesado llega al WhatsApp de tu asesor, con su nombre y la unidad que le interesa.'],
       ['Venta', 'Pagas la comisión a medida que tu cliente te paga.'],
     ],
     toolsKicker: 'Herramientas incluidas',
     toolsTitle: 'Todo lo que tu proyecto necesita para venderse',
     tools: [
-      ['Mapa interactivo de solares', 'Precio y disponibilidad en tiempo real, desde el celular.'],
-      ['Recorridos 360°', 'Tu cliente conoce el terreno sin viajar.'],
+      ['Inventario en vivo', 'Precio y disponibilidad de cada unidad en tiempo real; en lotizaciones y casas, en un mapa interactivo.'],
+      ['Recorridos 360°', 'Tu cliente conoce el proyecto sin viajar.'],
       ['Red Refiere y gana', 'Socios que recomiendan tu proyecto y cobran solo si se vende.'],
       ['Español e inglés', 'Listo para el comprador extranjero.'],
-      ['Métricas en tiempo real', 'Visitas, solares más vistos, contactos y ventas.'],
+      ['Métricas en tiempo real', 'Visitas, unidades más vistas, contactos y ventas.'],
       ['CRM para tu equipo', 'Embudo, asesores, tareas y avisos al celular.'],
     ],
     portalKicker: 'Tu portal',
@@ -75,7 +77,7 @@ const TX = {
       'El cliente deja sus datos antes de abrir el chat y le escribe directamente a su asesor',
       'Avisos al celular de cada contacto nuevo y de las tareas por vencer',
       'Tareas, agenda de visitas e historial completo de cada cliente',
-      'Plantillas de WhatsApp que ya incluyen el nombre, el proyecto y el solar',
+      'Plantillas de WhatsApp que ya incluyen el nombre, el proyecto y la unidad',
       'Reportes de tiempo de respuesta, conversión, motivos de pérdida, ranking de asesores y campaña de origen',
     ],
     crmSoon: 'Disponible hoy, sin costo adicional',
@@ -96,10 +98,10 @@ const TX = {
       ['2 %', 'Si el cliente es tuyo', 'Lo registras en tu portal y lo trabajas con todas las herramientas.'],
     ],
     mapPlanTitle: 'Opcional · Plan Mapa para tu web',
-    mapPlan: 'Tu mapa de solares con tu logo, dentro de tu web o en tu propio dominio, con CRM incluido. $49 al mes hasta 150 solares; $99 al mes si tienes más.',
+    mapPlan: 'Para lotizaciones y proyectos de casas: tu mapa interactivo con tu logo, dentro de tu web o en tu propio dominio, con CRM incluido. $49 al mes hasta 150 unidades; $99 al mes si tienes más.',
     priceNote: 'Valores más impuestos. También puedes destacar tu proyecto en la portada como servicio adicional.',
     exKicker: 'Ejemplo',
-    exTitle: (p: string) => `Un solar de ${p} con financiamiento`,
+    exTitle: (p: string) => `Un lote de ${p} con financiamiento`,
     exSub: 'Pagas la comisión a medida que tu cliente te paga: nunca adelantas dinero que todavía no cobraste.',
     exCols: ['Pago del cliente', 'Monto', 'Comisión (8 %)'],
     exRows: ['Entrada', 'Cada cuota mensual (30 cuotas)', 'Total'],
@@ -125,16 +127,18 @@ const TX = {
     back: '← Back',
     pdf: 'Download PDF',
     coverKicker: 'Partner proposal',
-    coverTitle: 'Sell your lots through the Grupo 3i network',
+    coverTitle: 'Sell your real estate projects through the Grupo 3i network',
+    typesLabel: 'We list',
+    types: ['Lots', 'Homes', 'Condos', 'Suites', 'Retail space', 'Office space', 'Warehouses', 'Large land parcels'],
     coverSub: 'Every project we list on Ecuador’s coast is hand-picked and vetted. You only pay when you sell.',
     preparedFor: 'Prepared for',
     aboutKicker: 'About us',
     aboutTitle: 'We develop, vet and sell real estate on Ecuador’s coast',
-    about1: 'We’re a real estate company with our own projects in Santa Elena. We built this platform to sell our own lots — and now we’re opening it to partner developers.',
+    about1: 'We’re a real estate company with our own projects in Santa Elena. We built this platform to sell our own projects — and now we’re opening it to partner developers of lots, homes, condos, retail, office space and large land parcels.',
     about2: 'We’re not a listings site: we choose who we work with, vet every project and only get paid when you sell.',
     stats: [
       ['112', 'lots on the interactive map'],
-      ['360°', 'tours across the land'],
+      ['360°', 'tours of every project'],
       ['EN · ES', 'the full experience in English and Spanish'],
     ],
     compareKicker: 'Listings sites vs. Grupo 3i',
@@ -144,7 +148,7 @@ const TX = {
       ['How you pay', 'A monthly plan, sale or no sale', 'A commission, only when you sell'],
       ['If nothing sells', 'You still pay the plan', 'No commission (just the setup fee)'],
       ['Who markets your project', 'The site’s search bar', 'Our platform, our ad campaigns and our referral network'],
-      ['Land developments', 'One listing per lot', 'One interactive map with all your lots'],
+      ['Your inventory', 'One listing per unit', 'Your whole project with live availability — on an interactive map for lot and home developments'],
       ['Buyer confidence', 'Nobody checks the paperwork', '“Verified by Grupo 3i” seal'],
       ['International buyers', 'Little or no English', 'Everything in English and Spanish'],
       ['Lead follow-up', 'You’re on your own', 'Built-in CRM: every buyer goes straight to their agent’s WhatsApp'],
@@ -153,20 +157,20 @@ const TX = {
     stepsKicker: 'How it works',
     stepsTitle: 'From signing to sale in five steps',
     steps: [
-      ['Setup', 'We upload your site plan, photos and 360° tours. One-time fee: $300.'],
+      ['Setup', 'We upload your inventory, plans, photos and 360° tours. One-time fee: $300.'],
       ['Verification', 'We review the title and permits, and your project earns the seal.'],
       ['Launch', 'Your listing goes live in English and Spanish, with its map, and we promote it.'],
-      ['Leads', 'Every prospect lands in your agent’s WhatsApp with their name and the lot they want.'],
+      ['Leads', 'Every prospect lands in your agent’s WhatsApp with their name and the unit they want.'],
       ['Sale', 'You pay the commission as your buyer pays you.'],
     ],
     toolsKicker: 'What’s included',
     toolsTitle: 'Everything your project needs to sell',
     tools: [
-      ['Interactive lot map', 'Real-time pricing and availability, right on their phone.'],
-      ['360° tours', 'Buyers walk the land without making the trip.'],
+      ['Live inventory', 'Real-time pricing and availability for every unit, with an interactive map for lot and home developments.'],
+      ['360° tours', 'Buyers tour the project without making the trip.'],
       ['Refer & Earn network', 'Members who recommend your project and only get paid when it sells.'],
       ['English and Spanish', 'Built for international buyers.'],
-      ['Real-time analytics', 'Visits, most-viewed lots, leads and sales.'],
+      ['Real-time analytics', 'Visits, most-viewed units, leads and sales.'],
       ['CRM for your team', 'Pipeline, agents, tasks and mobile alerts.'],
     ],
     portalKicker: 'Your dashboard',
@@ -180,7 +184,7 @@ const TX = {
       'Buyers share their details before the chat opens, then message their agent directly',
       'Mobile alerts for every new lead and upcoming task',
       'Tasks, a site-visit calendar and a full history for every client',
-      'WhatsApp templates pre-filled with name, project and lot',
+      'WhatsApp templates pre-filled with name, project and unit',
       'Reports on response time, conversion, lost-deal reasons, agent rankings and lead source',
     ],
     crmSoon: 'Available now, at no extra cost',
@@ -201,7 +205,7 @@ const TX = {
       ['2%', 'When the buyer is yours', 'Add them in your portal and work them with every tool.'],
     ],
     mapPlanTitle: 'Optional · Map for your website',
-    mapPlan: 'Your lot map under your logo, on your website or your own domain, CRM included. $49/month up to 150 lots; $99/month above that.',
+    mapPlan: 'For lot and home developments: your interactive map under your logo, on your website or your own domain, CRM included. $49/month up to 150 units; $99/month above that.',
     priceNote: 'Plus applicable taxes. Homepage placement available as an add-on.',
     exKicker: 'Example',
     exTitle: (p: string) => `A ${p} lot, sold on installments`,
@@ -330,8 +334,18 @@ export default function ProposalPage() {
         <p className="mt-16 text-sm uppercase tracking-[0.3em] text-secondary">
           {tx.coverKicker} {year}
         </p>
-        <h1 className="mt-4 max-w-3xl font-serif text-5xl font-bold leading-tight sm:text-6xl">{tx.coverTitle}</h1>
+        <h1 className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight sm:text-5xl">{tx.coverTitle}</h1>
         <p className="mt-6 max-w-2xl text-lg text-white/80">{tx.coverSub}</p>
+        <div className="mt-8 max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.25em] text-white/50">{tx.typesLabel}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {tx.types.map((tp) => (
+              <span key={tp} className="rounded-full bg-white/10 px-3 py-1 text-sm text-white ring-1 ring-white/20">
+                {tp}
+              </span>
+            ))}
+          </div>
+        </div>
         {para && (
           <p className="mt-10 text-white/70">
             {tx.preparedFor} <strong className="text-white">{para}</strong>
@@ -439,7 +453,7 @@ export default function ProposalPage() {
         <h2 className="font-serif text-4xl font-bold">{tx.portalTitle}</h2>
         <p className="mt-2 text-sm text-brand-gray">{tx.portalSub}</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {['/images/galeria-dev/07-metricas.webp', '/images/galeria-dev/08-metricas-solares.webp'].map((src) => (
+          {['/images/galeria-dev/07-metricas.webp', '/images/galeria-dev/08-metricas-lotes.webp'].map((src) => (
             <img key={src} src={src} alt="" className="w-full rounded-2xl object-cover object-top shadow-lg ring-1 ring-black/10 print:h-[95mm]" />
           ))}
         </div>

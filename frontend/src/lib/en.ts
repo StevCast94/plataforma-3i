@@ -8,6 +8,19 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'Todo el proyecto con disponibilidad en vivo': 'Your whole project with live availability',
+  'Inventario': 'Inventory',
+  'Inventario en vivo': 'Live inventory',
+  'Macrolotes': 'Large land parcels',
+  'Bodegas y galpones': 'Warehouses',
+  'Oficinas': 'Office space',
+  'Locales comerciales': 'Retail space',
+  'Suites': 'Suites',
+  'Departamentos': 'Condos',
+  'Casas': 'Homes',
+  'Número de unidades': 'Number of units',
+  'Tipo de proyecto': 'Project type',
+  'Publicamos proyectos de': 'We list',
   'desde {p}': 'from {p}',
   'Retiro mínimo (transferencia)': 'Minimum withdrawal (bank transfer)',
   'política de privacidad': 'privacy policy',
@@ -24,14 +37,14 @@ export const EN: Record<string, string> = {
   'Ahorra hasta 70% en hoteles de todo el mundo, disfruta beneficios para socios y gana comisiones por recomendar.': 'Save up to 70% on hotels worldwide, enjoy members-only perks and earn commissions for every referral.',
   'Proyectos que desarrollamos o seleccionamos, todos verificados.': 'Projects we build or hand-pick, every one of them vetted.',
   'Nuestros proyectos': 'Our projects',
-  'Propiedad fraccionada, solares con vista al mar y membresías de viaje en la costa ecuatoriana.': 'Fractional ownership, ocean-view lots and travel memberships on Ecuador’s coast.',
+  'Propiedad fraccionada, lotes con vista al mar y membresías de viaje en la costa ecuatoriana.': 'Fractional ownership, ocean-view lots and travel memberships on Ecuador’s coast.',
   'Invierte en un paraíso. Fracciones en Ibiza Condohotel desde $12,000': 'Own a piece of paradise. Ibiza Condohotel shares from $12,000',
-  'Fracciones en Ibiza Condohotel desde $12,000 y solares con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.': 'Ibiza Condohotel shares from $12,000 and ocean-view lots at Montañita View from $41,721, with interest-free financing.',
-  'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (solares con vista al mar desde $41,721) en Santa Elena, Ecuador.': 'Ibiza Condohotel (shares from $12,000) and Montañita View (ocean-view lots from $41,721) in Santa Elena, Ecuador.',
+  'Fracciones en Ibiza Condohotel desde $12,000 y lotes con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.': 'Ibiza Condohotel shares from $12,000 and ocean-view lots at Montañita View from $41,721, with interest-free financing.',
+  'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (lotes con vista al mar desde $41,721) en Santa Elena, Ecuador.': 'Ibiza Condohotel (shares from $12,000) and Montañita View (ocean-view lots from $41,721) in Santa Elena, Ecuador.',
   'Membresía de viajes con hasta 70% de descuento en hoteles, beneficios para socios y una comunidad de inversionistas.': 'A travel membership with up to 70% off hotels, members-only perks and a community of investors.',
   'Club 3i — viajes, beneficios y comunidad': 'Club 3i — travel, perks and community',
   'Escríbenos por WhatsApp o déjanos tus datos y un asesor te contacta en menos de 24 horas.': 'Message us on WhatsApp or leave your details and an agent will reach out within 24 hours.',
-  'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, solares con vista al mar y membresías de viaje.': 'A real estate group on Ecuador’s coast: fractional ownership, ocean-view lots and travel memberships.',
+  'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, lotes con vista al mar y membresías de viaje.': 'A real estate group on Ecuador’s coast: fractional ownership, ocean-view lots and travel memberships.',
   'Grupo 3i — Invierte en la costa ecuatoriana': 'Grupo 3i — Real estate on Ecuador’s coast',
   'WhatsApp': 'WhatsApp',
   'Grupo 3i': 'Grupo 3i',
@@ -39,7 +52,7 @@ export const EN: Record<string, string> = {
   'Acercar': 'Zoom in',
   'No pudimos obtener tu ubicación. Inténtalo de nuevo.': 'We couldn’t get your location. Please try again.',
   'Permite el acceso a tu ubicación en el navegador para verla en el mapa.': 'Allow location access in your browser to see yourself on the map.',
-  'Estás a {km} km de los solares. La ubicación se activa solo cerca o dentro del proyecto.': 'You’re {km} km away. Your location only shows up when you’re at or near the project.',
+  'Estás a {km} km de los lotes. La ubicación se activa solo cerca o dentro del proyecto.': 'You’re {km} km away. Your location only shows up when you’re at or near the project.',
   // ---------- Navegación y pie ----------
   Inicio: 'Home',
   Proyectos: 'Projects',
@@ -57,7 +70,7 @@ export const EN: Record<string, string> = {
   'Desarrolladoras': 'Developers',
   'Programa de referidos Grupo 3i': 'Grupo 3i Refer & Earn program',
   'Recomienda una inversión y gana hasta el 4%': 'Refer a buyer, earn up to 4%',
-  'Si conoces a alguien que busca un solar en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.': 'Know someone looking for a lot on the coast or a share in a beachfront property? Send them your link. When they buy, you get paid. Free to join, no money down.',
+  'Si conoces a alguien que busca un lote en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.': 'Know someone looking for a lot on the coast or a share in a beachfront property? Send them your link. When they buy, you get paid. Free to join, no money down.',
   'Conoce el programa': 'How it works',
   'Reglamento de Referidos': 'Refer & Earn terms',
   'Costa Ecuatoriana': 'Coast of Ecuador',
@@ -69,10 +82,10 @@ export const EN: Record<string, string> = {
   'Invierte en el futuro. Vive el presente.': 'Invest in tomorrow. Enjoy it today.',
   'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.': 'Fractional ownership, travel memberships and getaways on Ecuador’s coast.',
   'Propiedad fraccionada, membresías de viaje y experiencias premium en la costa ecuatoriana.': 'Fractional ownership, travel memberships and getaways on Ecuador’s coast.',
-  'Montañita View. Solares con vista al mar, financiados a 24 meses sin intereses': 'Montañita View: ocean-view lots with 24 months of interest-free financing',
-  'Solares frente al Pacífico en Montañita, Santa Elena, y Montañita View Lobby, con piscina, restaurante y áreas sociales.': 'Lots overlooking the Pacific in Montañita, Santa Elena — plus Montañita View Lobby, with a pool, restaurant and shared spaces.',
+  'Montañita View. Lotes con vista al mar, financiados a 24 meses sin intereses': 'Montañita View: ocean-view lots with 24 months of interest-free financing',
+  'Lotes frente al Pacífico en Montañita, Santa Elena, y Montañita View Lobby, con piscina, restaurante y áreas sociales.': 'Lots overlooking the Pacific in Montañita, Santa Elena — plus Montañita View Lobby, with a pool, restaurant and shared spaces.',
   'Sobre el proyecto': 'About the project',
-  // Ficha del solar y compartir
+  // Ficha del lote y compartir
   'Explorar el mapa': 'Explore the map',
   'Precio de contado': 'Cash price',
   'Solo contado': 'Cash only',
@@ -103,11 +116,11 @@ export const EN: Record<string, string> = {
   'El enlace lleva tu código de socio {code}.': 'Your member code {code} is built into the link.',
   'Enlace copiado: pégalo donde quieras compartirlo': 'Link copied — paste it anywhere to share',
   'Copia este enlace': 'Copy this link',
-  'No encontramos ese solar': 'We couldn’t find that lot',
-  'Ver todos los solares': 'View all lots',
-  'Forma, ubicación, medidas y linderos del solar.': 'Lot shape, location, dimensions and boundaries.',
+  'No encontramos ese lote': 'We couldn’t find that lot',
+  'Ver todos los lotes': 'View all lots',
+  'Forma, ubicación, medidas y linderos del lote.': 'Lot shape, location, dimensions and boundaries.',
   'Ver en el mapa del proyecto': 'Show on the project map',
-  'Cómo llegar al solar': 'Get directions',
+  'Cómo llegar al lote': 'Get directions',
   'Descargar ficha en PDF': 'Download lot details (PDF)',
   'Invierte en un Paraíso. Fracciones en Condohotel Ibiza desde $12,000': 'Own a piece of paradise. Ibiza Condohotel shares from $12,000',
   'Explorar proyectos': 'Browse projects',
@@ -117,7 +130,7 @@ export const EN: Record<string, string> = {
   'Ver todos los proyectos': 'View all projects',
   'Oportunidad de inversión': 'Investment opportunity',
   'Propuesta Montañita View': 'The Montañita View offer',
-  'Un solar desde $41,721, sociedad en Montañita View Lobby o la compra total de ambos proyectos. Revisa las cifras, el dossier técnico y las condiciones de pago.':
+  'Un lote desde $41,721, sociedad en Montañita View Lobby o la compra total de ambos proyectos. Revisa las cifras, el dossier técnico y las condiciones de pago.':
     'A lot from $41,721, a partnership in Montañita View Lobby, or both projects in a single purchase. Review the figures, the technical dossier and the payment terms.',
   'Ver la propuesta': 'See the offer',
   'Membresías y Oportunidades': 'Memberships and opportunities',
@@ -148,19 +161,19 @@ export const EN: Record<string, string> = {
   'Verificado por Grupo 3i': 'Verified by Grupo 3i',
   // «Publica tu proyecto» (vitrina de desarrolladores)
   'Publica tu proyecto inmobiliario': 'List your real estate project',
-  'Vende tus solares con la red de Grupo 3i: mapa interactivo, recorridos 360°, verificación legal y pago solo por venta.': 'Sell your lots through the Grupo 3i network: an interactive map, 360° tours, legal vetting — and you only pay when you sell.',
+  'Vende tus proyectos inmobiliarios con la red de Grupo 3i: lotes, casas, departamentos, locales, oficinas y macrolotes. Pagas solo cuando vendes.': 'Sell your real estate projects through the Grupo 3i network: lots, homes, condos, retail, office space and large land parcels. You only pay when you sell.',
   'Publica tu proyecto': 'List your project',
-  'Vende tus solares con la red de Grupo 3i. Pagas solo cuando vendes.': 'Sell your lots through the Grupo 3i network. You only pay when you sell.',
+  'Vende tus proyectos inmobiliarios con la red de Grupo 3i. Pagas solo cuando vendes.': 'Sell your real estate projects through the Grupo 3i network. You only pay when you sell.',
   'Pagas solo cuando vendes': 'You only pay when you sell',
   '8 % sobre las ventas que llegan por la plataforma, que pagas a medida que tu cliente te paga. Sin mensualidades ni planes por anuncio.': '8% on sales we bring in, paid as your buyer pays you. No monthly fees, no pay-per-listing plans.',
   'Una red que vende por ti': 'A network that sells for you',
   'Los socios de Refiere y gana recomiendan tu proyecto a sus contactos, en español e inglés, y ganan solo si vendes.': 'Refer & Earn members share your project with their own contacts, in English and Spanish — and only get paid if you sell.',
-  'Mapa interactivo de solares': 'Interactive lot map',
-  'Cada solar con su precio, medidas y disponibilidad en vivo. El cliente elige su solar desde el celular.': 'Every lot with its price, size and real-time availability. Buyers pick their lot right from their phone.',
+  'Mapa interactivo de lotes': 'Interactive lot map',
+  'Cada unidad con su precio, medidas y disponibilidad al día. En lotizaciones y proyectos de casas, el cliente elige la suya en un mapa interactivo desde el celular.': 'Every unit with its price, size and up-to-date availability. In lot and home developments, buyers pick theirs on an interactive map right from their phone.',
   'Recorridos 360°': '360° tours',
-  'Tus panorámicas ubicadas sobre el mapa: el cliente recorre el terreno antes de visitarlo.': 'Your panoramas, pinned on the map, so buyers can walk the property before they visit.',
+  'Tus panorámicas ubicadas sobre el mapa: el cliente recorre el proyecto antes de visitarlo.': 'Your panoramas, pinned on the map, so buyers can tour the project before they visit.',
   'Sello «Verificado por Grupo 3i»': 'The “Verified by Grupo 3i” seal',
-  'Revisamos escrituras, gravámenes y aprobaciones. Es lo que más pesa en la decisión de quien compra un solar en la costa.': 'We check titles, liens and approvals — the thing buyers care about most when they buy property on the coast.',
+  'Revisamos escrituras, gravámenes y aprobaciones. Es lo que más pesa en la decisión de quien compra una propiedad en la costa.': 'We check titles, liens and approvals — the thing buyers care about most when they buy property on the coast.',
   'Tu portal y tus métricas': 'Your own portal and analytics',
   'Contactos, ventas, pagos y el embudo de tu proyecto en un solo lugar.': 'Leads, sales, payments and your project’s funnel, all in one place.',
   'Portal de anuncios vs. Grupo 3i': 'Listings sites vs. Grupo 3i',
@@ -194,14 +207,14 @@ export const EN: Record<string, string> = {
   'Enviar solicitud': 'Submit application',
   'Manual de herramientas': 'Platform guide',
   'Galería del sistema': 'Screenshot gallery',
-  'Un asesor te escribe por WhatsApp con precios y el plano de solares.': 'An agent will text you on WhatsApp with pricing and the site plan.',
-  'Mientras tanto, mira el mapa de solares': 'In the meantime, browse the lot map',
+  'Un asesor te escribe por WhatsApp con precios y el plano de lotes.': 'An agent will text you on WhatsApp with pricing and the site plan.',
+  'Mientras tanto, mira el mapa de lotes': 'In the meantime, browse the lot map',
   'Recibe precios y el plano': 'Get pricing and the site plan',
   'Déjanos tus datos y un asesor te escribe por WhatsApp. Sin compromiso.': 'Leave your details and an agent will reach out on WhatsApp. No obligation.',
   'Quiero recibir información': 'Send me the details',
   'Tus datos solo los usa el asesor del proyecto.': 'Your details go only to the project’s agent.',
-  'Elige tu solar en el mapa': 'Choose your lot on the map',
-  'Precio, medidas y disponibilidad en vivo de cada solar.': 'Real-time pricing, size and availability for every lot.',
+  'Elige tu lote en el mapa': 'Choose your lot on the map',
+  'Precio, medidas y disponibilidad en vivo de cada lote.': 'Real-time pricing, size and availability for every lot.',
   'Recórrelo en 360°': 'Tour it in 360°',
   'Mira el terreno y la vista desde tu celular, sin viajar.': 'See the land and the view from your phone — no trip required.',
   'Revisamos la escritura, los gravámenes y la aprobación municipal.': 'We check the title, liens and municipal approvals.',
@@ -211,15 +224,15 @@ export const EN: Record<string, string> = {
   "Ver ficha completa": "See full listing",
   '{n} cuotas de': '{n} monthly payments of',
   "Desde (área)": "From (size)",
-  "¿Te interesa un solar en {p}?": "Interested in a lot at {p}?",
-  'Te enviamos precios, el plano con los solares disponibles y las formas de pago.': 'We’ll send you pricing, a site plan with the available lots, and payment options.',
+  "¿Te interesa un lote en {p}?": "Interested in a lot at {p}?",
+  'Te enviamos precios, el plano con los lotes disponibles y las formas de pago.': 'We’ll send you pricing, a site plan with the available lots, and payment options.',
   'Cookies': 'Cookies',
   'Usamos cookies para saber qué anuncios funcionan y mostrarte proyectos que te interesen. Puedes aceptarlas o quedarte solo con las necesarias.': 'We use cookies to see which ads work and to show you projects you’ll actually care about. Accept them all, or keep just the essentials.',
   'Solo las necesarias': 'Essentials only',
   'Aceptar todas': 'Accept all',
   'Capturas reales de cada pantalla del portal.': 'Real screenshots of every screen in the portal.',
   'Para desarrolladoras inmobiliarias': 'For real estate developers',
-  'Mapa interactivo de solares, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.': 'An interactive lot map, 360° tours, a CRM that alerts your agents by phone, legal vetting and a referral network that talks up your project.',
+  'Lotes, casas, departamentos, locales, oficinas y macrolotes: inventario en vivo, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.': 'Lots, homes, condos, retail, office space and large land parcels: live inventory, 360° tours, a CRM that alerts your agents by phone, legal vetting and a referral network that talks up your project.',
   'Propuesta comercial': 'Partner proposal',
   'Beneficios, tarifas y solicitud de alta.': 'Benefits, fees and how to apply.',
   'Pagas solo por venta. Te lo explicamos con ejemplos.': 'You only pay when you sell — with worked examples.',
@@ -235,9 +248,9 @@ export const EN: Record<string, string> = {
   'Continuar a WhatsApp': 'Continue to WhatsApp',
   'Código de país': 'Country code',
   'Hola, estoy en la web de Grupo 3i y quiero información.': 'Hi! I’m on the Grupo 3i website and I’d like more information.',
-  'Hola, estoy viendo el mapa de solares de {p} y quiero información.':
+  'Hola, estoy viendo el mapa de lotes de {p} y quiero información.':
     'Hello, I am looking at the lot map for {p} and would like more information.',
-  'Hola, me interesa el *solar {code}* de {p} ({area}{precio}). Quiero más información.': 'Hi! I’m interested in *lot {code}* at {p} ({area}{precio}). Could you send me more details?',
+  'Hola, me interesa el *lote {code}* de {p} ({area}{precio}). Quiero más información.': 'Hi! I’m interested in *lot {code}* at {p} ({area}{precio}). Could you send me more details?',
   Nombre: 'Name',
   'Tu nombre': 'Your name',
   Email: 'Email',
@@ -265,11 +278,11 @@ export const EN: Record<string, string> = {
   Referido: 'Referral',
   'Código aplicado': 'Code applied',
 
-  // ---------- Mapa de solares ----------
-  'Elige tu solar': 'Choose your lot',
-  'Cargando mapa de solares…': 'Loading the lot map…',
-  '{n} solares disponibles': '{n} lots available',
-  '{n} solares en pantalla': '{n} lots on screen',
+  // ---------- Mapa de lotes ----------
+  'Elige tu lote': 'Choose your lot',
+  'Cargando mapa de lotes…': 'Loading the lot map…',
+  '{n} lotes disponibles': '{n} lots available',
+  '{n} lotes en pantalla': '{n} lots on screen',
   '{n} disponibles': '{n} available',
   desde: 'from',
   'toca uno para ver su precio y tu cuota': 'tap any lot to see its price and monthly payment',
@@ -292,11 +305,11 @@ export const EN: Record<string, string> = {
   'Área verde': 'Green area',
   'Equipamiento urbano': 'Community facilities',
   Vías: 'Streets',
-  Solar: 'Lot',
-  'Solar {code}': 'Lot {code}',
-  'Solar {code}, foto {n}': 'Lot {code}, photo {n}',
-  'Ver foto {n} del solar {code}': 'View photo {n} of lot {code}',
-  'Ficha del solar {code}': 'Lot {code} details',
+  Lote: 'Lot',
+  'Lote {code}': 'Lot {code}',
+  'Lote {code}, foto {n}': 'Lot {code}, photo {n}',
+  'Ver foto {n} del lote {code}': 'View photo {n} of lot {code}',
+  'Ficha del lote {code}': 'Lot {code} details',
   'Cerrar la ficha': 'Close',
   Cerrar: 'Close',
   Área: 'Area',
@@ -309,13 +322,13 @@ export const EN: Record<string, string> = {
   'Uso proyectado': 'Intended use',
   'Ubicación en el mapa por confirmar': 'Map location coming soon',
   'Ver menos': 'Show less',
-  'Ver los {n} solares': 'View all {n} lots',
+  'Ver los {n} lotes': 'View all {n} lots',
   'O déjanos tus datos y te escribimos': 'Or leave your details and we’ll reach out',
   'Quiero que me contacten': 'Contact me',
-  '¡Listo! Un asesor te contactará por WhatsApp sobre el solar {code}.': 'You’re all set! An agent will message you on WhatsApp about lot {code}.',
+  '¡Listo! Un asesor te contactará por WhatsApp sobre el lote {code}.': 'You’re all set! An agent will message you on WhatsApp about lot {code}.',
   'Áreas según levantamiento topográfico GEO 3i. Precio de lista $100/m² ($85/m² en la manzana A). Plan de pago: 30% de entrada y saldo en hasta 24 cuotas mensuales sin intereses.': 'Lot sizes per the GEO 3i land survey. List price $100/m² ($85/m² in block A). Payment plan: 30% down, with the balance in up to 24 interest-free monthly payments.',
 
-  // ---------- Ficha técnica del solar ----------
+  // ---------- Ficha técnica del lote ----------
   'Ficha técnica': 'Specs',
   'Clave catastral': 'Parcel number',
   'Por asignar': 'Pending',
@@ -340,7 +353,7 @@ export const EN: Record<string, string> = {
   'Lado (m)': 'Side (m)',
   Fuente: 'Source',
   'Datos referenciales; los linderos legales constan en la escritura.': 'For reference only — the legal boundaries are those in the deed.',
-  'Linderos y coordenadas pendientes: este solar aún no está digitalizado en el levantamiento topográfico.': 'Boundaries and coordinates coming soon: this lot hasn’t been mapped in the land survey yet.',
+  'Linderos y coordenadas pendientes: este lote aún no está digitalizado en el levantamiento topográfico.': 'Boundaries and coordinates coming soon: this lot hasn’t been mapped in the land survey yet.',
 
   // ---------- Ficha de proyecto y brochure ----------
   'Proyecto no encontrado': 'Project not found',
@@ -369,7 +382,7 @@ export const EN: Record<string, string> = {
   'Vista general': 'At a glance',
   'A pasos del mar': 'Steps from the beach',
   'Ubicación privilegiada': 'Prime location',
-  'Ver el mapa de solares': 'View the lot map',
+  'Ver el mapa de lotes': 'View the lot map',
   'Plan de inversión': 'Investment plan',
   'Modelo de pago': 'Payment structure',
   'Proyección de valor': 'Projected value',
@@ -579,22 +592,22 @@ export const EN: Record<string, string> = {
 
   // ---------- Propuesta Montañita View ----------
   'Propuesta exclusiva — Montañita View': 'Montañita View — private investment offering',
-  'Tres formas de invertir en Montañita View: un solar, sociedad en el Lobby o la compra total.':
+  'Tres formas de invertir en Montañita View: un lote, sociedad en el Lobby o la compra total.':
     'Three ways to invest in Montañita View: a lot, a partnership in the Lobby, or the whole purchase.',
   'Propuesta exclusiva · Documento privado': 'Exclusive proposal · Private document',
   'Montañita View': 'Montañita View',
   'Dos proyectos hermanos en Manglaralto, Santa Elena: una lotización de 25.8 hectáreas con título saneado y un complejo con lobby ya construido y 81 apartamentos proyectados. Tres maneras de ser parte.':
     'Two sister projects in Manglaralto, Santa Elena: a 25.8-hectare subdivision with clean title, and a complex with a completed lobby and 81 planned apartments. Three ways to take part.',
-  'solares disponibles': 'lots available',
+  'lotes disponibles': 'lots available',
   'en oferta': 'on offer',
   'lotización inscrita': 'recorded subdivision',
   'Elige cómo participar': 'Choose your option',
-  'Comprar un solar': 'Buy a lot',
+  'Comprar un lote': 'Buy a lot',
   'Montañita View Lobby': 'Montañita View Lobby',
   'Compra total': 'Full purchase',
   'Ver detalle': 'See details',
   'Ver detalle técnico': 'See technical details',
-  'Comprar un solar en la Lotización': 'Buy a lot in the subdivision',
+  'Comprar un lote en la Lotización': 'Buy a lot in the subdivision',
   'Opción A': 'Option A',
   'Opción B': 'Option B',
   'Opción C': 'Option C',
@@ -604,7 +617,7 @@ export const EN: Record<string, string> = {
   'Nombre completo': 'Full name',
   'Agendar una reunión': 'Set up a meeting',
   'Guardar como PDF': 'Save as PDF',
-  'Hola, vi la propuesta de Montañita View y me interesa *comprar un solar* (Opción A). Quiero más información.':
+  'Hola, vi la propuesta de Montañita View y me interesa *comprar un lote* (Opción A). Quiero más información.':
     'Hello, I saw the Montañita View proposal and I am interested in *buying a lot* (Route A). I would like more information.',
   'Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Opción B). Quiero más información.': 'Hi! I saw the Montañita View offer and I’m interested in *Montañita View Lobby* (Option B). Could you send me more details?',
   'Hola, vi la propuesta de Montañita View y me interesa *la compra total* (Opción C, {precio}). Quiero más información.':
@@ -615,13 +628,13 @@ export const EN: Record<string, string> = {
   'Desde $41,721': 'From $41,721',
   'Tu terreno propio, con título individual y financiamiento directo: 30% de entrada y 24 cuotas sin intereses.':
     'Your own land, with individual title and direct financing: 30% down and 24 interest-free payments.',
-  'Un solar propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 24 cuotas sin intereses.':
+  'Un lote propio en Manglaralto, a minutos de la playa y de Montañita, con la cadena de dominio completa e inscrita. Eliges el tuyo en el mapa y lo pagas en 24 cuotas sin intereses.':
     'Your own lot in Manglaralto, minutes from the beach and from Montañita, with a complete, registered chain of title. Pick yours on the map and pay it over 24 interest-free instalments.',
-  'Solares disponibles': 'Lots available',
+  'Lotes disponibles': 'Lots available',
   '90 de 111': '90 of 111',
   '$100 / m²': '$100 / m²',
   Desde: 'From',
-  '$41,721 — solar A9, 490.84 m²': '$41,721 — lot A9, 490.84 m²',
+  '$41,721 — lote A9, 490.84 m²': '$41,721 — lot A9, 490.84 m²',
   'Plan de pago': 'Payment plan',
   '30% de entrada + saldo en hasta 24 cuotas al 0%':
     '30% down + balance over up to 24 payments at 0%',
@@ -652,20 +665,20 @@ export const EN: Record<string, string> = {
   'DIWILDI S.A. compra al GAD Municipal de Santa Elena el macrolote de 26.37 ha en el recinto Río Chico (escritura del 10-oct-2013, inscrita el 01-nov-2013).': 'DIWILDI S.A. purchases the 26.37-hectare parent tract in Río Chico from the Municipality of Santa Elena (deed dated Oct 10, 2013, recorded Nov 1, 2013).',
   'Fraccionamiento aprobado por el Concejo Municipal (Lotización "Altos de Manglar"), protocolizado e inscrito en febrero de 2014.': 'Subdivision approved by the Municipal Council (“Altos de Manglar”), notarized and recorded in February 2014.',
   'Reestructuración como Lotización Montañita VIEW (Resolución Administrativa 0118052017-GADMSE-A), protocolizada el 18-oct-2018 e inscrita el 14-nov-2018.': 'Restructured as the Montañita VIEW subdivision (Administrative Resolution 0118052017-GADMSE-A), notarized Oct 18, 2018 and recorded Nov 14, 2018.',
-  'Los solares están fuera de tierras comunales. Cualquier contribución especial de mejoras por obras viales se asigna al vendedor en la escritura, no al comprador.': 'The lots are outside communal land. Any special assessment for road improvements is assigned to the seller in the deed — never to the buyer.',
+  'Los lotes están fuera de tierras comunales. Cualquier contribución especial de mejoras por obras viales se asigna al vendedor en la escritura, no al comprador.': 'The lots are outside communal land. Any special assessment for road improvements is assigned to the seller in the deed — never to the buyer.',
   'Registro de la Propiedad del cantón Santa Elena (inscripciones 01-nov-2013 y 14-nov-2018); Resolución Administrativa 0118052017-GADMSE-A.': 'Santa Elena Property Registry (recorded Nov 1, 2013 and Nov 14, 2018); Administrative Resolution 0118052017-GADMSE-A.',
   'Uso de suelo aprobado (258,299 m²)': 'Approved land use (258,299 m²)',
   Uso: 'Use',
-  'Residencial (solares)': 'Residential (lots)',
+  'Residencial (lotes)': 'Residential (lots)',
   'Áreas verdes': 'Green areas',
   'Área de afectación': 'Easement area',
   'El 17.25% de áreas verdes cumple el Art. 424 del COOTAD, por lo que no hay compensación pendiente por ese concepto.': 'Green space makes up 17.25%, meeting Article 424 of Ecuador’s land-use code (COOTAD), so no compensation is owed on that front.',
   'Inventario disponible por manzana': 'Available inventory by block',
-  Solares: 'Lots',
+  'Lotes': 'Lots',
   'Valor a $100/m²': 'Value at $100/m²',
   Total: 'Total',
-  'Tres manzanas tienen solares asignados a proyectos de negocio dentro del macroproyecto y siguen disponibles para la venta: zona de camping (E3–E5), aqua park (H14–H16) y río lento (G9). Fuera de esta oferta quedan los solares ya destinados: Santorini Condohotel (A-17 y A-18), Ibiza Condohotel (A-19 y A-20) y la planta de tratamiento de aguas residuales (B-9, B-10 y B-11).': 'Three blocks include lots earmarked for business ventures within the master plan, and they’re still for sale: a campground (E3–E5), a water park (H14–H16) and a lazy river (G9). Not included in this offer are lots already committed: Santorini Condohotel (A-17 and A-18), Ibiza Condohotel (A-19 and A-20) and the wastewater treatment plant (B-9, B-10 and B-11).',
-  'Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada solar.': 'GEO 3i georeferenced land survey (2026), with the individual size of every lot.',
+  'Tres manzanas tienen lotes asignados a proyectos de negocio dentro del macroproyecto y siguen disponibles para la venta: zona de camping (E3–E5), aqua park (H14–H16) y río lento (G9). Fuera de esta oferta quedan los lotes ya destinados: Santorini Condohotel (A-17 y A-18), Ibiza Condohotel (A-19 y A-20) y la planta de tratamiento de aguas residuales (B-9, B-10 y B-11).': 'Three blocks include lots earmarked for business ventures within the master plan, and they’re still for sale: a campground (E3–E5), a water park (H14–H16) and a lazy river (G9). Not included in this offer are lots already committed: Santorini Condohotel (A-17 and A-18), Ibiza Condohotel (A-19 and A-20) and the wastewater treatment plant (B-9, B-10 and B-11).',
+  'Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada lote.': 'GEO 3i georeferenced land survey (2026), with the individual size of every lot.',
   'Sector alto de la parroquia Manglaralto, sobre la Ruta del Spondylus, a 3 km del centro de Montañita. El entorno combina el filo costero con un interior rural; el bosque protector cubre cerca del 40% del territorio.': 'On the high ground of Manglaralto parish, right off the Ruta del Spondylus coastal highway, 3 km from downtown Montañita. The coastline meets the countryside here, and protected forest covers about 40% of the area.',
   'Servicios en el sector: energía y alumbrado público, agua potable, Ruta del Spondylus asfaltada y vía Manglaralto–Dos Mangas. A pocos minutos: Hospital de Manglaralto, gasolinera, reservorios de la Junta de Agua y hosterías de Montañita.': 'Utilities in the area: power and street lighting, running water, the paved Ruta del Spondylus and the Manglaralto–Dos Mangas road. Minutes away: Manglaralto Hospital, a gas station, the local water reservoirs and Montañita’s inns and lodges.',
   'Informe Montañita View, Grupo 3i (págs. 4–5); imagen satelital Google Earth.':
@@ -694,15 +707,15 @@ export const EN: Record<string, string> = {
   'Fase futura: hotel de 104 habitaciones': 'Future phase: a 104-room hotel',
   'El plan maestro reserva espacio para un hotel de 92 habitaciones estándar y 12 lofts. Se plantea como fase posterior, una vez consolidadas las etapas de apartamentos; su dimensión y viabilidad se evaluarán con la demanda generada por el complejo.': 'The master plan sets aside room for a hotel with 92 standard rooms and 12 lofts. It’s planned as a later phase, once the condo phases are up and running; its size and feasibility will depend on the demand the complex creates.',
   'Superficie incluida': 'Area included',
-  'Montañita View Lotes — 90 solares en venta': 'Montañita View Lotes — 90 lots for sale',
+  'Montañita View Lotes — 90 lotes en venta': 'Montañita View Lotes — 90 lots for sale',
   'Montañita View Lobby — predio': 'Montañita View Lobby — property',
-  'No incluye los solares ya vendidos o comprometidos. Tampoco las vías ni las áreas verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.': 'Excludes lots already sold or committed, as well as streets and green space, which are public under Resolution 0118052017-GADMSE-A.',
+  'No incluye los lotes ya vendidos o comprometidos. Tampoco las vías ni las áreas verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.': 'Excludes lots already sold or committed, as well as streets and green space, which are public under Resolution 0118052017-GADMSE-A.',
   'Forma de pago': 'Payment terms',
   'Infraestructura y estudios ya ejecutados': 'Infrastructure and studies already completed',
   'Estudio topográfico y de suelos.': 'Topographic and soil surveys.',
   'Vías internas demarcadas y compactadas.': 'Internal roads laid out and compacted.',
   'Desbroce y limpieza del terreno.': 'Land clearing.',
-  'Linderación y georreferenciación de cada solar con hitos y coordenadas UTM.':
+  'Linderación y georreferenciación de cada lote con hitos y coordenadas UTM.':
     'Boundary marking and georeferencing of every lot with markers and UTM coordinates.',
   'Obra civil del Lobby: garita, lobby, cimentación y departamentos modelo.':
     'Civil works at the Lobby: gatehouse, lobby, foundations and show apartments.',
@@ -739,22 +752,22 @@ export const EN: Record<string, string> = {
   Calle: 'Street',
   'Lindero exterior de la urbanización': 'Outer boundary of the subdivision',
   'Estación de Rebombeo': 'Pumping station',
-  'Solar Estación de Rebombeo': 'Pumping station lot',
+  'Lote Estación de Rebombeo': 'Pumping station lot',
   'Zona de camping': 'Camping area',
   'Planta de tratamiento (PTAR)': 'Wastewater treatment plant',
   'Compartir en la comunidad': 'Share with the community',
   'Compartiendo…': 'Sharing…',
   'Resumen ejecutivo': 'Executive summary',
   'Las tres maneras de participar': 'Three ways to invest',
-  'Opción A — Comprar un solar en la Lotización': 'Route A — Buy a lot in the subdivision',
+  'Opción A — Comprar un lote en la Lotización': 'Route A — Buy a lot in the subdivision',
   'Opción B — Montañita View Lobby': 'Route B — Montañita View Lobby',
   'Opción C — Compra total de ambos proyectos': 'Route C — Full purchase of both projects',
   'El destino: Montañita y la Ruta del Spondylus': 'The destination: Montañita and the Ruta del Spondylus',
   'Próximos pasos y contacto': 'Next steps and contact',
   'Dos proyectos hermanos en la misma loma sobre Manglaralto, a 300 metros de la playa: una lotización de 25.8 hectáreas con la cadena de dominio completa e inscrita, y un complejo con el área social ya construida y operando. Se ofrecen juntos o por separado.': 'Two sister projects on the same hillside above Manglaralto, 300 meters from the beach: a 25.8-hectare subdivision with a complete, recorded chain of title, and a complex whose shared amenities are already built and running. Available together or separately.',
   'Título saneado e inscrito.': 'Clear, recorded title.',
-  'Compra al GAD Municipal de Santa Elena en 2013, urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada solar se escritura individualmente.': 'Bought from the Municipality of Santa Elena in 2013; subdivision approved under Resolution 0118052017-GADMSE-A and recorded in 2018. Every lot is deeded individually.',
-  '111 solares levantados uno por uno.': '111 lots, each one surveyed.',
+  'Compra al GAD Municipal de Santa Elena en 2013, urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada lote se escritura individualmente.': 'Bought from the Municipality of Santa Elena in 2013; subdivision approved under Resolution 0118052017-GADMSE-A and recorded in 2018. Every lot is deeded individually.',
+  '111 lotes levantados uno por uno.': '111 lots, each one surveyed.',
   '90 disponibles, {area} de superficie vendible, con linderos, hitos y coordenadas UTM verificados en campo.':
     '90 available, {area} of sellable area, with boundaries, markers and UTM coordinates verified on site.',
   'Obra civil ejecutada.': 'Site work done.',
@@ -771,7 +784,7 @@ export const EN: Record<string, string> = {
   'Reunión con un asesor.': 'Meet with an agent.',
   'Revisamos la opción que le interesa, resolvemos dudas y ponemos a disposición los documentos fuente: escrituras, resolución de urbanización, levantamiento topográfico y estudio de factibilidad.': 'We walk through the option you’re considering, answer your questions and share the source documents: deeds, the subdivision resolution, the land survey and the feasibility study.',
   'Visita al sitio.': 'Site visit.',
-  'Recorrido por la lotización y el complejo, con los hitos de cada solar en terreno.': 'Tour the subdivision and the complex, with every lot’s corner markers in place.',
+  'Recorrido por la lotización y el complejo, con los hitos de cada lote en terreno.': 'Tour the subdivision and the complex, with every lot’s corner markers in place.',
   'Promesa de compraventa.': 'Purchase agreement.',
   'Se firma ante notario con el 10% de reserva; ahí quedan escritos el precio, los plazos y las obligaciones de cada parte.': 'Signed before a notary with a 10% deposit; it sets out the price, the timeline and each party’s obligations.',
   'Escrituración.': 'Closing.',
@@ -787,12 +800,12 @@ export const EN: Record<string, string> = {
     'Two sister projects in Manglaralto, Santa Elena: a 25.8-hectare subdivision with clean title, and a complex with a completed lobby and 81 planned apartments. Each is sold whole, separately or together.',
   'Montañita View Lotes': 'Montañita View Lotes',
   'Ambos proyectos': 'Both projects',
-  'Los 90 solares en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².':
+  'Los 90 lotes en venta de la lotización en una sola compra: 25.8 hectáreas con título saneado, a $55 por m².':
     'All 90 lots for sale in a single purchase: 25.8 hectares with clean title, at $55 per m².',
-  'La lotización completa en una sola operación: los 90 solares disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada solar levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.':
+  'La lotización completa en una sola operación: los 90 lotes disponibles, con la cadena de dominio inscrita, el urbanismo aprobado y cada lote levantado y georreferenciado. Quien la compra decide cómo venderla, desarrollarla o conservarla.':
     'The whole subdivision in a single transaction: the 90 available lots, with a registered chain of title, approved urban plan and every lot surveyed and georeferenced. The buyer decides how to sell, develop or hold it.',
   'Superficie vendible': 'Sellable area',
-  'Inscrito en el Registro de la Propiedad de Santa Elena; cada solar se escritura por separado':
+  'Inscrito en el Registro de la Propiedad de Santa Elena; cada lote se escritura por separado':
     'Registered with the Santa Elena Property Registry; each lot is deeded separately',
   '10% al firmar la promesa y el saldo a convenir entre las partes':
     '10% on signing the promise to purchase, balance to be agreed between the parties',
@@ -830,7 +843,7 @@ export const EN: Record<string, string> = {
   'Seguridad 24/7 🔒': '24/7 security 🔒',
   'Lotes y Amenidades exclusivas con vista al mar': 'Lots and exclusive amenities with a sea view',
   'Terrenos Premium en Manglaralto, Ruta del Spondylus': 'Premium land in Manglaralto, on the Ruta del Spondylus',
-  '90 solares disponibles desde 490 m², con título saneado desde 2013 y lotización municipal inscrita en 2018.':
+  '90 lotes disponibles desde 490 m², con título saneado desde 2013 y lotización municipal inscrita en 2018.':
     '90 lots available from 490 m², with clean title since 2013 and a municipal subdivision registered in 2018.',
   'A pasos del complejo Montañita View Lobby (piscina, restaurante y áreas sociales), del mismo grupo desarrollador — proyecto hermano, con acceso sujeto a convenio entre ambos predios.':
     'Steps from the Montañita View Lobby complex (pool, restaurant and social areas), by the same developer — a sister project, with access subject to an agreement between the two properties.',
@@ -842,7 +855,7 @@ export const EN: Record<string, string> = {
   Lotización: 'Subdivision',
   Condohotel: 'Condo-hotel',
   'Inversión en el corazón surfero de Ecuador': 'Investment in the surfing heart of Ecuador',
-  'A minutos de la playa y de la vida nocturna de Montañita, tu solar en el pueblo surfero más visitado del Ecuador.':
+  'A minutos de la playa y de la vida nocturna de Montañita, tu lote en el pueblo surfero más visitado del Ecuador.':
     'Minutes from the beach and Montañita’s nightlife, your lot in Ecuador’s most visited surf town.',
   'Vive el surf todo el año': 'Surf all year round',
   'Santa Elena fue la provincia más visitada del país en el feriado del 24 de mayo (Ministerio de Turismo) y Montañita registró 80% de ocupación hotelera en el feriado de mayo de 2026, según la Cámara de Turismo de Santa Elena.':
@@ -854,34 +867,34 @@ export const EN: Record<string, string> = {
   Financiamiento: 'Financing',
   '24 cuotas, 0% interés': '24 payments, 0% interest',
   'Lotización residencial y turística': 'Residential and tourism subdivision',
-  'USD $41,721 / solar': 'USD $41,721 / lot',
+  'USD $41,721 / lote': 'USD $41,721 / lot',
   '90 de 111, desde 490 m²': '90 of 111, from 490 m²',
   'Saneado — inscrito en 2018': 'Clean — registered in 2018',
   'Energía y alumbrado público': 'Electricity and street lighting',
   '17.3% de áreas verdes (cumple COOTAD)': '17.3% green areas (COOTAD compliant)',
-  'Cadena de dominio completa: compra al GAD Municipal (2013), lotización protocolizada (2014) y reestructuración inscrita (2018). Solares fuera de tierras comunales.':
+  'Cadena de dominio completa: compra al GAD Municipal (2013), lotización protocolizada (2014) y reestructuración inscrita (2018). Lotes fuera de tierras comunales.':
     'Complete chain of title: purchased from the Municipal Government (2013), subdivision notarised (2014) and restructuring registered (2018). Lots outside communal land.',
   'Título limpio y saneado': 'Clean, clear title',
-  '111 solares en 9 manzanas, con 20.1% de vías y 17.3% de áreas verdes ya cumpliendo la normativa municipal — sin compensaciones pendientes por ese concepto.':
+  '111 lotes en 9 manzanas, con 20.1% de vías y 17.3% de áreas verdes ya cumpliendo la normativa municipal — sin compensaciones pendientes por ese concepto.':
     '111 lots in 9 blocks, with 20.1% streets and 17.3% green areas already meeting municipal rules — no compensation outstanding on that count.',
   'Vecino directo del complejo Montañita View Lobby (piscina, restaurante, lobby social) del mismo grupo desarrollador.':
     'Right next to the Montañita View Lobby complex (pool, restaurant, social lobby), by the same developer.',
   'Zona en desarrollo activo': 'An area under active development',
-  'Manglaralto todavía tiene espacio para quienes deciden a tiempo. Un solar propio, escrituras claras y la libertad de construir a tu ritmo, junto al proyecto hermano Montañita View Lobby.':
+  'Manglaralto todavía tiene espacio para quienes deciden a tiempo. Un lote propio, escrituras claras y la libertad de construir a tu ritmo, junto al proyecto hermano Montañita View Lobby.':
     'Manglaralto still has room for those who decide in time. Your own lot, clear deeds and the freedom to build at your own pace, next to the sister project Montañita View Lobby.',
   'desde La Libertad': 'from La Libertad',
   'a Manglaralto': 'to Manglaralto',
   'a la playa desde la entrada': 'to the beach from the entrance',
   'Aquí no compras metros. Compras futuro.': 'You are not buying square meters. You are buying a future.',
-  'Elige tu solar, asegura tu lugar en la costa.': 'Choose your lot, secure your place on the coast.',
-  'Tu solar con título saneado, en un proyecto en constante desarrollo':
+  'Elige tu lote, asegura tu lugar en la costa.': 'Choose your lot, secure your place on the coast.',
+  'Tu lote con título saneado, en un proyecto en constante desarrollo':
     'Your lot with clean title, in a project that keeps growing',
   'Hasta 24 cuotas mensuales': 'Up to 24 monthly payments',
   'Restante del valor': 'Remaining balance',
   'Título de propiedad individual': 'Individual title deed',
   'Lotización Montañita VIEW · Manglaralto, Santa Elena, Ecuador':
     'Montañita VIEW subdivision · Manglaralto, Santa Elena, Ecuador',
-  'Montañita View es una lotización de 25.8 hectáreas aprobadas por el GAD Municipal de Santa Elena, con 111 solares y título saneado desde 2013.':
+  'Montañita View es una lotización de 25.8 hectáreas aprobadas por el GAD Municipal de Santa Elena, con 111 lotes y título saneado desde 2013.':
     'Montañita View is a 25.8-hectare subdivision approved by the Santa Elena Municipal Government, with 111 lots and clean title since 2013.',
   'Comparte ubicación con el complejo Montañita View Lobby — un proyecto hermano del mismo grupo desarrollador, con piscina, restaurante y áreas sociales.':
     'It shares its location with the Montañita View Lobby complex — a sister project by the same developer, with a pool, restaurant and social areas.',
@@ -908,8 +921,8 @@ export const EN: Record<string, string> = {
 
   // ---------- Refiere y gana: portada, registro e inicio de sesión ----------
   'Refiere y gana — Programa de referidos': 'Refer & Earn with Grupo 3i',
-  'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta.': 'Refer a buyer for a Montañita View lot or an Ibiza Condohotel share and earn up to 4% of the sale.',
-  'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis, sin inversión propia.': 'Refer a buyer for a Montañita View lot or an Ibiza Condohotel share and earn up to 4% of the sale. Free to join, no money down.',
+  'Recomienda un lote en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta.': 'Refer a buyer for a Montañita View lot or an Ibiza Condohotel share and earn up to 4% of the sale.',
+  'Recomienda un lote en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis, sin inversión propia.': 'Refer a buyer for a Montañita View lot or an Ibiza Condohotel share and earn up to 4% of the sale. Free to join, no money down.',
   'Programa de referidos': 'Referral program',
   'Registrarme gratis': 'Join for free',
   'Ya soy miembro': 'I’m already a member',
@@ -920,7 +933,7 @@ export const EN: Record<string, string> = {
   'Comparte tu enlace': 'Share your link',
   'Recibe tu enlace personal y compártelo con quien busca invertir en la costa.': 'Get your personal link and share it with anyone looking to invest on the coast.',
   'Gana comisiones': 'Get paid',
-  'Cobras por cada solar, fracción o membresía que se venda con tu enlace.': 'Get paid for every lot, share or membership sold through your link.',
+  'Cobras por cada lote, fracción o membresía que se venda con tu enlace.': 'Get paid for every lot, share or membership sold through your link.',
   'Elige tu nivel': 'Pick your tier',
   Beneficio: 'Benefit',
   Premiere: 'Premiere',
@@ -939,18 +952,18 @@ export const EN: Record<string, string> = {
   'Ver el reglamento completo del programa': 'Read the full program terms',
   '¿Cuánto podrías ganar?': 'How much could you earn?',
   'Por una sola venta hecha con tu enlace:': 'What you’d earn from a single sale through your link:',
-  'Un solar en Montañita View': 'A lot at Montañita View',
+  'Un lote en Montañita View': 'A lot at Montañita View',
   'Una fracción en Ibiza Condohotel': 'A share in Ibiza Condohotel',
   'Una membresía del Club 3i': 'A Club 3i membership',
   'por membresía': 'per membership',
-  'Comisión sobre el precio de venta, que cobras después de la liquidación. El precio depende del solar o la fracción que elija tu referido.': 'Commission on the sale price, paid out once the payout period ends. The price depends on the lot or share your referral picks.',
+  'Comisión sobre el precio de venta, que cobras después de la liquidación. El precio depende del lote o la fracción que elija tu referido.': 'Commission on the sale price, paid out once the payout period ends. The price depends on the lot or share your referral picks.',
   'Libertad financiera, no solo un ingreso extra': 'More than a side hustle',
   'Tus comisiones se acumulan con cada referido, sin importar dónde estés. Empieza hoy y deja que tu red trabaje para ti.': 'Your commissions grow with every referral, wherever you are. Start today and let your network do the work.',
   'Preguntas frecuentes': 'Frequently asked questions',
   '¿Cuánto cuesta entrar?': 'What does it cost to join?',
   'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.': 'Nothing. Signing up is free — we just verify your ID so we can pay you.',
   '¿Qué puedo recomendar?': 'What can I recommend?',
-  'Los solares de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.': 'Montañita View lots, Ibiza Condohotel shares and the Club 3i membership. Your link tracks everyone you send, even if they buy weeks later.',
+  'Los lotes de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.': 'Montañita View lots, Ibiza Condohotel shares and the Club 3i membership. Your link tracks everyone you send, even if they buy weeks later.',
   '¿Cómo llego a Elite?': 'How do I reach Elite?',
   'Comprando cualquier producto, o cuando 5 de tus referidos compren en 180 días (y te llevas la membresía de viajes de regalo).': 'Buy any product, or have 5 of your referrals buy within 180 days (and get a free travel membership too).',
   '¿Cuándo cobro mis comisiones?': 'When do I get paid?',
@@ -1113,7 +1126,7 @@ export const EN: Record<string, string> = {
     'Both projects in full: 158,652 m² in a single transaction, on preferential payment terms.',
   'La Lotización y el predio del Lobby en una sola operación: 158,652 m² en la Ruta del Spondylus, con estudios, linderación y obra civil ya ejecutados.':
     'The subdivision and the Lobby property in a single transaction: 158,652 m² on the Ruta del Spondylus, with studies, boundary marking and civil works already completed.',
-  'Los 90 solares en venta de Montañita View Lotes (123,423.16 m²) y el predio de Montañita View Lobby (36,348 m²)':
+  'Los 90 lotes en venta de Montañita View Lotes (123,423.16 m²) y el predio de Montañita View Lobby (36,348 m²)':
     'The 90 lots for sale in Montañita View Lotes (123,423.16 m²) and the Montañita View Lobby property (36,348 m²)',
   'Montañita View Lotes 123,423.16 m² a $55/m² ($6,788,274) + Montañita View Lobby 36,348 m² a $100/m² ($3,634,800)':
     'Montañita View Lotes 123,423.16 m² at $55/m² ($6,788,274) + Montañita View Lobby 36,348 m² at $100/m² ($3,634,800)',
@@ -1231,19 +1244,19 @@ export const EN: Record<string, string> = {
   'Paso {n} de {total}': 'Step {n} of {total}',
   '¿Alguien te invitó?': 'Did someone invite you?',
   '(opcional)': '(optional)',
-  // ---------- Notas de los solares (GEO 3i) ----------
+  // ---------- Notas de los lotes (GEO 3i) ----------
   'Una franja de 186.6 m² junto al lindero este está destinada a la estación de rebombeo de la planta de tratamiento de aguas residuales (PTAR) del Municipio. Ya está excluida del área y del precio publicados.':
     'A 186.6 m² strip along the eastern boundary is set aside for the pumping station of the Municipality’s wastewater treatment plant. It is already excluded from the published area and price.',
   'El plano de lotización rotula 3,440.22 m²; el levantamiento mide 3,283.25 m² una vez separada la franja de la estación de rebombeo.':
     'The subdivision plan labels 3,440.22 m²; the survey measures 3,283.25 m² once the pumping-station strip is separated.',
-  'Según el plano de implantación de la lotización (clave impresa en el solar).':
+  'Según el plano de implantación de la lotización (clave impresa en el lote).':
     'According to the subdivision site plan (reference printed on the lot).',
   'Plano de implantación georreferenciado sobre el levantamiento GEO 3i (precisión ±0.3 m)':
     'Site plan georeferenced over the GEO 3i survey (accuracy ±0.3 m)',
   'Levantamiento topográfico de la urbanización (GEO 3i)': 'Topographic survey of the development (GEO 3i)',
   'Ficha de predio individual (GEO 3i)': 'Individual parcel record (GEO 3i)',
   'Área publicada (inventario): {a}. Área según el plano georreferenciado: {b} ({c}). Confirmar con levantamiento de campo.': 'Listed size (inventory): {a}. Size per the georeferenced plan: {b} ({c}). To be confirmed by an on-site survey.',
-  'Clave del solar matriz {a}, antes de su división en {b} y {c}.': 'Parcel number of the original lot {a}, before it was split into {b} and {c}.',
+  'Clave del lote matriz {a}, antes de su división en {b} y {c}.': 'Parcel number of the original lot {a}, before it was split into {b} and {c}.',
 
   'Equipamiento Urbano': 'Community facilities',
 };

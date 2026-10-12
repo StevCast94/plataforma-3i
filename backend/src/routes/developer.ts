@@ -81,6 +81,7 @@ developerRoutes.post('/apply', async (req, res) => {
   if (!recent) {
     const lines = [
       b.project && `Proyecto: ${String(b.project).slice(0, 200)}`,
+      b.types && `Tipo: ${String(b.types).slice(0, 200)}`,
       b.location && `Ubicación: ${String(b.location).slice(0, 200)}`,
       b.units && `Unidades: ${String(b.units).slice(0, 50)}`,
       b.message && `Mensaje: ${String(b.message).slice(0, 2000)}`,
@@ -463,7 +464,7 @@ developerRoutes.post('/sales', async (req: DeveloperRequest, res) => {
       where: { projectId: lead.projectId, lotCode, status: { in: ['DECLARED', 'CONFIRMED'] } },
     });
     if (dup) {
-      res.status(409).json({ error: `El solar ${lotCode} ya tiene una venta declarada` });
+      res.status(409).json({ error: `El lote ${lotCode} ya tiene una venta declarada` });
       return;
     }
   }
@@ -488,7 +489,7 @@ developerRoutes.post('/sales', async (req: DeveloperRequest, res) => {
   });
   await prisma.projectLead.update({ where: { id: lead.id }, data: { status: 'NEGOTIATION' } });
   await onStageChange(lead.id, lead.status, 'NEGOTIATION', 'developer');
-  await logActivity(lead.id, 'sale', 'developer', `Venta declarada: ${lotCode ? `solar ${lotCode}, ` : ''}$${price.toLocaleString('en-US')} (${paymentType === 'CASH' ? 'contado' : 'financiado'})`);
+  await logActivity(lead.id, 'sale', 'developer', `Venta declarada: ${lotCode ? `lote ${lotCode}, ` : ''}$${price.toLocaleString('en-US')} (${paymentType === 'CASH' ? 'contado' : 'financiado'})`);
   res.status(201).json(withTotals(sale));
 });
 

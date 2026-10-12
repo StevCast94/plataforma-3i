@@ -78,7 +78,7 @@ const STATUS_CLASS = {
   confirmed: 'bg-emerald-100 text-emerald-800',
   cancelled: 'bg-gray-100 text-gray-500',
 };
-const SOURCE_LABEL: Record<string, string> = { web: 'Web', solar: 'Solar MV', cortesia: 'Manual' };
+const SOURCE_LABEL: Record<string, string> = { web: 'Web', solar: 'Lote MV', cortesia: 'Manual' };
 
 export default function AdminBosquePage() {
   const [tab, setTab] = useState<Tab>('Adopciones');

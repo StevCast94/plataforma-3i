@@ -23,7 +23,7 @@ interface Metrics {
 
 const STEP: Record<string, string> = {
   view: 'Vieron el proyecto',
-  lot_view: 'Vieron un solar',
+  lot_view: 'Vieron un lote',
   pano_open: 'Abrieron un 360°',
   wa_click: 'Tocaron WhatsApp',
 };
@@ -160,14 +160,14 @@ export default function ProjectMetricsPage() {
           </div>
 
           <div className="grid gap-4 lg:grid-cols-3">
-            <Card title="Solares con más interés">
+            <Card title="Lotes con más interés">
               {m.topLots.length === 0 ? (
                 <p className="text-sm text-brand-gray">Aún sin datos.</p>
               ) : (
                 <table className="w-full text-sm">
                   <thead className="text-xs text-brand-gray">
                     <tr>
-                      <th className="pb-2 text-left font-normal">Solar</th>
+                      <th className="pb-2 text-left font-normal">Lote</th>
                       <th className="pb-2 text-right font-normal">Vistas</th>
                       <th className="pb-2 text-right font-normal">WhatsApp</th>
                     </tr>

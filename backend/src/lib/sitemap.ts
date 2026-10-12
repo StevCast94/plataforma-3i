@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../prisma';
 
 // sitemap.xml para Google: páginas públicas, proyectos de la vitrina y sus
-// solares disponibles, cada uno con su versión en inglés (/en/...).
+// lotes disponibles, cada uno con su versión en inglés (/en/...).
 
 const BASE = 'https://grupo3i.com';
 const PAGES = [
@@ -36,7 +36,7 @@ export async function sitemapHandler(_req: Request, res: Response) {
       ...PAGES.map((p) => entry(p, undefined, p === '/' ? 1 : 0.6)),
       ...projects.flatMap((p) => [
         entry(`/proyectos/${p.slug}`, p.updatedAt, 0.9),
-        ...p.lots.map((l) => entry(`/proyectos/${p.slug}/solar/${encodeURIComponent(l.code)}`, l.updatedAt, 0.5)),
+        ...p.lots.map((l) => entry(`/proyectos/${p.slug}/lote/${encodeURIComponent(l.code)}`, l.updatedAt, 0.5)),
       ]),
     ];
     res

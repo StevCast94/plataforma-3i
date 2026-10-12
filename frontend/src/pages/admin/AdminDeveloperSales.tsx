@@ -32,7 +32,7 @@ export function AdminDeveloperSales() {
     if (decision !== 'confirm') {
       note = window.prompt(decision === 'reject' ? '¿Qué debe corregir el desarrollador?' : 'Motivo del desistimiento')?.trim() || null;
       if (!note) return;
-    } else if (!window.confirm(`¿Confirmar la venta de ${s.lead.name} por ${formatCurrency(s.price)}? El solar pasará a Vendido.`)) return;
+    } else if (!window.confirm(`¿Confirmar la venta de ${s.lead.name} por ${formatCurrency(s.price)}? El lote pasará a Vendido.`)) return;
     try {
       await adminApi.post(`/admin/developers/sales/${s.id}/review`, { decision, note });
       load();
@@ -60,7 +60,7 @@ export function AdminDeveloperSales() {
     <div className="mt-8">
       {alerts.length > 0 && (
         <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          <strong>⚠️ Solares vendidos sin venta declarada:</strong>{' '}
+          <strong>⚠️ Lotes vendidos sin venta declarada:</strong>{' '}
           {alerts.map((a) => `${a.code} (${a.project.name})`).join(', ')}. Pídele al desarrollador que la declare.
         </div>
       )}
@@ -89,7 +89,7 @@ export function AdminDeveloperSales() {
                   <div>
                     <p className="font-semibold text-primary">
                       {s.lead.name} · {s.project.name}
-                      {s.lotCode && ` · Solar ${s.lotCode}`}
+                      {s.lotCode && ` · Lote ${s.lotCode}`}
                     </p>
                     <p className="text-xs text-brand-gray">
                       {s.project.developer?.name} · {formatCurrency(s.price)} · {s.paymentType === 'CASH' ? 'contado' : 'financiado'} ·{' '}

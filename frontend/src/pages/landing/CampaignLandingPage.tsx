@@ -36,7 +36,7 @@ function LeadForm({ slug, projectName, compact }: { slug: string; projectName: s
   const message =
     lang === 'en'
       ? `Hi! I saw ${projectName} and I’d like pricing, the site plan and payment options.`
-      : `Hola, vi ${projectName} y quiero recibir precios, el plano de solares y las formas de pago.`;
+      : `Hola, vi ${projectName} y quiero recibir precios, el plano de lotes y las formas de pago.`;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -63,14 +63,14 @@ function LeadForm({ slug, projectName, compact }: { slug: string; projectName: s
     return (
       <div className="space-y-4 text-center">
         <p className="font-serif text-2xl font-bold text-primary">{t('¡Gracias!')}</p>
-        <p className="text-sm text-brand-gray">{t('Un asesor te escribe por WhatsApp con precios y el plano de solares.')}</p>
+        <p className="text-sm text-brand-gray">{t('Un asesor te escribe por WhatsApp con precios y el plano de lotes.')}</p>
         {href !== '#' && (
           <a href={href} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-4 py-3 font-semibold text-white">
             <MessageCircle className="h-5 w-5" /> {t('Abrir WhatsApp')}
           </a>
         )}
-        <Link to={`/proyectos/${slug}#mapa-solares`} className="block text-sm text-secondary hover:underline">
-          {t('Mientras tanto, mira el mapa de solares')} →
+        <Link to={`/proyectos/${slug}#mapa-lotes`} className="block text-sm text-secondary hover:underline">
+          {t('Mientras tanto, mira el mapa de lotes')} →
         </Link>
       </div>
     );
@@ -142,7 +142,7 @@ export default function CampaignLandingPage() {
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   const benefits = [
-    { icon: Map, title: t('Elige tu solar en el mapa'), body: t('Precio, medidas y disponibilidad en vivo de cada solar.') },
+    { icon: Map, title: t('Elige tu lote en el mapa'), body: t('Precio, medidas y disponibilidad en vivo de cada lote.') },
     ...(panos ? [{ icon: Box, title: t('Recórrelo en 360°'), body: t('Mira el terreno y la vista desde tu celular, sin viajar.') }] : []),
     project.verified
       ? { icon: ShieldCheck, title: t('Verificado por Grupo 3i'), body: t('Revisamos la escritura, los gravámenes y la aprobación municipal.') }
@@ -188,7 +188,7 @@ export default function CampaignLandingPage() {
               )}
               {facts.available > 0 && (
                 <div className="rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
-                  <p className="text-[11px] uppercase tracking-wider text-white/60">{t('Solares disponibles')}</p>
+                  <p className="text-[11px] uppercase tracking-wider text-white/60">{t('Lotes disponibles')}</p>
                   <p className="font-serif text-2xl font-bold">{facts.available}</p>
                 </div>
               )}
@@ -242,8 +242,8 @@ export default function CampaignLandingPage() {
 
       {/* Cierre */}
       <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-8">
-        <h2 className="font-serif text-3xl font-bold">{t('¿Te interesa un solar en {p}?', { p: project.name })}</h2>
-        <p className="mt-3 text-brand-gray">{t('Te enviamos precios, el plano con los solares disponibles y las formas de pago.')}</p>
+        <h2 className="font-serif text-3xl font-bold">{t('¿Te interesa un lote en {p}?', { p: project.name })}</h2>
+        <p className="mt-3 text-brand-gray">{t('Te enviamos precios, el plano con los lotes disponibles y las formas de pago.')}</p>
         <Button size="lg" className="mt-6" onClick={scrollToForm}>{t('Quiero recibir información')}</Button>
       </section>
 

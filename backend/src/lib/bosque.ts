@@ -58,7 +58,7 @@ export async function assignTrees(adoptionId: string): Promise<number> {
   return free.length;
 }
 
-/** Árbol de cortesía por solar vendido de Montañita View (uno por solar, idempotente). */
+/** Árbol de cortesía por lote vendido de Montañita View (uno por lote, idempotente). */
 export async function giftTreeForLot(lot: { id: string; code: string; ownerName: string | null }): Promise<void> {
   const exists = await prisma.treeAdoption.findUnique({ where: { lotId: lot.id }, select: { id: true } });
   if (exists) return;
@@ -72,7 +72,7 @@ export async function giftTreeForLot(lot: { id: string; code: string; ownerName:
       source: 'solar',
       lotId: lot.id,
       lotCode: lot.code,
-      customerName: lot.ownerName?.trim() || `Propietario del solar ${lot.code}`,
+      customerName: lot.ownerName?.trim() || `Propietario del lote ${lot.code}`,
     },
   });
 }

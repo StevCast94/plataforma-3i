@@ -22,13 +22,13 @@ const ES: LegalText = {
     { title: '2. Qué datos recogemos', body: [
       'Solo los que necesitamos para atenderte:',
       <List items={[
-        <><b>Cuando nos escribes o pides información</b> (formularios de contacto, de un proyecto o de un solar): tu nombre, tu número de WhatsApp, tu email si lo das, tu mensaje y el proyecto o solar que te interesa.</>,
+        <><b>Cuando nos escribes o pides información</b> (formularios de contacto, de un proyecto o de un lote): tu nombre, tu número de WhatsApp, tu email si lo das, tu mensaje y el proyecto o lote que te interesa.</>,
         <><b>Si te registras en Refiere y gana</b>: además, tu documento de identidad (cédula o pasaporte) y tus datos para recibir pagos (cuenta bancaria, PayPal, Payoneer o Wise). Los pedimos para poder pagarte tus comisiones.</>,
         <><b>Si eres una desarrolladora</b>: los datos de tu empresa y de tu equipo, y los documentos legales de tu proyecto, que se guardan en privado.</>,
         <><b>Si reservas un viaje o compras un producto</b>: los datos de la reserva o la compra y de quien viaja.</>,
-        <><b>Cómo usas el sitio</b>: qué páginas, proyectos y solares miras, desde qué tipo de dispositivo y en qué idioma, y de qué anuncio o enlace llegaste. Lo medimos con un identificador anónimo, sin tu nombre.</>,
+        <><b>Cómo usas el sitio</b>: qué páginas, proyectos y lotes miras, desde qué tipo de dispositivo y en qué idioma, y de qué anuncio o enlace llegaste. Lo medimos con un identificador anónimo, sin tu nombre.</>,
       ]} />,
-      'Tu ubicación en el mapa de solares se calcula solo en tu teléfono, únicamente si la activas, y no la guardamos.',
+      'Tu ubicación en el mapa de lotes se calcula solo en tu teléfono, únicamente si la activas, y no la guardamos.',
     ] },
     { title: '3. Para qué los usamos', body: [
       <List items={[

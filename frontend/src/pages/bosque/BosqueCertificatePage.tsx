@@ -70,7 +70,7 @@ export default function BosqueCertificatePage() {
             ? `es padrino de un ${speciesName.toLowerCase()}`
             : `es padrino de ${a.quantity} árboles de ${speciesName.toLowerCase()}`}{' '}
           en el bosque de conservación de Manglaralto, Santa Elena, Ecuador.
-          {a.source === 'solar' && a.lotCode ? ` Árbol incluido con el solar ${a.lotCode} de Montañita View.` : ''}{' '}
+          {a.source === 'solar' && a.lotCode ? ` Árbol incluido con el lote ${a.lotCode} de Montañita View.` : ''}{' '}
           {a.quantity === 1 ? 'Este árbol nunca será talado.' : 'Estos árboles nunca serán talados.'}
         </p>
 

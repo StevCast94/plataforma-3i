@@ -210,7 +210,7 @@ export default function ToolsPage() {
             {(projects ?? []).map((p) => (
               <option key={p.id} value={`/proyectos/${p.slug}`}>
                 Proyecto: {p.name}
-                {p.slug === 'montanita-view' ? ' (mapa interactivo de solares)' : ''}
+                {p.slug === 'montanita-view' ? ' (mapa interactivo de lotes)' : ''}
               </option>
             ))}
             {(products ?? []).map((p) => (

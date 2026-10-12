@@ -62,20 +62,20 @@ export async function onStageChange(leadId: string, from: LeadStatus, to: LeadSt
   }
 }
 
-/** Reemplaza {nombre} {proyecto} {solar} en una plantilla. */
+/** Reemplaza {nombre} {proyecto} {lote} en una plantilla ({solar} sigue valiendo: plantillas anteriores). */
 export function fillTemplate(body: string, lead: { name: string; lotCode: string | null; project: { name: string } }) {
   const first = lead.name.trim().split(/\s+/)[0] ?? lead.name;
   return body
     .replace(/\{nombre\}/gi, first)
     .replace(/\{proyecto\}/gi, lead.project.name)
-    .replace(/\{solar\}/gi, lead.lotCode ?? '');
+    .replace(/\{(lote|solar)\}/gi, lead.lotCode ?? '');
 }
 
 export const DEFAULT_TEMPLATES = [
-  { name: 'Primer contacto', body: 'Hola {nombre}, te saluda el equipo de {proyecto}. Vimos tu interés en el solar {solar}. ¿Te puedo enviar precios y formas de pago?' },
+  { name: 'Primer contacto', body: 'Hola {nombre}, te saluda el equipo de {proyecto}. Vimos tu interés en el lote {lote}. ¿Te puedo enviar precios y formas de pago?' },
   { name: 'Agendar visita', body: 'Hola {nombre}, ¿te gustaría visitar {proyecto} esta semana? Tenemos horarios de lunes a sábado. ¿Qué día te queda mejor?' },
   { name: 'Seguimiento', body: 'Hola {nombre}, ¿pudiste revisar la información de {proyecto}? Quedo atento a cualquier duda.' },
-  { name: 'First contact (EN)', body: 'Hi {nombre}, this is the {proyecto} team. We saw your interest in lot {solar}. May I send you prices and payment options?' },
+  { name: 'First contact (EN)', body: 'Hi {nombre}, this is the {proyecto} team. We saw your interest in lot {lote}. May I send you prices and payment options?' },
 ];
 
 // ============================================================
@@ -114,7 +114,7 @@ export async function announceNewLead(leadId: string) {
   });
   if (!lead) return;
   const developerId = lead.project.developerId;
-  const body = `${lead.name} · ${lead.project.name}${lead.lotCode ? ` · solar ${lead.lotCode}` : ''}. Escríbele pronto.`;
+  const body = `${lead.name} · ${lead.project.name}${lead.lotCode ? ` · lote ${lead.lotCode}` : ''}. Escríbele pronto.`;
   // Proyecto propio de Grupo 3i: se reparte entre los asesores del equipo; avisa al
   // asesor asignado o, si no hay asesores, a los administradores.
   if (!developerId) {
@@ -126,7 +126,7 @@ export async function announceNewLead(leadId: string) {
   const to = await recipientsFor(developerId, assigned);
   await sendPushToDeveloperUsers(to, {
     title: '🔔 Nuevo contacto',
-    body: `${lead.name} · ${lead.project.name}${lead.lotCode ? ` · solar ${lead.lotCode}` : ''}. Escríbele pronto.`,
+    body: `${lead.name} · ${lead.project.name}${lead.lotCode ? ` · lote ${lead.lotCode}` : ''}. Escríbele pronto.`,
     link: '/desarrollador',
   });
 }

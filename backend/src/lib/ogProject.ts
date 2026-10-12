@@ -17,9 +17,9 @@ import { publicBaseUrl } from './publicUrl';
 /** Imagen y texto propios por proyecto. Sin entrada, se usa la portada y la descripción del proyecto. */
 const OVERRIDES: Record<string, { title: string; description: string; image: string }> = {
   'montanita-view': {
-    title: 'Montañita View — mapa interactivo de solares',
+    title: 'Montañita View — mapa interactivo de lotes',
     description:
-      'Explora los 90 solares disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $85/m².',
+      'Explora los 90 lotes disponibles en el mapa satelital: toca cualquiera y mira su precio, su cuota mensual, sus linderos y su frente a la calle. Manglaralto, Ruta del Spondylus, desde $85/m².',
     image: '/images/og/og-montanita-view.jpg',
   },
   'ibiza-condohotel': {
@@ -119,8 +119,8 @@ export function projectOgHandler(frontendPath: string) {
 const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 
 /**
- * Tarjeta social de la ficha de un solar (/proyectos/:slug/solar/:code): título con
- * el código, el área y el precio, e imagen satelital con la forma del solar.
+ * Tarjeta social de la ficha de un lote (/proyectos/:slug/lote/:code): título con
+ * el código, el área y el precio, e imagen satelital con la forma del lote.
  */
 export function lotOgHandler(frontendPath: string) {
   const indexPath = path.join(frontendPath, 'index.html');
@@ -142,7 +142,7 @@ export function lotOgHandler(frontendPath: string) {
       }
       const en = req.path.startsWith('/en/');
       const origin = publicBaseUrl();
-      const label = en ? `Lot ${lot.code}` : `Solar ${lot.code}`;
+      const label = en ? `Lot ${lot.code}` : `Lote ${lot.code}`;
       const parts = [label];
       if (lot.areaM2) parts.push(`${Math.round(lot.areaM2).toLocaleString('en-US')} m²`);
       if (lot.price && lot.status === 'AVAILABLE') parts.push(usd(lot.price));
@@ -165,7 +165,7 @@ export function lotOgHandler(frontendPath: string) {
         ? `See its shape and location on the satellite map, dimensions, boundaries and price. Manglaralto, Ruta del Spondylus. ${status}`
         : `Mira su forma y ubicación en el mapa satelital, medidas, linderos y precio. Manglaralto, Ruta del Spondylus. ${status}`;
       const image = `${origin}/api/og/lot/${slug}/${encodeURIComponent(lot.code)}.jpg`;
-      const url = `${origin}${en ? '/en' : ''}/proyectos/${slug}/solar/${encodeURIComponent(lot.code)}`;
+      const url = `${origin}${en ? '/en' : ''}/proyectos/${slug}/lote/${encodeURIComponent(lot.code)}`;
 
       let html = fs.readFileSync(indexPath, 'utf8');
       html = html.replace(/<title>[^<]*<\/title>/i, `<title>${esc(title)}</title>`);
@@ -183,7 +183,7 @@ export function lotOgHandler(frontendPath: string) {
       html = setMeta(html, 'name', 'twitter:image', image);
       res.type('html').send(html);
     } catch (err) {
-      console.error('GET /proyectos/:slug/solar/:code (tarjeta social)', err);
+      console.error('GET /proyectos/:slug/lote/:code (tarjeta social)', err);
       res.sendFile(indexPath);
     }
   };
@@ -204,7 +204,7 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/': {
     es: {
       title: 'Grupo 3i — Invierte en la costa ecuatoriana',
-      description: 'Fracciones en Ibiza Condohotel desde $12,000 y solares con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.',
+      description: 'Fracciones en Ibiza Condohotel desde $12,000 y lotes con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.',
       image: '/images/og/og-home.jpg',
     },
     en: {
@@ -216,7 +216,7 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/proyectos': {
     es: {
       title: 'Proyectos de Grupo 3i',
-      description: 'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (solares con vista al mar desde $41,721) en Santa Elena, Ecuador.',
+      description: 'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (lotes con vista al mar desde $41,721) en Santa Elena, Ecuador.',
       image: '/images/og/og-proyectos.jpg',
     },
     en: {
@@ -264,7 +264,7 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/oficina': {
     es: {
       title: 'Refiere y gana con Grupo 3i',
-      description: 'Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis.',
+      description: 'Recomienda un lote en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis.',
       image: '/images/og/og-refiere.jpg',
     },
     en: {
@@ -275,20 +275,20 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   },
   '/publica-tu-proyecto': {
     es: {
-      title: 'Publica tu proyecto en Grupo 3i',
-      description: 'Vende tus solares con mapa interactivo, recorridos 360°, sello de verificación y una red de referidores. Pagas solo cuando vendes.',
+      title: 'Publica tu proyecto inmobiliario en Grupo 3i',
+      description: 'Lotes, casas, departamentos, locales, oficinas y macrolotes: inventario en vivo, recorridos 360°, sello de verificación y una red de referidores. Pagas solo cuando vendes.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
     en: {
-      title: 'List your project on Grupo 3i',
-      description: 'Sell your lots with an interactive map, 360° tours, a verification seal and a referral network. You only pay when you sell.',
+      title: 'List your real estate project on Grupo 3i',
+      description: 'Lots, homes, condos, retail, office space and large land parcels: live inventory, 360° tours, a verification seal and a referral network. You only pay when you sell.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
   },
   '/publica-tu-proyecto/propuesta': {
     es: {
       title: 'Propuesta comercial para desarrolladoras · Grupo 3i',
-      description: 'Pagas solo cuando vendes: mapa interactivo de solares, recorridos 360°, CRM con tus asesores, verificación legal y red de referidores.',
+      description: 'Pagas solo cuando vendes: mapa interactivo de lotes, recorridos 360°, CRM con tus asesores, verificación legal y red de referidores.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
     en: {
@@ -300,7 +300,7 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/publica-tu-proyecto/galeria': {
     es: {
       title: 'Galería del sistema para desarrolladoras · Grupo 3i',
-      description: 'Capturas reales del portal: proyecto, mapa de solares, 360°, CRM, asesores, métricas, ventas y mapa para tu web.',
+      description: 'Capturas reales del portal: proyecto, mapa de lotes, 360°, CRM, asesores, métricas, ventas y mapa para tu web.',
       image: '/images/propuesta-dev/crm.jpg',
     },
     en: {
@@ -312,7 +312,7 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/publica-tu-proyecto/manual': {
     es: {
       title: 'Manual de herramientas para desarrolladoras · Grupo 3i',
-      description: 'Proyectos, mapa de solares, 360°, CRM, asesores, avisos, métricas, ventas y mapa para tu web, paso a paso.',
+      description: 'Proyectos, mapa de lotes, 360°, CRM, asesores, avisos, métricas, ventas y mapa para tu web, paso a paso.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
     en: {
@@ -324,7 +324,7 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/sobre-nosotros': {
     es: {
       title: 'Sobre Grupo 3i',
-      description: 'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, solares con vista al mar y membresías de viaje.',
+      description: 'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, lotes con vista al mar y membresías de viaje.',
       image: '/images/og/og-home.jpg',
     },
     en: {
@@ -480,9 +480,9 @@ export function landingOgHandler(frontendPath: string) {
           ? `${lots.length} lots available in ${place}, Ecuador. Leave your WhatsApp and we’ll send you pricing, the site plan and payment options.`
           : `Leave your WhatsApp and we’ll send you pricing and payment options for ${project.name} in ${place}, Ecuador.`;
       } else {
-        title = lots.length && min != null ? `${project.name} · Solares desde ${usd(min)} en 24 cuotas` : `${project.name} · ${project.priceLabel ?? 'Recibe precios'}`;
+        title = lots.length && min != null ? `${project.name} · Lotes desde ${usd(min)} en 24 cuotas` : `${project.name} · ${project.priceLabel ?? 'Recibe precios'}`;
         description = lots.length
-          ? `${lots.length} solares disponibles en ${place}. Déjanos tu WhatsApp y te enviamos precios, el plano de solares y las formas de pago.`
+          ? `${lots.length} lotes disponibles en ${place}. Déjanos tu WhatsApp y te enviamos precios, el plano de lotes y las formas de pago.`
           : `Déjanos tu WhatsApp y te enviamos precios y formas de pago de ${project.name} en ${place}.`;
       }
 

@@ -181,9 +181,9 @@ function GrowthChart({ data, years }: { data: number[]; years: string[] }) {
  * Distancias del proyecto y accesos al mapa.
  *
  * Antes había aquí un segundo mapa satelital (Google Maps embed) que repetía el
- * mapa interactivo de solares de más arriba. Se quitó: lo que aportaba —dónde
+ * mapa interactivo de lotes de más arriba. Se quitó: lo que aportaba —dónde
  * está y cómo se llega— queda en las distancias, el botón de indicaciones y el
- * enlace al mapa de solares, que es el que sí deja elegir.
+ * enlace al mapa de lotes, que es el que sí deja elegir.
  */
 function LocationInfo({
   lat,
@@ -194,11 +194,11 @@ function LocationInfo({
   lng: number;
   routeStats: { v: string; l: string }[];
 }) {
-  // El enlace al mapa de solares solo tiene sentido si la página lo incluye
+  // El enlace al mapa de lotes solo tiene sentido si la página lo incluye
   // (los proyectos sin lotización no lo tienen).
   const { t } = useLang();
   const [hasLotMap, setHasLotMap] = useState(false);
-  useEffect(() => setHasLotMap(!!document.getElementById('mapa-solares')), []);
+  useEffect(() => setHasLotMap(!!document.getElementById('mapa-lotes')), []);
 
   return (
     <div className="overflow-hidden rounded-2xl bg-primary p-6 sm:p-8">
@@ -223,11 +223,11 @@ function LocationInfo({
         </a>
         {hasLotMap && (
           <a
-            href="#mapa-solares"
+            href="#mapa-lotes"
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
           >
             <MapIcon className="h-4 w-4" strokeWidth={1.8} />
-            {t('Ver el mapa de solares')}
+            {t('Ver el mapa de lotes')}
           </a>
         )}
       </div>

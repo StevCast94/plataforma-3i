@@ -66,8 +66,8 @@ const FAQ = [
     a: 'Sí. Al adoptar marca que es un regalo y escribe el nombre que irá en el certificado.',
   },
   {
-    q: 'Compré un solar en Montañita View. ¿Tengo un árbol?',
-    a: 'Sí: cada solar incluye un árbol a nombre de su propietario. Si quieres sumar más, puedes adoptarlos aquí.',
+    q: 'Compré un lote en Montañita View. ¿Tengo un árbol?',
+    a: 'Sí: cada lote incluye un árbol a nombre de su propietario. Si quieres sumar más, puedes adoptarlos aquí.',
   },
 ];
 
@@ -259,10 +259,10 @@ export default function BosqueHome() {
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-guayacan">Junto a Montañita View</p>
-            <h2 className="mt-3 font-bosque text-4xl font-semibold">Un bosque vivo al lado de tu solar</h2>
+            <h2 className="mt-3 font-bosque text-4xl font-semibold">Un bosque vivo al lado de tu lote</h2>
           </div>
           <ul className="space-y-4 text-white/85">
-            <li>Cada solar vendido en Montañita View incluye un árbol a nombre de su propietario.</li>
+            <li>Cada lote vendido en Montañita View incluye un árbol a nombre de su propietario.</li>
             <li>Los senderos del bosque son parte de la experiencia de propietarios, huéspedes y socios del Club 3i.</li>
             <li>La cosecha de los frutales va al restaurante de Montañita View Lobby y a la comunidad.</li>
             <li>

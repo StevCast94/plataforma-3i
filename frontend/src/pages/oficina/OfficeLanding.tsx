@@ -28,7 +28,7 @@ const steps: { icon: LucideIcon; title: string; body: string; image: string }[] 
   {
     icon: HandCoins,
     title: 'Gana comisiones',
-    body: 'Cobras por cada solar, fracción o membresía que se venda con tu enlace.',
+    body: 'Cobras por cada lote, fracción o membresía que se venda con tu enlace.',
     image: '/images/secciones/paso-gana.jpg',
   },
 ];
@@ -43,7 +43,7 @@ const compare = [
 
 const faqs = [
   { q: '¿Cuánto cuesta entrar?', a: 'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.' },
-  { q: '¿Qué puedo recomendar?', a: 'Los solares de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
+  { q: '¿Qué puedo recomendar?', a: 'Los lotes de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
   { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto, o cuando 5 de tus referidos compren en 180 días (y te llevas la membresía de viajes de regalo).' },
   { q: '¿Cuándo cobro mis comisiones?', a: 'Después de los 14 días de retracto, más el plazo de liquidación de tu nivel: 30 días en Premiere y 3 días en Elite.' },
   { q: '¿Pierdo mi cuenta si no refiero?', a: 'En Premiere, la cuenta se suspende tras 180 días sin referidos nuevos, con avisos previos. Elite es permanente, salvo el Elite de regalo de la promoción de lanzamiento, que se mantiene con al menos una venta en la temporada.' },
@@ -55,7 +55,7 @@ const faqs = [
  */
 function examples(mv: number, ibiza: number) {
   return [
-    { what: 'Un solar en Montañita View', price: { k: 'desde {p}', p: mv }, premiere: mv * 0.02, elite: mv * 0.04 },
+    { what: 'Un lote en Montañita View', price: { k: 'desde {p}', p: mv }, premiere: mv * 0.02, elite: mv * 0.04 },
     { what: 'Una fracción en Ibiza Condohotel', price: { k: 'desde {p}', p: ibiza }, premiere: ibiza * 0.02, elite: ibiza * 0.04 },
     { what: 'Una membresía del Club 3i', price: { k: 'por membresía', p: 0 }, premiere: 50, elite: 100 },
   ];
@@ -80,7 +80,7 @@ export default function OfficeLanding() {
     <>
       <Seo
         title={t('Refiere y gana — Programa de referidos')}
-        description={t('Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta.')}
+        description={t('Recomienda un lote en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta.')}
       />
 
       {/* Barra superior: la única página de Oficina sin Navbar del sitio público. */}
@@ -111,7 +111,7 @@ export default function OfficeLanding() {
             {t('Refiere y gana')}
           </motion.h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-white/80">
-            {t('Recomienda un solar en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis, sin inversión propia.')}
+            {t('Recomienda un lote en Montañita View o una fracción en Ibiza Condohotel y gana hasta el 4% de la venta. Registro gratis, sin inversión propia.')}
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link to="/oficina/registro">
@@ -197,7 +197,7 @@ export default function OfficeLanding() {
           ))}
         </div>
         <p className="mt-6 text-center text-xs text-brand-gray">
-          {t('Comisión sobre el precio de venta, que cobras después de la liquidación. El precio depende del solar o la fracción que elija tu referido.')}
+          {t('Comisión sobre el precio de venta, que cobras después de la liquidación. El precio depende del lote o la fracción que elija tu referido.')}
         </p>
       </section>
 

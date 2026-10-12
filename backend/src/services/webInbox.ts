@@ -5,7 +5,7 @@ import { registerLead } from './projectLeads';
 // como contacto de ese proyecto. Los que no tienen proyecto (o no dejaron
 // WhatsApp) quedan en «Consultas web» dentro del CRM para pasarlos a mano.
 
-/** Proyecto y solar al que pertenece un formulario según su `source`. */
+/** Proyecto y lote al que pertenece un formulario según su `source`. */
 export async function projectForSource(source: string | null | undefined): Promise<{ projectId: string; lotCode: string | null } | null> {
   if (!source) return null;
   // proyecto:slug · propuesta:slug · lote:Nombre del proyecto:CÓDIGO

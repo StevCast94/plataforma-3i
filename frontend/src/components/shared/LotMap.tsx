@@ -29,9 +29,9 @@ const PANO_ICON = L.divIcon({
 import ZONAS from '@/data/montanita-zonas.json';
 
 // ============================================================
-// Mapa interactivo de solares. Geometría real de GEO 3i (reproyectada a
+// Mapa interactivo de lotes. Geometría real de GEO 3i (reproyectada a
 // lat/lng en el import), sobre imagen satelital de Esri (sin API key).
-// Al tocar un solar: área, precio, cuota con el plan 30% + 24 cuotas al 0%
+// Al tocar un lote: área, precio, cuota con el plan 30% + 24 cuotas al 0%
 // y un formulario "Me interesa" que entra como lead (con la atribución del
 // socio que refirió, vía la cookie de referido que ya lee /api/contact).
 // ============================================================
@@ -56,11 +56,11 @@ import { DOWN_PAYMENT, INSTALLMENTS, monthly } from '@/lib/lotFinance';
 type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
 
 
-/** Desde este zoom cabe el rótulo dentro del solar. */
+/** Desde este zoom cabe el rótulo dentro del lote. */
 const LOT_LABEL_ZOOM = 18;
 
 /**
- * Rotula el solar: acercado, solo su código dentro del polígono — el uso y la
+ * Rotula el lote: acercado, solo su código dentro del polígono — el uso y la
  * disponibilidad llenaban el mapa de texto y ya se ven al pasar el cursor.
  */
 function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoomed: boolean, t: (s: string) => string) {
@@ -76,7 +76,7 @@ function labelLot(poly: L.Polygon & { lotData?: PublicLot }, lot: PublicLot, zoo
 }
 
 /**
- * Dibuja bajo los solares el urbanismo de Montañita View: áreas verdes,
+ * Dibuja bajo los lotes el urbanismo de Montañita View: áreas verdes,
  * equipamiento y el eje de cada calle, tal como constan en el plano de
  * implantación aprobado y en el levantamiento de GEO 3i.
  */
@@ -89,7 +89,7 @@ function drawUrbanism(map: L.Map, t: (s: string) => string) {
   ];
   for (const z of zonas) {
     // Relleno tenue y borde punteado: las zonas se leen sin competir con los
-    // solares (el verde "disponible" es el mismo verde del área verde).
+    // lotes (el verde "disponible" es el mismo verde del área verde).
     L.polygon(z.path as [number, number][], {
       color: z.style.color,
       weight: 2,
@@ -150,7 +150,7 @@ function drawUrbanism(map: L.Map, t: (s: string) => string) {
 }
 
 /** Mapa en reposo: sin arrastre ni pellizco (el dedo desplaza la página); los toques siguen funcionando. */
-/** Hasta dónde (m) del área de los solares se permite mostrar la ubicación. */
+/** Hasta dónde (m) del área de los lotes se permite mostrar la ubicación. */
 const NEAR_METERS = 1000;
 
 function setRest(map: L.Map, rest: boolean) {
@@ -187,13 +187,13 @@ export function LotMap({
   const tileRef = useRef<L.TileLayer | null>(null);
   const [full, setFull] = useState(false);
   // Pantalla táctil: fuera de pantalla completa el mapa no toma el dedo, así la
-  // página se desplaza con normalidad. Tocar un solar sigue abriendo su ficha.
+  // página se desplaza con normalidad. Tocar un lote sigue abriendo su ficha.
   const touch = useMemo(() => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches, []);
   // En el teléfono el panel de búsqueda tapaba un tercio del mapa: entra plegado
   // y deja solo la leyenda; en pantallas grandes sobra espacio y entra abierto.
   const [panel, setPanel] = useState(true);
 
-  // "Activar tu ubicación": solo se muestra al estar dentro o cerca de los solares.
+  // "Activar tu ubicación": solo se muestra al estar dentro o cerca de los lotes.
   const [loc, setLoc] = useState<'off' | 'asking' | 'on'>('off');
   const [locMsg, setLocMsg] = useState('');
   const watchRef = useRef<number | null>(null);
@@ -226,7 +226,7 @@ export function LotMap({
     watchRef.current = navigator.geolocation.watchPosition(
       (pos) => {
         const here = L.latLng(pos.coords.latitude, pos.coords.longitude);
-        // Distancia al punto más cercano del área de los solares (0 si está dentro).
+        // Distancia al punto más cercano del área de los lotes (0 si está dentro).
         const nearest = L.latLng(
           Math.min(Math.max(here.lat, area.getSouth()), area.getNorth()),
           Math.min(Math.max(here.lng, area.getWest()), area.getEast()),
@@ -235,7 +235,7 @@ export function LotMap({
         if (away > NEAR_METERS) {
           stopLocate();
           setLocMsg(
-            t('Estás a {km} km de los solares. La ubicación se activa solo cerca o dentro del proyecto.', {
+            t('Estás a {km} km de los lotes. La ubicación se activa solo cerca o dentro del proyecto.', {
               km: (away / 1000).toFixed(1),
             }),
           );
@@ -386,7 +386,7 @@ export function LotMap({
     };
   }, [panos, mapReady]);
 
-  // ?lote=A9 abre directamente la ficha de ese solar y centra el mapa en él:
+  // ?lote=A9 abre directamente la ficha de ese lote y centra el mapa en él:
   // así el enlace "Ver ficha" del panel de administración lleva a su ficha pública.
   const wanted = new URLSearchParams(window.location.search).get('lote');
   useEffect(() => {
@@ -469,7 +469,7 @@ export function LotMap({
       // El Lobby queda fuera del encuadre por defecto (puede salir cortado); sigue visible al alejar.
       if (lot.code !== 'LOBBY') ring.forEach((c) => bounds.extend(c));
     }
-    // Acercado, el código y el uso van rotulados dentro de cada solar; en la
+    // Acercado, el código y el uso van rotulados dentro de cada lote; en la
     // vista general estorban y basta el globo al pasar el cursor.
     const onZoom = () => {
       const zoomed = map.getZoom() >= LOT_LABEL_ZOOM;
@@ -480,7 +480,7 @@ export function LotMap({
     };
     map.on('zoomend', onZoom);
     // invalidateSize: si el contenedor aún no tiene tamaño, fitBounds se iría al
-    // zoom máximo. maxZoom 18 mantiene la vista general aunque quede un solo solar.
+    // zoom máximo. maxZoom 18 mantiene la vista general aunque quede un solo lote.
     map.invalidateSize();
     if (bounds.isValid()) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 18 });
     return () => {
@@ -488,13 +488,13 @@ export function LotMap({
     };
   }, [visible]);
 
-  if (lots === null) return <p className="py-10 text-center text-brand-gray">{t('Cargando mapa de solares…')}</p>;
+  if (lots === null) return <p className="py-10 text-center text-brand-gray">{t('Cargando mapa de lotes…')}</p>;
   if (lots.length === 0) return null;
 
   const minPrice = Math.min(...available.map((l) => l.price ?? Infinity));
 
   // Destino del botón "Cómo llegar": el que fije el proyecto o, si no, el centro
-  // de los solares ya dibujados — siempre cae dentro de la lotización.
+  // de los lotes ya dibujados — siempre cae dentro de la lotización.
   const center = lots.filter((l) => l.centroidLat != null && l.centroidLng != null);
   const destination =
     mapLat != null && mapLng != null
@@ -557,11 +557,11 @@ export function LotMap({
   );
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8" id="mapa-solares">
+    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8" id="mapa-lotes">
       <div className="mb-6 text-center">
-        <h2 className="text-3xl font-bold text-primary sm:text-4xl">{t('Elige tu solar')}</h2>
+        <h2 className="text-3xl font-bold text-primary sm:text-4xl">{t('Elige tu lote')}</h2>
         <p className="mt-2 text-brand-gray">
-          {t('{n} solares disponibles', { n: available.length })}
+          {t('{n} lotes disponibles', { n: available.length })}
           {Number.isFinite(minPrice) && <> · {t('desde')} {formatCurrency(minPrice)}</>} ·{' '}
           {t('toca uno para ver su precio y tu cuota')}
         </p>
@@ -599,7 +599,7 @@ export function LotMap({
               <div className="flex items-start justify-between gap-3">
                 {panel ? (
                   <p className="px-1 text-sm font-medium text-primary">
-                    {t('{n} solares en pantalla', { n: visible.length })} ·{' '}
+                    {t('{n} lotes en pantalla', { n: visible.length })} ·{' '}
                     {t('{n} disponibles', { n: available.length })}
                     {Number.isFinite(minPrice) && <> · {t('desde')} {formatCurrency(minPrice)}</>}
                   </p>
@@ -692,7 +692,7 @@ export function LotMap({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-black/5 text-xs uppercase tracking-wider text-brand-gray">
-              <th className="px-3 py-3">{t('Solar')}</th>
+              <th className="px-3 py-3">{t('Lote')}</th>
               <th className="px-3 py-3">{t('Área')}</th>
               <th className="px-3 py-3">{t('Precio')}</th>
               <th className="hidden px-3 py-3 sm:table-cell">{t('Cuota mensual')}</th>
@@ -738,7 +738,7 @@ export function LotMap({
             onClick={() => setShowAll((v) => !v)}
             className="w-full border-t border-black/5 py-3 text-sm font-medium text-accent hover:bg-light"
           >
-            {showAll ? t('Ver menos') : t('Ver los {n} solares', { n: visible.length })}
+            {showAll ? t('Ver menos') : t('Ver los {n} lotes', { n: visible.length })}
           </button>
         )}
       </div>
@@ -757,7 +757,7 @@ export function fmtArea(a?: number | null) {
   return a != null ? `${a.toLocaleString('en-US', { maximumFractionDigits: 0 })} m²` : '—';
 }
 
-/** Aviso de los solares en promoción de contado. */
+/** Aviso de los lotes en promoción de contado. */
 export function CashOnlyNote() {
   const { t } = useLang();
   return (
@@ -767,7 +767,7 @@ export function CashOnlyNote() {
   );
 }
 
-/** Fotos del solar cargadas desde el panel de administración. */
+/** Fotos del lote cargadas desde el panel de administración. */
 export function LotPhotos({ images, code }: { images: string[]; code: string }) {
   const { t } = useLang();
   const [open, setOpen] = useState<number | null>(null);
@@ -797,14 +797,14 @@ export function LotPhotos({ images, code }: { images: string[]; code: string }) 
             key={src}
             onClick={() => setOpen(i)}
             className="shrink-0 overflow-hidden rounded-lg ring-1 ring-black/10"
-            aria-label={t('Ver foto {n} del solar {code}', { n: i + 1, code })}
+            aria-label={t('Ver foto {n} del lote {code}', { n: i + 1, code })}
           >
             <img
               src={cld(src, { width: 112, height: 80, quality: 'good' })}
               srcSet={[1, 2, 3].map((d) => `${cld(src, { width: 112 * d, height: 80 * d, quality: 'good' })} ${d}x`).join(', ')}
               width={112}
               height={80}
-              alt={t('Solar {code}, foto {n}', { code, n: i + 1 })}
+              alt={t('Lote {code}, foto {n}', { code, n: i + 1 })}
               loading="lazy"
               decoding="async"
               className="h-20 w-28 object-cover"
@@ -830,7 +830,7 @@ export function LotPhotos({ images, code }: { images: string[]; code: string }) 
             src={cld(images[open], { width: 1280, crop: 'limit', quality: 'good' })}
             srcSet={[800, 1280, 1920].map((w) => `${cld(images[open], { width: w, crop: 'limit', quality: 'good' })} ${w}w`).join(', ')}
             sizes="100vw"
-            alt={t('Solar {code}', { code })}
+            alt={t('Lote {code}', { code })}
             className="max-h-full max-w-full select-none rounded-lg object-contain"
             draggable={false}
           />
@@ -896,7 +896,7 @@ function LotPanel({
   const vv = useVisualViewport();
 
   const precio = lot.price != null ? `, ${formatCurrency(lot.price)}` : '';
-  const waMsg = t('Hola, me interesa el *solar {code}* de {p} ({area}{precio}). Quiero más información.', {
+  const waMsg = t('Hola, me interesa el *lote {code}* de {p} ({area}{precio}). Quiero más información.', {
     code: lot.code,
     p: projectName,
     area: fmtArea(lot.areaM2),
@@ -910,7 +910,7 @@ function LotPanel({
       await api.post('/contact', {
         ...form,
         source: `lote:${projectName}:${lot.code}`,
-        message: `Interés en el solar ${lot.code} (${fmtArea(lot.areaM2)}${precio}) de ${projectName}.`,
+        message: `Interés en el lote ${lot.code} (${fmtArea(lot.areaM2)}${precio}) de ${projectName}.`,
       });
       setSent(true);
     } catch (err) {
@@ -936,7 +936,7 @@ function LotPanel({
   const body = (
     <>
       <p className="text-xs uppercase tracking-wider text-brand-gray">{lot.block?.replace('MZ-', `${t('Manzana')} `)}</p>
-      <h3 className="font-serif text-2xl font-bold text-primary">{t('Solar')} {lot.code}</h3>
+      <h3 className="font-serif text-2xl font-bold text-primary">{t('Lote')} {lot.code}</h3>
       {lot.name && <p className="text-sm text-accent">{t('Uso proyectado')}: {t(lot.name)}</p>}
       <span className="mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ background: STATUS_STYLE[lot.status].fill }}>
         {t(STATUS_STYLE[lot.status].label)}
@@ -961,7 +961,7 @@ function LotPanel({
         )}
       </dl>
 
-      {/* Vía más rápida: abre WhatsApp con el solar ya escrito, sin llenar nada. */}
+      {/* Vía más rápida: abre WhatsApp con el lote ya escrito, sin llenar nada. */}
       <WhatsAppCTA message={waMsg} lotCode={lot.code} className="mt-4 w-full" />
       <ShareLot lot={lot} projectName={projectName} projectSlug={projectSlug} className="mt-2" />
 
@@ -984,7 +984,7 @@ function LotPanel({
       )}
       {sent && (
         <p className="mt-4 rounded-lg bg-green-50 p-3 text-sm text-green-800">
-          {t('¡Listo! Un asesor te contactará por WhatsApp sobre el solar {code}.', { code: lot.code })}
+          {t('¡Listo! Un asesor te contactará por WhatsApp sobre el lote {code}.', { code: lot.code })}
         </p>
       )}
     </>
@@ -1001,7 +1001,7 @@ function LotPanel({
         <button className="absolute inset-0 cursor-default bg-black/50" onClick={onClose} aria-label={t('Cerrar la ficha')} />
         <div
           role="dialog"
-          aria-label={t('Ficha del solar {code}', { code: lot.code })}
+          aria-label={t('Ficha del lote {code}', { code: lot.code })}
           className="relative w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl bg-white p-5 shadow-2xl"
           style={{ maxHeight: '100%' }}
         >
@@ -1033,36 +1033,36 @@ export function Row({ label, value, strong }: { label: string; value: string; st
 }
 
 /**
- * Traduce un colindante conservando el nombre propio: "Solar A11" → "Lot A11".
+ * Traduce un colindante conservando el nombre propio: "Lote A11" → "Lot A11".
  * El nombre de la calle no se traduce: es el rótulo que está en el terreno.
  */
 function colindante(t: (s: string) => string, texto: string): string {
   const entero = t(texto);
   if (entero !== texto) return entero;
-  const m = /^Solar\s+(.+)$/.exec(texto);
-  return m ? `${t('Solar')} ${m[1]}` : texto;
+  const m = /^Lote\s+(.+)$/.exec(texto);
+  return m ? `${t('Lote')} ${m[1]}` : texto;
 }
 
 /**
- * Notas de un solar (vienen de GEO 3i). Las que llevan cifras siguen dos
+ * Notas de un lote (vienen de GEO 3i). Las que llevan cifras siguen dos
  * plantillas fijas y se traducen rellenando los números; el resto, por diccionario.
  */
 function nota(t: (s: string, v?: Record<string, string | number>) => string, texto: string): string {
   let m = /^Área publicada \(inventario\): (.+?)\. Área según el plano georreferenciado: (.+?) \((.+?)\)\. Confirmar con levantamiento de campo\.$/.exec(texto);
   if (m) return t('Área publicada (inventario): {a}. Área según el plano georreferenciado: {b} ({c}). Confirmar con levantamiento de campo.', { a: m[1], b: m[2], c: m[3] });
-  m = /^Clave del solar matriz (.+?), antes de su división en (.+?) y (.+?)\.$/.exec(texto);
-  if (m) return t('Clave del solar matriz {a}, antes de su división en {b} y {c}.', { a: m[1], b: m[2], c: m[3] });
+  m = /^Clave del lote matriz (.+?), antes de su división en (.+?) y (.+?)\.$/.exec(texto);
+  if (m) return t('Clave del lote matriz {a}, antes de su división en {b} y {c}.', { a: m[1], b: m[2], c: m[3] });
   return t(texto);
 }
 
 const CARDINAL_SHORT: Record<string, string> = { NORTE: 'Norte', ESTE: 'Este', SUR: 'Sur', OESTE: 'Oeste' };
 const num = (n: number, d = 2) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
-/** Ficha técnica del solar: identificación, linderos y coordenadas (fuente GEO 3i). */
+/** Ficha técnica del lote: identificación, linderos y coordenadas (fuente GEO 3i). */
 export function LotSheet({ lot }: { lot: PublicLot }) {
   const { t } = useLang();
   const note = lot.details?.cadastralNote;
-  // Solo hay geometría cuando el solar está digitalizado en GEO 3i.
+  // Solo hay geometría cuando el lote está digitalizado en GEO 3i.
   const d = lot.details?.linderos ? lot.details : null;
   return (
     <div className="mt-4 space-y-3 border-t border-black/5 pt-4 text-sm">
@@ -1118,7 +1118,7 @@ export function LotSheet({ lot }: { lot: PublicLot }) {
         </>
       ) : (
         <p className="rounded-lg bg-amber-50 p-2 text-xs text-amber-800">
-          {t('Linderos y coordenadas pendientes: este solar aún no está digitalizado en el levantamiento topográfico.')}
+          {t('Linderos y coordenadas pendientes: este lote aún no está digitalizado en el levantamiento topográfico.')}
         </p>
       )}
     </div>

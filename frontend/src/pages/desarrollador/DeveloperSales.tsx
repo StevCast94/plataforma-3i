@@ -55,7 +55,7 @@ export function DeclareSaleModal({ lead, onClose, onDone }: { lead: DevLead | nu
             <span className={`rounded-full px-2 py-0.5 text-xs ${LEAD_SOURCE_LABEL[lead.source].cls}`}>{LEAD_SOURCE_LABEL[lead.source].text}</span>
           </p>
           <div className="grid grid-cols-2 gap-2">
-            <Input name="lotCode" label="Solar" defaultValue={lead.lotCode ?? ''} placeholder="A12" />
+            <Input name="lotCode" label="Lote" defaultValue={lead.lotCode ?? ''} placeholder="A12" />
             <Input name="price" type="number" step="0.01" label="Precio de venta (USD) *" required />
           </div>
           <div className="flex gap-2">
@@ -165,7 +165,7 @@ export function DeveloperSales() {
                   <div>
                     <p className="font-semibold text-primary">
                       {s.lead.name} · {s.project.name}
-                      {s.lotCode && ` · Solar ${s.lotCode}`}
+                      {s.lotCode && ` · Lote ${s.lotCode}`}
                     </p>
                     <p className="text-xs text-brand-gray">
                       {formatCurrency(s.price)} · {s.paymentType === 'CASH' ? 'Contado' : 'Financiado'} · comisión {pct(s.feeRate)} (

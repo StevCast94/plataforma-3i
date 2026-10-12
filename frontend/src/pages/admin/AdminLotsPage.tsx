@@ -27,7 +27,7 @@ const STATUS_BADGE: Record<LotStatus, 'gold' | 'light'> = {
 };
 
 /**
- * Gestión de solares de un proyecto (Lot). Los datos base (geometría, área,
+ * Gestión de lotes de un proyecto (Lot). Los datos base (geometría, área,
  * manzana) vienen del import desde GEO 3i — aquí el admin solo ajusta lo
  * comercial: estado, precio y, si aplica, datos del comprador (privados,
  * nunca se exponen en /api/projects/:slug/lots).
@@ -208,7 +208,7 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
           />
 
           <div>
-            <span className="mb-1.5 block text-sm font-medium text-primary">Fotos del solar</span>
+            <span className="mb-1.5 block text-sm font-medium text-primary">Fotos del lote</span>
             <p className="mb-2 text-xs text-brand-gray">
               Se muestran en la ficha pública del mapa. La primera es la principal; arrástralas con las
               flechas para reordenarlas.

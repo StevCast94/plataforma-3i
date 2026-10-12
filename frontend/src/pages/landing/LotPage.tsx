@@ -27,7 +27,7 @@ import {
 import { BrandLoader } from '@/components/brand/Isotipo';
 
 /**
- * Ficha completa de un solar, pensada para abrirse desde un enlace compartido
+ * Ficha completa de un lote, pensada para abrirse desde un enlace compartido
  * en el celular: forma y ubicación en el mapa, precio, medidas y contacto.
  */
 export default function LotPage() {
@@ -65,9 +65,9 @@ export default function LotPage() {
   if (!lot)
     return (
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <p className="font-serif text-3xl font-bold text-primary">{t('No encontramos ese solar')}</p>
+        <p className="font-serif text-3xl font-bold text-primary">{t('No encontramos ese lote')}</p>
         <Link to={`/proyectos/${slug}`} className="mt-6 inline-block font-semibold text-accent underline">
-          {t('Ver todos los solares')}
+          {t('Ver todos los lotes')}
         </Link>
       </div>
     );
@@ -75,7 +75,7 @@ export default function LotPage() {
   const projectName = project?.name ?? 'Montañita View';
   const status = STATUS_STYLE[lot.status];
   const precio = lot.price != null ? `, ${formatCurrency(lot.price)}` : '';
-  const waMsg = t('Hola, me interesa el *solar {code}* de {p} ({area}{precio}). Quiero más información.', {
+  const waMsg = t('Hola, me interesa el *lote {code}* de {p} ({area}{precio}). Quiero más información.', {
     code: lot.code,
     p: projectName,
     area: fmtArea(lot.areaM2),
@@ -86,8 +86,8 @@ export default function LotPage() {
   return (
     <div className="lot-print bg-light print:bg-white">
       <Seo
-        title={`${t('Solar')} ${lot.code} · ${projectName}`}
-        description={`${fmtArea(lot.areaM2)}${precio}. ${t('Forma, ubicación, medidas y linderos del solar.')}`}
+        title={`${t('Lote')} ${lot.code} · ${projectName}`}
+        description={`${fmtArea(lot.areaM2)}${precio}. ${t('Forma, ubicación, medidas y linderos del lote.')}`}
       />
       <div className="mx-auto max-w-3xl px-4 pb-16 pt-6 sm:px-6 print:max-w-none print:p-0">
         <Link
@@ -108,7 +108,7 @@ export default function LotPage() {
               {lot.block ? ` · ${lot.block.replace('MZ-', `${t('Manzana')} `)}` : ''}
             </p>
             <h1 className="font-serif text-4xl font-bold text-primary sm:text-5xl">
-              {t('Solar')} {lot.code}
+              {t('Lote')} {lot.code}
             </h1>
             {lot.name && <p className="mt-1 text-sm text-accent">{t('Uso proyectado')}: {t(lot.name)}</p>}
           </div>
@@ -131,7 +131,7 @@ export default function LotPage() {
               className="inline-flex items-center gap-1.5 font-medium text-accent underline-offset-4 hover:underline"
             >
               <Navigation className="h-4 w-4" />
-              {t('Cómo llegar al solar')}
+              {t('Cómo llegar al lote')}
             </a>
           )}
         </div>
@@ -179,7 +179,7 @@ export default function LotPage() {
 
         <p className="mt-8 hidden text-center text-xs text-brand-gray print:block">
           {window.location.origin}
-          {`/proyectos/${slug}/solar/${lot.code}`}
+          {`/proyectos/${slug}/lote/${lot.code}`}
         </p>
       </div>
     </div>
@@ -195,7 +195,7 @@ function Stat({ label, value, strong }: { label: string; value: string; strong?:
   );
 }
 
-/** Mapa de la ficha: el solar resaltado entre sus vecinos. Quieto en pantallas táctiles. */
+/** Mapa de la ficha: el lote resaltado entre sus vecinos. Quieto en pantallas táctiles. */
 function LotMiniMap({ lots, lot }: { lots: PublicLot[]; lot: PublicLot }) {
   const el = useRef<HTMLDivElement>(null);
 

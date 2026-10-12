@@ -49,9 +49,9 @@ export default function HomePage() {
           'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
       },
       {
-        title: 'Montañita View. Solares con vista al mar, financiados a 24 meses sin intereses',
+        title: 'Montañita View. Lotes con vista al mar, financiados a 24 meses sin intereses',
         subtitle:
-          'Solares frente al Pacífico en Montañita, Santa Elena, y Montañita View Lobby, con piscina, restaurante y áreas sociales.',
+          'Lotes frente al Pacífico en Montañita, Santa Elena, y Montañita View Lobby, con piscina, restaurante y áreas sociales.',
       },
     ],
     [hero.title, hero.subtitle],
@@ -65,7 +65,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Seo title={t('Grupo 3i — Invierte en la costa ecuatoriana')} description={t('Fracciones en Ibiza Condohotel desde $12,000 y solares con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.')} />
+      <Seo title={t('Grupo 3i — Invierte en la costa ecuatoriana')} description={t('Fracciones en Ibiza Condohotel desde $12,000 y lotes con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.')} />
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-primary text-white">
         <ImageCrossfade
@@ -172,7 +172,7 @@ export default function HomePage() {
             </h2>
             <p className="mt-4 text-brand-gray">
               {t(
-                'Si conoces a alguien que busca un solar en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.',
+                'Si conoces a alguien que busca un lote en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.',
               )}
             </p>
             <Link to="/oficina" className="mt-8 inline-block">
@@ -187,9 +187,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{t('Para desarrolladoras inmobiliarias')}</p>
-            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus solares con la red de Grupo 3i. Pagas solo cuando vendes.')}</h2>
+            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus proyectos inmobiliarios con la red de Grupo 3i. Pagas solo cuando vendes.')}</h2>
             <p className="mt-4 text-white/70">
-              {t('Mapa interactivo de solares, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.')}
+              {t('Lotes, casas, departamentos, locales, oficinas y macrolotes: inventario en vivo, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.')}
             </p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

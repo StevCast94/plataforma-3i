@@ -9,8 +9,11 @@ Cifras, porcentajes y condiciones son idénticos en los dos idiomas.
 
 | Español (Ecuador) | English | Nota |
 |---|---|---|
-| solar | lot | Nunca «lote» en español para el producto; «lote» solo en textos técnicos. |
+| lote | lot | Término oficial desde oct-2026 (antes «solar»). No usar «solar» ni «terreno» para el producto. |
 | lotización | subdivision / development | «development» si se habla del proyecto en general. |
+| proyecto inmobiliario / productos inmobiliarios | real estate project(s) | Para hablar de todo tipo de proyecto. |
+| casa · departamento · suite · local comercial · oficina · bodega/galpón · macrolote | home · condo · suite · retail space · office space · warehouse · large land parcel | Tipos de proyecto que publican las desarrolladoras. |
+| unidad | unit | Término genérico para cualquier tipo (lote, casa, departamento…). |
 | fracción (Ibiza) | share | Propiedad fraccionada = fractional ownership. |
 | desarrolladora | developer | |
 | proyecto | project | |

@@ -4,13 +4,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { Link, useLang } from '@/hooks/useLang';
 import { useToast } from '@/components/shared/Toast';
 
-/** Dirección pública de la ficha de un solar. */
+/** Dirección pública de la ficha de un lote. */
 export function lotPath(projectSlug: string, code: string): string {
-  return `/proyectos/${projectSlug}/solar/${encodeURIComponent(code)}`;
+  return `/proyectos/${projectSlug}/lote/${encodeURIComponent(code)}`;
 }
 
 /**
- * Enlace para compartir la ficha de un solar. Si quien comparte es socio con
+ * Enlace para compartir la ficha de un lote. Si quien comparte es socio con
  * sesión iniciada, el enlace lleva su código: la venta queda atribuida a él.
  */
 export function useLotShareUrl(projectSlug: string, code: string): string {
@@ -41,7 +41,7 @@ export function ShareLot({
   const url = useLotShareUrl(projectSlug, lot.code);
 
   async function share() {
-    const title = `${t('Solar')} ${lot.code} · ${projectName}`;
+    const title = `${t('Lote')} ${lot.code} · ${projectName}`;
     // Menú nativo del teléfono (WhatsApp, Telegram…) cuando existe.
     if (navigator.share) {
       try {

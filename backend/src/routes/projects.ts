@@ -133,7 +133,7 @@ projectRoutes.get('/:slug/lots', async (req, res) => {
     res.json(
       lots.map(({ notes, ...lot }) => ({
         ...lot,
-        // El precio de un solar vendido es dato del desarrollador, no se publica.
+        // El precio de un lote vendido es dato del desarrollador, no se publica.
         ...(lot.status === 'SOLD' ? { price: null, pricePerM2: null } : {}),
         approximateGeometry: !!notes?.includes('Geometría aproximada'),
       })),

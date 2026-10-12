@@ -35,7 +35,7 @@ contactRoutes.post('/', async (req, res) => {
       },
     });
 
-    // Bandeja única: si el formulario es de un proyecto (ficha, propuesta o solar),
+    // Bandeja única: si el formulario es de un proyecto (ficha, propuesta o lote),
     // entra al CRM como contacto de ese proyecto.
     await contactToLead(submission.id, { utm: cleanUtm(utm) }).catch((e) => console.error('contactToLead', e));
 

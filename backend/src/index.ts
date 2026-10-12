@@ -118,7 +118,7 @@ app.use('/api/admin/travel', adminTravelRoutes);
 app.use('/api/referral', referralApiRoutes);
 
 // Cualquier /api/* no encontrada -> 404 JSON (no cae al SPA fallback)
-// Imagen de vista previa de la ficha de un solar (tarjeta de WhatsApp/Facebook).
+// Imagen de vista previa de la ficha de un lote (tarjeta de WhatsApp/Facebook).
 app.get('/api/og/lot/:slug/:file', async (req, res) => {
   try {
     const code = decodeURIComponent(String(req.params.file)).replace(/.jpg$/i, '').toUpperCase();
@@ -198,7 +198,11 @@ if (hasBuild) {
   // meta tags se escriben en el HTML antes de enviarlo (ver lib/ogProject.ts).
   app.get(['/proyectos/:slug', '/en/proyectos/:slug'], projectOgHandler(frontendPath));
   app.get(['/l/:slug', '/en/l/:slug'], landingOgHandler(frontendPath));
-  app.get(['/proyectos/:slug/solar/:code', '/en/proyectos/:slug/solar/:code'], lotOgHandler(frontendPath));
+  // Antes la ficha vivía en /solar/: los enlaces ya compartidos redirigen para siempre a /lote/.
+  app.get(['/proyectos/:slug/solar/:code', '/en/proyectos/:slug/solar/:code'], (req, res) => {
+    res.redirect(301, req.originalUrl.replace('/solar/', '/lote/'));
+  });
+  app.get(['/proyectos/:slug/lote/:code', '/en/proyectos/:slug/lote/:code'], lotOgHandler(frontendPath));
   app.get(PAGE_OG_PATHS, pageOgHandler(frontendPath));
 
   // SPA fallback -> todas las rutas no-API devuelven index.html

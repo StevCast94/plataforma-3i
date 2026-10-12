@@ -2,8 +2,8 @@ import jpeg from 'jpeg-js';
 import { prisma } from '../prisma';
 
 /**
- * Imagen para la vista previa (WhatsApp/Facebook) de la ficha de un solar:
- * foto satelital de la zona con el solar resaltado y sus vecinos delineados.
+ * Imagen para la vista previa (WhatsApp/Facebook) de la ficha de un lote:
+ * foto satelital de la zona con el lote resaltado y sus vecinos delineados.
  *
  * Se arma en el servidor pegando teselas de Esri World Imagery (el mismo mapa
  * del sitio) y dibujando los polígonos a mano, en JavaScript puro: sin
@@ -110,7 +110,7 @@ function ringOf(geometry: unknown): Ring | null {
   return Array.isArray(ring) && ring.length >= 3 ? (ring as Ring) : null;
 }
 
-/** JPEG 1200×630 del solar, o null si no tiene geometría. Cacheado por versión del solar. */
+/** JPEG 1200×630 del lote, o null si no tiene geometría. Cacheado por versión del lote. */
 export async function lotOgImage(projectSlug: string, code: string): Promise<Buffer | null> {
   const project = await prisma.project.findUnique({ where: { slug: projectSlug }, select: { id: true } });
   if (!project) return null;
@@ -125,7 +125,7 @@ export async function lotOgImage(projectSlug: string, code: string): Promise<Buf
   const hit = cache.get(key);
   if (hit) return hit;
 
-  // Zoom: el mayor en que el solar ocupa como mucho ~40% del ancho y ~50% del alto.
+  // Zoom: el mayor en que el lote ocupa como mucho ~40% del ancho y ~50% del alto.
   // Por encima de MAX_Z se amplía la imagen del nivel 18 (zoom digital, hasta x4).
   let z = MAX_Z + 2;
   for (; z > 12; z--) {
@@ -172,7 +172,7 @@ export async function lotOgImage(projectSlug: string, code: string): Promise<Buf
     }
   }
 
-  // Oscurece un poco la foto para que resalte el solar.
+  // Oscurece un poco la foto para que resalte el lote.
   for (let i = 0; i < buf.length; i += 4) {
     buf[i] *= 0.78;
     buf[i + 1] *= 0.78;
@@ -196,7 +196,7 @@ export async function lotOgImage(projectSlug: string, code: string): Promise<Buf
     stroke(buf, s, 2, [255, 255, 255], 0.55);
   }
 
-  // El solar: relleno dorado y contorno blanco grueso.
+  // El lote: relleno dorado y contorno blanco grueso.
   const main = toScreen(ring);
   fill(buf, main, [255, 196, 40], 0.5);
   stroke(buf, main, 6, [255, 255, 255], 1);

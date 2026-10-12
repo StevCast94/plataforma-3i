@@ -1,6 +1,6 @@
 import { prisma } from '../prisma';
 
-// Métricas de un proyecto (paso 5): embudo, serie semanal, solares con más
+// Métricas de un proyecto (paso 5): embudo, serie semanal, lotes con más
 // interés, dispositivo e idioma. Sale de ProjectEvent + ProjectLead + DeveloperSale.
 
 const FUNNEL = ['view', 'lot_view', 'pano_open', 'wa_click'] as const;
@@ -44,7 +44,7 @@ export async function projectMetrics(projectId: string, days: number) {
   leads.forEach((l) => bump(l.createdAt, 'leads'));
   sales.forEach((s) => bump(s.createdAt, 'sales'));
 
-  // Solares con más interés: vistas de ficha + clics a WhatsApp desde el solar.
+  // Lotes con más interés: vistas de ficha + clics a WhatsApp desde el lote.
   const lots = new Map<string, { code: string; views: number; whatsapp: number }>();
   for (const e of events) {
     if (!e.lotCode || (e.type !== 'lot_view' && e.type !== 'wa_click')) continue;

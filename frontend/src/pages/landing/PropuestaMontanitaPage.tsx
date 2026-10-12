@@ -20,7 +20,7 @@ import { useLang } from '@/hooks/useLang';
 //
 // Tres rutas, cada una con un resumen persuasivo y enlaces "Ver detalle
 // técnico" al dossier completo de la misma página:
-//   A. Comprar un solar (Lotización, DIWILDI S.A.)
+//   A. Comprar un lote (Lotización, DIWILDI S.A.)
 //   B. Montañita View Lobby (predio de 36,348 m², propiedad de Didier Triana)
 //   C. Ambos proyectos en una sola operación
 //
@@ -48,7 +48,7 @@ const LOBBY_M2 = 36348;
 const TOTAL_M2 = LOTS_M2 + LOBBY_M2;
 
 const LAND_USE = [
-  { uso: 'Residencial (solares)', m2: 141583, pct: 54.81 },
+  { uso: 'Residencial (lotes)', m2: 141583, pct: 54.81 },
   { uso: 'Vías', m2: 51883, pct: 20.1 },
   { uso: 'Áreas verdes', m2: 44569.57, pct: 17.25 },
   { uso: 'Equipamiento urbano', m2: 13398.06, pct: 5.18 },
@@ -157,7 +157,7 @@ export default function PropuestaMontanitaPage() {
           <h1 className="mt-3 font-serif text-4xl font-bold sm:text-5xl">{t(c.heroTitle)}</h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">{t(c.heroSubtitle)}</p>
           <div className="mt-6 flex flex-wrap gap-6 text-sm">
-            <Stat v="90" l={t('solares disponibles')} />
+            <Stat v="90" l={t('lotes disponibles')} />
             <Stat v={m2(TOTAL_M2)} l={t('en oferta')} />
             <Stat v="2018" l={t('lotización inscrita')} />
           </div>
@@ -204,7 +204,7 @@ export default function PropuestaMontanitaPage() {
             <KV rows={c.lotes.rows} />
             <div className="mt-4 flex flex-wrap items-center gap-3 print:hidden">
               <Link to="/proyectos/montanita-view">
-                <Button variant="outline">{t('Ver el mapa de solares')}</Button>
+                <Button variant="outline">{t('Ver el mapa de lotes')}</Button>
               </Link>
               <WhatsAppCTA
                 message={t('Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lotes completo* (Opción A). Quiero más información.')}
@@ -225,7 +225,7 @@ export default function PropuestaMontanitaPage() {
                 </li>
               </ol>
               <p className="mt-3">
-                {t('Los solares están fuera de tierras comunales. Cualquier contribución especial de mejoras por obras viales se asigna al vendedor en la escritura, no al comprador.')}
+                {t('Los lotes están fuera de tierras comunales. Cualquier contribución especial de mejoras por obras viales se asigna al vendedor en la escritura, no al comprador.')}
               </p>
               <Source>{t('Registro de la Propiedad del cantón Santa Elena (inscripciones 01-nov-2013 y 14-nov-2018); Resolución Administrativa 0118052017-GADMSE-A.')}</Source>
             </Detail>
@@ -243,16 +243,16 @@ export default function PropuestaMontanitaPage() {
 
             <Detail title={t('Inventario disponible por manzana')}>
               <Table
-                head={['Manzana', 'Solares', 'Área', 'Valor a $100/m²']}
+                head={['Manzana', 'Lotes', 'Área', 'Valor a $100/m²']}
                 rows={[
                   ...LOT_BLOCKS.map((b) => [b.mz, String(b.n), m2(b.m2), formatCurrency(b.m2 * 100)]),
                   ['Total', '90', m2(LOTS_M2), formatCurrency(LOTS_M2 * 100)],
                 ]}
               />
               <p className="mt-3">
-                {t('Tres manzanas tienen solares asignados a proyectos de negocio dentro del macroproyecto y siguen disponibles para la venta: zona de camping (E3–E5), aqua park (H14–H16) y río lento (G9). Fuera de esta oferta quedan los solares ya destinados: Santorini Condohotel (A-17 y A-18), Ibiza Condohotel (A-19 y A-20) y la planta de tratamiento de aguas residuales (B-9, B-10 y B-11).')}
+                {t('Tres manzanas tienen lotes asignados a proyectos de negocio dentro del macroproyecto y siguen disponibles para la venta: zona de camping (E3–E5), aqua park (H14–H16) y río lento (G9). Fuera de esta oferta quedan los lotes ya destinados: Santorini Condohotel (A-17 y A-18), Ibiza Condohotel (A-19 y A-20) y la planta de tratamiento de aguas residuales (B-9, B-10 y B-11).')}
               </p>
-              <Source>{t('Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada solar.')}</Source>
+              <Source>{t('Levantamiento topográfico georreferenciado GEO 3i (2026), área individual de cada lote.')}</Source>
             </Detail>
           </Route>
 
@@ -368,13 +368,13 @@ export default function PropuestaMontanitaPage() {
             <Detail title={t('Superficie incluida')}>
               <KV
                 rows={[
-                  ['Montañita View Lotes — 90 solares en venta', m2(LOTS_M2)],
+                  ['Montañita View Lotes — 90 lotes en venta', m2(LOTS_M2)],
                   ['Montañita View Lobby — predio', m2(LOBBY_M2)],
                   ['Total', m2(TOTAL_M2)],
                 ]}
               />
               <p className="mt-3">
-                {t('No incluye los solares ya vendidos o comprometidos. Tampoco las vías ni las áreas verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.')}
+                {t('No incluye los lotes ya vendidos o comprometidos. Tampoco las vías ni las áreas verdes, que son de uso público según la Resolución 0118052017-GADMSE-A.')}
               </p>
             </Detail>
 
@@ -395,7 +395,7 @@ export default function PropuestaMontanitaPage() {
                 <li>{t('Estudio topográfico y de suelos.')}</li>
                 <li>{t('Vías internas demarcadas y compactadas.')}</li>
                 <li>{t('Desbroce y limpieza del terreno.')}</li>
-                <li>{t('Linderación y georreferenciación de cada solar con hitos y coordenadas UTM.')}</li>
+                <li>{t('Linderación y georreferenciación de cada lote con hitos y coordenadas UTM.')}</li>
                 <li>{t('Obra civil del Lobby: garita, lobby, cimentación y departamentos modelo.')}</li>
               </ul>
               <p className="mt-3">
@@ -657,7 +657,7 @@ function PrintCover() {
         <div className="pd-cover-stats">
           <div>
             <b>90</b>
-            <span>solares disponibles</span>
+            <span>lotes disponibles</span>
           </div>
           <div>
             <b>{m2(TOTAL_M2)}</b>
@@ -705,10 +705,10 @@ function PrintFrontMatter({ c }: { c: PropuestaContent }) {
       </p>
       <ul className="pd-bullets">
         <li>
-          <b>{t('Título saneado e inscrito.')}</b> {t('Compra al GAD Municipal de Santa Elena en 2013, urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada solar se escritura individualmente.')}
+          <b>{t('Título saneado e inscrito.')}</b> {t('Compra al GAD Municipal de Santa Elena en 2013, urbanización aprobada por Resolución 0118052017-GADMSE-A e inscrita en 2018. Cada lote se escritura individualmente.')}
         </li>
         <li>
-          <b>{t('111 solares levantados uno por uno.')}</b>{' '}
+          <b>{t('111 lotes levantados uno por uno.')}</b>{' '}
           {t('90 disponibles, {area} de superficie vendible, con linderos, hitos y coordenadas UTM verificados en campo.', { area: m2(LOTS_M2) })}
         </li>
         <li>
@@ -737,7 +737,7 @@ function PrintClosing({ contact }: { contact?: Record<string, string> | null }) 
           <b>{t('Reunión con un asesor.')}</b> {t('Revisamos la opción que le interesa, resolvemos dudas y ponemos a disposición los documentos fuente: escrituras, resolución de urbanización, levantamiento topográfico y estudio de factibilidad.')}
         </li>
         <li>
-          <b>{t('Visita al sitio.')}</b> {t('Recorrido por la lotización y el complejo, con los hitos de cada solar en terreno.')}
+          <b>{t('Visita al sitio.')}</b> {t('Recorrido por la lotización y el complejo, con los hitos de cada lote en terreno.')}
         </li>
         <li>
           <b>{t('Promesa de compraventa.')}</b> {t('Se firma ante notario con el 10% de reserva; ahí quedan escritos el precio, los plazos y las obligaciones de cada parte.')}

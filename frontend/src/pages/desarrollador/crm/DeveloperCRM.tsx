@@ -183,7 +183,7 @@ function Templates({ open, onClose }: { open: boolean; onClose: () => void }) {
     <Modal open={open} onClose={onClose} title="Plantillas de WhatsApp">
       <div className="max-h-[70vh] space-y-4 overflow-y-auto pr-1 text-sm">
         <p className="text-xs text-brand-gray">
-          Variables: <code>{'{nombre}'}</code> <code>{'{proyecto}'}</code> <code>{'{solar}'}</code> — se reemplazan al enviar.
+          Variables: <code>{'{nombre}'}</code> <code>{'{proyecto}'}</code> <code>{'{lote}'}</code> — se reemplazan al enviar.
         </p>
         <ul className="space-y-2">
           {list.map((t) => (

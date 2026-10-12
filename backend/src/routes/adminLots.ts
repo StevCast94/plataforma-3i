@@ -46,7 +46,7 @@ adminLotRoutes.put('/:id', async (req: AuthedRequest, res) => {
     delete data.updatedAt;
     const lot = await prisma.lot.update({ where: { id: req.params.id }, data });
     await audit(req.staff?.staffId, 'update', 'lot', lot.id, { code: lot.code, status: lot.status });
-    // Cada solar vendido de Montañita View trae 1 árbol del Bosque a nombre del comprador.
+    // Cada lote vendido de Montañita View trae 1 árbol del Bosque a nombre del comprador.
     if (lot.status === 'SOLD' && lot.kind === 'LOT' && lot.code !== 'LOBBY') {
       await giftTreeForLot(lot).catch((e) => console.error('giftTreeForLot', e));
     }

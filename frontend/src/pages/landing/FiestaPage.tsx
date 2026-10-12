@@ -57,7 +57,7 @@ const TX = {
     done: '¡Ya disfrutaste tu bebida! Gracias por compartir 🎉',
     linkTitle: 'Tu enlace personal de Grupo 3i',
     linkHint:
-      'Si alguien compra un solar con tu enlace, ganas comisión. Mañana te escribimos por WhatsApp para activar tu cuenta y verlo todo con calma.',
+      'Si alguien compra un lote con tu enlace, ganas comisión. Mañana te escribimos por WhatsApp para activar tu cuenta y verlo todo con calma.',
     footer: 'Válido durante el evento · una bebida por persona',
     over: 'Esta promoción ya terminó. ¡Gracias por venir!',
     voucherTag: 'Cortesía de Grupo 3i',

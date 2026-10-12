@@ -78,7 +78,7 @@ export async function collectInstallment(installmentId: string) {
     const { lead } = inst.sale;
     if (lead.source !== 'REFERRAL' || !lead.memberId) return { already: false, commissions: created };
 
-    const description = `${inst.sale.lotCode ? `Solar ${inst.sale.lotCode} · ` : ''}${inst.sale.project.name} — ${lead.name}`;
+    const description = `${inst.sale.lotCode ? `Lote ${inst.sale.lotCode} · ` : ''}${inst.sale.project.name} — ${lead.name}`;
     const n1 = await db.referralMember.findUnique({ where: { id: lead.memberId }, select: { id: true, status: true, referrerId: true } });
     const chain: { id: string; status: string; level: 1 | 2 }[] = [];
     if (n1) {

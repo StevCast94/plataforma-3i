@@ -28,7 +28,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <Seo title={t('Sobre Grupo 3i')} description={t('Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, solares con vista al mar y membresías de viaje.')} />
+      <Seo title={t('Sobre Grupo 3i')} description={t('Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, lotes con vista al mar y membresías de viaje.')} />
       <PageHeader
         title={t(data?.title ?? 'Sobre Grupo 3i')}
         subtitle={t('Inversión inmobiliaria inteligente.')}
