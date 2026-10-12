@@ -1,5 +1,7 @@
 # Revisión de redacción ES/EN — hallazgos pendientes
 
+> R0–R10 completas (11-oct-2026). Propuesta R10 aplicada en producción.
+
 Registro de todo lo que aparece durante la revisión R0–R10 y **no** se corrigió
 porque es una decisión del dueño, es contenido editado desde el admin, o queda fuera
 del alcance de redacción. Cada punto dice dónde está y qué se propone.
@@ -15,22 +17,22 @@ Estado: ⬜ pendiente · ✅ resuelto
 | A4 | Refiere y gana (/oficina) vs. reglamento | La tabla de niveles dice frecuencia de pago **mensual (Premiere) / quincenal (Elite)**; el reglamento no menciona frecuencia, solo plazos de liquidación (30 / 3 días) | Agregar la frecuencia al reglamento, o quitarla de la tabla si ya no aplica | ⬜ |
 | A5 | Refiere y gana: «Elite es vitalicio» y reglamento: «El ascenso es permanente» | La promoción de lanzamiento puede devolver a Premiere a quien no tenga 1 venta al cerrar la temporada | Aclarar: «permanente, salvo el Elite de regalo de la promoción de lanzamiento» | ⬜ |
 | A6 | Refiere y gana · «¿Cuánto podrías ganar?» | Precios escritos a mano (MV desde $41,721; Ibiza $12,000) | Leerlos del inventario en vivo, como ya hacen las páginas de aterrizaje, para que no queden desactualizados | ⬜ |
-| A7 | Montañita View (descripción) | El inglés depende de que el español sea idéntico al del diccionario: el admin dice «89 solares», el diccionario «90», y el párrafo probablemente sale en español en /en. El número escrito a mano también queda viejo con cada venta | Llenar la «Versión en inglés» del proyecto y quitar el número (ver R10) | ⬜ |
+| A7 | Montañita View (descripción) | El inglés depende de que el español sea idéntico al del diccionario: el admin dice «89 solares», el diccionario «90», y el párrafo probablemente sale en español en /en. El número escrito a mano también queda viejo con cada venta | Llenar la «Versión en inglés» del proyecto y quitar el número (ver R10) | ✅ |
 | A3 | Atribución de referidos | Reglamento: ventana de **90 días** desde el primer clic. Desarrolladoras: **180 días** | Son dos programas distintos (socios vs. desarrolladoras); confirmar que es intencional | ⬜ |
 
 ## B. Contenido editado desde el admin (Configuración / Contenido del sitio)
 
 | # | Sección | Texto actual | Propuesta | Estado |
 |---|---|---|---|---|
-| B1 | Portada · hero | «Invierte en un **P**araíso…» | «paraíso» en minúscula | ⬜ |
-| B2 | Portada · proyectos | «Nuestros **P**royectos» | «Nuestros proyectos» | ⬜ |
-| B3 | Portada · proyectos | «Oportunidades de inversión cuidadosamente desarrolladas y seleccionadas.» | «Proyectos que desarrollamos o seleccionamos, todos verificados.» | ⬜ |
-| B4 | Club · subtítulo | «…beneficios exclusivos con **comisiones increíbles**.» | «…y gana comisiones por recomendar.» | ⬜ |
-| B5 | Nosotros · título | «Grupo 3i — Invierte $12K. Gana 70% en Descuentos de Viaje.» (es un anuncio del Club, no un título de «Nosotros») | «Sobre Grupo 3i» | ⬜ |
-| B6 | Proyecto Ibiza · subtítulo | «Inversión premium en la costa ecuatoriana. Invierte inteligente, invierte en el futuro.» (EN: *Premium investment… Invest smart…*) | Subtítulo descriptivo, p. ej. «Fracciones de un condohotel frente al mar en Manglaralto» | ⬜ |
-| B7 | Proyecto Ibiza · brochure en inglés | Inglés británico (*programme*) y frases literales (*First investment opportunity*) | Reescribir la versión en inglés del proyecto | ⬜ |
-| B8 | Tienda · producto Ibiza | Descripción «Fracciona tu inversión, multiplica tu retorno» sin versión en inglés | Escribir la versión en inglés | ⬜ |
-| B9 | Plantillas para compartir de los socios (Contenido del sitio → referral_templates) | Faltas: «No pierdas tu oportunidad!» y «empieza a ganar tú también!» sin «¡» de apertura; «Registrate» sin tilde. «Estoy ganando ingresos refiriendo» suena forzado | «¡No pierdas tu oportunidad!», «¡Empieza a ganar tú también!», «Regístrate». Reescribir la 3: «Gano comisiones recomendando el Club 3i. Únete con mi enlace y empieza tú también:» | ⬜ |
+| B1 | Portada · hero | «Invierte en un **P**araíso…» | «paraíso» en minúscula | ✅ |
+| B2 | Portada · proyectos | «Nuestros **P**royectos» | «Nuestros proyectos» | ✅ |
+| B3 | Portada · proyectos | «Oportunidades de inversión cuidadosamente desarrolladas y seleccionadas.» | «Proyectos que desarrollamos o seleccionamos, todos verificados.» | ✅ |
+| B4 | Club · subtítulo | «…beneficios exclusivos con **comisiones increíbles**.» | «…y gana comisiones por recomendar.» | ✅ |
+| B5 | Nosotros · título | «Grupo 3i — Invierte $12K. Gana 70% en Descuentos de Viaje.» (es un anuncio del Club, no un título de «Nosotros») | «Sobre Grupo 3i» | ✅ |
+| B6 | Proyecto Ibiza · subtítulo | «Inversión premium en la costa ecuatoriana. Invierte inteligente, invierte en el futuro.» (EN: *Premium investment… Invest smart…*) | Subtítulo descriptivo, p. ej. «Fracciones de un condohotel frente al mar en Manglaralto» | ✅ |
+| B7 | Proyecto Ibiza · brochure en inglés | Inglés británico (*programme*) y frases literales (*First investment opportunity*) | Reescribir la versión en inglés del proyecto | ✅ |
+| B8 | Tienda · producto Ibiza | Descripción «Fracciona tu inversión, multiplica tu retorno» sin versión en inglés | Escribir la versión en inglés | ✅ |
+| B9 | Plantillas para compartir de los socios (Contenido del sitio → referral_templates) | Faltas: «No pierdas tu oportunidad!» y «empieza a ganar tú también!» sin «¡» de apertura; «Registrate» sin tilde. «Estoy ganando ingresos refiriendo» suena forzado | «¡No pierdas tu oportunidad!», «¡Empieza a ganar tú también!», «Regístrate». Reescribir la 3: «Gano comisiones recomendando el Club 3i. Únete con mi enlace y empieza tú también:» | ✅ |
 
 ## C. Legal y cumplimiento (antes de lanzar campañas pagadas)
 
