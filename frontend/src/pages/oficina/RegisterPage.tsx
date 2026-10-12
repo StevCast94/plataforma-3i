@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Link, useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
@@ -241,6 +242,7 @@ export default function RegisterPage() {
             </Button>
           )}
         </div>
+        {step === 3 && <PrivacyNote account className="mt-3" />}
 
         <p className="mt-6 text-center text-sm text-brand-gray">
           {t('¿Ya tienes cuenta?')}{' '}

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import { Link, useLang } from '@/hooks/useLang';
 import { Input, Textarea } from '@/components/ui/Input';
 import { PhoneField } from '@/components/shared/PhoneField';
@@ -204,6 +205,7 @@ export function ContactForm({
       <Button type="submit" size="lg" loading={sending} className="w-full">
         {sending ? t('Enviando…') : (submitLabel ?? t('Enviar'))}
       </Button>
+      <PrivacyNote className="mt-2" />
     </form>
   );
 }

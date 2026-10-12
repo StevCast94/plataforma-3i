@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useLang } from '@/hooks/useLang';
+import { Link, useLang } from '@/hooks/useLang';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { isCustomMapHost } from '@/lib/mapHost';
 import { captureAttribution, getConsent, hasAnyId, loadPixels, pageView, setConsent, type TrackingIds } from '@/lib/ads';
@@ -38,7 +38,8 @@ export function Tracking() {
   return (
     <div role="dialog" aria-label={t('Cookies')} className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-2xl rounded-2xl bg-white p-4 shadow-2xl ring-1 ring-black/10 print:hidden sm:flex sm:items-center sm:gap-4">
       <p className="text-sm text-primary/80">
-        {t('Usamos cookies para saber qué anuncios funcionan y mostrarte proyectos que te interesen. Puedes aceptarlas o quedarte solo con las necesarias.')}
+        {t('Usamos cookies para saber qué anuncios funcionan y mostrarte proyectos que te interesen. Puedes aceptarlas o quedarte solo con las necesarias.')}{' '}
+        <Link to="/privacidad" className="underline">{t('Más información')}</Link>
       </p>
       <div className="mt-3 flex shrink-0 gap-2 sm:mt-0">
         <button onClick={() => choose('necessary')} className="rounded-lg border border-black/15 px-3 py-2 text-sm text-primary hover:bg-light">

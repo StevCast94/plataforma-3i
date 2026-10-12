@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import { BadgeCheck, Box, HandCoins, Map, Users, BarChart3 } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Seo } from '@/components/shared/Seo';
@@ -153,6 +154,7 @@ export default function PublishProjectPage() {
             <Button type="submit" size="lg" disabled={busy} className="sm:col-span-2">
               {busy ? t('Enviando…') : t('Enviar solicitud')}
             </Button>
+            <PrivacyNote className="sm:col-span-2" />
           </form>
         )}
       </section>

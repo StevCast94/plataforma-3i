@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import { Link } from 'react-router-dom';
 import { MapPin, Building2, Landmark, ChevronRight, Printer, Lock } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
@@ -489,6 +490,7 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
         <Button type="submit" className="w-full" disabled={sending}>
           {sending ? t('Enviando…') : t('Ver la propuesta')}
         </Button>
+        <PrivacyNote className="mt-2" />
       </form>
     </section>
   );

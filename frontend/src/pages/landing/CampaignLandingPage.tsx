@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import { useParams } from 'react-router-dom';
 import { BadgeCheck, Box, Map, MessageCircle, ShieldCheck } from 'lucide-react';
 import { useProject } from '@/hooks/useProjects';
@@ -88,6 +89,7 @@ function LeadForm({ slug, projectName, compact }: { slug: string; projectName: s
       <Button type="submit" size="lg" disabled={busy} className="w-full">
         {busy ? t('Enviando…') : t('Quiero recibir información')}
       </Button>
+      <PrivacyNote className="mt-2" />
       <p className="text-center text-[11px] text-brand-gray">{t('Tus datos solo los usa el asesor del proyecto.')}</p>
     </form>
   );

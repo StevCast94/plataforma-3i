@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { X, ChevronLeft, ChevronRight, LocateFixed, Maximize2, Minimize2, Navigation, ChevronUp, SlidersHorizontal } from 'lucide-react';
@@ -975,6 +976,7 @@ function LotPanel({
           <Button type="submit" className="w-full" disabled={sending}>
             {sending ? t('Enviando…') : t('Quiero que me contacten')}
           </Button>
+          <PrivacyNote className="mt-2" />
           <p className="text-xs text-brand-gray">
             {t('El WhatsApp es obligatorio: por ahí te responde tu asesor.')}
           </p>

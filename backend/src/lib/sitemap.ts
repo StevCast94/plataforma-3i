@@ -8,6 +8,7 @@ const BASE = 'https://grupo3i.com';
 const PAGES = [
   '/', '/proyectos', '/club', '/sobre-nosotros', '/contacto', '/oficina',
   '/publica-tu-proyecto', '/publica-tu-proyecto/propuesta', '/publica-tu-proyecto/manual', '/publica-tu-proyecto/galeria',
+  '/reglamento', '/privacidad', '/terminos',
 ];
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');

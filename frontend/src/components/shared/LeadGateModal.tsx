@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -88,6 +89,7 @@ export function LeadGateModal({ open, onClose, slug, lotCode, message, embed }: 
           <Button type="submit" size="lg" disabled={busy} className="w-full">
             {busy ? t('Enviando…') : t('Continuar a WhatsApp')}
           </Button>
+          <PrivacyNote className="mt-2" />
         </form>
       )}
     </Modal>

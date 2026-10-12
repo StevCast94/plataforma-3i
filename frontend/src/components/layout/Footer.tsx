@@ -57,7 +57,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-5 text-center text-xs text-white/50">
-        {copyright}
+        {copyright} · <Link to="/privacidad" className="hover:text-secondary">{t('Privacidad')}</Link> · <Link to="/terminos" className="hover:text-secondary">{t('Términos')}</Link>
       </div>
     </footer>
   );

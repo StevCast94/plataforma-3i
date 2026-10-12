@@ -8,6 +8,14 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'política de privacidad': 'privacy policy',
+  'y la': 'and',
+  'términos': 'terms',
+  'Al crear tu cuenta aceptas los': 'By creating an account, you agree to our',
+  'Al enviar aceptas los': 'By submitting, you agree to our',
+  'Más información': 'Learn more',
+  'Términos': 'Terms',
+  'Privacidad': 'Privacy',
   'Tu fracción en un condohotel frente al mar, desde $12,000.': 'Your share of an oceanfront condo-hotel, from $12,000.',
   'Inversión inmobiliaria en la costa ecuatoriana, bien hecha.': 'Real estate on Ecuador’s coast, done right.',
   'Somos un grupo inmobiliario de la costa ecuatoriana. Desarrollamos y verificamos proyectos, y los dividimos en fracciones para que más personas puedan invertir en ellos. También ofrecemos membresías de viaje para nuestros socios.': 'We’re a real estate group on Ecuador’s coast. We develop and vet projects and split them into shares so more people can invest. We also offer travel memberships to our members.',

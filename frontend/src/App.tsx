@@ -43,6 +43,8 @@ const ToolsPage = lazy(() => import('@/pages/oficina/ToolsPage'));
 const CalculatorPage = lazy(() => import('@/pages/oficina/CalculatorPage'));
 const TravelBookingsPage = lazy(() => import('@/pages/oficina/TravelBookingsPage'));
 const ReglamentoPage = lazy(() => import('@/pages/legal/ReglamentoPage'));
+const PrivacyPage = lazy(() => import('@/pages/legal/PrivacyPage'));
+const TermsPage = lazy(() => import('@/pages/legal/TermsPage'));
 const PurchaseConfirmationPage = lazy(() => import('@/pages/legal/PurchaseConfirmationPage'));
 
 // Panel de administración (staff)
@@ -118,6 +120,8 @@ const publicRoutes = () => (
     <Route path="publica-tu-proyecto/manual" element={<DeveloperManualPage />} />
     <Route path="publica-tu-proyecto/galeria" element={<DeveloperGalleryPage />} />
     <Route path="reglamento" element={<ReglamentoPage />} />
+    <Route path="privacidad" element={<PrivacyPage />} />
+    <Route path="terminos" element={<TermsPage />} />
     <Route path="*" element={<NotFoundPage />} />
   </>
 );

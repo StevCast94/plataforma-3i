@@ -357,6 +357,14 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
       image: '/images/og/og-refiere.jpg',
     },
   },
+  '/privacidad': {
+    es: { title: 'Política de privacidad · Grupo 3i', description: 'Qué datos recoge Grupo 3i, para qué los usa, con quién los comparte y cómo ejercer tus derechos.', image: '/images/og/og-home.jpg' },
+    en: { title: 'Privacy policy · Grupo 3i', description: 'What data Grupo 3i collects, how we use it, who we share it with and how to exercise your rights.', image: '/images/og/og-home.jpg' },
+  },
+  '/terminos': {
+    es: { title: 'Términos y condiciones · Grupo 3i', description: 'Condiciones de uso de grupo3i.com: información de proyectos y precios, compras, Club 3i y desarrolladoras aliadas.', image: '/images/og/og-home.jpg' },
+    en: { title: 'Terms of use · Grupo 3i', description: 'Terms of use for grupo3i.com: project and pricing information, purchases, Club 3i and partner developers.', image: '/images/og/og-home.jpg' },
+  },
   '/fiesta': {
     es: {
       title: 'Comparte y Grupo 3i te invita un trago 🍹',
