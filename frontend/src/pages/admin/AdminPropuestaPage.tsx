@@ -24,9 +24,9 @@ import {
 
 type RouteKey = 'lotes' | 'lobby' | 'total';
 const ROUTES: { key: RouteKey; label: string }[] = [
-  { key: 'lotes', label: 'Ruta A — Montañita View Lotes' },
-  { key: 'lobby', label: 'Ruta B — Montañita View Lobby' },
-  { key: 'total', label: 'Ruta C — Ambos proyectos' },
+  { key: 'lotes', label: 'Opción A — Montañita View Lotes' },
+  { key: 'lobby', label: 'Opción B — Montañita View Lobby' },
+  { key: 'total', label: 'Opción C — Ambos proyectos' },
 ];
 
 export default function AdminPropuestaPage() {

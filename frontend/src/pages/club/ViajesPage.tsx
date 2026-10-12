@@ -167,7 +167,7 @@ function FlightCard({ offer }: { offer: TravelFlightOffer }) {
             </p>
           </>
         )}
-        <Button size="sm" variant="outline" className="mt-3 w-full" disabled title={t('Reserva de vuelos disponible con la integración de Duffel')}>
+        <Button size="sm" variant="outline" className="mt-3 w-full" disabled title={t('La reserva de vuelos estará disponible muy pronto')}>
           {t('Reservar (próximamente)')}
         </Button>
       </div>
@@ -227,7 +227,7 @@ export default function ViajesPage() {
     <>
       <Seo
         title={t('Club de Viajes 3i')}
-        description={t('Busca hoteles y vuelos con precios de socio. Beneficio exclusivo de la comunidad Grupo 3i.')}
+        description={t('Busca hoteles y vuelos con precios de socio, un beneficio exclusivo de la comunidad Grupo 3i.')}
       />
 
       <section className="relative isolate overflow-hidden bg-primary text-white">
@@ -243,7 +243,7 @@ export default function ViajesPage() {
           <Badge variant="solid" className="mb-4">{t('Club de Viajes 3i')}</Badge>
           <h1 className="font-serif text-3xl font-bold sm:text-5xl">{t('Viaja como socio, paga como socio')}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-white/80">
-            {t('Los socios acceden a tarifas con costo casi al neto. El precio de socio aparece en cada resultado.')}
+            {t('Como socio pagas tarifas casi al costo. En cada resultado ves el precio de socio.')}
           </p>
         </div>
       </section>
@@ -328,7 +328,7 @@ export default function ViajesPage() {
             </IconMedallion>
             <p className="mt-6 max-w-sm text-brand-gray">
               {tab === 'hoteles'
-                ? t('Escribe un destino y fechas para descubrir las tarifas exclusivas del club.')
+                ? t('Escribe un destino y tus fechas para ver las tarifas del Club.')
                 : t('Escribe origen, destino y fecha para encontrar tu próximo vuelo.')}
             </p>
             <img src="/images/isotipo.svg" alt="" aria-hidden="true" className="mt-6 h-6 w-auto opacity-40" />

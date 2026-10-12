@@ -198,7 +198,7 @@ export default function PropuestaMontanitaPage() {
           </section>
 
           {/* ===== A. LOTIZACIÓN COMPLETA ===== */}
-          <Route id="lotes" eyebrow="Ruta A" title="Montañita View Lotes — la lotización completa">
+          <Route id="lotes" eyebrow="Opción A" title="Montañita View Lotes — la lotización completa">
             <Summary>{t(c.lotes.summary)}</Summary>
             <KV rows={c.lotes.rows} />
             <div className="mt-4 flex flex-wrap items-center gap-3 print:hidden">
@@ -206,7 +206,7 @@ export default function PropuestaMontanitaPage() {
                 <Button variant="outline">{t('Ver el mapa de solares')}</Button>
               </Link>
               <WhatsAppCTA
-                message={t('Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lotes completo* (Ruta A). Quiero más información.')}
+                message={t('Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lotes completo* (Opción A). Quiero más información.')}
               />
             </div>
 
@@ -256,12 +256,12 @@ export default function PropuestaMontanitaPage() {
           </Route>
 
           {/* ===== B. LOBBY ===== */}
-          <Route id="lobby" printBreak eyebrow="Ruta B" title="Montañita View Lobby — el proyecto completo">
+          <Route id="lobby" printBreak eyebrow="Opción B" title="Montañita View Lobby — el proyecto completo">
             <Summary>{t(c.lobby.summary)}</Summary>
             <KV rows={c.lobby.rows} />
             <WhatsAppCTA
               className="mt-4"
-              message={t('Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Ruta B). Quiero más información.')}
+              message={t('Hola, vi la propuesta de Montañita View y me interesa *Montañita View Lobby* (Opción B). Quiero más información.')}
             />
             <Gallery
               items={[
@@ -360,7 +360,7 @@ export default function PropuestaMontanitaPage() {
           </Route>
 
           {/* ===== C. COMPRA TOTAL ===== */}
-          <Route id="total" printBreak eyebrow="Ruta C" title="Ambos proyectos en una sola operación">
+          <Route id="total" printBreak eyebrow="Opción C" title="Ambos proyectos en una sola operación">
             <Summary>{t(c.total.summary)}</Summary>
             <KV rows={c.total.rows} />
 
@@ -384,7 +384,7 @@ export default function PropuestaMontanitaPage() {
 
             <WhatsAppCTA
               className="mt-4"
-              message={t('Hola, vi la propuesta de Montañita View y me interesa *ambos proyectos* (Ruta C, {precio}). Quiero más información.', {
+              message={t('Hola, vi la propuesta de Montañita View y me interesa *ambos proyectos* (Opción C, {precio}). Quiero más información.', {
                 precio: c.total.tag,
               })}
             />
@@ -690,9 +690,9 @@ function PrintFrontMatter({ c }: { c: PropuestaContent }) {
       <ol className="pd-toc">
         <li><span>{t('Resumen ejecutivo')}</span></li>
         <li><span>{t('Las tres maneras de participar')}</span></li>
-        <li><span>{t('Ruta A — Montañita View Lotes, la lotización completa')}</span></li>
-        <li><span>{t('Ruta B — Montañita View Lobby, el proyecto completo')}</span></li>
-        <li><span>{t('Ruta C — Ambos proyectos en una sola operación')}</span></li>
+        <li><span>{t('Opción A — Montañita View Lotes, la lotización completa')}</span></li>
+        <li><span>{t('Opción B — Montañita View Lobby, el proyecto completo')}</span></li>
+        <li><span>{t('Opción C — Ambos proyectos en una sola operación')}</span></li>
         <li><span>{t('El destino: Montañita y la Ruta del Spondylus')}</span></li>
         <li><span>{t('Próximos pasos y contacto')}</span></li>
       </ol>
@@ -732,7 +732,7 @@ function PrintClosing({ contact }: { contact?: Record<string, string> | null }) 
       <h2 className="pd-h2">{t('Próximos pasos')}</h2>
       <ol className="pd-steps">
         <li>
-          <b>{t('Reunión con un asesor.')}</b> {t('Revisamos la ruta que le interesa, resolvemos dudas y ponemos a disposición los documentos fuente: escrituras, resolución de urbanización, levantamiento topográfico y estudio de factibilidad.')}
+          <b>{t('Reunión con un asesor.')}</b> {t('Revisamos la opción que le interesa, resolvemos dudas y ponemos a disposición los documentos fuente: escrituras, resolución de urbanización, levantamiento topográfico y estudio de factibilidad.')}
         </li>
         <li>
           <b>{t('Visita al sitio.')}</b> {t('Recorrido por la lotización y el complejo, con los hitos de cada solar en terreno.')}

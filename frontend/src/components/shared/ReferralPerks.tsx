@@ -21,7 +21,7 @@ export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
             <p className="font-semibold text-secondary">{t('¿Llegaste por el enlace de un socio?')}</p>
             <p className="mt-1 text-sm text-white/80">
               {t(
-                'Al comprar este producto inmobiliario recibes gratis tu membresía del Club de Viajes 3i y subes automáticamente a Elite. La membresía de regalo aplica solo a la compra de productos inmobiliarios.',
+                'Al comprar este producto inmobiliario recibes de regalo la membresía del Club de Viajes 3i y pasas automáticamente al nivel Elite. El regalo aplica solo a la compra de productos inmobiliarios.',
               )}
             </p>
           </div>
@@ -43,14 +43,14 @@ export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
           <Sparkle className="mt-0.5 h-4 w-4 flex-none text-secondary" strokeWidth={1.6} />
           <span>
             <strong>{t('Tu invitado gana:')}</strong>{' '}
-            {t('membresía de viajes gratis cuando compra un producto inmobiliario con tu enlace (y sube a Elite).')}
+            {t('la membresía de viajes de regalo cuando compra un producto inmobiliario con tu enlace (y pasa a Elite).')}
           </span>
         </li>
         <li className="flex gap-2">
           <Sparkle className="mt-0.5 h-4 w-4 flex-none text-secondary" strokeWidth={1.6} />
           <span>
             <strong>{t('Tú ganas:')}</strong>{' '}
-            {t('tu comisión por cada venta y, al llegar a 5 referidos que compren inmobiliario, asciendes a Elite con tu membresía de viajes gratis.')}
+            {t('tu comisión por cada venta y, cuando 5 de tus referidos compren un producto inmobiliario, pasas a Elite con la membresía de viajes de regalo.')}
           </span>
         </li>
       </ul>

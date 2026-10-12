@@ -51,7 +51,7 @@ export function BookingModal({
     e.preventDefault();
     if (!offer || !query) return;
     if (!customer.name.trim() || !customer.email.trim()) {
-      setError(t('Nombre y email son requeridos'));
+      setError(t('Escribe tu nombre y tu email'));
       return;
     }
     setStep('processing');
