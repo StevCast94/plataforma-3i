@@ -12,20 +12,20 @@ import { api } from '@/lib/api';
 // formulario crea un desarrollador en estado «En alta» (admin → Desarrolladores).
 
 const BENEFITS = [
-  { icon: HandCoins, title: 'Pagas solo cuando vendes', body: '8 % sobre ventas que llegan por la plataforma, cobrado a medida que tú cobras. Sin mensualidades ni planes por aviso.' },
-  { icon: Users, title: 'Una red que vende por ti', body: 'Los socios de Refiere y gana comparten tu proyecto con su gente, en español e inglés, y ganan solo si vendes.' },
-  { icon: Map, title: 'Mapa interactivo de lotes', body: 'Cada lote con su precio, medidas y disponibilidad en vivo. El cliente elige su lote desde el celular.' },
-  { icon: Box, title: 'Recorridos 360°', body: 'Tus panorámicas ubicadas sobre el mapa: el cliente camina el terreno antes de visitarlo.' },
-  { icon: BadgeCheck, title: 'Sello «Verificado por Grupo 3i»', body: 'Revisamos escrituras, gravámenes y aprobaciones. La confianza que más pesa al comprar tierra en la costa.' },
+  { icon: HandCoins, title: 'Pagas solo cuando vendes', body: '8 % sobre las ventas que llegan por la plataforma, que pagas a medida que tu cliente te paga. Sin mensualidades ni planes por anuncio.' },
+  { icon: Users, title: 'Una red que vende por ti', body: 'Los socios de Refiere y gana recomiendan tu proyecto a sus contactos, en español e inglés, y ganan solo si vendes.' },
+  { icon: Map, title: 'Mapa interactivo de solares', body: 'Cada solar con su precio, medidas y disponibilidad en vivo. El cliente elige su solar desde el celular.' },
+  { icon: Box, title: 'Recorridos 360°', body: 'Tus panorámicas ubicadas sobre el mapa: el cliente recorre el terreno antes de visitarlo.' },
+  { icon: BadgeCheck, title: 'Sello «Verificado por Grupo 3i»', body: 'Revisamos escrituras, gravámenes y aprobaciones. Es lo que más pesa en la decisión de quien compra un solar en la costa.' },
   { icon: BarChart3, title: 'Tu portal y tus métricas', body: 'Contactos, ventas, pagos y el embudo de tu proyecto en un solo lugar.' },
 ];
 
 const COMPARE: [string, string, string][] = [
-  ['Cómo pagas', 'Por aviso, vendas o no', 'Solo por venta concretada'],
-  ['Quién promociona', 'Solo el buscador del portal', 'Portal + red de referidores'],
-  ['Lotes', 'Un aviso por inmueble', 'Mapa interactivo con disponibilidad en vivo'],
-  ['Confianza', 'Sin revisión legal', 'Sello de verificación legal'],
-  ['Público extranjero', 'Limitado', 'Todo en español e inglés'],
+  ['Cómo pagas', 'Por anuncio, vendas o no', 'Solo cuando vendes'],
+  ['Quién lo promociona', 'Solo el buscador del portal', 'Nuestra web y una red de referidores'],
+  ['Solares', 'Un anuncio por propiedad', 'Mapa interactivo con disponibilidad en vivo'],
+  ['Confianza', 'Nadie revisa los papeles', 'Sello de verificación legal'],
+  ['Compradores extranjeros', 'Poco o nada en inglés', 'Todo en español e inglés'],
 ];
 
 export default function PublishProjectPage() {
@@ -54,11 +54,11 @@ export default function PublishProjectPage() {
     <>
       <Seo
         title={t('Publica tu proyecto inmobiliario')}
-        description={t('Vende tus lotes con la red de Grupo 3i: mapa interactivo, recorridos 360°, verificación legal y pago solo por venta.')}
+        description={t('Vende tus solares con la red de Grupo 3i: mapa interactivo, recorridos 360°, verificación legal y pago solo por venta.')}
       />
       <PageHeader
         title={t('Publica tu proyecto')}
-        subtitle={t('Vende tus lotes con la red de Grupo 3i. Pagas solo cuando vendes.')}
+        subtitle={t('Vende tus solares con la red de Grupo 3i. Pagas solo cuando vendes.')}
         image="/images/secciones/header-nosotros.jpg"
       />
 
@@ -91,13 +91,13 @@ export default function PublishProjectPage() {
 
       <section className="bg-light">
         <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
-          <h2 className="text-center font-serif text-3xl font-bold text-primary">{t('Portal de clasificados vs. Grupo 3i')}</h2>
+          <h2 className="text-center font-serif text-3xl font-bold text-primary">{t('Portal de anuncios vs. Grupo 3i')}</h2>
           <div className="mt-8 overflow-x-auto rounded-2xl bg-white shadow-sm">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-black/5 text-xs uppercase tracking-wide text-brand-gray">
                 <tr>
                   <th className="px-4 py-3" />
-                  <th className="px-4 py-3">{t('Portal de clasificados')}</th>
+                  <th className="px-4 py-3">{t('Portal de anuncios')}</th>
                   <th className="px-4 py-3 text-primary">Grupo 3i</th>
                 </tr>
               </thead>
