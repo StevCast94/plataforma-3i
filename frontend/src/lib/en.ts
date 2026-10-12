@@ -8,6 +8,14 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'Tu fracción en un condohotel frente al mar, desde $12,000.': 'Your share of an oceanfront condo-hotel, from $12,000.',
+  'Inversión inmobiliaria en la costa ecuatoriana, bien hecha.': 'Real estate on Ecuador’s coast, done right.',
+  'Somos un grupo inmobiliario de la costa ecuatoriana. Desarrollamos y verificamos proyectos, y los dividimos en fracciones para que más personas puedan invertir en ellos. También ofrecemos membresías de viaje para nuestros socios.': 'We’re a real estate group on Ecuador’s coast. We develop and vet projects and split them into shares so more people can invest. We also offer travel memberships to our members.',
+  'Ahorra hasta 70% en hoteles de todo el mundo, disfruta beneficios para socios y gana comisiones por recomendar.': 'Save up to 70% on hotels worldwide, enjoy members-only perks and earn commissions for every referral.',
+  'Proyectos que desarrollamos o seleccionamos, todos verificados.': 'Projects we build or hand-pick, every one of them vetted.',
+  'Nuestros proyectos': 'Our projects',
+  'Propiedad fraccionada, solares con vista al mar y membresías de viaje en la costa ecuatoriana.': 'Fractional ownership, ocean-view lots and travel memberships on Ecuador’s coast.',
+  'Invierte en un paraíso. Fracciones en Ibiza Condohotel desde $12,000': 'Own a piece of paradise. Ibiza Condohotel shares from $12,000',
   'Fracciones en Ibiza Condohotel desde $12,000 y solares con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.': 'Ibiza Condohotel shares from $12,000 and ocean-view lots at Montañita View from $41,721, with interest-free financing.',
   'Ibiza Condohotel (fracciones desde $12,000) y Montañita View (solares con vista al mar desde $41,721) en Santa Elena, Ecuador.': 'Ibiza Condohotel (shares from $12,000) and Montañita View (ocean-view lots from $41,721) in Santa Elena, Ecuador.',
   'Membresía de viajes con hasta 70% de descuento en hoteles, beneficios para socios y una comunidad de inversionistas.': 'A travel membership with up to 70% off hotels, members-only perks and a community of investors.',
@@ -372,9 +380,8 @@ export const EN: Record<string, string> = {
     'Hello, I am interested in *{p}*, which I saw on the Grupo 3i website.',
 
   // Contenido por defecto del brochure (Ibiza Condohotel)
-  'Primera oportunidad de inversión': 'First investment opportunity',
-  'Disfruta tu playa, gana con la plusvalía y hereda tu patrimonio':
-    'Enjoy your beach, gain from appreciation, pass on your legacy',
+  'Primera oportunidad de inversión': 'Ecuador’s first fractional condo-hotel',
+  'Disfruta tu playa, gana con la plusvalía y hereda tu patrimonio': 'Enjoy your beach. Watch it appreciate. Pass it on.',
   'Propiedad Fraccionada de Lujo · Manglaralto, Santa Elena, Ecuador':
     'Luxury Fractional Ownership · Manglaralto, Santa Elena, Ecuador',
   'Condohotel de Lujo': 'Luxury condo-hotel',
@@ -386,7 +393,7 @@ export const EN: Record<string, string> = {
   '6 personas · 71.66 m²': '6 guests · 71.66 m²',
   'Tu playa, todo el año': 'Your beach, all year round',
   'Cuatro semanas de uso vacacional cada año, de por vida, frente al mar, en un condohotel de lujo pensado para disfrutar en familia.':
-    'Four holiday weeks every year, for life, by the sea, in a luxury condo-hotel designed for family stays.',
+    'Four vacation weeks every year, for life, by the sea, in a luxury condo-hotel designed for family stays.',
   'Plusvalía real': 'Real appreciation',
   'Hasta +65% de valorización proyectada en 5 años, en una de las zonas costeras de mayor crecimiento turístico del Ecuador.':
     'Up to +65% projected appreciation over 5 years, in one of Ecuador’s fastest-growing coastal tourism areas.',
@@ -394,7 +401,7 @@ export const EN: Record<string, string> = {
   'Una fracción a tu nombre, con acciones preferentes transferibles: un legado real que puedes dejar a tus hijos.':
     'A share in your name, with transferable preferred stock: a real legacy to leave your children.',
   'Ibiza Condohotel nace como el primer desarrollo de propiedad fraccionada de lujo en la costa ecuatoriana. Adquieres una fracción de un inmueble valorado en más de $200,000 por una fracción de su costo, con derecho a uso vacacional perpetuo, transferible a tu familia, más ingresos por un programa de renting administrado.':
-    'Ibiza Condohotel is the first luxury fractional ownership development on the Ecuadorian coast. You acquire a share of a property valued at over $200,000 for a fraction of its cost, with perpetual holiday use rights that transfer to your family, plus income from a managed rental programme.',
+    'Ibiza Condohotel is the first luxury fractional ownership development on the Ecuadorian coast. You acquire a share of a property valued at over $200,000 for a fraction of its cost, with lifetime vacation-use rights that transfer to your family, plus income from a managed rental program.',
   'visitantes en el último feriado': 'visitors over the last holiday weekend',
   'ocupación hotelera en Santa Elena': 'hotel occupancy in Santa Elena',
   'crecimiento del turismo': 'growth in tourism',
@@ -442,7 +449,7 @@ export const EN: Record<string, string> = {
     'Estimated value in 5 years between $17K and $20K per share. Beachfront projects outperform the market’s 3.6%.',
   'Ingresos pasivos administrados': 'Managed passive income',
   'Programa de renting 70/30 con gestión profesional: si pones tus 4 semanas en renting, ingreso anual potencial ~$1,960 (16.3% bruto).':
-    'A 70/30 rental programme under professional management: put your 4 weeks in the rental pool for a potential annual income of ~$1,960 (16.3% gross).',
+    'A 70/30 rental program under professional management: put your 4 weeks in the rental pool for a potential annual income of ~$1,960 (16.3% gross).',
   'Respaldo patrimonial sólido': 'Solid asset backing',
   'DIWILDI S.A., garante solidario, con $17M en activos, 108 terrenos y 16 años de experiencia.':
     'DIWILDI S.A., joint guarantor, with $17M in assets, 108 plots of land and 16 years of experience.',
@@ -455,7 +462,7 @@ export const EN: Record<string, string> = {
   'Buscaba una inversión segura frente al mar. La garantía de recompra del 120% me dio la confianza para entrar en la preventa.':
     'I was looking for a safe beachfront investment. The 120% buyback guarantee gave me the confidence to join the pre-sale.',
   'Tener mi semana de vacaciones cada año y además generar renta es lo mejor de ambos mundos. El proceso fue transparente.':
-    'Having my holiday week every year and earning rental income too is the best of both worlds. The process was transparent.',
+    'Having my vacation week every year and earning rental income too is the best of both worlds. The process was transparent.',
   'El financiamiento directo a 0% interés hizo que entrar fuera muy accesible. Un patrimonio para heredar a mis hijos.':
     'The 0% interest direct financing made it very easy to get in. An asset to leave to my children.',
   'Más que una inversión': 'More than an investment',
@@ -802,7 +809,7 @@ export const EN: Record<string, string> = {
   'Inversión premium en la costa ecuatoriana. Invierte inteligente, invierte para el futuro.':
     'Premium investment on the Ecuadorian coast. Invest smart, invest in the future.',
   'Condohotel de lujo a 300 m del mar en Manglaralto, Santa Elena, en propiedad fraccionada: cada fracción te da 4 semanas de uso al año de por vida, la opción de poner tus semanas en el programa de renting administrado y un patrimonio que puedes heredar.':
-    'A luxury condo-hotel 300 m from the sea in Manglaralto, Santa Elena, under fractional ownership: each fraction gives you 4 weeks of use every year for life, the option to place your weeks in the managed rental programme, and an asset you can pass on.',
+    'A luxury condo-hotel 300 m from the sea in Manglaralto, Santa Elena, under fractional ownership: each fraction gives you 4 weeks of use every year for life, the option to place your weeks in the managed rental program, and an asset you can pass on.',
   Restaurante: 'Restaurant',
   'Fracciones desde $12,000': 'Shares from $12,000',
   'Tu propiedad con vista al mar.': 'Your property with a sea view.',
@@ -856,7 +863,7 @@ export const EN: Record<string, string> = {
   'desde La Libertad': 'from La Libertad',
   'a Manglaralto': 'to Manglaralto',
   'a la playa desde la entrada': 'to the beach from the entrance',
-  'Aquí no compras metros. Compras futuro.': 'You are not buying square metres. You are buying a future.',
+  'Aquí no compras metros. Compras futuro.': 'You are not buying square meters. You are buying a future.',
   'Elige tu solar, asegura tu lugar en la costa.': 'Choose your lot, secure your place on the coast.',
   'Tu solar con título saneado, en un proyecto en constante desarrollo':
     'Your lot with clean title, in a project that keeps growing',
@@ -870,7 +877,7 @@ export const EN: Record<string, string> = {
   'Comparte ubicación con el complejo Montañita View Lobby — un proyecto hermano del mismo grupo desarrollador, con piscina, restaurante y áreas sociales.':
     'It shares its location with the Montañita View Lobby complex — a sister project by the same developer, with a pool, restaurant and social areas.',
   'A pocos minutos de la playa y del centro de Montañita, con energía, agua potable y vía principal asfaltada ya instaladas.':
-    'A few minutes from the beach and the centre of Montañita, with electricity, drinking water and a paved main road already in place.',
+    'A few minutes from the beach and the center of Montañita, with electricity, drinking water and a paved main road already in place.',
   'ocupación hotelera en Montañita, feriado de mayo 2026 (Cámara de Turismo de Santa Elena)':
     'hotel occupancy in Montañita, May 2026 holiday (Santa Elena Chamber of Tourism)',
   'crecimiento de llegadas internacionales a Ecuador, primer semestre 2025 (dato nacional)':
@@ -1210,7 +1217,7 @@ export const EN: Record<string, string> = {
   'Ahorré más del 60% en mi viaje a Cancún. La membresía se pagó sola.':
     'I saved over 60% on my trip to Cancún. The membership paid for itself.',
   'El certificado vacacional anual es increíble. Ya lo usé dos veces.':
-    'The annual holiday certificate is amazing. I have already used it twice.',
+    'The annual vacation certificate is amazing. I have already used it twice.',
   'Atención de primera y descuentos reales en hoteles top.': 'First-class service and real discounts at top hotels.',
   'Paso {n} de {total}': 'Step {n} of {total}',
   '¿Alguien te invitó?': 'Did someone invite you?',
