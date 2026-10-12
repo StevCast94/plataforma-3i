@@ -49,3 +49,5 @@ Estado: ⬜ pendiente · ✅ resuelto
 | D3 | R4 | Opciones de la propuesta MV: «Ruta A/B/C» → «Opción A/B/C» | ✅ |
 | D4 | R1 | El botón de idioma no funcionaba en /publica-tu-proyecto y sus subpáginas | ✅ |
 | D5 | R4 | «View the partner proposal» abría la propuesta en español | ✅ |
+| D6 | R8 | **El Bosque no tiene versión en inglés** (ni rutas /en ni botón de idioma). Montañita recibe muchos turistas extranjeros, que son un público natural para adoptar un árbol o regalarlo | Decisión del dueño: ¿hacer la versión en inglés del Bosque? | ⬜ |
+| D7 | R8 | Los términos del Bosque ya incluyen una cláusula de datos personales conforme a la LOPDP; sirve de base para la política de privacidad general (C1) | — | ⬜ |

@@ -30,7 +30,7 @@ const CAT_ICON: Record<SpeciesCategory, typeof Leaf> = {
 const STEPS = [
   { icon: Sprout, title: 'Elige tu árbol', body: 'Nativos del bosque seco, frutales o un árbol monumental con placa.' },
   { icon: MapPin, title: 'Lo sembramos con tu nombre', body: 'Tu árbol recibe un código, una ubicación GPS y un certificado con QR.' },
-  { icon: Droplets, title: 'Lo cuidamos 3 años', body: 'Riego desde el río, reposición si no prospera y fotos para que lo veas crecer.' },
+  { icon: Droplets, title: 'Lo cuidamos 3 años', body: 'Riego desde el río, reposición sin costo si no prospera y fotos para que lo veas crecer.' },
   { icon: TreeDeciduous, title: 'Nunca se tala', body: 'Es un bosque de conservación permanente. Puedes visitarlo cuando quieras.' },
 ];
 
@@ -66,7 +66,7 @@ const FAQ = [
     a: 'Sí. Al adoptar marca que es un regalo y escribe el nombre que irá en el certificado.',
   },
   {
-    q: 'Compré un solar en Montañita View, ¿tengo árbol?',
+    q: 'Compré un solar en Montañita View. ¿Tengo un árbol?',
     a: 'Sí: cada solar incluye un árbol a nombre de su propietario. Si quieres sumar más, puedes adoptarlos aquí.',
   },
 ];
@@ -264,7 +264,7 @@ export default function BosqueHome() {
           <ul className="space-y-4 text-white/85">
             <li>Cada solar vendido en Montañita View incluye un árbol a nombre de su propietario.</li>
             <li>Los senderos del bosque son parte de la experiencia de propietarios, huéspedes y socios del Club 3i.</li>
-            <li>La cosecha de los frutales llega al restaurante de Montañita View Lobby.</li>
+            <li>La cosecha de los frutales va al restaurante de Montañita View Lobby y a la comunidad.</li>
             <li>
               <a href="https://grupo3i.com/proyectos/montanita-view" className="font-semibold text-guayacan underline underline-offset-4">
                 Conoce Montañita View

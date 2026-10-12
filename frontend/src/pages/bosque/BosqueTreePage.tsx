@@ -54,7 +54,7 @@ export default function BosqueTreePage() {
                   Padrino: <strong className="text-guayacan">{tree.padrino}</strong>
                 </>
               ) : (
-                'Este árbol espera padrino.'
+                'Este árbol todavía no tiene padrino.'
               )}
             </p>
             <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/80">
