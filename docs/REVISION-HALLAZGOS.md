@@ -15,6 +15,7 @@ Estado: ⬜ pendiente · ✅ resuelto
 | A4 | Refiere y gana (/oficina) vs. reglamento | La tabla de niveles dice frecuencia de pago **mensual (Premiere) / quincenal (Elite)**; el reglamento no menciona frecuencia, solo plazos de liquidación (30 / 3 días) | Agregar la frecuencia al reglamento, o quitarla de la tabla si ya no aplica | ⬜ |
 | A5 | Refiere y gana: «Elite es vitalicio» y reglamento: «El ascenso es permanente» | La promoción de lanzamiento puede devolver a Premiere a quien no tenga 1 venta al cerrar la temporada | Aclarar: «permanente, salvo el Elite de regalo de la promoción de lanzamiento» | ⬜ |
 | A6 | Refiere y gana · «¿Cuánto podrías ganar?» | Precios escritos a mano (MV desde $41,721; Ibiza $12,000) | Leerlos del inventario en vivo, como ya hacen las páginas de aterrizaje, para que no queden desactualizados | ⬜ |
+| A7 | Montañita View (descripción) | El inglés depende de que el español sea idéntico al del diccionario: el admin dice «89 solares», el diccionario «90», y el párrafo probablemente sale en español en /en. El número escrito a mano también queda viejo con cada venta | Llenar la «Versión en inglés» del proyecto y quitar el número (ver R10) | ⬜ |
 | A3 | Atribución de referidos | Reglamento: ventana de **90 días** desde el primer clic. Desarrolladoras: **180 días** | Son dos programas distintos (socios vs. desarrolladoras); confirmar que es intencional | ⬜ |
 
 ## B. Contenido editado desde el admin (Configuración / Contenido del sitio)
