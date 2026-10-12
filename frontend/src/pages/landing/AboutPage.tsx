@@ -7,7 +7,7 @@ import { useSectionContent } from '@/hooks/useSiteContent';
 const pillars = [
   {
     title: 'Inversión accesible',
-    body: 'Democratizamos la inversión inmobiliaria con propiedades fraccionadas desde $5,000.',
+    body: 'Hacemos accesible la inversión inmobiliaria con fracciones desde $12,000.',
     image: '/images/secciones/pilar-inversion.jpg',
   },
   {

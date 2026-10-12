@@ -8,6 +8,8 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'desde {p}': 'from {p}',
+  'Retiro mínimo (transferencia)': 'Minimum withdrawal (bank transfer)',
   'política de privacidad': 'privacy policy',
   'y la': 'and',
   'términos': 'terms',
@@ -560,8 +562,7 @@ export const EN: Record<string, string> = {
   'Nuestra historia': 'Our story',
   'Empezamos con una convicción simple: la inversión inmobiliaria de alto nivel no debería estar reservada para unos pocos. Fraccionamos proyectos premium en la costa ecuatoriana para que más personas puedan construir patrimonio real, con la misma calidad y transparencia que exigiríamos para nuestra propia inversión.': 'We started with a simple belief: high-end real estate shouldn’t be just for the few. We split top-tier projects on Ecuador’s coast into shares so more people can build real wealth — with the same quality and transparency we’d expect for our own money.',
   'Inversión accesible': 'Investing made accessible',
-  'Democratizamos la inversión inmobiliaria con propiedades fraccionadas desde $5,000.':
-    'We open up real estate investment with fractional properties from $5,000.',
+  'Hacemos accesible la inversión inmobiliaria con fracciones desde $12,000.': 'We make real estate investing accessible, with shares from $12,000.',
   'Proyectos premium': 'Top-tier projects',
   'Desarrollos de alto nivel como Ibiza Condohotel y Montañita View.': 'High-end developments like Ibiza Condohotel and Montañita View.',
   Experiencias: 'Experiences',
@@ -955,7 +956,7 @@ export const EN: Record<string, string> = {
   '¿Cuándo cobro mis comisiones?': 'When do I get paid?',
   'Después de los 14 días de retracto, más el plazo de liquidación de tu nivel: 30 días en Premiere y 3 días en Elite.': 'After the 14-day cancellation period, plus your tier’s payout wait: 30 days for Premiere, 3 days for Elite.',
   '¿Pierdo mi cuenta si no refiero?': 'Will I lose my account if I don’t refer anyone?',
-  'Premiere: tras 180 días sin referidos nuevos la cuenta se suspende, con avisos previos. Elite es vitalicio.': 'On Premiere, your account is suspended after 180 days with no new referrals — we’ll remind you first. Elite is for life.',
+  'En Premiere, la cuenta se suspende tras 180 días sin referidos nuevos, con avisos previos. Elite es permanente, salvo el Elite de regalo de la promoción de lanzamiento, que se mantiene con al menos una venta en la temporada.': 'On Premiere, your account is suspended after 180 days with no new referrals — we’ll remind you first. Elite is permanent, except for the free Elite upgrade from the launch promotion, which you keep by closing at least one sale during the season.',
   'Empieza gratis ahora': 'Get started — it’s free',
   'Cargando…': 'Loading…',
   'Iniciar sesión — Refiere y gana': 'Sign in — Refer & Earn',
@@ -1043,7 +1044,7 @@ export const EN: Record<string, string> = {
   '5 referidos directos que compren un producto inmobiliario': '5 direct referrals who buy a real estate product',
   'dentro de una ventana de 180 días. Además, recibe su': 'within a 180-day window. They also get a',
   'membresía del Club de Viajes gratis': 'free Club 3i Travel membership',
-  'El ascenso es permanente y no reduce las comisiones ya ganadas.': 'Upgrades are permanent and never reduce commissions already earned.',
+  'El ascenso es permanente y no reduce las comisiones ya ganadas. La única excepción es el Elite de regalo de la promoción de lanzamiento, que se rige por las condiciones de abajo.': 'Upgrades are permanent and never reduce commissions already earned. The only exception is the free Elite upgrade from the launch promotion, which follows the terms below.',
   'El programa premia a ambas partes:': 'The program rewards both sides:',
   'Al referidor:': 'The referrer:',
   'su comisión correspondiente y, al llegar a 5 referidos inmobiliarios, el ascenso a Elite con membresía gratis (ver sección 4).': 'their commission, plus an upgrade to Elite with a free membership after 5 real estate referrals (see section 4).',

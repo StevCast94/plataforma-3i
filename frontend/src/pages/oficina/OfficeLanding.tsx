@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useProjects } from '@/hooks/useProjects';
 import { Navigate } from 'react-router-dom';
 import { Link, useLang } from '@/hooks/useLang';
 import { LangSwitch } from '@/components/shared/LangSwitch';
@@ -36,7 +37,7 @@ const compare = [
   { feature: 'Venta inmobiliaria de tu referido directo', premiere: '2%', elite: '4%' },
   { feature: 'Venta inmobiliaria de un referido de tu referido', premiere: '1%', elite: '2%' },
   { feature: 'Membresía del Club 3i (referido directo)', premiere: '$50', elite: '$100' },
-  { feature: 'Frecuencia de pago', premiere: 'Mensual', elite: 'Quincenal' },
+  { feature: 'Retiro mínimo (transferencia)', premiere: '$100', elite: '$50' },
   { feature: 'Liquidación', premiere: '30 días', elite: '3 días' },
 ];
 
@@ -45,22 +46,28 @@ const faqs = [
   { q: '¿Qué puedo recomendar?', a: 'Los solares de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
   { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto, o cuando 5 de tus referidos compren en 180 días (y te llevas la membresía de viajes de regalo).' },
   { q: '¿Cuándo cobro mis comisiones?', a: 'Después de los 14 días de retracto, más el plazo de liquidación de tu nivel: 30 días en Premiere y 3 días en Elite.' },
-  { q: '¿Pierdo mi cuenta si no refiero?', a: 'Premiere: tras 180 días sin referidos nuevos la cuenta se suspende, con avisos previos. Elite es vitalicio.' },
+  { q: '¿Pierdo mi cuenta si no refiero?', a: 'En Premiere, la cuenta se suspende tras 180 días sin referidos nuevos, con avisos previos. Elite es permanente, salvo el Elite de regalo de la promoción de lanzamiento, que se mantiene con al menos una venta en la temporada.' },
 ];
 
 /**
  * Una venta de cada cosa, con las tasas del motor de comisiones
  * (backend/src/lib/referralRules.ts): 2% / 4% inmobiliario, $50 / $100 membresía.
  */
-const EXAMPLES = [
-  { what: 'Un solar en Montañita View', price: 'desde $41,721', premiere: 41721 * 0.02, elite: 41721 * 0.04 },
-  { what: 'Una fracción en Ibiza Condohotel', price: '$12,000', premiere: 12000 * 0.02, elite: 12000 * 0.04 },
-  { what: 'Una membresía del Club 3i', price: 'por membresía', premiere: 50, elite: 100 },
-];
+function examples(mv: number, ibiza: number) {
+  return [
+    { what: 'Un solar en Montañita View', price: { k: 'desde {p}', p: mv }, premiere: mv * 0.02, elite: mv * 0.04 },
+    { what: 'Una fracción en Ibiza Condohotel', price: { k: 'desde {p}', p: ibiza }, premiere: ibiza * 0.02, elite: ibiza * 0.04 },
+    { what: 'Una membresía del Club 3i', price: { k: 'por membresía', p: 0 }, premiere: 50, elite: 100 },
+  ];
+}
 
 export default function OfficeLanding() {
   const { t } = useLang();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  // Precios desde el inventario en vivo (los mismos de las fichas); respaldo si la API tarda.
+  const { data: projects } = useProjects();
+  const from = (slug: string, fallback: number) => projects?.find((p) => p.slug === slug)?.priceFrom ?? fallback;
+  const EXAMPLES = examples(from('montanita-view', 41721), from('ibiza-condohotel', 12000));
 
   // Esta es una página de VENTA del programa (pública, sin sidebar). Si ya hay
   // sesión, no tiene sentido mostrarle "Regístrate gratis" a alguien que ya es
@@ -181,7 +188,7 @@ export default function OfficeLanding() {
           {EXAMPLES.map((e) => (
             <div key={e.what} className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5">
               <p className="text-sm font-medium text-primary">{t(e.what)}</p>
-              <p className="text-xs text-brand-gray">{t(e.price)}</p>
+              <p className="text-xs text-brand-gray">{t(e.price.k, { p: formatCurrency(e.price.p) })}</p>
               <p className="mt-4 text-xs uppercase tracking-wider text-brand-gray">{t('Premiere')}</p>
               <p className="font-serif text-2xl font-bold text-primary">{formatCurrency(e.premiere)}</p>
               <p className="mt-2 text-xs uppercase tracking-wider text-brand-gray">{t('Elite')}</p>

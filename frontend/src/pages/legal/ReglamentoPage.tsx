@@ -120,7 +120,7 @@ export default function ReglamentoPage() {
               <li><b>{t('Por compra propia:')}</b>{' '}{t('al comprar cualquier producto (inmobiliario o la membresía).')}</li>
               <li><b>{t('Por referidos:')}</b>{' '}{t('al acumular')}{' '}<b>{t('5 referidos directos que compren un producto inmobiliario')}</b>{' '}{t('dentro de una ventana de 180 días. Además, recibe su')}{' '}<b>{t('membresía del Club de Viajes gratis')}</b>.</li>
             </ul>
-            <p>{t('El ascenso es permanente y no reduce las comisiones ya ganadas.')}</p>
+            <p>{t('El ascenso es permanente y no reduce las comisiones ya ganadas. La única excepción es el Elite de regalo de la promoción de lanzamiento, que se rige por las condiciones de abajo.')}</p>
             <div className="rounded-xl bg-secondary/15 p-4 ring-1 ring-secondary/40">
               <p><b>{t('Promoción de lanzamiento (del 6 de octubre al 7 de noviembre de 2026):')}</b></p>
               <ul className="mt-2 list-disc space-y-1 pl-5">
