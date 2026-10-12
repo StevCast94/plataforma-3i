@@ -40,7 +40,7 @@ export function translate(lang: Lang, text: string, vars?: Record<string, string
  * el panel de administración son de uso interno y viven solo en español: sus
  * enlaces no se prefijan, para no mandar a nadie a una ruta que no existe.
  */
-const TRANSLATED = ['/proyectos', '/propuesta', '/tienda', '/club', '/sobre-nosotros', '/contacto', '/reglamento'];
+const TRANSLATED = ['/proyectos', '/propuesta', '/tienda', '/club', '/sobre-nosotros', '/contacto', '/reglamento', '/publica-tu-proyecto'];
 
 /** Del área de referidos solo la puerta de entrada está en inglés; el panel interno no. */
 const TRANSLATED_EXACT = ['/oficina', '/oficina/login', '/oficina/registro'];
