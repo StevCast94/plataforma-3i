@@ -48,9 +48,9 @@ export default function HomePage() {
           'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
       },
       {
-        title: 'Montañita View. Lotes con vista al mar, financiados a 24 meses sin intereses',
+        title: 'Montañita View. Solares con vista al mar, financiados a 24 meses sin intereses',
         subtitle:
-          'Lotización frente al Pacífico en Montañita, Santa Elena, y el complejo Montañita View Lobby con piscina, restaurante y áreas sociales.',
+          'Solares frente al Pacífico en Montañita, Santa Elena, y Montañita View Lobby, con piscina, restaurante y áreas sociales.',
       },
     ],
     [hero.title, hero.subtitle],
@@ -185,22 +185,22 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{t('Para desarrolladoras inmobiliarias')}</p>
-            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus lotes con la red de Grupo 3i. Pagas solo cuando vendes.')}</h2>
+            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus solares con la red de Grupo 3i. Pagas solo cuando vendes.')}</h2>
             <p className="mt-4 text-white/70">
-              {t('Mapa interactivo de lotes, recorridos 360°, CRM con vendedores y avisos al celular, verificación legal y una red de referidores que promociona tu proyecto.')}
+              {t('Mapa interactivo de solares, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.')}
             </p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { to: '/publica-tu-proyecto', title: t('Publica tu proyecto'), body: t('Beneficios, tarifas y solicitud de alta.') },
-              { to: '/publica-tu-proyecto/propuesta', title: t('Propuesta comercial'), body: t('El modelo de pago por éxito, con ejemplos.') },
+              { to: '/publica-tu-proyecto/propuesta', title: t('Propuesta comercial'), body: t('Pagas solo por venta. Te lo explicamos con ejemplos.') },
               { to: '/publica-tu-proyecto/manual', title: t('Manual de herramientas'), body: t('Todo lo que puedes hacer en la plataforma, paso a paso.') },
               { to: '/publica-tu-proyecto/galeria', title: t('Galería del sistema'), body: t('Capturas reales de cada pantalla del portal.') },
             ].map((c) => (
               <Link key={c.to} to={c.to} className="group rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 transition hover:bg-white/10">
                 <p className="font-serif text-xl font-bold">{c.title}</p>
                 <p className="mt-2 text-sm text-white/70">{c.body}</p>
-                <p className="mt-4 text-sm font-semibold text-secondary group-hover:underline">{t('Ver')} →</p>
+                <p className="mt-4 text-sm font-semibold text-secondary group-hover:underline">{t('Ver más')} →</p>
               </Link>
             ))}
           </div>
