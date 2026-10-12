@@ -235,7 +235,7 @@ const STEP_ICONS = [FileSignature, BadgeCheck, Search, MessageCircle, HandCoins]
 const TOOL_ICONS = [Map, Box, Users, Languages, BarChart3, CalendarCheck];
 
 const TOOL_IMAGES = [
-  '/images/og/montanita-view-mapa.jpg',
+  '/images/og/montanita-view-mapa.jpg?v=20261012',
   '/images/propuesta-mv/vista-desde-lobby.jpg',
   '/images/secciones/paso-comparte.jpg',
   '/images/propuesta-dev/ingles.jpg',
@@ -319,7 +319,7 @@ export default function ProposalPage() {
         dark
         bg={
           <>
-            <img src="/images/og/montanita-view-mapa.jpg" alt="" className="absolute inset-0 h-full w-full object-cover object-left opacity-40" />
+            <img src="/images/og/montanita-view-mapa.jpg?v=20261012" alt="" className="absolute inset-0 h-full w-full object-cover object-left opacity-40" />
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/85 to-primary/40" />
           </>
         }

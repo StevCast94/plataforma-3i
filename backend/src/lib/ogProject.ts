@@ -277,24 +277,24 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
     es: {
       title: 'Publica tu proyecto inmobiliario en Grupo 3i',
       description: 'Lotes, casas, departamentos, locales, oficinas y macrolotes: inventario en vivo, recorridos 360°, sello de verificación y una red de referidores. Pagas solo cuando vendes.',
-      image: '/images/og/montanita-view-mapa.jpg',
+      image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
     en: {
       title: 'List your real estate project on Grupo 3i',
       description: 'Lots, homes, condos, retail, office space and large land parcels: live inventory, 360° tours, a verification seal and a referral network. You only pay when you sell.',
-      image: '/images/og/montanita-view-mapa.jpg',
+      image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
   },
   '/publica-tu-proyecto/propuesta': {
     es: {
       title: 'Propuesta comercial para desarrolladoras · Grupo 3i',
       description: 'Pagas solo cuando vendes: mapa interactivo de lotes, recorridos 360°, CRM con tus asesores, verificación legal y red de referidores.',
-      image: '/images/og/montanita-view-mapa.jpg',
+      image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
     en: {
       title: 'Partner proposal for developers · Grupo 3i',
       description: 'You only pay when you sell: an interactive lot map, 360° tours, a CRM for your agents, legal vetting and a referral network.',
-      image: '/images/og/montanita-view-mapa.jpg',
+      image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
   },
   '/publica-tu-proyecto/galeria': {
@@ -313,12 +313,12 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
     es: {
       title: 'Manual de herramientas para desarrolladoras · Grupo 3i',
       description: 'Proyectos, mapa de lotes, 360°, CRM, asesores, avisos, métricas, ventas y mapa para tu web, paso a paso.',
-      image: '/images/og/montanita-view-mapa.jpg',
+      image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
     en: {
       title: 'Developer platform guide · Grupo 3i',
       description: 'Listings, lot map, 360° tours, CRM, agents, notifications, analytics, sales and your website map — step by step.',
-      image: '/images/og/montanita-view-mapa.jpg',
+      image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
   },
   '/sobre-nosotros': {

@@ -19,7 +19,7 @@ for (const lang of ['es','en']) {
     const el=(await p.$$('.proposal-slide'))[i];
     await el.scrollIntoView(); await new Promise(r=>setTimeout(r,700));
     const buf=await el.screenshot({type:'jpeg',quality:85});
-    imgs.push('data:image/jpeg;base64,'+buf.toString('base64'));
+    imgs.push('data:image/jpeg;base64,'+Buffer.from(buf).toString('base64'));
   }
   const html=`<html><head><style>@page{size:297mm 210mm;margin:0}body{margin:0}div{width:297mm;height:210mm;page-break-after:always;display:flex;align-items:center;justify-content:center;overflow:hidden}img{width:100%;height:100%;object-fit:cover;object-position:top}</style></head><body>${imgs.map(s=>`<div><img src="${s}"></div>`).join('')}</body></html>`;
   const q=await b.newPage(); await q.setContent(html,{waitUntil:'load'});
