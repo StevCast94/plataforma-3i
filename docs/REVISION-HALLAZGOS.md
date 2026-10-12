@@ -12,6 +12,9 @@ Estado: ⬜ pendiente · ✅ resuelto
 |---|---|---|---|---|
 | A1 | Nosotros, pilar «Inversión accesible» | Dice «propiedades fraccionadas desde **$5,000**»; Ibiza se vende desde **$12,000** | Confirmar si existe un producto de $5,000; si no, cambiar a $12,000 | ⬜ |
 | A2 | Propuesta comercial (ejemplo) vs. Montañita View | Ejemplo con **30 cuotas**; MV usa **24 cuotas** | El dueño decidió dejarlo (es un ejemplo genérico) | ✅ |
+| A4 | Refiere y gana (/oficina) vs. reglamento | La tabla de niveles dice frecuencia de pago **mensual (Premiere) / quincenal (Elite)**; el reglamento no menciona frecuencia, solo plazos de liquidación (30 / 3 días) | Agregar la frecuencia al reglamento, o quitarla de la tabla si ya no aplica | ⬜ |
+| A5 | Refiere y gana: «Elite es vitalicio» y reglamento: «El ascenso es permanente» | La promoción de lanzamiento puede devolver a Premiere a quien no tenga 1 venta al cerrar la temporada | Aclarar: «permanente, salvo el Elite de regalo de la promoción de lanzamiento» | ⬜ |
+| A6 | Refiere y gana · «¿Cuánto podrías ganar?» | Precios escritos a mano (MV desde $41,721; Ibiza $12,000) | Leerlos del inventario en vivo, como ya hacen las páginas de aterrizaje, para que no queden desactualizados | ⬜ |
 | A3 | Atribución de referidos | Reglamento: ventana de **90 días** desde el primer clic. Desarrolladoras: **180 días** | Son dos programas distintos (socios vs. desarrolladoras); confirmar que es intencional | ⬜ |
 
 ## B. Contenido editado desde el admin (Configuración / Contenido del sitio)
@@ -41,7 +44,7 @@ Estado: ⬜ pendiente · ✅ resuelto
 
 | # | Etapa | Qué | Estado |
 |---|---|---|---|
-| D1 | R9 | Títulos de pestaña y vistas previas en inglés con textos viejos: «Invest in paradise», «Tools guide for developers», «System gallery for developers», «3i Travel Club — up to 70% off», «Inversión Inmobiliaria Inteligente» (en /en/reglamento) | ⬜ |
+| D1 | R9 | Títulos de pestaña y vistas previas en inglés con textos viejos: «Invest in paradise», «Tools guide for developers», «System gallery for developers», «3i Travel Club — up to 70% off», «Inversión Inmobiliaria Inteligente» (en /en/reglamento), «Refer and earn with Grupo 3i» (/en/oficina) | ⬜ |
 | D2 | — | El portal de desarrolladoras y la oficina de referidos están solo en español | Decisión del dueño: ¿traducir el portal de desarrolladoras? | ⬜ |
 | D3 | R4 | Opciones de la propuesta MV: «Ruta A/B/C» → «Opción A/B/C» | ✅ |
 | D4 | R1 | El botón de idioma no funcionaba en /publica-tu-proyecto y sus subpáginas | ✅ |
