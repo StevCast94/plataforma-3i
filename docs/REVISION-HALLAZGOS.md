@@ -38,11 +38,13 @@ Estado: ⬜ pendiente · ✅ resuelto
 
 | # | Qué falta | Por qué importa | Estado |
 |---|---|---|---|
-| C1 | **Política de privacidad** de Grupo 3i (ES/EN) | Google Ads y Meta la piden publicada; recogemos nombre, WhatsApp y email; Ecuador tiene la Ley Orgánica de Protección de Datos Personales (LOPDP, 2021) | ⬜ |
-| C2 | **Términos y condiciones** generales del sitio (ES/EN) | Hoy solo existen los del Bosque; tienda, Club y formularios no tienen | ⬜ |
-| C3 | **Aviso de cookies** sin enlace a la política | El banner debe enlazar a la política de privacidad/cookies | ⬜ |
-| C4 | Pie de página sin enlaces legales | Agregar «Privacidad» y «Términos» al pie, en los dos idiomas | ⬜ |
-| C5 | Formularios sin aviso de uso de datos | Una línea bajo cada formulario: «Al enviar aceptas la política de privacidad» | ⬜ |
+| C1 | **Política de privacidad** de Grupo 3i (ES/EN) | Google Ads y Meta la piden publicada; recogemos nombre, WhatsApp y email; Ecuador tiene la Ley Orgánica de Protección de Datos Personales (LOPDP, 2021) | ✅ |
+| C2 | **Términos y condiciones** generales del sitio (ES/EN) | Hoy solo existen los del Bosque; tienda, Club y formularios no tienen | ✅ |
+| C3 | **Aviso de cookies** sin enlace a la política | El banner debe enlazar a la política de privacidad/cookies | ✅ |
+| C4 | Pie de página sin enlaces legales | Agregar «Privacidad» y «Términos» al pie, en los dos idiomas | ✅ |
+| C5 | Formularios sin aviso de uso de datos | Una línea bajo cada formulario: «Al enviar aceptas la política de privacidad» | ✅ |
+| C6 | Datos de la empresa en las páginas legales | La política y los términos dicen «Grupo 3i … Manglaralto, Santa Elena» sin razón social ni RUC. Falta: nombre legal de la empresa responsable, RUC y dirección | Que el dueño los entregue; revisión de un abogado ecuatoriano antes de las campañas | ⬜ |
+| C7 | Dominio propio del Bosque (futuro) | Cuando se active, /terminos en ese dominio mostrará la vista previa de los términos de Grupo 3i (la página sí es la del Bosque) | Al configurar el dominio, hacer que el servidor distinga el host del Bosque | ⬜ |
 
 ## D. Pendientes de otras etapas (ya identificados)
 
