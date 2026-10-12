@@ -124,8 +124,8 @@ export function ContactForm({
         {activateEmail && (
           <div className="mx-auto mt-5 max-w-sm rounded-xl bg-secondary/15 p-4">
             <p className="text-sm text-primary">
-              💡 <strong>{t('Bonus')}:</strong>{' '}
-              {t('te creamos tu oficina. Activa tu código de referido y gana recomendando lo que te gustó.')}
+              💡 <strong>{t('De regalo')}:</strong>{' '}
+              {t('ya tienes tu oficina de Refiere y gana. Activa tu código y gana comisiones recomendando lo que te gustó.')}
             </p>
             <Link to={`/oficina/registro?email=${encodeURIComponent(activateEmail)}`} className="mt-3 inline-block">
               <Button size="sm">{t('Activar mi código')}</Button>
@@ -182,7 +182,7 @@ export function ContactForm({
             {errors.phone ? (
               <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
             ) : (
-              <p className="mt-1 text-xs text-brand-gray">{t('Obligatorio: es por donde te responde el asesor.')}</p>
+              <p className="mt-1 text-xs text-brand-gray">{t('Obligatorio: por ahí te responde tu asesor.')}</p>
             )}
           </div>
         </>

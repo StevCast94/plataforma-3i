@@ -485,7 +485,7 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
         <input required placeholder={t('Nombre completo')} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
         <input required type="email" placeholder={t('Email')} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-black/15 px-3 py-2 text-sm" />
         <PhoneField required onChange={(phone) => setForm({ ...form, phone })} />
-        <p className="text-xs text-brand-gray">{t('El WhatsApp es obligatorio: es por donde te responde el asesor.')}</p>
+        <p className="text-xs text-brand-gray">{t('El WhatsApp es obligatorio: por ahí te responde tu asesor.')}</p>
         <Button type="submit" className="w-full" disabled={sending}>
           {sending ? t('Enviando…') : t('Ver la propuesta')}
         </Button>

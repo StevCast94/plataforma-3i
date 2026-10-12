@@ -292,14 +292,14 @@ export default function ProjectDetailPage() {
         <div className="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
           <h2 className="text-3xl font-bold sm:text-4xl">{t('¿Te interesa este proyecto?')}</h2>
           <p className="mt-3 text-white/70">
-            {t('Un asesor te explicará el plan de inversión a tu medida.')}
+            {t('Un asesor te explica precios y formas de pago, sin compromiso.')}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button size="lg" onClick={() => setOpen(true)}>
               {t('Solicitar información')}
             </Button>
             <WhatsAppCTA
-              message={t('Hola, me interesa el proyecto *{p}* y quiero información.', { p: project.name })}
+              message={t('Hola, me interesa *{p}*. ¿Me pueden dar más información?', { p: project.name })}
               className="px-7 py-3.5 text-base"
             />
           </div>

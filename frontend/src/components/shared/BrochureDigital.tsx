@@ -310,7 +310,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
     overview: (
       <div className="mt-16">
         <Reveal>
-          <SectionTitle>{t('Vista General')}</SectionTitle>
+          <SectionTitle>{t('Vista general')}</SectionTitle>
         </Reveal>
         <div className="grid gap-8 lg:grid-cols-5 lg:items-center">
           <Reveal delay={0.05} className="lg:col-span-3">
@@ -360,7 +360,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
     investment: (
       <div className="mt-16">
         <Reveal>
-          <SectionTitle>{t('Plan de Inversión')}</SectionTitle>
+          <SectionTitle>{t('Plan de inversión')}</SectionTitle>
         </Reveal>
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Modelo de pago */}
@@ -559,7 +559,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             {c.pdfUrl && (
               <a href={c.pdfUrl} download target="_blank" rel="noreferrer">
                 <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white hover:text-primary">
-                  {t('Descargar brochure PDF')}
+                  {t('Descargar el brochure en PDF')}
                 </Button>
               </a>
             )}
@@ -583,7 +583,7 @@ export function BrochureDigital({ project, onRequestInfo }: BrochureDigitalProps
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-accent" strokeWidth={1.8} />
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-                {t('Brochure Digital')}
+                {t('Brochure digital')}
               </p>
             </div>
             <span className="mt-2 block h-1 w-16 rounded bg-secondary" />

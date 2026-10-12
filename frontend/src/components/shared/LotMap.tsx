@@ -976,7 +976,7 @@ function LotPanel({
             {sending ? t('Enviando…') : t('Quiero que me contacten')}
           </Button>
           <p className="text-xs text-brand-gray">
-            {t('El WhatsApp es obligatorio: es por donde te responde el asesor.')}
+            {t('El WhatsApp es obligatorio: por ahí te responde tu asesor.')}
           </p>
         </form>
       )}
