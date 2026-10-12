@@ -9,7 +9,7 @@ import { useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
 import { Link } from 'react-router-dom';
 
-// «Publica tu proyecto»: vitrina curada para desarrolladores externos. El
+// «Publica tu proyecto»: vitrina de proyectos seleccionados y verificados de desarrolladoras externas. El
 // formulario crea un desarrollador en estado «En alta» (admin → Desarrolladores).
 
 const BENEFITS = [

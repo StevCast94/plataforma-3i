@@ -293,12 +293,12 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/publica-tu-proyecto/propuesta': {
     es: {
       title: 'Propuesta comercial para desarrolladoras · Grupo 3i',
-      description: 'Pagas solo cuando vendes: mapa interactivo de lotes, 360°, CRM con vendedores, verificación legal y red de referidores.',
+      description: 'Pagas solo cuando vendes: mapa interactivo de solares, recorridos 360°, CRM con tus asesores, verificación legal y red de referidores.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
     en: {
-      title: 'Commercial proposal for developers · Grupo 3i',
-      description: 'Pay only when you sell: interactive lot map, 360° tours, CRM with sales team, legal verification and a referral network.',
+      title: 'Partner proposal for developers · Grupo 3i',
+      description: 'You only pay when you sell: interactive lot map, 360° tours, a CRM for your agents, legal verification and a referral network.',
       image: '/images/og/montanita-view-mapa.jpg',
     },
   },
