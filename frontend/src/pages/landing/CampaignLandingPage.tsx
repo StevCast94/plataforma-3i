@@ -34,7 +34,7 @@ function LeadForm({ slug, projectName, compact }: { slug: string; projectName: s
   const [href, setHref] = useState<string | null>(null);
   const message =
     lang === 'en'
-      ? `Hi, I saw ${projectName} and would like prices, the lot map and payment options.`
+      ? `Hi! I saw ${projectName} and I’d like pricing, the site plan and payment options.`
       : `Hola, vi ${projectName} y quiero recibir precios, el plano de solares y las formas de pago.`;
 
   async function submit(e: FormEvent) {
@@ -143,7 +143,7 @@ export default function CampaignLandingPage() {
     { icon: Map, title: t('Elige tu solar en el mapa'), body: t('Precio, medidas y disponibilidad en vivo de cada solar.') },
     ...(panos ? [{ icon: Box, title: t('Recórrelo en 360°'), body: t('Mira el terreno y la vista desde tu celular, sin viajar.') }] : []),
     project.verified
-      ? { icon: ShieldCheck, title: t('Verificado por Grupo 3i'), body: t('Revisamos escritura, gravámenes y aprobación municipal.') }
+      ? { icon: ShieldCheck, title: t('Verificado por Grupo 3i'), body: t('Revisamos la escritura, los gravámenes y la aprobación municipal.') }
       : { icon: BadgeCheck, title: t('Asesoría personal'), body: t('Un asesor te acompaña desde la primera consulta hasta la firma.') },
   ];
 
@@ -247,7 +247,7 @@ export default function CampaignLandingPage() {
 
       <footer className="border-t border-black/5 px-4 py-6 text-center text-xs text-brand-gray">
         <img src="/images/isotipo.svg" alt="" className="mx-auto mb-2 h-6 w-6" />
-        Grupo 3i · {lang === 'en' ? 'Ecuadorian coast' : 'Costa ecuatoriana'} ·{' '}
+        Grupo 3i · {lang === 'en' ? 'Coast of Ecuador' : 'Costa ecuatoriana'} ·{' '}
         <Link to={`/proyectos/${project.slug}`} className="hover:underline">{t('Ver ficha completa')}</Link>
       </footer>
 

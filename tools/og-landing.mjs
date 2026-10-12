@@ -16,7 +16,7 @@ for (const pr of projects) {
   const area = av.map((l) => l.areaM2).filter(Boolean);
   for (const lang of ['es', 'en']) {
     const T = lang === 'en'
-      ? { head: av.length ? 'Get prices and the lot plan' : 'Get prices and payment options', from: 'From', pay: '24 payments of', avail: 'Lots available', size: 'From', cta: 'Leave your WhatsApp →', units: pr.slug.includes('ibiza') ? 'Fractions from' : 'From' }
+      ? { head: av.length ? 'Get pricing and the site plan' : 'Get pricing and payment options', from: 'From', pay: '24 monthly payments of', avail: 'Lots available', size: 'From', cta: 'Get details on WhatsApp →', units: pr.slug.includes('ibiza') ? 'Fractions from' : 'From' }
       : { head: av.length ? 'Recibe precios y el plano de solares' : 'Recibe precios y formas de pago', from: 'Desde', pay: '24 cuotas de', avail: 'Solares disponibles', size: 'Desde', cta: 'Déjanos tu WhatsApp →', units: pr.slug.includes('ibiza') ? 'Fracciones desde' : 'Desde' };
     const chips = [[T.units, usd(min), true]];
     if (av.length) chips.push([T.pay, usd(min * 0.7 / 24)], [T.avail, String(av.length)], [T.size, Math.round(Math.min(...area)) + ' m²']);

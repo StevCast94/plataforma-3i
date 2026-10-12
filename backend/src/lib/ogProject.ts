@@ -438,10 +438,10 @@ export function landingOgHandler(frontendPath: string) {
       let title: string;
       let description: string;
       if (lang === 'en') {
-        title = lots.length && min != null ? `${project.name} · Lots from ${usd(min)} in 24 payments` : min != null ? `${project.name} · From ${usd(min)}` : project.name;
+        title = lots.length && min != null ? `${project.name} · Lots from ${usd(min)}, 24 monthly payments` : min != null ? `${project.name} · From ${usd(min)}` : project.name;
         description = lots.length
-          ? `${lots.length} lots available in ${place}, Ecuador. Leave your WhatsApp and get prices, the lot plan and payment options.`
-          : `Leave your WhatsApp and get prices and payment options for ${project.name} in ${place}, Ecuador.`;
+          ? `${lots.length} lots available in ${place}, Ecuador. Leave your WhatsApp and we’ll send you pricing, the site plan and payment options.`
+          : `Leave your WhatsApp and we’ll send you pricing and payment options for ${project.name} in ${place}, Ecuador.`;
       } else {
         title = lots.length && min != null ? `${project.name} · Solares desde ${usd(min)} en 24 cuotas` : `${project.name} · ${project.priceLabel ?? 'Recibe precios'}`;
         description = lots.length
