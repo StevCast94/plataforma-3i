@@ -1,1 +1,0 @@
-import{ag as e,r as n,ah as a}from"./index-KXB8O1Gm.js";const p={get:a.get,post:a.post,patch:a.patch,del:a.del},s=t=>`/admin/crm${t}`,C={get:t=>e.get(s(t)),post:(t,o)=>e.post(s(t),o),patch:(t,o)=>e.patch(s(t),o),del:t=>e.del(s(t))},r=n.createContext(p),i=()=>n.useContext(r);export{r as C,C as a,i as u};

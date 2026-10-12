@@ -14,6 +14,9 @@ if (window.location.hash.startsWith('#/')) {
 
 // IMPORTANTE: el Router vive solo en App.tsx (BrowserRouter).
 // No envolver aquí para evitar el bug de doble Router con React 19.
+// La canónica del servidor es para buscadores sin JS; desde aquí la maneja <Seo> en cada página.
+document.querySelectorAll('link[rel="canonical"][data-ssr]').forEach((el) => el.remove());
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <AppErrorBoundary>

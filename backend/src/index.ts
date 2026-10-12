@@ -154,7 +154,7 @@ app.use((req, res, next) => {
     res.redirect(301, req.path.replace(/\/+$/, '') + q);
     return;
   }
-  const tag = `<link rel="canonical" href="${CANONICAL_ORIGIN}${req.path}" data-rh="true" />`;
+  const tag = `<link rel="canonical" href="${CANONICAL_ORIGIN}${req.path}" data-ssr="1" />`;
   const inject = (html: string) => (html.includes('rel="canonical"') ? html : html.replace('</head>', `  ${tag}\n  </head>`));
   const send = res.send.bind(res);
   res.send = (body?: unknown) => send(typeof body === 'string' && body.includes('</head>') ? inject(body) : body);
