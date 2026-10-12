@@ -29,6 +29,7 @@ Estado: ⬜ pendiente · ✅ resuelto
 | B6 | Proyecto Ibiza · subtítulo | «Inversión premium en la costa ecuatoriana. Invierte inteligente, invierte en el futuro.» (EN: *Premium investment… Invest smart…*) | Subtítulo descriptivo, p. ej. «Fracciones de un condohotel frente al mar en Manglaralto» | ⬜ |
 | B7 | Proyecto Ibiza · brochure en inglés | Inglés británico (*programme*) y frases literales (*First investment opportunity*) | Reescribir la versión en inglés del proyecto | ⬜ |
 | B8 | Tienda · producto Ibiza | Descripción «Fracciona tu inversión, multiplica tu retorno» sin versión en inglés | Escribir la versión en inglés | ⬜ |
+| B9 | Plantillas para compartir de los socios (Contenido del sitio → referral_templates) | Faltas: «No pierdas tu oportunidad!» y «empieza a ganar tú también!» sin «¡» de apertura; «Registrate» sin tilde. «Estoy ganando ingresos refiriendo» suena forzado | «¡No pierdas tu oportunidad!», «¡Empieza a ganar tú también!», «Regístrate». Reescribir la 3: «Gano comisiones recomendando el Club 3i. Únete con mi enlace y empieza tú también:» | ⬜ |
 
 ## C. Legal y cumplimiento (antes de lanzar campañas pagadas)
 
@@ -44,10 +45,12 @@ Estado: ⬜ pendiente · ✅ resuelto
 
 | # | Etapa | Qué | Estado |
 |---|---|---|---|
-| D1 | R9 | Títulos de pestaña y vistas previas en inglés con textos viejos: «Invest in paradise», «Tools guide for developers», «System gallery for developers», «3i Travel Club — up to 70% off», «Inversión Inmobiliaria Inteligente» (en /en/reglamento), «Refer and earn with Grupo 3i» (/en/oficina) | ⬜ |
+| D1 | R9 | Títulos de pestaña y vistas previas en inglés con textos viejos: «Invest in paradise», «Tools guide for developers», «System gallery for developers», «3i Travel Club — up to 70% off», «Inversión Inmobiliaria Inteligente» (en /en/reglamento), «Refer and earn with Grupo 3i» (/en/oficina) | ✅ |
 | D2 | — | El portal de desarrolladoras y la oficina de referidos están solo en español | Decisión del dueño: ¿traducir el portal de desarrolladoras? | ⬜ |
 | D3 | R4 | Opciones de la propuesta MV: «Ruta A/B/C» → «Opción A/B/C» | ✅ |
 | D4 | R1 | El botón de idioma no funcionaba en /publica-tu-proyecto y sus subpáginas | ✅ |
 | D5 | R4 | «View the partner proposal» abría la propuesta en español | ✅ |
 | D6 | R8 | **El Bosque no tiene versión en inglés** (ni rutas /en ni botón de idioma). Montañita recibe muchos turistas extranjeros, que son un público natural para adoptar un árbol o regalarlo | Decisión del dueño: ¿hacer la versión en inglés del Bosque? | ⬜ |
 | D7 | R8 | Los términos del Bosque ya incluyen una cláusula de datos personales conforme a la LOPDP; sirve de base para la política de privacidad general (C1) | — | ⬜ |
+| D8 | R9 | El correo de confirmación de reservas del Club de Viajes (voucher) está solo en español, aunque la reserva se haga desde /en | Enviar el correo en el idioma en que se hizo la reserva | ⬜ |
+| D9 | R9 | Los avisos al celular de socios y desarrolladoras están solo en español (sus portales también lo están) | Se resuelve junto con D2 si se traducen los portales | ⬜ |
