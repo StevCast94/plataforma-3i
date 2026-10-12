@@ -21,7 +21,7 @@ const steps: { icon: LucideIcon; title: string; body: string; image: string }[] 
   {
     icon: Link2,
     title: 'Comparte tu enlace',
-    body: 'Recibe tu enlace único y compártelo con quien busca invertir en la costa.',
+    body: 'Recibe tu enlace personal y compártelo con quien busca invertir en la costa.',
     image: '/images/secciones/paso-comparte.jpg',
   },
   {
@@ -43,8 +43,8 @@ const compare = [
 const faqs = [
   { q: '¿Cuánto cuesta entrar?', a: 'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.' },
   { q: '¿Qué puedo recomendar?', a: 'Los solares de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
-  { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto, o refiriendo 5 personas exitosas en 180 días (¡con membresía de viajes gratis!).' },
-  { q: '¿Cuándo cobro mis comisiones?', a: 'Tras un período de retracto de 14 días y la liquidación según tu nivel (30 días Premiere / 3 días Elite).' },
+  { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto, o cuando 5 de tus referidos compren en 180 días (y te llevas la membresía de viajes de regalo).' },
+  { q: '¿Cuándo cobro mis comisiones?', a: 'Después de los 14 días de retracto, más el plazo de liquidación de tu nivel: 30 días en Premiere y 3 días en Elite.' },
   { q: '¿Pierdo mi cuenta si no refiero?', a: 'Premiere: tras 180 días sin referidos nuevos la cuenta se suspende, con avisos previos. Elite es vitalicio.' },
 ];
 
@@ -190,7 +190,7 @@ export default function OfficeLanding() {
           ))}
         </div>
         <p className="mt-6 text-center text-xs text-brand-gray">
-          {t('Comisión sobre el precio de venta, pagada tras la liquidación. Los precios cambian según el solar o la fracción que elija tu referido.')}
+          {t('Comisión sobre el precio de venta, que cobras después de la liquidación. El precio depende del solar o la fracción que elija tu referido.')}
         </p>
       </section>
 

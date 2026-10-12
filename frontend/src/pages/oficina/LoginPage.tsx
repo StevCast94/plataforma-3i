@@ -42,7 +42,7 @@ export default function LoginPage() {
       const msg = `Hola, olvidé mi contraseña de la Refiere y gana. Mi correo es: ${forgotEmail.trim()}. ¿Me ayudan a recuperarla?`;
       window.open(`https://wa.me/${digits}?text=${encodeURIComponent(msg)}`, '_blank');
     }
-    toast(t('Solicitud enviada. Un asesor te contactará por WhatsApp.'), 'success');
+    toast(t('Listo. Te escribiremos por WhatsApp para ayudarte.'), 'success');
     setForgotOpen(false);
     setForgotEmail('');
   }

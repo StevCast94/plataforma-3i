@@ -1,0 +1,48 @@
+# Revisión de redacción ES/EN — hallazgos pendientes
+
+Registro de todo lo que aparece durante la revisión R0–R10 y **no** se corrigió
+porque es una decisión del dueño, es contenido editado desde el admin, o queda fuera
+del alcance de redacción. Cada punto dice dónde está y qué se propone.
+
+Estado: ⬜ pendiente · ✅ resuelto
+
+## A. Datos que no cuadran entre páginas
+
+| # | Dónde | Qué pasa | Propuesta | Estado |
+|---|---|---|---|---|
+| A1 | Nosotros, pilar «Inversión accesible» | Dice «propiedades fraccionadas desde **$5,000**»; Ibiza se vende desde **$12,000** | Confirmar si existe un producto de $5,000; si no, cambiar a $12,000 | ⬜ |
+| A2 | Propuesta comercial (ejemplo) vs. Montañita View | Ejemplo con **30 cuotas**; MV usa **24 cuotas** | El dueño decidió dejarlo (es un ejemplo genérico) | ✅ |
+| A3 | Atribución de referidos | Reglamento: ventana de **90 días** desde el primer clic. Desarrolladoras: **180 días** | Son dos programas distintos (socios vs. desarrolladoras); confirmar que es intencional | ⬜ |
+
+## B. Contenido editado desde el admin (Configuración / Contenido del sitio)
+
+| # | Sección | Texto actual | Propuesta | Estado |
+|---|---|---|---|---|
+| B1 | Portada · hero | «Invierte en un **P**araíso…» | «paraíso» en minúscula | ⬜ |
+| B2 | Portada · proyectos | «Nuestros **P**royectos» | «Nuestros proyectos» | ⬜ |
+| B3 | Portada · proyectos | «Oportunidades de inversión cuidadosamente desarrolladas y seleccionadas.» | «Proyectos que desarrollamos o seleccionamos, todos verificados.» | ⬜ |
+| B4 | Club · subtítulo | «…beneficios exclusivos con **comisiones increíbles**.» | «…y gana comisiones por recomendar.» | ⬜ |
+| B5 | Nosotros · título | «Grupo 3i — Invierte $12K. Gana 70% en Descuentos de Viaje.» (es un anuncio del Club, no un título de «Nosotros») | «Sobre Grupo 3i» | ⬜ |
+| B6 | Proyecto Ibiza · subtítulo | «Inversión premium en la costa ecuatoriana. Invierte inteligente, invierte en el futuro.» (EN: *Premium investment… Invest smart…*) | Subtítulo descriptivo, p. ej. «Fracciones de un condohotel frente al mar en Manglaralto» | ⬜ |
+| B7 | Proyecto Ibiza · brochure en inglés | Inglés británico (*programme*) y frases literales (*First investment opportunity*) | Reescribir la versión en inglés del proyecto | ⬜ |
+| B8 | Tienda · producto Ibiza | Descripción «Fracciona tu inversión, multiplica tu retorno» sin versión en inglés | Escribir la versión en inglés | ⬜ |
+
+## C. Legal y cumplimiento (antes de lanzar campañas pagadas)
+
+| # | Qué falta | Por qué importa | Estado |
+|---|---|---|---|
+| C1 | **Política de privacidad** de Grupo 3i (ES/EN) | Google Ads y Meta la piden publicada; recogemos nombre, WhatsApp y email; Ecuador tiene la Ley Orgánica de Protección de Datos Personales (LOPDP, 2021) | ⬜ |
+| C2 | **Términos y condiciones** generales del sitio (ES/EN) | Hoy solo existen los del Bosque; tienda, Club y formularios no tienen | ⬜ |
+| C3 | **Aviso de cookies** sin enlace a la política | El banner debe enlazar a la política de privacidad/cookies | ⬜ |
+| C4 | Pie de página sin enlaces legales | Agregar «Privacidad» y «Términos» al pie, en los dos idiomas | ⬜ |
+| C5 | Formularios sin aviso de uso de datos | Una línea bajo cada formulario: «Al enviar aceptas la política de privacidad» | ⬜ |
+
+## D. Pendientes de otras etapas (ya identificados)
+
+| # | Etapa | Qué | Estado |
+|---|---|---|---|
+| D1 | R9 | Títulos de pestaña y vistas previas en inglés con textos viejos: «Invest in paradise», «Tools guide for developers», «System gallery for developers», «3i Travel Club — up to 70% off», «Inversión Inmobiliaria Inteligente» (en /en/reglamento) | ⬜ |
+| D2 | — | El portal de desarrolladoras y la oficina de referidos están solo en español | Decisión del dueño: ¿traducir el portal de desarrolladoras? | ⬜ |
+| D3 | R4 | Opciones de la propuesta MV: «Ruta A/B/C» → «Opción A/B/C» | ✅ |
+| D4 | R1 | El botón de idioma no funcionaba en /publica-tu-proyecto y sus subpáginas | ✅ |
+| D5 | R4 | «View the partner proposal» abría la propuesta en español | ✅ |
