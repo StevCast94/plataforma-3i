@@ -28,6 +28,7 @@ export const EN: Record<string, string> = {
   Navegación: 'Navigation',
   'Oficina Virtual': 'Virtual Office',
   'Refiere y gana': 'Refer & Earn',
+  'desde $41,721': 'from $41,721',
   'Desarrolladoras': 'Developers',
   'Programa de referidos Grupo 3i': 'Grupo 3i Refer & Earn program',
   'Recomienda una inversión y gana hasta el 4%': 'Refer a buyer, earn up to 4%',
