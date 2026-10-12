@@ -483,7 +483,7 @@ export default function ProposalPage() {
       {/* 7b. Captación y campañas */}
       <Slide n={8}>
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
-          <img src="/images/propuesta-dev/aterrizaje.jpg" alt="" className="w-full rounded-2xl shadow-xl ring-1 ring-black/10" />
+          <img src="/images/propuesta-dev/aterrizaje.jpg?v=20261012" alt="" className="w-full rounded-2xl shadow-xl ring-1 ring-black/10" />
           <div>
             <Kicker>{tx.leadsKicker}</Kicker>
             <h2 className="font-serif text-4xl font-bold">{tx.leadsTitle}</h2>
