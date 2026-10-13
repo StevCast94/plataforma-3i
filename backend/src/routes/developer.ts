@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../prisma';
 import crypto from 'crypto';
 import { leadWhere, requireDeveloper, signDeveloperToken, type DeveloperRequest } from '../middleware/authDeveloper';
-import { sendPushToDeveloperUsers, vapidPublicKey } from '../services/push';
+import { sendPushToDeveloperUsers, sendPushToStaff, vapidPublicKey } from '../services/push';
 import { slugify } from '../lib/slug';
 import { registerLead, phoneDigits } from '../services/projectLeads';
 import { feeRateForLead, installmentFee, saleTotals } from '../services/developerSales';
@@ -101,6 +101,12 @@ developerRoutes.post('/apply', async (req, res) => {
         notes: lines.join('\n'),
       },
     });
+    // Aviso al celular del equipo: la solicitud queda en Admin → Desarrolladoras.
+    await sendPushToStaff({
+      title: 'Nueva desarrolladora quiere publicar',
+      body: `${name}${b.project ? ` · ${String(b.project).slice(0, 60)}` : ''} — ${contactName}`,
+      link: '/admin/desarrolladores',
+    }).catch(() => {});
   }
   res.status(201).json({ ok: true });
 });

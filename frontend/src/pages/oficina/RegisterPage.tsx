@@ -1,3 +1,5 @@
+import { Modal } from '@/components/ui/Modal';
+import { ReglamentoBody } from '@/pages/legal/ReglamentoPage';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Link, useLang } from '@/hooks/useLang';
@@ -53,6 +55,7 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<StepErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   function set<K extends keyof RegisterData>(key: K, value: RegisterData[K]) {
     setData((d) => ({ ...d, [key]: value }));
@@ -263,12 +266,25 @@ export default function RegisterPage() {
                 <a href="/terminos" target="_blank" rel="noreferrer" className="font-semibold underline">{t('términos y condiciones')}</a>
                 {t(', la')}{' '}
                 <a href="/privacidad" target="_blank" rel="noreferrer" className="font-semibold underline">{t('política de privacidad')}</a>{' '}
-                {t('y el reglamento de Refiere y gana, que tendré siempre disponible en mi oficina virtual.')}
+                {t('y el')}{' '}
+                <button type="button" onClick={() => setShowRules(true)} className="font-semibold underline">
+                  {t('reglamento de Refiere y gana')}
+                </button>
+                {t(', que tendré siempre disponible en mi oficina virtual.')}
               </span>
             </label>
             {errors.terms && <p className="mt-2 text-sm text-red-600">{errors.terms}</p>}
           </div>
         )}
+        <Modal open={showRules} onClose={() => setShowRules(false)} title={t('Reglamento del Programa de Referidos')}>
+          <div className="max-h-[65vh] overflow-y-auto pr-1 text-sm">
+            <ReglamentoBody />
+          </div>
+          <div className="mt-4 flex justify-end gap-2 border-t border-black/5 pt-3">
+            <Button variant="ghost" onClick={() => setShowRules(false)}>{t('Cerrar')}</Button>
+            <Button onClick={() => { setAccepted(true); setErrors(({ terms: _t, ...rest }) => rest); setShowRules(false); }}>{t('Leí el reglamento y lo acepto')}</Button>
+          </div>
+        </Modal>
 
         <p className="mt-6 text-center text-sm text-brand-gray">
           {t('¿Ya tienes cuenta?')}{' '}

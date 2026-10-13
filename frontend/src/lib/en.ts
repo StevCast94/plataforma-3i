@@ -8,6 +8,10 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'Leí el reglamento y lo acepto': 'I’ve read and accept the rules',
+  ', que tendré siempre disponible en mi oficina virtual.': ', which I can always find in my Virtual Office.',
+  'reglamento de Refiere y gana': 'Refer & Earn program rules',
+  'y el': 'and the',
   'Subes a Elite automáticamente, sin trámites, en cuanto cumples una de las condiciones.': 'You move up to Elite automatically — no paperwork — as soon as you meet either condition.',
   'y el reglamento de Refiere y gana, que tendré siempre disponible en mi oficina virtual.': 'and the Refer & Earn program rules, which I can always find in my Virtual Office.',
   ', la': ', the',
