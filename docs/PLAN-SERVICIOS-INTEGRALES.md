@@ -1,6 +1,6 @@
 # Plan de trabajo: servicios integrales y seguimiento de trámites
 
-Estado: **propuesto** (12-oct-2026). Nada de esto está construido todavía.
+Estado: **construido** (12-oct-2026): S0–S6 en producción. Falta validar las etapas de cada plantilla con el abogado y el topógrafo.
 
 ## Objetivo
 
