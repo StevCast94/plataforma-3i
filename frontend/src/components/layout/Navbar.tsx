@@ -9,6 +9,7 @@ const links = [
   { to: '/', label: 'Inicio', end: true },
   { to: '/proyectos', label: 'Proyectos', hasDropdown: true },
   { to: '/publica-tu-proyecto', label: 'Desarrolladoras' },
+  { to: '/servicios', label: 'Servicios' },
   { to: '/club', label: 'Club 3i' },
   { to: '/sobre-nosotros', label: 'Nosotros' },
   { to: '/oficina', label: 'Refiere y gana' },

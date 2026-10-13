@@ -35,6 +35,7 @@ const ROLE_ACCESS: Record<string, Rule[]> = {
   advisor: [
     { path: '/api/admin/me' },
     { path: '/api/admin/crm' },
+    { path: '/api/admin/services' },
     { path: '/api/admin/projects', read: true },
     { path: '/api/admin/lots', read: true },
     { path: '/api/admin/panoramas', read: true },

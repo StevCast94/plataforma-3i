@@ -214,7 +214,7 @@ const ES_SECTIONS: Section[] = [
   },
   {
     id: 'ventas', icon: HandCoins, title: 'Ventas y comisión',
-    intro: 'Pagas solo cuando vendes, y a medida que tu cliente te paga.',
+    intro: 'Ganamos cuando tú vendes, y cobramos la comisión a medida que tu cliente te paga.',
     body: <>
       <Steps items={[
         'En CRM → Lista, toca «Venta» en el cliente: lote, precio, contado o financiado, entrada y comprobante.',
@@ -413,7 +413,7 @@ const EN_SECTIONS: Section[] = [
   },
   {
     id: 'ventas', icon: HandCoins, title: 'Sales and commission',
-    intro: 'You only pay when you sell — and only as your buyer pays you.',
+    intro: 'We get paid when you sell — and only as your buyer pays you.',
     body: <>
       <Steps items={[
         'Under CRM → Lista, tap «Venta» (Sale) on the buyer: lot, price, cash or installments, down payment and receipt.',

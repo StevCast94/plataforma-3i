@@ -43,6 +43,10 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
+    title: 'Servicios integrales',
+    items: [{ to: '/admin/servicios', label: 'Solicitudes y trámites', icon: '📐', roles: [...MANAGERS, 'advisor'] }],
+  },
+  {
     title: 'Club 3i y referidos',
     items: [
       { to: '/admin/miembros', label: 'Miembros', icon: '👥' },

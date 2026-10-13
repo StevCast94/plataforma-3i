@@ -9,12 +9,13 @@ import { PhoneField } from '@/components/shared/PhoneField';
 import { Link, useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
 import { PROPERTY_TYPES } from '@/lib/propertyTypes';
+import { ServicesGrid } from '@/components/shared/ServicesGrid';
 
 // «Publica tu proyecto»: vitrina de proyectos seleccionados y verificados de desarrolladoras externas. El
 // formulario crea un desarrollador en estado «En alta» (admin → Desarrolladores).
 
 const BENEFITS = [
-  { icon: HandCoins, title: 'Pagas solo cuando vendes', body: 'Una comisión sobre las ventas, que pagas a medida que tu cliente te paga. Las condiciones se acuerdan en privado, según tu proyecto y los servicios que necesites.' },
+  { icon: HandCoins, title: 'Ganamos cuando tú vendes', body: 'Una comisión sobre las ventas, que pagas a medida que tu cliente te paga. Las condiciones se acuerdan en privado, según tu proyecto y los servicios que necesites.' },
   { icon: Users, title: 'Una red que vende por ti', body: 'Los socios de Refiere y gana recomiendan tu proyecto a sus contactos, en español e inglés, y ganan solo si vendes.' },
   { icon: Map, title: 'Inventario en vivo', body: 'Cada unidad con su precio, medidas y disponibilidad al día. En lotizaciones y proyectos de casas, el cliente elige la suya en un mapa interactivo desde el celular.' },
   { icon: Box, title: 'Recorridos 360°', body: 'Lotizaciones, terrenos independientes, suites y departamentos: el cliente los recorre antes de visitarlos.' },
@@ -23,7 +24,7 @@ const BENEFITS = [
 ];
 
 const COMPARE: [string, string, string][] = [
-  ['Cómo pagas', 'Por anuncio, vendas o no', 'Solo cuando vendes'],
+  ['Cómo pagas', 'Por anuncio, vendas o no', 'Comisión por venta; servicios a convenir'],
   ['Quién lo promociona', 'Solo el buscador del portal', 'Nuestra web y una red de referidores'],
   ['Inventario', 'Un anuncio por propiedad', 'Todo el proyecto con disponibilidad en vivo'],
   ['Confianza', 'Nadie revisa los papeles', 'Sello de verificación legal'],
@@ -56,11 +57,11 @@ export default function PublishProjectPage() {
     <>
       <Seo
         title={t('Publica tu proyecto inmobiliario')}
-        description={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i: lotes, terrenos, casas, departamentos, suites, locales y oficinas. Pagas solo cuando vendes.')}
+        description={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i: lotes, terrenos, casas, departamentos, suites, locales y oficinas. Ganamos cuando tú vendes.')}
       />
       <PageHeader
         title={t('Publica tu proyecto')}
-        subtitle={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i. Pagas solo cuando vendes.')}
+        subtitle={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i. Ganamos cuando tú vendes.')}
         image="/images/secciones/header-nosotros.jpg"
       />
 
@@ -98,6 +99,16 @@ export default function PublishProjectPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">{t('Servicios integrales')}</p>
+        <h2 className="mt-2 font-serif text-3xl font-bold text-primary">{t('Mucho más que publicar: te acompañamos de principio a fin')}</h2>
+        <p className="mt-2 max-w-3xl text-brand-gray">{t('Topografía, planos, fraccionamientos, trámites, marketing y desarrollo de proyectos, con el seguimiento de cada trámite en línea. Cada servicio se cotiza en privado.')}</p>
+        <div className="mt-8">
+          <ServicesGrid lang={lang} compact />
+        </div>
+        <Link to="/servicios" className="mt-6 inline-block font-semibold text-accent underline-offset-4 hover:underline">{t('Ver todos los servicios')} →</Link>
       </section>
 
       <section className="bg-light">

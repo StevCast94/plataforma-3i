@@ -187,7 +187,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{t('Para desarrolladoras inmobiliarias')}</p>
-            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus proyectos inmobiliarios con la red de Grupo 3i. Pagas solo cuando vendes.')}</h2>
+            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus proyectos inmobiliarios con la red de Grupo 3i. Ganamos cuando tú vendes.')}</h2>
             <p className="mt-4 text-white/70">
               {t('Lotes, terrenos, casas, departamentos, suites, locales y oficinas: inventario en vivo, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.')}
             </p>
@@ -195,7 +195,7 @@ export default function HomePage() {
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { to: '/publica-tu-proyecto', title: t('Publica tu proyecto'), body: t('Beneficios, tarifas y solicitud de alta.') },
-              { to: '/publica-tu-proyecto/propuesta', title: t('Propuesta comercial'), body: t('Pagas solo por venta. Te lo explicamos con ejemplos.') },
+              { to: '/publica-tu-proyecto/propuesta', title: t('Propuesta comercial'), body: t('Comisión por venta y servicios a convenir. Te lo explicamos.') },
               { to: '/publica-tu-proyecto/manual', title: t('Manual de herramientas'), body: t('Todo lo que puedes hacer en la plataforma, paso a paso.') },
               { to: '/publica-tu-proyecto/galeria', title: t('Galería del sistema'), body: t('Capturas reales de cada pantalla del portal.') },
             ].map((c) => (

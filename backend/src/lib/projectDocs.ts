@@ -20,6 +20,16 @@ export async function uploadProjectDocument(dataUri: string, projectId: string) 
   return { publicId: result.public_id, format: result.format };
 }
 
+/** Documentos de un expediente de servicios (mismo almacenamiento privado). */
+export async function uploadCaseDocument(dataUri: string, caseId: string) {
+  const result = await cloudinary.uploader.upload(dataUri, {
+    folder: `grupo3i/expedientes/${caseId}`,
+    resource_type: 'image',
+    type: 'authenticated',
+  });
+  return { publicId: result.public_id, format: result.format };
+}
+
 export function signedDocUrl(publicId: string, format: string): string {
   return cloudinary.utils.private_download_url(publicId, format, {
     resource_type: 'image',

@@ -24,6 +24,11 @@ const PublishProjectPage = lazy(() => import('@/pages/landing/PublishProjectPage
 const DeveloperManualPage = lazy(() => import('@/pages/landing/DeveloperManualPage'));
 const DeveloperGalleryPage = lazy(() => import('@/pages/landing/DeveloperGalleryPage'));
 const ProposalPage = lazy(() => import('@/pages/landing/ProposalPage'));
+const ServicesPage = lazy(() => import('@/pages/landing/ServicesPage'));
+const ServiceQuotePage = lazy(() => import('@/pages/landing/ServiceQuotePage'));
+const CaseTrackingPage = lazy(() => import('@/pages/landing/CaseTrackingPage'));
+const AdminServicesPage = lazy(() => import('@/pages/admin/services/AdminServicesPage'));
+const AdminCasePage = lazy(() => import('@/pages/admin/services/AdminCasePage'));
 const EmbedMapPage = lazy(() => import('@/pages/landing/EmbedMapPage'));
 const CustomDomainMap = lazy(() => import('@/pages/landing/CustomDomainMap'));
 const ProductDetailPage = lazy(() => import('@/pages/tienda/ProductDetailPage'));
@@ -118,6 +123,9 @@ const publicRoutes = () => (
     <Route path="sobre-nosotros" element={<AboutPage />} />
     <Route path="contacto" element={<ContactPage />} />
     <Route path="publica-tu-proyecto" element={<PublishProjectPage />} />
+    <Route path="servicios" element={<ServicesPage />} />
+    <Route path="propuesta-servicios/:token" element={<ServiceQuotePage />} />
+    <Route path="seguimiento/:token" element={<CaseTrackingPage />} />
     <Route path="publica-tu-proyecto/manual" element={<DeveloperManualPage />} />
     <Route path="publica-tu-proyecto/galeria" element={<DeveloperGalleryPage />} />
     <Route path="reglamento" element={<ReglamentoPage />} />
@@ -216,6 +224,8 @@ export default function App() {
                 <Route path="proyectos/:projectId/metricas" element={<ProjectMetricsPage />} />
                 <Route path="fiesta" element={<AdminFiestaPage />} />
                 <Route path="desarrolladores" element={<AdminDevelopersPage />} />
+                <Route path="servicios" element={<AdminServicesPage />} />
+                <Route path="servicios/expedientes/:caseId" element={<AdminCasePage />} />
                 <Route path="crm" element={<AdminCrmPage />} />
                 <Route path="propuesta" element={<AdminPropuestaPage />} />
                 <Route path="miembros" element={<AdminMembersPage />} />

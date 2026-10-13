@@ -5,6 +5,7 @@ import {
   BadgeCheck, BarChart3, Box, CalendarCheck, FileSignature, HandCoins, Languages, Map, MessageCircle, Search, Users,
 } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
+import { ServicesGrid } from '@/components/shared/ServicesGrid';
 import { useSectionContent } from '@/hooks/useSiteContent';
 import { Link, useLang } from '@/hooks/useLang';
 
@@ -23,22 +24,22 @@ const TX = {
     coverTitle: 'Vende tus proyectos inmobiliarios con la red de Grupo 3i',
     typesLabel: 'Publicamos proyectos de',
     types: ['Lotes', 'Terrenos', 'Casas', 'Departamentos', 'Suites', 'Locales comerciales', 'Oficinas', 'Bodegas y galpones'],
-    coverSub: 'Seleccionamos y verificamos cada proyecto que publicamos en la costa ecuatoriana. Tú pagas solo cuando vendes.',
+    coverSub: 'Seleccionamos y verificamos cada proyecto que publicamos en la costa ecuatoriana. Ganamos cuando tú vendes.',
     preparedFor: 'Preparada para',
     aboutKicker: 'Quiénes somos',
     aboutTitle: 'Desarrollamos, verificamos y comercializamos proyectos inmobiliarios en la costa',
     about1: 'Somos una inmobiliaria con proyectos propios en Santa Elena. Creamos esta plataforma para vender nuestros proyectos y hoy la abrimos a otras desarrolladoras: lotes, terrenos, casas, departamentos, suites, locales y oficinas.',
-    about2: 'No somos un portal de anuncios: elegimos con quién trabajamos, verificamos cada proyecto y solo ganamos cuando tú vendes.',
+    about2: 'No somos un portal de anuncios: elegimos con quién trabajamos, verificamos cada proyecto y ganamos nuestra comisión cuando tú vendes.',
     stats: [
       ['112', 'lotes en el mapa interactivo'],
       ['360°', 'recorridos de cada proyecto'],
       ['ES · EN', 'toda la experiencia en español e inglés'],
     ],
     compareKicker: 'Portal de anuncios vs. Grupo 3i',
-    compareTitle: 'En un portal pagas por aparecer. Con nosotros, pagas cuando vendes.',
+    compareTitle: 'En un portal pagas por aparecer. Nosotros ganamos cuando tú vendes.',
     compareCols: ['Portal de anuncios', 'Grupo 3i'],
     compare: [
-      ['Cómo pagas', 'Un plan mensual, vendas o no', 'Una comisión, solo cuando vendes'],
+      ['Cómo pagas', 'Un plan mensual, vendas o no', 'Una comisión por venta; servicios adicionales a convenir'],
       ['Si no vendes', 'Pagas el plan igual', 'No pagas comisión'],
       ['Quién promociona tu proyecto', 'Solo el buscador del portal', 'Nuestra plataforma, nuestras campañas y la red de referidores'],
       ['Tu inventario', 'Un anuncio por cada unidad', 'Todo el proyecto con disponibilidad en vivo y, en lotizaciones y casas, en un mapa interactivo'],
@@ -66,6 +67,10 @@ const TX = {
       ['Métricas en tiempo real', 'Visitas, unidades más vistas, contactos y ventas.'],
       ['CRM para tu equipo', 'Embudo, asesores, tareas y avisos al celular.'],
     ],
+    servicesKicker: 'Servicios integrales',
+    servicesTitle: 'Mucho más que publicar: te acompañamos de principio a fin',
+    servicesSub: 'Del levantamiento del terreno a la venta de la última unidad, con un solo equipo y el seguimiento de cada trámite en línea.',
+    servicesNote: 'Cada servicio se cotiza en privado. Contrátalos juntos o por separado.',
     portalKicker: 'Tu portal',
     portalTitle: 'Sabrás qué funciona, semana a semana',
     portalSub: 'Capturas reales del portal, con datos de una desarrolladora de demostración.',
@@ -124,12 +129,12 @@ const TX = {
     coverTitle: 'Sell your real estate projects through the Grupo 3i network',
     typesLabel: 'We list',
     types: ['Lots', 'Land', 'Homes', 'Condos', 'Suites', 'Retail space', 'Office space', 'Warehouses'],
-    coverSub: 'Every project we list on Ecuador’s coast is hand-picked and vetted. You only pay when you sell.',
+    coverSub: 'Every project we list on Ecuador’s coast is hand-picked and vetted. We get paid when you sell.',
     preparedFor: 'Prepared for',
     aboutKicker: 'About us',
     aboutTitle: 'We develop, vet and sell real estate on Ecuador’s coast',
     about1: 'We’re a real estate company with our own projects in Santa Elena. We built this platform to sell our own projects — and now we’re opening it to partner developers of lots, land, homes, condos, suites, retail and office space.',
-    about2: 'We’re not a listings site: we choose who we work with, vet every project and only get paid when you sell.',
+    about2: 'We’re not a listings site: we choose who we work with, vet every project and only earn a commission when you sell.',
     stats: [
       ['112', 'lots on the interactive map'],
       ['360°', 'tours of every project'],
@@ -139,7 +144,7 @@ const TX = {
     compareTitle: 'Listings sites charge you to be seen. We get paid when you sell.',
     compareCols: ['Listings site', 'Grupo 3i'],
     compare: [
-      ['How you pay', 'A monthly plan, sale or no sale', 'A commission, only when you sell'],
+      ['How you pay', 'A monthly plan, sale or no sale', 'A commission on each sale; extra services as agreed'],
       ['If nothing sells', 'You still pay the plan', 'No commission'],
       ['Who markets your project', 'The site’s search bar', 'Our platform, our ad campaigns and our referral network'],
       ['Your inventory', 'One listing per unit', 'Your whole project with live availability — on an interactive map for lot and home developments'],
@@ -167,6 +172,10 @@ const TX = {
       ['Real-time analytics', 'Visits, most-viewed units, leads and sales.'],
       ['CRM for your team', 'Pipeline, agents, tasks and mobile alerts.'],
     ],
+    servicesKicker: 'Full-service support',
+    servicesTitle: 'More than a listing: we’re with you from start to finish',
+    servicesSub: 'From surveying the land to selling the last unit — one team, and every step of the paperwork trackable online.',
+    servicesNote: 'Each service is quoted privately. Book them together or one at a time.',
     portalKicker: 'Your dashboard',
     portalTitle: 'See what’s working, week by week',
     portalSub: 'Real screenshots from the portal, using a demo developer’s data.',
@@ -430,8 +439,19 @@ export default function ProposalPage() {
         </div>
       </Slide>
 
+      {/* 5b. Servicios integrales */}
+      <Slide dark n={6}>
+        <Kicker light>{tx.servicesKicker}</Kicker>
+        <h2 className="font-serif text-4xl font-bold">{tx.servicesTitle}</h2>
+        <p className="mt-2 max-w-3xl text-white/70">{tx.servicesSub}</p>
+        <div className="mt-8">
+          <ServicesGrid lang={lang === 'en' ? 'en' : 'es'} dark compact />
+        </div>
+        <p className="mt-6 text-sm text-white/60">{tx.servicesNote}</p>
+      </Slide>
+
       {/* 6. Portal y métricas (capturas reales, desarrolladora de demostración) */}
-      <Slide n={6}>
+      <Slide n={7}>
         <Kicker>{tx.portalKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.portalTitle}</h2>
         <p className="mt-2 text-sm text-brand-gray">{tx.portalSub}</p>
@@ -443,7 +463,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 7. CRM */}
-      <Slide dark n={7}>
+      <Slide dark n={8}>
         <Kicker light>{tx.crmKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.crmTitle}</h2>
         <p className="mt-2 max-w-3xl text-white/70">{tx.crmSub}</p>
@@ -464,7 +484,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 7b. Captación y campañas */}
-      <Slide n={8}>
+      <Slide n={9}>
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
           <img src="/images/propuesta-dev/aterrizaje.jpg?v=20261012" alt="" className="w-full rounded-2xl shadow-xl ring-1 ring-black/10" />
           <div>
@@ -483,7 +503,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 8. Tarifas */}
-      <Slide dark n={9}>
+      <Slide dark n={10}>
         <Kicker light>{tx.priceKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.priceTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -502,7 +522,7 @@ export default function ProposalPage() {
       </Slide>
 
       {/* 10. Reglas */}
-      <Slide n={10}>
+      <Slide n={11}>
         <Kicker>{tx.rulesKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.rulesTitle}</h2>
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">
@@ -518,7 +538,7 @@ export default function ProposalPage() {
       {/* 11. Contacto */}
       <Slide
         dark
-        n={11}
+        n={12}
         bg={
           <>
             <img src="/images/secciones/hero-home.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />

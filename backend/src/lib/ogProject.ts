@@ -280,24 +280,24 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/publica-tu-proyecto': {
     es: {
       title: 'Publica tu proyecto inmobiliario en Grupo 3i',
-      description: 'Lotes, terrenos, casas, departamentos, suites, locales y oficinas: inventario en vivo, recorridos 360°, sello de verificación y una red de referidores. Pagas solo cuando vendes.',
+      description: 'Lotes, terrenos, casas, departamentos, suites, locales y oficinas: inventario en vivo, recorridos 360°, sello de verificación y una red de referidores. Ganamos cuando tú vendes.',
       image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
     en: {
       title: 'List your real estate project on Grupo 3i',
-      description: 'Lots, land, homes, condos, suites, retail and office space: live inventory, 360° tours, a verification seal and a referral network. You only pay when you sell.',
+      description: 'Lots, land, homes, condos, suites, retail and office space: live inventory, 360° tours, a verification seal and a referral network. We get paid when you sell.',
       image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
   },
   '/publica-tu-proyecto/propuesta': {
     es: {
       title: 'Propuesta comercial para desarrolladoras · Grupo 3i',
-      description: 'Pagas solo cuando vendes: mapa interactivo de lotes, recorridos 360°, CRM con tus asesores, verificación legal y red de referidores.',
+      description: 'Ganamos cuando tú vendes: mapa interactivo de lotes, recorridos 360°, CRM con tus asesores, verificación legal y red de referidores.',
       image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
     en: {
       title: 'Partner proposal for developers · Grupo 3i',
-      description: 'You only pay when you sell: an interactive lot map, 360° tours, a CRM for your agents, legal vetting and a referral network.',
+      description: 'We get paid when you sell: an interactive lot map, 360° tours, a CRM for your agents, legal vetting and a referral network.',
       image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
   },
@@ -360,6 +360,10 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
       description: 'Official program rules: commissions, tiers, upgrades, rewards, payouts and withdrawals.',
       image: '/images/og/og-refiere.jpg',
     },
+  },
+  '/servicios': {
+    es: { title: 'Servicios integrales · Grupo 3i', description: 'Topografía, levantamientos georreferenciados, planos, fraccionamientos, trámites notariales y municipales, marketing, audiovisual y desarrollo de proyectos en la costa de Ecuador.', image: '/images/og/og-home.jpg' },
+    en: { title: 'Full-service support · Grupo 3i', description: 'Surveying, geo-referenced mapping, site plans, subdivisions, notary and municipal paperwork, marketing, video and project development on Ecuador’s coast.', image: '/images/og/og-home.jpg' },
   },
   '/privacidad': {
     es: { title: 'Política de privacidad · Grupo 3i', description: 'Qué datos recoge Grupo 3i, para qué los usa, con quién los comparte y cómo ejercer tus derechos.', image: '/images/og/og-home.jpg' },

@@ -108,12 +108,12 @@ model Lot {
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   /// Código del lote ("A-12"). Llave de sincronización con el DWG — único por proyecto.
-  code   String
-  block  String? // manzana: "MZ-A"
-  kind   LotKind   @default(LOT)
-  status LotStatus @default(AVAILABLE)
+  code     String
+  block    String? // manzana: "MZ-A"
+  kind     LotKind   @default(LOT)
+  status   LotStatus @default(AVAILABLE)
   /// Tipo de unidad (ids de propertyTypes.ts). Un «Lot» es cualquier unidad del inventario.
-  unitType String @default("lotes")
+  unitType String    @default("lotes")
 
   // --- Edificación (casas, departamentos, locales…) ---
   builtM2   Float? // área construida
@@ -1173,4 +1173,151 @@ model StaffPushSubscription {
   createdAt DateTime  @default(now())
 
   @@index([staffId])
+}
+
+// ============================================================
+// SERVICIOS INTEGRALES (docs/PLAN-SERVICIOS-INTEGRALES.md)
+// Solicitud → propuesta privada → expediente con etapas → cobros por hito.
+// El catálogo de servicios y las plantillas de trámite viven en código
+// (backend/src/lib/serviceCatalog.ts).
+// ============================================================
+
+model ServiceRequest {
+  id           String         @id @default(uuid())
+  name         String
+  phone        String
+  email        String?
+  company      String?
+  location     String?
+  services     String[] // ids del catálogo
+  message      String?        @db.Text
+  lang         String         @default("es")
+  utm          Json?
+  referralCode String?
+  status       String         @default("NEW") // NEW | CONTACTED | QUOTED | WON | LOST
+  ownerId      String? // StaffUser responsable
+  notes        String?        @db.Text
+  quotes       ServiceQuote[]
+  cases        ServiceCase[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([status])
+}
+
+model ServiceQuote {
+  id          String          @id @default(uuid())
+  number      Int             @default(autoincrement())
+  token       String          @unique // enlace privado del cliente
+  requestId   String?
+  request     ServiceRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
+  clientName  String
+  clientPhone String?
+  clientEmail String?
+  lang        String          @default("es")
+  title       String
+  /// [{ serviceId, description, qty, unit, unitPrice }]
+  items       Json
+  taxRate     Float           @default(0.15) // IVA Ecuador
+  subtotal    Float
+  total       Float
+  /// Plan de cobros al aceptar: [{ label, pct }]
+  milestones  Json?
+  templateId  String? // plantilla del expediente que se abre al aceptar
+  terms       String?         @db.Text
+  validUntil  DateTime?
+  status      String          @default("DRAFT") // DRAFT | SENT | VIEWED | ACCEPTED | REJECTED | EXPIRED
+  sentAt      DateTime?
+  viewedAt    DateTime?
+  acceptedAt  DateTime?
+  acceptedBy  String?
+  createdById String?
+  cases       ServiceCase[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model ServiceCase {
+  id          String          @id @default(uuid())
+  number      Int             @default(autoincrement())
+  token       String          @unique // seguimiento privado del cliente
+  templateId  String
+  title       String
+  requestId   String?
+  request     ServiceRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
+  quoteId     String?
+  quote       ServiceQuote?   @relation(fields: [quoteId], references: [id], onDelete: SetNull)
+  projectId   String? // proyecto de la plataforma, si aplica
+  clientName  String
+  clientPhone String?
+  clientEmail String?
+  lang        String          @default("es")
+  ownerId     String? // StaffUser responsable
+  status      String          @default("ACTIVE") // ACTIVE | ON_HOLD | DONE | CANCELLED
+  dueDate     DateTime?
+  steps       CaseStep[]
+  documents   CaseDocument[]
+  events      CaseEvent[]
+  payments    CasePayment[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([status])
+}
+
+model CaseStep {
+  id           String      @id @default(uuid())
+  caseId       String
+  case         ServiceCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  order        Int
+  title        String
+  description  String?     @db.Text
+  party        String      @default("team") // team | client | institution
+  institution  String? // Municipio, Notaría, Registro de la Propiedad…
+  requirements String[]
+  status       String      @default("PENDING") // PENDING | ACTIVE | DONE | SKIPPED
+  dueDays      Int? // plazo estimado de la plantilla
+  dueDate      DateTime?
+  startedAt    DateTime?
+  doneAt       DateTime?
+  notes        String?     @db.Text
+
+  @@index([caseId, order])
+}
+
+model CaseDocument {
+  id         String      @id @default(uuid())
+  caseId     String
+  case       ServiceCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  stepId     String?
+  name       String
+  publicId   String // Cloudinary authenticated
+  format     String
+  uploadedBy String      @default("team") // team | client
+  visible    Boolean     @default(true) // el cliente la ve en su seguimiento
+  createdAt  DateTime    @default(now())
+}
+
+model CaseEvent {
+  id        String      @id @default(uuid())
+  caseId    String
+  case      ServiceCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  kind      String // created | step | note | document | payment | status
+  text      String      @db.Text
+  by        String? // nombre del staff o «Cliente»
+  public    Boolean     @default(false) // se muestra en el seguimiento del cliente
+  createdAt DateTime    @default(now())
+}
+
+model CasePayment {
+  id        String      @id @default(uuid())
+  caseId    String
+  case      ServiceCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  label     String
+  amount    Float
+  dueDate   DateTime?
+  paidAt    DateTime?
+  method    String?
+  reference String?
+  createdAt DateTime    @default(now())
 }

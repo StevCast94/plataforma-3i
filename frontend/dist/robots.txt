@@ -5,5 +5,9 @@ Disallow: /desarrollador
 Disallow: /oficina/
 Disallow: /embed/
 Disallow: /fiesta
+Disallow: /seguimiento/
+Disallow: /en/seguimiento/
+Disallow: /propuesta-servicios/
+Disallow: /en/propuesta-servicios/
 
 Sitemap: https://grupo3i.com/sitemap.xml
