@@ -239,9 +239,9 @@ function Calendario() {
           const llega = plus(lunesISO(x.semana, anio), 2);
           return (
             <div key={i} className="rounded-2xl bg-white p-5 text-center shadow-sm ring-1 ring-black/5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-accent">Semana {i + 1} del año</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-accent">Tu semana {i + 1}</p>
               <p className="mt-2 font-serif text-2xl font-bold text-primary">{fmt(llega)} – {fmt(plus(llega, 6))}</p>
-              <p className="mt-1 text-sm text-brand-gray">Suite {x.suite} · semana {x.semana}</p>
+              <p className="mt-1 text-sm text-brand-gray">Suite {x.suite} · semana {x.semana} del año</p>
             </div>
           );
         })}
