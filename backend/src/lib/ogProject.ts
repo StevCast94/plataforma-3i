@@ -374,15 +374,27 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
       image: '/images/og/og-camp-montanita.jpg',
     },
   },
+  '/ibiza': {
+    es: {
+      title: 'Ibiza Condohotel — cuatro semanas al año junto al mar',
+      description: 'Tu fracción desde $12,000: 4 semanas al año, una por trimestre, a 300 m del mar en Manglaralto. Para siempre.',
+      image: '/images/og/og-ibiza.jpg',
+    },
+    en: {
+      title: 'Ibiza Condohotel — four weeks a year by the sea',
+      description: 'Your share from $12,000: 4 weeks a year, one per quarter, 300 m from the beach in Manglaralto. Forever.',
+      image: '/images/og/og-ibiza.jpg',
+    },
+  },
   '/bosque': {
     es: {
-      title: 'Bosque Montañita — adopta un árbol',
+      title: 'Montaña Viva — adopta un árbol',
       description:
         'Adopta un árbol con tu nombre en un bosque de conservación en Manglaralto. Certificado con QR, ubicación GPS y 3 años de cuidado.',
       image: '/images/og/og-bosque.jpg',
     },
     en: {
-      title: 'Bosque Montañita — adopt a tree',
+      title: 'Montaña Viva — adopt a tree',
       description: 'Adopt a tree in your name in a conservation forest in Manglaralto.',
       image: '/images/og/og-bosque.jpg',
     },
@@ -425,7 +437,9 @@ export function pageOgHandler(frontendPath: string) {
     try {
       const en = req.path === '/en' || req.path.startsWith('/en/');
       const bare = (en ? req.path.slice(3) : req.path) || '/';
-      const key = bare.startsWith('/bosque') ? '/bosque' : (PAGE_ALIAS[bare] ?? bare);
+      // Subdominio propio de Montaña Viva: la raíz es el bosque.
+      const bosqueHost = req.hostname.startsWith('montanaviva.');
+      const key = bosqueHost || bare.startsWith('/bosque') ? '/bosque' : (PAGE_ALIAS[bare] ?? bare);
       const entry = PAGE_OG[key];
       if (!entry) {
         res.sendFile(indexPath);

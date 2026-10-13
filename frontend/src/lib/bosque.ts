@@ -1,14 +1,14 @@
 // Bosque ("adopta un árbol"): proyecto vinculado a Montañita View y a Grupo 3i.
 // El nombre comercial está por definirse: se cambia aquí y en ningún otro lugar.
 
-export const BOSQUE_NAME = 'Bosque Montañita';
+export const BOSQUE_NAME = 'Montaña Viva';
 export const BOSQUE_TAGLINE = 'Adopta un árbol en la costa de Santa Elena';
 
 /**
  * Dominios propios del Bosque. Cuando se compre el dominio y se apunte a
  * Railway, se agrega aquí y la landing se sirve en la raíz de ese dominio.
  */
-export const BOSQUE_HOSTS: string[] = [];
+export const BOSQUE_HOSTS: string[] = ['montanaviva.grupo3i.com'];
 
 export function isBosqueHost(): boolean {
   return typeof window !== 'undefined' && BOSQUE_HOSTS.includes(window.location.hostname.replace(/^www\./, ''));

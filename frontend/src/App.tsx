@@ -19,6 +19,7 @@ import { Tracking } from '@/components/shared/Tracking';
 const HomePage = lazy(() => import('@/pages/landing/HomePage'));
 const ProjectsPage = lazy(() => import('@/pages/landing/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('@/pages/landing/ProjectDetailPage'));
+const IbizaPage = lazy(() => import('@/pages/landing/IbizaPage'));
 const PropuestaMontanitaPage = lazy(() => import('@/pages/landing/PropuestaMontanitaPage'));
 const AboutPage = lazy(() => import('@/pages/landing/AboutPage'));
 const ContactPage = lazy(() => import('@/pages/landing/ContactPage'));
@@ -114,6 +115,7 @@ const publicRoutes = () => (
   <>
     <Route index element={<HomePage />} />
     <Route path="proyectos" element={<ProjectsPage />} />
+    <Route path="ibiza" element={<IbizaPage />} />
     <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
     <Route path="proyectos/:slug/lote/:code" element={<LotPage />} />
     <Route path="proyectos/:slug/solar/:code" element={<LotPage />} />

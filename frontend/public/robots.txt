@@ -11,5 +11,7 @@ Disallow: /en/reglamento
 Disallow: /en/seguimiento/
 Disallow: /propuesta-servicios/
 Disallow: /en/propuesta-servicios/
+Disallow: /ibiza
+Disallow: /en/ibiza
 
 Sitemap: https://grupo3i.com/sitemap.xml

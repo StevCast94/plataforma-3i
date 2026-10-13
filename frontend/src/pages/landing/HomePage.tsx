@@ -11,6 +11,14 @@ import { useProjects } from '@/hooks/useProjects';
 import { cld } from '@/lib/cloudinary';
 import { ImageCrossfade } from '@/components/shared/ImageCrossfade';
 
+// Las cuatro puertas de Grupo 3i (docs/GUIA-DE-LENGUAJE.md, sección 2).
+const DOORS = [
+  { to: '/proyectos', img: '/images/ibiza/portada.jpg', kicker: 'Sé parte', title: 'Tu lugar en la costa', body: 'Fracciones en Ibiza Condohotel, lotes con vista al mar en Montañita View y proyectos verificados.', cta: 'Ver proyectos' },
+  { to: '/bosque', img: 'https://res.cloudinary.com/db3t73yas/image/upload/c_fill,w_800,h_1000/v1787623457/grupo3i/szzat1etcxe280jdtabj.jpg', kicker: 'Cuida la naturaleza', title: 'Montaña Viva', body: 'Adopta un árbol en un bosque protegido de Santa Elena. Aquí no se tala.', cta: 'Adopta un árbol' },
+  { to: '/servicios', img: '/images/secciones/pilar-proyectos.jpg', kicker: 'Construye', title: 'Tu casa, lista y sostenible', body: 'Paisajismo y casas modulares con domótica y energía solar, además de topografía, planos y trámites.', cta: 'Conoce los servicios' },
+  { to: '/oficina', img: '/images/secciones/comunidad-3i.jpg', kicker: 'Gana refiriendo', title: 'Compartir también es ganar', body: 'Recomienda cualquiera de nuestros proyectos con tu enlace y cobra una comisión por cada venta.', cta: 'Únete gratis' },
+];
+
 export default function HomePage() {
   const { t } = useLang();
   const { data: content } = useSiteContent();
@@ -38,14 +46,20 @@ export default function HomePage() {
   }, [hero.image_url]);
 
   // El texto del hero rota por su cuenta (independiente de las fotos): primero
-  // el mensaje del CMS (Ibiza) y luego el de Montañita View.
+  // el eslogan de la marca, luego el mensaje del CMS y el de Montañita View.
+  // Lenguaje: docs/GUIA-DE-LENGUAJE.md (Ibiza nunca como «inversión»).
   const slides = useMemo(
     () => [
       {
-        title: hero.title ?? 'Invierte en el futuro. Vive el presente.',
+        title: 'Tener una parte es tenerlo todo',
+        subtitle:
+          'Una fracción junto al mar, un lote con vista al Pacífico o un árbol en un bosque protegido: ponemos el patrimonio inmobiliario al alcance de todos.',
+      },
+      {
+        title: hero.title ?? 'Cuatro semanas al año junto al mar. Para siempre.',
         subtitle:
           hero.subtitle ??
-          'Lotes, propiedades fraccionadas y proyectos verificados en la costa ecuatoriana.',
+          'Fracciones en Ibiza Condohotel, lotes con vista al mar y proyectos verificados en la costa ecuatoriana.',
       },
       {
         title: 'Montañita View. Lotes con vista al mar, financiados a 24 meses sin intereses',
@@ -64,7 +78,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Seo title={t('Grupo 3i — Invierte en la costa ecuatoriana')} description={t('Fracciones en Ibiza Condohotel desde $12,000 y lotes con vista al mar en Montañita View desde $41,721, con financiamiento sin intereses.')} />
+      <Seo title={t('Grupo 3i — Tener una parte es tenerlo todo')} description={t('Fracciones en Ibiza Condohotel desde $12,000, lotes con vista al mar en Montañita View con 24 cuotas sin intereses y adopción de árboles en Montaña Viva.')} />
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-primary text-white">
         <ImageCrossfade
@@ -104,6 +118,26 @@ export default function HomePage() {
               </Link>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* LAS CUATRO PUERTAS */}
+      <section className="mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent">{t('Inversiones Inmobiliarias Inteligentes')}</p>
+          <h2 className="mt-2 text-3xl font-bold text-primary sm:text-4xl">{t('¿Cómo quieres ser parte?')}</h2>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {DOORS.map((d) => (
+            <Link key={d.to} to={d.to} className="group relative isolate flex min-h-[20rem] flex-col justify-end overflow-hidden rounded-3xl p-6 text-white shadow-lg transition hover:shadow-xl">
+              <img src={d.img} alt="" loading="lazy" className="absolute inset-0 -z-10 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">{t(d.kicker)}</p>
+              <h3 className="mt-1 font-serif text-2xl font-bold">{t(d.title)}</h3>
+              <p className="mt-2 text-sm text-white/80">{t(d.body)}</p>
+              <p className="mt-4 text-sm font-semibold text-secondary group-hover:underline">{t(d.cta)} →</p>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -167,11 +201,11 @@ export default function HomePage() {
               {t('Refiere y gana')}
             </p>
             <h2 className="mt-2 text-3xl font-bold text-primary sm:text-4xl">
-              {t('Recomienda una inversión y gana hasta el 4%')}
+              {t('Recomienda y gana hasta el 4 % por cada venta')}
             </h2>
             <p className="mt-4 text-brand-gray">
               {t(
-                'Si conoces a alguien que busca un lote en la costa o una fracción frente al mar, compártele tu enlace. Cuando compra, cobras tu comisión: registro gratis, sin inversión propia.',
+                'Si conoces a alguien que busca un lote en la costa, una fracción junto al mar o un proyecto de la vitrina, compártele tu enlace. Cuando compra, cobras tu comisión. El registro es gratis y no necesitas comprar nada.',
               )}
             </p>
             <Link to="/oficina" className="mt-8 inline-block">

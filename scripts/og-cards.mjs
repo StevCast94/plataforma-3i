@@ -14,13 +14,13 @@ const BOSQUE = cld('https://res.cloudinary.com/db3t73yas/image/upload/v178762345
 const cards = [
   {
     file: 'og-montanita-view.jpg', bg: MV, eyebrow: 'Manglaralto, Santa Elena', title: 'Montañita View',
-    sub: 'Lotes con vista al mar · elige tu solar en el mapa interactivo',
-    stats: [['Inversión desde', '$41,721', true], ['Tipo', 'Lotización'], ['Financiamiento', '0% · 24 meses']],
+    sub: 'Lotes con vista al mar · elige tu lote en el mapa interactivo',
+    stats: [['Desde', '$41,721', true], ['Tipo', 'Lotización'], ['Financiamiento', '0% · 24 meses']],
   },
   {
     file: 'og-ibiza.jpg', bg: IBIZA, eyebrow: 'Costa ecuatoriana', logo: `${PUB}/images/proyectos/ibiza/logo-light.svg`, title: 'Ibiza Condohotel',
-    sub: 'Propiedad fraccionada a 300 m del mar: disfruta, gana plusvalía y hereda',
-    stats: [['Inversión desde', '$12,000', true], ['Tipo', 'Condohotel'], ['Unidades', '17']],
+    sub: 'Cuatro semanas al año junto al mar. Para siempre.',
+    stats: [['Tu fracción desde', '$12,000', true], ['Uso', '4 semanas al año'], ['Suites', '17']],
   },
   {
     file: 'og-propuesta-montanita.jpg', bg: MV, eyebrow: 'Propuesta exclusiva de inversión', title: 'Montañita View',
@@ -28,8 +28,8 @@ const cards = [
     stats: [['Modalidades', 'Lotización · Lobby · Ambos', true], ['Ubicación', 'Manglaralto, Santa Elena']],
   },
   {
-    file: 'og-home.jpg', bg: `${PUB}/images/secciones/hero-home.jpg`, eyebrow: 'Grupo 3i · costa ecuatoriana', title: 'Invierte en un paraíso',
-    sub: 'Propiedad fraccionada, lotes con vista al mar y experiencias premium',
+    file: 'og-home.jpg', bg: `${PUB}/images/secciones/hero-home.jpg`, eyebrow: 'Grupo 3i · costa ecuatoriana', title: 'Tener una parte es tenerlo todo',
+    sub: 'Fracciones junto al mar, lotes con vista al Pacífico y un bosque para adoptar',
     stats: [['Ibiza Condohotel desde', '$12,000', true], ['Montañita View desde', '$41,721', true]],
   },
   {
@@ -53,7 +53,7 @@ const cards = [
     stats: [['Ingreso', 'sin costo', true], ['Comisiones', 'en 2 niveles']],
   },
   {
-    file: 'og-bosque.jpg', bg: BOSQUE, eyebrow: 'Manglaralto, Santa Elena', title: 'Bosque Montañita',
+    file: 'og-bosque.jpg', bg: BOSQUE, eyebrow: 'Manglaralto, Santa Elena', title: 'Montaña Viva',
     sub: 'Adopta un árbol con tu nombre en un bosque que nunca se va a talar',
     stats: [['Adopción desde', '$25', true], ['Primera etapa', '520 árboles'], ['Cuidado incluido', '3 años']],
     green: true,
@@ -62,9 +62,9 @@ const cards = [
 
 // Tarjetas cuadradas para los mensajes de referido (WhatsApp las muestra más grandes).
 const squares = [
-  { file: 'og-camp-montanita.jpg', bg: MV, eyebrow: 'Manglaralto, Santa Elena', title: 'Montañita View', sub: 'Elige tu solar con vista al mar en el mapa interactivo', stats: [['Desde', '$41,721', true], ['Financiamiento', '24 cuotas sin intereses']] },
+  { file: 'og-camp-montanita.jpg', bg: MV, eyebrow: 'Manglaralto, Santa Elena', title: 'Montañita View', sub: 'Elige tu lote con vista al mar en el mapa interactivo', stats: [['Desde', '$41,721', true], ['Financiamiento', '24 cuotas sin intereses']] },
   { file: 'og-camp-montanita-en.jpg', bg: MV, eyebrow: 'Ecuadorian coast', title: 'Montañita View', sub: 'Choose your ocean-view lot on the interactive map', stats: [['From', '$41,721', true], ['Financing', '24 months, 0% interest']] },
-  { file: 'og-camp-ibiza.jpg', bg: IBIZA, eyebrow: 'Costa ecuatoriana', logo: `${PUB}/images/proyectos/ibiza/logo-light.svg`, title: 'Ibiza Condohotel', sub: 'Tu fracción a 300 m del mar: disfruta, gana plusvalía y hereda', stats: [['Desde', '$12,000', true], ['Tipo', 'Condohotel']] },
+  { file: 'og-camp-ibiza.jpg', bg: IBIZA, eyebrow: 'Costa ecuatoriana', logo: `${PUB}/images/proyectos/ibiza/logo-light.svg`, title: 'Ibiza Condohotel', sub: 'Cuatro semanas al año junto al mar. Para siempre.', stats: [['Tu fracción desde', '$12,000', true], ['Uso', '4 semanas al año']] },
 ];
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');

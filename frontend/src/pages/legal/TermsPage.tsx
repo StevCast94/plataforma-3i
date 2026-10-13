@@ -2,7 +2,7 @@ import { Link, useLang } from '@/hooks/useLang';
 import { LegalDoc, List, type LegalText } from './LegalDoc';
 
 // Términos y condiciones generales del sitio (/terminos y /en/terminos).
-// Programas con reglas propias: Refiere y gana (/reglamento) y Bosque Montañita (/bosque/terminos).
+// Programas con reglas propias: Refiere y gana (/reglamento) y Montaña Viva (/bosque/terminos).
 
 const EMAIL = 'grupoinmobiliario3i.ec@gmail.com';
 const mail = <a href={`mailto:${EMAIL}`} className="text-accent underline">{EMAIL}</a>;
