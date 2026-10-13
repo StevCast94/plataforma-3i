@@ -1,3 +1,4 @@
+import { TRAVEL_ENABLED } from '../lib/features';
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { prisma } from '../prisma';
 import {
@@ -25,7 +26,7 @@ async function announceElite(memberId: string, db: Db): Promise<void> {
     await db.socialPost.create({
       data: {
         userId: memberId,
-        content: `¡${member.fullName} acaba de convertirse en Miembro Elite del Club 3i! 🎉🏆`,
+        content: `¡${member.fullName} acaba de convertirse en socio Elite de Refiere y gana! 🎉🏆`,
         images: [],
       },
     });
@@ -103,7 +104,7 @@ export async function checkReferralAscension(
         status: 'ELITE',
         eliteBy: 'REFERRALS',
         eliteSince: new Date(),
-        membershipAwarded: true,
+        membershipAwarded: TRAVEL_ENABLED,
       },
     });
     // Otorgar la membresía de viajes GRATIS (idempotente: no duplica si ya tiene activa).
@@ -111,7 +112,7 @@ export async function checkReferralAscension(
       where: { memberId, active: true },
       select: { id: true },
     });
-    if (!activeMembership) {
+    if (TRAVEL_ENABLED && !activeMembership) {
       await db.travelMembership.create({
         data: {
           memberId,
@@ -125,7 +126,9 @@ export async function checkReferralAscension(
       memberId,
       'elite_ascension',
       '¡Felicidades, eres Miembro Elite! 🏆',
-      `Alcanzaste ${ELITE_REFERRALS_REQUIRED} referidos exitosos. Eres Elite y tu membresía de viajes es GRATIS.`,
+      TRAVEL_ENABLED
+        ? `Alcanzaste ${ELITE_REFERRALS_REQUIRED} referidos exitosos. Eres Elite y tu membresía de viajes es GRATIS.`
+        : `Alcanzaste ${ELITE_REFERRALS_REQUIRED} referidos exitosos. Ahora eres Elite y ganas el doble de comisión.`,
       db,
     );
     await announceElite(memberId, db);

@@ -4,7 +4,6 @@ import {
   Users,
   DollarSign,
   Wallet,
-  Luggage,
   Link2,
   Calculator,
   ShoppingBag,
@@ -25,7 +24,6 @@ const items: { to: string; label: string; icon: LucideIcon }[] = [
   { to: '/oficina/mi-red', label: 'Mi Red', icon: Users },
   { to: '/oficina/comisiones', label: 'Comisiones', icon: DollarSign },
   { to: '/oficina/pagos', label: 'Pagos', icon: Wallet },
-  { to: '/oficina/viajes', label: 'Mis Viajes', icon: Luggage },
   { to: '/oficina/calculadora', label: 'Calculadora', icon: Calculator },
   { to: '/tienda', label: 'Tienda 3i', icon: ShoppingBag },
 ];

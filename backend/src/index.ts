@@ -1,3 +1,4 @@
+import { TRAVEL_ENABLED } from './lib/features';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -203,6 +204,12 @@ if (hasBuild) {
   app.get(['/proyectos/:slug', '/en/proyectos/:slug'], projectOgHandler(frontendPath));
   app.get(['/l/:slug', '/en/l/:slug'], landingOgHandler(frontendPath));
   // Antes la ficha vivía en /solar/: los enlaces ya compartidos redirigen para siempre a /lote/.
+  // Club de Viajes oculto (lib/features.ts): los enlaces viejos llevan a Refiere y gana.
+  if (!TRAVEL_ENABLED) {
+    app.get(['/club', '/club/*', '/en/club', '/en/club/*', '/tienda/membresia-viajes-club-3i', '/en/tienda/membresia-viajes-club-3i'], (req, res) => {
+      res.redirect(301, req.path.startsWith('/en/') ? '/en/oficina' : '/oficina');
+    });
+  }
   app.get(['/proyectos/:slug/solar/:code', '/en/proyectos/:slug/solar/:code'], (req, res) => {
     res.redirect(301, req.originalUrl.replace('/solar/', '/lote/'));
   });

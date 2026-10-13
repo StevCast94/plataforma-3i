@@ -263,7 +263,7 @@ export default function BosqueHome() {
           </div>
           <ul className="space-y-4 text-white/85">
             <li>Cada lote vendido en Montañita View incluye un árbol a nombre de su propietario.</li>
-            <li>Los senderos del bosque son parte de la experiencia de propietarios, huéspedes y socios del Club 3i.</li>
+            <li>Los senderos del bosque son parte de la experiencia de propietarios, huéspedes y socios de Grupo 3i.</li>
             <li>La cosecha de los frutales va al restaurante de Montañita View Lobby y a la comunidad.</li>
             <li>
               <a href="https://grupo3i.com/proyectos/montanita-view" className="font-semibold text-guayacan underline underline-offset-4">

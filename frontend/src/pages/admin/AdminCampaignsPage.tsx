@@ -135,7 +135,6 @@ export default function AdminCampaignsPage() {
               <option value="/proyectos">Todos los proyectos</option>
               <option value="/publica-tu-proyecto">Para desarrolladoras</option>
               <option value="/oficina">Refiere y gana</option>
-              <option value="/club">Club 3i</option>
               </optgroup>
             </select>
           </label>

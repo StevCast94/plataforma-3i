@@ -27,7 +27,7 @@ export default function ContactPage() {
         <div>
           <h2 className="text-2xl text-primary">{t('Hablemos')}</h2>
           <p className="mt-3 text-brand-gray">
-            {t('Estamos para ayudarte a encontrar la inversión o el plan de viaje ideal.')}
+            {t('Estamos para ayudarte a encontrar la inversión ideal.')}
           </p>
           <ul className="mt-6 space-y-3 text-primary">
             <li>
@@ -39,7 +39,7 @@ export default function ContactPage() {
               {data?.phone ?? '+593 98 487 5050'}
             </li>
             <li>
-              <span className="font-semibold">Web:</span> grupo3i.com · club3i.com
+              <span className="font-semibold">Web:</span> grupo3i.com
             </li>
           </ul>
 

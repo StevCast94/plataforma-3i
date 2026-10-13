@@ -10,10 +10,10 @@ const a = 'text-accent underline';
 
 const ES: LegalText = {
   seoTitle: 'Términos y condiciones',
-  seoDesc: 'Condiciones de uso de grupo3i.com: información de proyectos y precios, compras, Club 3i, desarrolladoras aliadas y responsabilidad.',
+  seoDesc: 'Condiciones de uso de grupo3i.com: información de proyectos y precios, compras, Refiere y gana, desarrolladoras aliadas y responsabilidad.',
   title: 'Términos y condiciones',
   updated: 'Última actualización: octubre de 2026',
-  intro: 'Estos términos regulan el uso de grupo3i.com y club3i.com. Al usar el sitio los aceptas. Si algo no queda claro, escríbenos antes de usarlo.',
+  intro: 'Estos términos regulan el uso de grupo3i.com. Al usar el sitio los aceptas. Si algo no queda claro, escríbenos antes de usarlo.',
   sections: [
     { title: '1. Quiénes somos', body: [
       <>Grupo 3i es un grupo inmobiliario con operaciones en Manglaralto, provincia de Santa Elena, Ecuador. Contacto: {mail} o WhatsApp +593 98 487 5050.</>,
@@ -30,14 +30,12 @@ const ES: LegalText = {
     { title: '4. Compras y reservas', body: [
       'Cada producto inmobiliario se rige por su propio contrato, que detalla el precio, la forma de pago, los plazos y las condiciones de desistimiento.',
       'Los planes de financiamiento directo (entrada y cuotas) se pactan por escrito en ese contrato.',
-      'Las reservas de viajes del Club de Viajes 3i se rigen además por las condiciones del hotel o la aerolínea que se muestran al reservar, incluidas las de cancelación.',
     ] },
-    { title: '5. Club 3i y Refiere y gana', body: [
-      <>La membresía del Club 3i da acceso a tarifas y beneficios de socio mientras esté vigente. Los descuentos dependen de la disponibilidad de cada proveedor.</>,
+    { title: '5. Refiere y gana', body: [
       <>El programa de referidos tiene su propio <Link to="/reglamento" className={a}>reglamento de Refiere y gana</Link>, que forma parte de estos términos.</>,
     ] },
     { title: '6. Tu cuenta', body: [
-      'Si creas una cuenta (Refiere y gana, portal de desarrolladoras o Club 3i), te comprometes a dar datos verdaderos y a cuidar tu contraseña. Eres responsable de lo que se haga con tu cuenta. Podemos suspender cuentas con datos falsos, uso fraudulento o que incumplan estos términos.',
+      'Si creas una cuenta (Refiere y gana o portal de desarrolladoras), te comprometes a dar datos verdaderos y a cuidar tu contraseña. Eres responsable de lo que se haga con tu cuenta. Podemos suspender cuentas con datos falsos, uso fraudulento o que incumplan estos términos.',
     ] },
     { title: '7. Uso correcto del sitio', body: [
       <List items={[
@@ -45,7 +43,7 @@ const ES: LegalText = {
         'No intentes acceder a áreas privadas, extraer información de forma automatizada ni afectar el funcionamiento del sitio.',
         'No publiques enlaces de referido con información engañosa sobre los proyectos.',
       ]} />,
-      'Las marcas Grupo 3i, Club 3i, Montañita View e Ibiza Condohotel, y el contenido del sitio, pertenecen a Grupo 3i o a sus aliados.',
+      'Las marcas Grupo 3i, Montañita View e Ibiza Condohotel, y el contenido del sitio, pertenecen a Grupo 3i o a sus aliados.',
     ] },
     { title: '8. Responsabilidad', body: [
       'Hacemos lo posible para que el sitio funcione y la información esté al día, pero no podemos garantizar que esté siempre disponible o libre de errores. No respondemos por decisiones tomadas solo con base en la información referencial del sitio, sin firmar el contrato correspondiente, ni por el contenido de sitios de terceros a los que enlazamos.',
@@ -62,10 +60,10 @@ const ES: LegalText = {
 
 const EN: LegalText = {
   seoTitle: 'Terms of use',
-  seoDesc: 'Terms of use for grupo3i.com: project and pricing information, purchases, Club 3i, partner developers and liability.',
+  seoDesc: 'Terms of use for grupo3i.com: project and pricing information, purchases, Refer & Earn, partner developers and liability.',
   title: 'Terms of use',
   updated: 'Last updated: October 2026',
-  intro: 'These terms govern your use of grupo3i.com and club3i.com. By using the site, you agree to them. If anything is unclear, please get in touch before using it.',
+  intro: 'These terms govern your use of grupo3i.com. By using the site, you agree to them. If anything is unclear, please get in touch before using it.',
   sections: [
     { title: '1. Who we are', body: [
       <>Grupo 3i is a real estate group operating in Manglaralto, Santa Elena province, Ecuador. Contact: {mail} or WhatsApp +593 98 487 5050.</>,
@@ -82,14 +80,12 @@ const EN: LegalText = {
     { title: '4. Purchases and bookings', body: [
       'Each real estate product is governed by its own contract, which sets out the price, payment terms, timeline and cancellation conditions.',
       'Direct financing plans (down payment and monthly payments) are agreed in writing in that contract.',
-      'Club 3i Travel bookings are also subject to the hotel’s or airline’s terms shown at booking, including cancellation policies.',
     ] },
-    { title: '5. Club 3i and Refer & Earn', body: [
-      'A Club 3i membership gives you member rates and perks while it’s active. Discounts depend on each provider’s availability.',
+    { title: '5. Refer & Earn', body: [
       <>The referral program has its own <Link to="/reglamento" className={a}>Refer & Earn terms</Link>, which are part of these terms.</>,
     ] },
     { title: '6. Your account', body: [
-      'If you create an account (Refer & Earn, the developer portal or Club 3i), you agree to provide accurate information and keep your password safe. You’re responsible for activity on your account. We may suspend accounts with false information, fraudulent use or that break these terms.',
+      'If you create an account (Refer & Earn or the developer portal), you agree to provide accurate information and keep your password safe. You’re responsible for activity on your account. We may suspend accounts with false information, fraudulent use or that break these terms.',
     ] },
     { title: '7. Using the site', body: [
       <List items={[
@@ -97,7 +93,7 @@ const EN: LegalText = {
         'Don’t try to access private areas, scrape data or disrupt the site.',
         'Don’t share referral links with misleading claims about our projects.',
       ]} />,
-      'The Grupo 3i, Club 3i, Montañita View and Ibiza Condohotel names and the site’s content belong to Grupo 3i or its partners.',
+      'The Grupo 3i, Montañita View and Ibiza Condohotel names and the site’s content belong to Grupo 3i or its partners.',
     ] },
     { title: '8. Liability', body: [
       'We do our best to keep the site running and up to date, but we can’t guarantee it will always be available or error-free. We’re not responsible for decisions made solely on the site’s reference information without signing the relevant contract, or for the content of third-party sites we link to.',

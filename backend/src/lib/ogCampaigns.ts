@@ -1,3 +1,4 @@
+import { TRAVEL_ENABLED } from './features';
 import { prisma } from '../prisma';
 
 // ============================================================
@@ -92,10 +93,10 @@ export const DEFAULT_CAMPAIGNS: Record<string, OgCampaign> = {
     label: 'Gana comisiones refiriendo',
     title: '{nombre} te invita a ganar comisiones refiriendo',
     description:
-      'Refiere y gana por cada membresía y propiedad. Sin costo de ingreso.',
+      'Gana una comisión por cada propiedad que se venda con tu enlace. Sin costo de ingreso.',
     image: '/images/og/og-referidos.jpg',
     message:
-      'Estoy ganando ingresos refiriendo al Club 3i, y no cuesta nada entrar. Únete a mi equipo aquí:',
+      'Estoy ganando comisiones recomendando proyectos de Grupo 3i, y no cuesta nada entrar. Únete a mi equipo aquí:',
     to: '/oficina/registro',
   },
   comunidad: {
@@ -168,6 +169,7 @@ export async function loadCampaigns(): Promise<Record<string, OgCampaign>> {
     if (!parsed || typeof parsed !== 'object') continue;
     merged[row.key] = { ...(merged[row.key] ?? EMPTY_CAMPAIGN), ...parsed };
   }
+  if (!TRAVEL_ENABLED) for (const k of Object.keys(merged)) if (merged[k].to?.startsWith('/club')) delete merged[k];
   return merged;
 }
 
@@ -175,7 +177,7 @@ const EMPTY_CAMPAIGN: OgCampaign = {
   label: '',
   title: 'Grupo 3i — Inversión inmobiliaria en la costa ecuatoriana',
   description:
-    'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
+    'Lotes, propiedades fraccionadas y proyectos verificados en la costa ecuatoriana.',
   image: '/images/og-cover.png',
   message: '',
   to: '/oficina/registro',

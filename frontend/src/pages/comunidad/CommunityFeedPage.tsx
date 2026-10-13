@@ -53,7 +53,7 @@ export default function CommunityFeedPage() {
           <PostCreator onCreated={prepend} />
         ) : (
           <div className="rounded-2xl bg-white p-5 text-center shadow-sm ring-1 ring-black/5">
-            <p className="text-brand-gray">Únete al Club 3i para publicar, comentar y conectar.</p>
+            <p className="text-brand-gray">Únete a Refiere y gana para publicar, comentar y conectar.</p>
             <Link to="/oficina/registro" className="mt-3 inline-block">
               <Button size="sm">Registrarme gratis</Button>
             </Link>

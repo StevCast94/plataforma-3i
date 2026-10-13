@@ -34,7 +34,7 @@ export function ProgressToElite({ member }: { member: ReferralMember }) {
       <p className="mt-3 text-sm text-brand-gray">
         Te quedan <strong className="text-primary">{remaining} días</strong> de tu ventana de{' '}
         {ELITE_REFERRALS_WINDOW_DAYS} días. Al llegar a {ELITE_REFERRALS_REQUIRED} referidos exitosos
-        asciendes a Elite y obtienes tu membresía de viajes <strong>GRATIS</strong>.
+        asciendes a Elite.
       </p>
 
       <Link to="/oficina/calculadora" className="mt-4 inline-block">

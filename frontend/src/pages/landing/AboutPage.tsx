@@ -16,8 +16,8 @@ const pillars = [
     image: '/images/secciones/pilar-proyectos.jpg',
   },
   {
-    title: 'Experiencias',
-    body: 'Membresías de viaje y acceso VIP a amenidades exclusivas.',
+    title: 'Servicios integrales',
+    body: 'Topografía, trámites, marketing y desarrollo de proyectos, con un solo equipo.',
     image: '/images/secciones/pilar-experiencias.jpg',
   },
 ];
@@ -28,7 +28,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <Seo title={t('Sobre Grupo 3i')} description={t('Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, lotes con vista al mar y membresías de viaje.')} />
+      <Seo title={t('Sobre Grupo 3i')} description={t('Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, lotes con vista al mar y servicios integrales para desarrolladoras.')} />
       <PageHeader
         title={t(data?.title ?? 'Sobre Grupo 3i')}
         subtitle={t('Inversión inmobiliaria inteligente.')}
@@ -39,7 +39,7 @@ export default function AboutPage() {
         <p className="text-lg leading-relaxed text-primary/80">
           {t(
             data?.body ??
-              'Somos un grupo inmobiliario enfocado en democratizar la inversión a través de propiedades fraccionadas, membresías de viaje y proyectos de alto nivel en Ecuador.',
+              'Somos un grupo inmobiliario enfocado en democratizar la inversión a través de propiedades fraccionadas, lotes y proyectos de alto nivel en Ecuador.',
           )}
         </p>
       </section>

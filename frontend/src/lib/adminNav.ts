@@ -47,13 +47,12 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [{ to: '/admin/servicios', label: 'Solicitudes y trámites', icon: '📐', roles: [...MANAGERS, 'advisor'] }],
   },
   {
-    title: 'Club 3i y referidos',
+    title: 'Refiere y gana',
     items: [
       { to: '/admin/miembros', label: 'Miembros', icon: '👥' },
       { to: '/admin/comisiones', label: 'Comisiones', icon: '💲' },
       { to: '/admin/retiros', label: 'Retiros', icon: '💸' },
       { to: '/admin/marketing', label: 'Embudo de referidos', icon: '📈' },
-      { to: '/admin/garantias', label: 'Club de viajes', icon: '✈️' },
       { to: '/admin/soporte', label: 'Soporte', icon: '🆘' },
     ],
   },

@@ -7,7 +7,8 @@ import { estimateMonthly } from '@/lib/referral';
 import { formatCurrency } from '@/lib/utils';
 
 export default function CalculatorPage() {
-  const [memberships, setMemberships] = useState(3);
+  // El Club de Viajes queda para desarrollo futuro: el simulador cuenta solo ventas inmobiliarias.
+  const memberships = 0;
   const [properties, setProperties] = useState(1);
   const [avgPrice, setAvgPrice] = useState(15000);
 
@@ -24,15 +25,6 @@ export default function CalculatorPage() {
       </p>
 
       <div className="space-y-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-        <Slider
-          label="Membresías de viajes que vendes al mes"
-          value={memberships}
-          min={0}
-          max={20}
-          step={1}
-          onChange={setMemberships}
-          display={`${memberships}`}
-        />
         <Slider
           label="Propiedades fraccionadas al mes"
           value={properties}

@@ -18,7 +18,6 @@ export default function HomePage() {
 
   const hero = content?.hero ?? {};
   const projectsSection = content?.projects ?? {};
-  const club = content?.club ?? {};
 
   // La imagen local va SIEMPRE primero (se ve al instante, sin esperar la API
   // de contenido). Las del CMS (una por línea o separadas por coma en el campo
@@ -46,7 +45,7 @@ export default function HomePage() {
         title: hero.title ?? 'Invierte en el futuro. Vive el presente.',
         subtitle:
           hero.subtitle ??
-          'Propiedades fraccionadas, membresías de viaje y experiencias premium en la costa ecuatoriana.',
+          'Lotes, propiedades fraccionadas y proyectos verificados en la costa ecuatoriana.',
       },
       {
         title: 'Montañita View. Lotes con vista al mar, financiados a 24 meses sin intereses',
@@ -98,9 +97,9 @@ export default function HomePage() {
               <Link to="/proyectos">
                 <Button size="lg">{t(hero.cta_text ?? 'Explorar proyectos')}</Button>
               </Link>
-              <Link to="/club">
+              <Link to="/oficina">
                 <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white hover:text-primary">
-                  {t('Conoce el Club 3i')}
+                  {t('Refiere y gana')}
                 </Button>
               </Link>
             </div>
@@ -209,17 +208,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CLUB 3i */}
+      {/* REFIERE Y GANA (el Club de Viajes queda para desarrollo futuro) */}
       <CTASection
-        title={t(club.title ?? 'Únete al Club 3i')}
-        subtitle={
-          t(
-            club.subtitle ??
-              'Viaja por el mundo con descuentos de hasta 70% y accede a beneficios exclusivos.',
-          )
-        }
-        ctaText={t('Quiero ser miembro')}
-        ctaTo="/club"
+        title={t('Recomienda y gana con Grupo 3i')}
+        subtitle={t('Comparte nuestros proyectos con tu enlace y gana una comisión por cada venta. El registro es gratis.')}
+        ctaText={t('Quiero ser socio')}
+        ctaTo="/oficina"
       />
     </>
   );

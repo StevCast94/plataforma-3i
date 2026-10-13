@@ -1,3 +1,4 @@
+import { TRAVEL_ENABLED } from '../lib/features';
 import { Router } from 'express';
 import { prisma } from '../prisma';
 import { requireAdmin } from '../middleware/auth';
@@ -21,6 +22,7 @@ productRoutes.get('/', async (req, res) => {
       where: {
         ...(all ? {} : { active: true }),
         ...(type ? { type: type as never } : {}),
+        ...(TRAVEL_ENABLED || all ? {} : { type: { not: 'TRAVEL_MEMBERSHIP' as const } }),
       },
       orderBy: [{ featured: 'desc' }, { createdAt: 'asc' }],
       include: { project: true },

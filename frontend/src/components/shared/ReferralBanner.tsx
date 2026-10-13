@@ -39,7 +39,7 @@ export function ReferralBanner() {
   return (
     <div className="flex items-center justify-center gap-3 bg-secondary/20 px-4 py-2.5 text-center text-sm text-primary print:hidden">
       <span>
-        Te invitó <strong>{referrerName}</strong> al Club 3i —{' '}
+        Te invitó <strong>{referrerName}</strong> a Refiere y gana de Grupo 3i —{' '}
         <Link to="/oficina/registro" className="font-semibold underline hover:text-accent">
           crea tu cuenta gratis
         </Link>

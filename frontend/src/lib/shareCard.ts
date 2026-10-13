@@ -71,7 +71,7 @@ export async function generateShareCard(
 
   ctx.fillStyle = '#d5c03d';
   ctx.font = '600 30px Inter, sans-serif';
-  ctx.fillText('INVERSIÓN INMOBILIARIA · CLUB DE VIAJES', W / 2, 590);
+  ctx.fillText('INVERSIÓN INMOBILIARIA · REFIERE Y GANA', W / 2, 590);
 
   // Tarjeta blanca con el QR
   const cardW = 760;
@@ -92,7 +92,7 @@ export async function generateShareCard(
 
   ctx.fillStyle = 'rgba(255,255,255,0.65)';
   ctx.font = '400 32px Inter, sans-serif';
-  ctx.fillText('Escanea y únete al Club 3i', W / 2, cardY + cardH + 165);
+  ctx.fillText('Escanea y únete a Refiere y gana', W / 2, cardY + cardH + 165);
 
   return canvas.toDataURL('image/png');
 }

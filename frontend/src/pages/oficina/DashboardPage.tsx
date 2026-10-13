@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, DollarSign, Wallet, Link2, Luggage, Smartphone, FileText } from 'lucide-react';
+import { Users, DollarSign, Wallet, Link2, Smartphone, FileText } from 'lucide-react';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { ProgressToElite } from '@/components/oficina/ProgressToElite';
@@ -58,7 +58,6 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold text-primary">Hola, {member.fullName.split(' ')[0]} 👋</h1>
         <p className="mt-1 text-brand-gray">
           Eres miembro <strong>{statusLabel(member.status)}</strong>
-          {member.membershipAwarded && ' · Membresía de viajes GRATIS 🎁'}
         </p>
       </div>
 
@@ -160,7 +159,6 @@ export default function DashboardPage() {
           { to: '/oficina/mi-red', label: 'Mi Red', icon: Users },
           { to: '/oficina/comisiones', label: 'Comisiones', icon: DollarSign },
           { to: '/oficina/pagos', label: 'Pagos', icon: Wallet },
-          { to: '/oficina/viajes', label: 'Mis Viajes', icon: Luggage },
           { to: '/reglamento', label: 'Reglamento', icon: FileText },
         ].map((q) => (
           <Link

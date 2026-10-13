@@ -1,3 +1,5 @@
+import { Navigate } from 'react-router-dom';
+import { TRAVEL_ENABLED } from '@/lib/features';
 import { useParams } from 'react-router-dom';
 import { Link, useLang } from '@/hooks/useLang';
 import { motion } from 'framer-motion';
@@ -33,6 +35,8 @@ export default function ProductDetailPage() {
 
   if (loading) return <DetailSkeleton />;
   if (error) return <ErrorState message={error} onRetry={() => location.reload()} />;
+  // El Club de Viajes queda para desarrollo futuro: la membresía no se vende por ahora.
+  if (product?.type === 'TRAVEL_MEMBERSHIP' && !TRAVEL_ENABLED) return <Navigate to="/oficina" replace />;
   if (!product)
     return (
       <EmptyState
@@ -46,7 +50,7 @@ export default function ProductDetailPage() {
 
   const features = Array.isArray(product.features) ? product.features : [];
   const gallery = product.images?.length ? product.images : [];
-  const related = (allProducts ?? [])
+  const related = (allProducts ?? []).filter((p) => TRAVEL_ENABLED || p.type !== 'TRAVEL_MEMBERSHIP')
     .filter((p) => p.id !== product.id)
     .slice(0, 3);
 

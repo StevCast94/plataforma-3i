@@ -34,7 +34,6 @@ export function Footer() {
           </h4>
           <ul className="space-y-2 text-sm text-white/80">
             <li><Link to="/proyectos" className="hover:text-secondary">{t('Proyectos')}</Link></li>
-            <li><Link to="/club" className="hover:text-secondary">Club 3i</Link></li>
             <li><Link to="/oficina" className="hover:text-secondary">{t('Refiere y gana')}</Link></li>
             <li><Link to="/sobre-nosotros" className="hover:text-secondary">{t('Nosotros')}</Link></li>
             <li><Link to="/contacto" className="hover:text-secondary">{t('Contacto')}</Link></li>
@@ -50,7 +49,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-white/80">
             <li>{contact?.email ?? 'grupoinmobiliario3i.ec@gmail.com'}</li>
             {contact?.phone && <li>{contact.phone}</li>}
-            <li>grupo3i.com · club3i.com</li>
+            <li>grupo3i.com</li>
             <li>{t('Costa Ecuatoriana')}</li>
           </ul>
         </div>

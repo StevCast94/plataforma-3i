@@ -1,3 +1,4 @@
+import { TRAVEL_ENABLED } from '../lib/features';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../prisma';
 import { createCommission } from './commissionCalculator';
@@ -211,7 +212,7 @@ export async function confirmPurchase(purchaseId: string): Promise<{
     // DOBLE INCENTIVO — Si el comprador ENTRÓ por un referido y compró un
     // producto INMOBILIARIO, se le regala (al referido) una membresía de viajes
     // (source=REWARD). Idempotente: no duplica si ya tiene una activa.
-    if (isRealEstate && effectiveReferrerId) {
+    if (TRAVEL_ENABLED && isRealEstate && effectiveReferrerId) {
       await grantTravelMembershipOnPurchase(tx, {
         customerEmail: purchase.customerEmail,
         purchaseId: purchase.id,

@@ -254,30 +254,6 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
       image: '/images/og/og-propuesta-montanita.jpg',
     },
   },
-  '/club': {
-    es: {
-      title: 'Club 3i — viajes, beneficios y comunidad',
-      description: 'Membresía de viajes con hasta 70% de descuento en hoteles, beneficios para socios y una comunidad de inversionistas.',
-      image: '/images/og/og-club.jpg',
-    },
-    en: {
-      title: 'Club 3i — travel, perks and community',
-      description: 'A travel membership with up to 70% off hotels, members-only perks and a community of investors.',
-      image: '/images/og/og-club.jpg',
-    },
-  },
-  '/club/viajes': {
-    es: {
-      title: 'Club de Viajes 3i — hasta 70% de descuento',
-      description: 'Descuentos en hoteles y experiencias en todo el mundo, y un certificado vacacional cada año en más de 120 destinos.',
-      image: '/images/og/og-viajes-club.jpg',
-    },
-    en: {
-      title: 'Club 3i Travel — save up to 70%',
-      description: 'Discounts on hotels and experiences worldwide, plus a vacation certificate every year in 120+ destinations.',
-      image: '/images/og/og-viajes-club.jpg',
-    },
-  },
   '/oficina': {
     es: {
       title: 'Refiere y gana con Grupo 3i',
@@ -341,12 +317,12 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/sobre-nosotros': {
     es: {
       title: 'Sobre Grupo 3i',
-      description: 'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, lotes con vista al mar y membresías de viaje.',
+      description: 'Grupo inmobiliario en la costa ecuatoriana: propiedad fraccionada, lotes con vista al mar y servicios integrales para desarrolladoras.',
       image: '/images/og/og-home.jpg',
     },
     en: {
       title: 'About Grupo 3i',
-      description: 'A real estate group on Ecuador’s coast: fractional ownership, ocean-view lots and travel memberships.',
+      description: 'A real estate group on Ecuador’s coast: fractional ownership, ocean-view lots and full-service support for developers.',
       image: '/images/og/og-home.jpg',
     },
   },
@@ -383,8 +359,8 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
     en: { title: 'Privacy policy · Grupo 3i', description: 'What data Grupo 3i collects, how we use it, who we share it with and how to exercise your rights.', image: '/images/og/og-home.jpg' },
   },
   '/terminos': {
-    es: { title: 'Términos y condiciones · Grupo 3i', description: 'Condiciones de uso de grupo3i.com: información de proyectos y precios, compras, Club 3i y desarrolladoras aliadas.', image: '/images/og/og-home.jpg' },
-    en: { title: 'Terms of use · Grupo 3i', description: 'Terms of use for grupo3i.com: project and pricing information, purchases, Club 3i and partner developers.', image: '/images/og/og-home.jpg' },
+    es: { title: 'Términos y condiciones · Grupo 3i', description: 'Condiciones de uso de grupo3i.com: información de proyectos y precios, compras, Refiere y gana y desarrolladoras aliadas.', image: '/images/og/og-home.jpg' },
+    en: { title: 'Terms of use · Grupo 3i', description: 'Terms of use for grupo3i.com: project and pricing information, purchases, Refer & Earn and partner developers.', image: '/images/og/og-home.jpg' },
   },
   '/fiesta': {
     es: {
@@ -417,7 +393,6 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
 const PAGE_ALIAS: Record<string, string> = {
   '/oficina/registro': '/oficina',
   '/oficina/login': '/oficina',
-  '/tienda/membresia-viajes-club-3i': '/club/viajes',
 };
 
 function renderMeta(indexPath: string, m: PageMeta, url: string, en: boolean, origin: string): string {

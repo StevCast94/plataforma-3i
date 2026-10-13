@@ -1,3 +1,4 @@
+import { TRAVEL_ENABLED } from '@/lib/features';
 import { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
@@ -206,7 +207,8 @@ export function AdminMemberDetail({
             </ul>
           </Section>
 
-          {/* Club de Viajes */}
+          {/* Club de Viajes (oculto hasta terminar el producto) */}
+          {TRAVEL_ENABLED && (
           <Section title="Club de Viajes 3i">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant={data.travelAccess ? 'gold' : 'light'}>
@@ -233,6 +235,7 @@ export function AdminMemberDetail({
               </ul>
             )}
           </Section>
+          )}
 
           {/* Referidor (upline) — reasignable por superadmin */}
           {isSuperadmin && (

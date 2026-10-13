@@ -13,11 +13,10 @@ const SECTIONS = [
   { id: 'membresia', n: '2', t: 'Rangos: Premiere y Elite' },
   { id: 'comisiones', n: '3', t: 'Comisiones' },
   { id: 'ascensos', n: '4', t: 'Ascensos a Elite' },
-  { id: 'incentivo', n: '5', t: 'Doble incentivo (membresía de regalo)' },
-  { id: 'atribucion', n: '6', t: 'Atribución de referidos' },
-  { id: 'liquidacion', n: '7', t: 'Liquidación y retiros' },
-  { id: 'limites', n: '8', t: 'Inactividad' },
-  { id: 'condiciones', n: '9', t: 'Condiciones generales' },
+  { id: 'atribucion', n: '5', t: 'Atribución de referidos' },
+  { id: 'liquidacion', n: '6', t: 'Liquidación y retiros' },
+  { id: 'limites', n: '7', t: 'Inactividad' },
+  { id: 'condiciones', n: '8', t: 'Condiciones generales' },
 ];
 
 export default function ReglamentoPage() {
@@ -70,7 +69,7 @@ export default function ReglamentoPage() {
         <article className="space-y-10 text-primary/90">
           <Section id="intro" n="1" title="Objeto y definiciones">
             <p>
-              {t('El presente reglamento regula el Programa de Referidos de Grupo 3i, mediante el cual un socio (referidor) recibe comisiones e incentivos por recomendar la compra de productos inmobiliarios y la membresía del Club de Viajes 3i.')}
+              {t('El presente reglamento regula el Programa de Referidos de Grupo 3i, mediante el cual un socio (referidor) recibe comisiones e incentivos por recomendar la compra de productos inmobiliarios.')}
             </p>
             <ul className="list-disc space-y-1 pl-5">
               <li><b>{t('Socio / referidor:')}</b>{' '}{t('persona registrada con un código de referido propio (formato 3IP-XXXXXX), único y de por vida — no cambia al ascender de rango.')}</li>
@@ -103,22 +102,14 @@ export default function ReglamentoPage() {
                 ['Elite', '4%', '2%'],
               ]}
             />
-            <p><b>{t('Membresías y productos de valor fijo')}</b>{' '}{t('— monto fijo por venta, configurable por producto, pagado solo al')}{' '}<b>{t('Nivel 1')}</b>{' '}{t('(el Nivel 2 no recibe comisión en productos de valor fijo). Para la Membresía del Club de Viajes:')}</p>
-            <Table
-              head={['Rango', 'Nivel 1', 'Nivel 2']}
-              rows={[
-                ['Premiere', 'US$ 50', '—'],
-                ['Elite', 'US$ 100', '—'],
-              ]}
-            />
             <p className="text-sm text-brand-gray">{t('Las comisiones ya generadas conservan la tasa del rango que tenías al momento de generarse; al ascender, solo cambian las comisiones futuras.')}</p>
           </Section>
 
           <Section id="ascensos" n="4" title="Ascensos a Elite">
             <p>{t('Un socio asciende de Premiere a')}{' '}<b>{t('Elite')}</b>{' '}{t('de cualquiera de estas formas:')}</p>
             <ul className="list-disc space-y-1 pl-5">
-              <li><b>{t('Por compra propia:')}</b>{' '}{t('al comprar cualquier producto (inmobiliario o la membresía).')}</li>
-              <li><b>{t('Por referidos:')}</b>{' '}{t('al acumular')}{' '}<b>{t('5 referidos directos que compren un producto inmobiliario')}</b>{' '}{t('dentro de una ventana de 180 días. Además, recibe su')}{' '}<b>{t('membresía del Club de Viajes gratis')}</b>.</li>
+              <li><b>{t('Por compra propia:')}</b>{' '}{t('al comprar cualquier producto inmobiliario.')}</li>
+              <li><b>{t('Por referidos:')}</b>{' '}{t('al acumular')}{' '}<b>{t('5 referidos directos que compren un producto inmobiliario')}</b>{' '}{t('dentro de una ventana de 180 días.')}</li>
             </ul>
             <p>{t('El ascenso es permanente y no reduce las comisiones ya ganadas. La única excepción es el Elite de regalo de la promoción de lanzamiento, que se rige por las condiciones de abajo.')}</p>
             <div className="rounded-xl bg-secondary/15 p-4 ring-1 ring-secondary/40">
@@ -127,21 +118,11 @@ export default function ReglamentoPage() {
                 <li>{t('El socio Premiere que inscriba a su')}{' '}<b>{t('primer referido directo')}</b>{' '}{t('asciende a Elite de regalo, sin necesidad de compra. Aplica también a quienes ya tenían al menos un referido al iniciar la promoción.')}</li>
                 <li>{t('Al cerrar la temporada conserva el nivel Elite quien tenga al menos')}{' '}<b>{t('1 venta confirmada')}</b>{' '}{t('dentro de la temporada, propia o de un referido directo. Se dan 7 días adicionales para confirmar las ventas hechas dentro del plazo.')}</li>
                 <li>{t('Quien no la tenga vuelve a Premiere. Las comisiones ganadas como Elite durante la temporada se mantienen.')}</li>
-                <li>{t('El regalo no incluye la membresía del Club de Viajes.')}</li>
               </ul>
             </div>
           </Section>
 
-          <Section id="incentivo" n="5" title="Doble incentivo (membresía de regalo)">
-            <p>{t('El programa premia a ambas partes:')}</p>
-            <ul className="list-disc space-y-1 pl-5">
-              <li><b>{t('Al referido:')}</b>{' '}{t('recibe')}{' '}<b>{t('gratis la membresía del Club de Viajes')}</b>{' '}{t('cuando compra un')}{' '}<b>{t('producto inmobiliario')}</b>{' '}{t('a través del enlace de un socio (no aplica a la compra de la propia membresía).')}</li>
-              <li><b>{t('Al referidor:')}</b>{' '}{t('su comisión correspondiente y, al llegar a 5 referidos inmobiliarios, el ascenso a Elite con membresía gratis (ver sección 4).')}</li>
-            </ul>
-            <p>{t('La membresía de regalo se otorga al')}{' '}<b>{t('confirmarse')}</b>{' '}{t('la compra y se revoca si la compra se cancela.')}</p>
-          </Section>
-
-          <Section id="atribucion" n="6" title="Atribución de referidos">
+          <Section id="atribucion" n="5" title="Atribución de referidos">
             <ul className="list-disc space-y-1 pl-5">
               <li>{t('La atribución es')}{' '}<b>{t('por primer contacto')}</b>{' '}{t('(first-click): el primer código con el que llega el referido es el que cuenta.')}</li>
               <li>{t('La ventana de atribución es de')}{' '}<b>{t('90 días')}</b>{' '}{t('desde el primer clic.')}</li>
@@ -149,7 +130,7 @@ export default function ReglamentoPage() {
             </ul>
           </Section>
 
-          <Section id="liquidacion" n="7" title="Liquidación y retiros">
+          <Section id="liquidacion" n="6" title="Liquidación y retiros">
             <ul className="list-disc space-y-1 pl-5">
               <li><b>{t('Período de retracto:')}</b>{' '}{t('14 días desde la confirmación de la venta.')}</li>
               <li><b>{t('Liquidación automática:')}</b>{' '}{t('30 días (Premiere) / 3 días (Elite) desde que termina el retracto. Cumplido el plazo, la comisión pasa sola al saldo retirable, sin que el socio tenga que hacer nada.')}</li>
@@ -166,14 +147,14 @@ export default function ReglamentoPage() {
             <p className="text-sm text-brand-gray">{t('Si un retiro es marcado como fallido, el monto se devuelve automáticamente al saldo del socio.')}</p>
           </Section>
 
-          <Section id="limites" n="8" title="Inactividad">
+          <Section id="limites" n="7" title="Inactividad">
             <ul className="list-disc space-y-1 pl-5">
               <li>{t('No hay límite mensual de comisiones para ningún rango.')}</li>
               <li><b>{t('Inactividad (solo Premiere):')}</b>{' '}{t('avisos a los 150 y 170 días sin referidos nuevos; a los')}{' '}<b>{t('180 días')}</b>{' '}{t('sin referidos la cuenta se suspende. La reactivación se gestiona con el administrador.')}</li>
             </ul>
           </Section>
 
-          <Section id="condiciones" n="9" title="Condiciones generales">
+          <Section id="condiciones" n="8" title="Condiciones generales">
             <ul className="list-disc space-y-1 pl-5">
               <li>{t('Para participar se requiere ser mayor de edad y registrar datos verídicos.')}</li>
               <li>{t('Grupo 3i podrá reversar comisiones derivadas de compras canceladas o fraudulentas.')}</li>

@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { TRAVEL_ENABLED } from '@/lib/features';
 import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
@@ -118,8 +119,8 @@ const publicRoutes = () => (
     <Route path="propuesta/montanita-view" element={<PropuestaMontanitaPage />} />
     <Route path="tienda" element={<Navigate to=".." replace />} />
     <Route path="tienda/:slug" element={<ProductDetailPage />} />
-    <Route path="club" element={<ClubPage />} />
-    <Route path="club/viajes" element={<ViajesPage />} />
+    <Route path="club" element={TRAVEL_ENABLED ? <ClubPage /> : <Navigate to="/oficina" replace />} />
+    <Route path="club/viajes" element={TRAVEL_ENABLED ? <ViajesPage /> : <Navigate to="/oficina" replace />} />
     <Route path="sobre-nosotros" element={<AboutPage />} />
     <Route path="contacto" element={<ContactPage />} />
     <Route path="publica-tu-proyecto" element={<PublishProjectPage />} />
@@ -208,7 +209,7 @@ export default function App() {
                 <Route path="pagos" element={<PaymentsPage />} />
                 <Route path="herramientas" element={<ToolsPage />} />
                 <Route path="calculadora" element={<CalculatorPage />} />
-                <Route path="viajes" element={<TravelBookingsPage />} />
+                <Route path="viajes" element={TRAVEL_ENABLED ? <TravelBookingsPage /> : <Navigate to="/oficina/dashboard" replace />} />
               </Route>
 
               {/* Admin — login standalone */}

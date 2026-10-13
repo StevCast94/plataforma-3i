@@ -36,15 +36,14 @@ const steps: { icon: LucideIcon; title: string; body: string; image: string }[] 
 const compare = [
   { feature: 'Venta inmobiliaria de tu referido directo', premiere: '2%', elite: '4%' },
   { feature: 'Venta inmobiliaria de un referido de tu referido', premiere: '1%', elite: '2%' },
-  { feature: 'Membresía del Club 3i (referido directo)', premiere: '$50', elite: '$100' },
   { feature: 'Retiro mínimo (transferencia)', premiere: '$100', elite: '$50' },
   { feature: 'Liquidación', premiere: '30 días', elite: '3 días' },
 ];
 
 const faqs = [
   { q: '¿Cuánto cuesta entrar?', a: 'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.' },
-  { q: '¿Qué puedo recomendar?', a: 'Los lotes de Montañita View, las fracciones de Ibiza Condohotel y la membresía del Club 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
-  { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto, o cuando 5 de tus referidos compren en 180 días (y te llevas la membresía de viajes de regalo).' },
+  { q: '¿Qué puedo recomendar?', a: 'Los lotes de Montañita View, las fracciones de Ibiza Condohotel y los demás proyectos publicados en Grupo 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
+  { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto inmobiliario, o cuando 5 de tus referidos compren en 180 días. Y durante la promoción de lanzamiento, con tu primer referido.' },
   { q: '¿Cuándo cobro mis comisiones?', a: 'Después de los 14 días de retracto, más el plazo de liquidación de tu nivel: 30 días en Premiere y 3 días en Elite.' },
   { q: '¿Pierdo mi cuenta si no refiero?', a: 'En Premiere, la cuenta se suspende tras 180 días sin referidos nuevos, con avisos previos. Elite es permanente, salvo el Elite de regalo de la promoción de lanzamiento, que se mantiene con al menos una venta en la temporada.' },
 ];
@@ -57,7 +56,6 @@ function examples(mv: number, ibiza: number) {
   return [
     { what: 'Un lote en Montañita View', price: { k: 'desde {p}', p: mv }, premiere: mv * 0.02, elite: mv * 0.04 },
     { what: 'Una fracción en Ibiza Condohotel', price: { k: 'desde {p}', p: ibiza }, premiere: ibiza * 0.02, elite: ibiza * 0.04 },
-    { what: 'Una membresía del Club 3i', price: { k: 'por membresía', p: 0 }, premiere: 50, elite: 100 },
   ];
 }
 

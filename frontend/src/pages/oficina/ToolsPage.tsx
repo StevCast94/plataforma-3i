@@ -24,10 +24,9 @@ interface LinkInfo {
 // Valores por defecto — se usan solo si el admin aún no configuró
 // "referral_templates" en Configuración > Contenido.
 const DEFAULT_WHATSAPP_TEMPLATES = [
-  '¡Hola! Te invito al Club 3i 🌍 Viaja con hasta 70% de descuento en hoteles. Regístrate con mi enlace:',
   '¿Sabías que puedes invertir en propiedades desde $5,000? Te cuento cómo con Grupo 3i:',
-  'Estoy ganando ingresos refiriendo al Club 3i. Únete a mi equipo aquí:',
-  '🎁 Compra tu propiedad o fracción con Grupo 3i por mi enlace y te llevas GRATIS la membresía del Club de Viajes:',
+  '🌊 Lotes con vista al mar en Montañita View, financiados a 24 meses sin intereses. Mira el mapa aquí:',
+  'Estoy ganando comisiones recomendando proyectos de Grupo 3i. Únete gratis a mi equipo aquí:',
 ];
 
 export default function ToolsPage() {
@@ -205,8 +204,6 @@ export default function ToolsPage() {
             className="rounded-lg border border-black/15 bg-white px-3 py-2.5 text-sm text-primary"
           >
             <option value="/">Página principal</option>
-            <option value="/club">Club 3i</option>
-            <option value="/club/viajes">Club de Viajes</option>
             {(projects ?? []).map((p) => (
               <option key={p.id} value={`/proyectos/${p.slug}`}>
                 Proyecto: {p.name}
