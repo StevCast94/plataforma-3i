@@ -4,6 +4,7 @@ import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
 import { giftTreeForLot } from '../lib/bosque';
 import { unitFields, newUnit } from '../lib/units';
+import { parseLots } from '../lib/geoImport';
 
 export const adminLotRoutes = Router();
 adminLotRoutes.use(requireAdmin);
@@ -52,6 +53,41 @@ adminLotRoutes.post('/', async (req: AuthedRequest, res) => {
   } catch (err) {
     const msg = (err as { code?: string }).code === 'P2002' ? 'Ya existe una unidad con ese código' : (err as Error).message;
     res.status(400).json({ error: msg });
+  }
+});
+
+// POST /api/admin/lots/import { projectId, geojson, dryRun? } — plano de lotización (GEO 3i).
+// Crea los lotes nuevos y actualiza SOLO la geometría de los existentes (merge por código).
+adminLotRoutes.post('/import', async (req: AuthedRequest, res) => {
+  try {
+    const projectId = String(req.body?.projectId ?? '');
+    if (!(await prisma.project.findUnique({ where: { id: projectId }, select: { id: true } }))) {
+      res.status(404).json({ error: 'Proyecto no encontrado' });
+      return;
+    }
+    const { lots, warnings } = parseLots(req.body?.geojson);
+    const existing = await prisma.lot.findMany({ where: { projectId }, select: { id: true, code: true } });
+    const byCode = new Map(existing.map((l) => [l.code.toUpperCase(), l.id]));
+    const toCreate = lots.filter((l) => !byCode.has(l.code.toUpperCase()));
+    const toUpdate = lots.filter((l) => byCode.has(l.code.toUpperCase()));
+    if (!req.body?.dryRun) {
+      await prisma.$transaction([
+        ...toCreate.map((l) => prisma.lot.create({ data: { projectId, ...l, unitType: 'lotes' } })),
+        ...toUpdate.map((l) =>
+          prisma.lot.update({
+            where: { id: byCode.get(l.code.toUpperCase())! },
+            data: { geometry: l.geometry, centroidLat: l.centroidLat, centroidLng: l.centroidLng, areaM2: l.areaM2, ...(l.block ? { block: l.block } : {}) },
+          }),
+        ),
+      ]);
+      await prisma.project.update({ where: { id: projectId }, data: { propertyTypes: { push: 'lotes' } } }).catch(() => {});
+      const p = await prisma.project.findUnique({ where: { id: projectId }, select: { propertyTypes: true } });
+      if (p) await prisma.project.update({ where: { id: projectId }, data: { propertyTypes: [...new Set(p.propertyTypes)] } });
+      await audit(req.staff?.staffId, 'import', 'lot', projectId, { created: toCreate.length, updated: toUpdate.length });
+    }
+    res.json({ created: toCreate.length, updated: toUpdate.length, warnings, dryRun: Boolean(req.body?.dryRun) });
+  } catch (err) {
+    res.status(400).json({ error: (err as Error).message });
   }
 });
 

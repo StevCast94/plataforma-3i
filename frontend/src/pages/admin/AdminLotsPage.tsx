@@ -97,7 +97,10 @@ export default function AdminLotsPage() {
         <Link to={client.backTo} className="text-sm text-accent hover:underline">← Proyectos</Link>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="mt-1 text-2xl font-bold text-primary">Inventario</h1>
-          <Button size="sm" onClick={() => setAdding(true)}>+ Agregar unidad</Button>
+          <div className="flex flex-wrap gap-2">
+            {client.backTo.startsWith('/admin') && projectId && <ImportPlan projectId={projectId} onDone={reload} />}
+            <Button size="sm" onClick={() => setAdding(true)}>+ Agregar unidad</Button>
+          </div>
         </div>
         <p className="text-sm text-brand-gray">
           {lots.length} unidades · {lots.filter((l) => l.status === 'AVAILABLE').length} disponibles ·{' '}
@@ -374,5 +377,48 @@ function NewUnitForm({ open, projectId, onClose, onSaved }: { open: boolean; pro
         </div>
       </div>
     </Modal>
+  );
+}
+
+/** Importa el plano de lotización (GeoJSON de GEO 3i): crea lotes nuevos y actualiza la geometría de los existentes. */
+function ImportPlan({ projectId, onDone }: { projectId: string; onDone: () => void }) {
+  const client = usePanelClient();
+  const { toast } = useToast();
+  const [busy, setBusy] = useState(false);
+  async function onFile(file: File) {
+    setBusy(true);
+    try {
+      const geojson = JSON.parse(await file.text());
+      type R = { created: number; updated: number; warnings: string[] };
+      const dry = await client.post<R>('/admin/lots/import', { projectId, geojson, dryRun: true });
+      const avisos = dry.warnings.length ? `\n\nAvisos:\n${dry.warnings.slice(0, 10).join('\n')}` : '';
+      if (!confirm(`Se crearán ${dry.created} lotes y se actualizará la geometría de ${dry.updated}. Precios, estados y compradores no se tocan.${avisos}\n\n¿Importar?`)) return;
+      const r = await client.post<R>('/admin/lots/import', { projectId, geojson });
+      toast(`Plano importado: ${r.created} nuevos, ${r.updated} actualizados`, 'success');
+      onDone();
+    } catch (err) {
+      toast(err instanceof SyntaxError ? 'El archivo no es un GeoJSON válido' : (err as Error).message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <label
+      className={`cursor-pointer rounded-lg border border-secondary px-3 py-1.5 text-sm font-medium text-primary hover:bg-secondary/20 ${busy ? 'opacity-50' : ''}`}
+      title="GeoJSON exportado de GEO 3i, QGIS o AutoCAD (WGS84 o UTM 17S). Cada polígono necesita su código de lote."
+    >
+      {busy ? 'Importando…' : 'Importar plano (GeoJSON)'}
+      <input
+        type="file"
+        accept=".geojson,.json,application/geo+json,application/json"
+        className="sr-only"
+        disabled={busy}
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          e.target.value = '';
+          if (f) onFile(f);
+        }}
+      />
+    </label>
   );
 }
