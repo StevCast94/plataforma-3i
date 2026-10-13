@@ -38,7 +38,6 @@ export function Footer() {
             <li><Link to="/sobre-nosotros" className="hover:text-secondary">{t('Nosotros')}</Link></li>
             <li><Link to="/contacto" className="hover:text-secondary">{t('Contacto')}</Link></li>
             <li><Link to="/publica-tu-proyecto" className="hover:text-secondary">{t('Publica tu proyecto')}</Link></li>
-            <li><Link to="/reglamento" className="hover:text-secondary">{t('Reglamento de Referidos')}</Link></li>
           </ul>
         </div>
 

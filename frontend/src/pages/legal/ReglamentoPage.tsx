@@ -80,7 +80,7 @@ export default function ReglamentoPage() {
           </Section>
 
           <Section id="membresia" n="2" title="Rangos: Premiere y Elite">
-            <p>{t('Todo socio inicia como')}{' '}<b>{t('Premiere')}</b>{' '}{t('y puede ascender a')}{' '}<b>{t('Elite')}</b>{t('. El rango define las tasas de comisión, la liquidación y los mínimos de retiro.')}</p>
+            <p>{t('Todo socio inicia como')}{' '}<b>{t('Premiere')}</b>{' '}{t('y puede ascender a')}{' '}<b>{t('Elite')}</b>{t('. El rango define las tasas de comisión y el plazo de liquidación.')}</p>
             <Table
               head={['', 'Premiere', 'Elite']}
               rows={[
@@ -136,14 +136,7 @@ export default function ReglamentoPage() {
               <li><b>{t('Liquidación automática:')}</b>{' '}{t('30 días (Premiere) / 3 días (Elite) desde que termina el retracto. Cumplido el plazo, la comisión pasa sola al saldo retirable, sin que el socio tenga que hacer nada.')}</li>
               <li><b>{t('Liquidación anticipada:')}</b>{' '}{t('el administrador puede validar una comisión antes de que se cumpla el plazo, acreditándola de inmediato.')}</li>
             </ul>
-            <p><b>{t('Mínimos de retiro')}</b>{' '}{t('según rango y método:')}</p>
-            <Table
-              head={['Rango', 'Transferencia', 'PayPal']}
-              rows={[
-                ['Premiere', 'US$ 100', 'US$ 50'],
-                ['Elite', 'US$ 50', 'US$ 25'],
-              ]}
-            />
+            <p>{t('El socio puede retirar su saldo disponible en cualquier momento, sin monto mínimo, por el método de pago que haya registrado.')}</p>
             <p className="text-sm text-brand-gray">{t('Si un retiro es marcado como fallido, el monto se devuelve automáticamente al saldo del socio.')}</p>
           </Section>
 

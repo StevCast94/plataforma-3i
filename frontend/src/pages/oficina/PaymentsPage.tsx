@@ -96,7 +96,7 @@ export default function PaymentsPage() {
           </Button>
         </div>
         <p className="mt-2 text-xs text-white/50">
-          El mínimo depende de tu estatus y método de pago.
+          Puedes retirar cualquier monto de tu saldo disponible, sin mínimo.
         </p>
       </section>
 

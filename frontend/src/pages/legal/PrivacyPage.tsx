@@ -1,4 +1,4 @@
-import { Link, useLang } from '@/hooks/useLang';
+import { useLang } from '@/hooks/useLang';
 import { LegalDoc, List, type LegalText } from './LegalDoc';
 
 // Política de privacidad y cookies (/privacidad y /en/privacidad).
@@ -79,7 +79,7 @@ const ES: LegalText = {
       'El sitio está dirigido a mayores de edad. Para registrarse en Refiere y gana o comprar hay que ser mayor de 18 años.',
     ] },
     { title: '10. Cambios a esta política', body: [
-      <>Si cambiamos algo importante, lo publicaremos aquí con la nueva fecha. Las reglas del programa de referidos están en el <Link to="/reglamento" className="text-accent underline">reglamento de Refiere y gana</Link>, y las de la adopción de árboles en los términos del Bosque Montañita.</>,
+      <>Si cambiamos algo importante, lo publicaremos aquí con la nueva fecha. Las reglas del programa de referidos están en el reglamento de Refiere y gana, que cada socio tiene en su oficina virtual, y las de la adopción de árboles en los términos del Bosque Montañita.</>,
     ] },
   ],
 };
@@ -154,7 +154,7 @@ const EN: LegalText = {
       'This site is intended for adults. You must be 18 or older to join Refer & Earn or make a purchase.',
     ] },
     { title: '10. Changes to this policy', body: [
-      <>If we make an important change, we’ll post it here with a new date. The referral program rules are in the <Link to="/reglamento" className="text-accent underline">Refer & Earn terms</Link>, and the tree adoption rules are in the Bosque Montañita terms.</>,
+      <>If we make an important change, we’ll post it here with a new date. The referral program rules are in the Refer & Earn program rules, available to every member in their Virtual Office, and the tree adoption rules are in the Bosque Montañita terms.</>,
     ] },
   ],
 };

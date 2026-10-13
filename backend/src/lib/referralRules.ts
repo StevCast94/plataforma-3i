@@ -29,10 +29,10 @@ export const LIQUIDATION_DAYS: Record<'PREMIERE' | 'ELITE', number> = {
   ELITE: 3,
 };
 
-/** Mínimo de retiro (USD) por método y estatus. */
+/** Mínimo de retiro (USD) por método y estatus. Sin mínimo desde el 12-oct-2026: se retira cualquier saldo disponible. */
 export const MIN_PAYOUT: Record<'PREMIERE' | 'ELITE', { transfer: number; paypal: number }> = {
-  PREMIERE: { transfer: 100, paypal: 50 },
-  ELITE: { transfer: 50, paypal: 25 },
+  PREMIERE: { transfer: 0, paypal: 0 },
+  ELITE: { transfer: 0, paypal: 0 },
 };
 
 /** Período de retracto (días) → la comisión está en PENDING hasta cumplirlo. */

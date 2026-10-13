@@ -19,6 +19,8 @@ export interface RegisterData {
   payoutMethod?: string;
   payoutEmail?: string;
   bankInfo?: Record<string, unknown>;
+  /** Aceptó términos, privacidad y reglamento (obligatorio). */
+  acceptTerms?: boolean;
 }
 
 interface AuthContextValue {

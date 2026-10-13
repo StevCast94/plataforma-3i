@@ -7,10 +7,10 @@ import { motion } from 'framer-motion';
 import { Seo } from '@/components/shared/Seo';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { ClipboardPen, Link2, HandCoins, FileText, type LucideIcon } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { ClipboardPen, Link2, HandCoins, type LucideIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { BrandLoader } from '@/components/brand/Isotipo';
+import { LevelsExplainer } from '@/components/oficina/LevelsExplainer';
 
 const steps: { icon: LucideIcon; title: string; body: string; image: string }[] = [
   {
@@ -28,17 +28,11 @@ const steps: { icon: LucideIcon; title: string; body: string; image: string }[] 
   {
     icon: HandCoins,
     title: 'Gana comisiones',
-    body: 'Cobras por cada lote, fracción o membresía que se venda con tu enlace.',
+    body: 'Cobras por cada lote, fracción o propiedad que se venda con tu enlace.',
     image: '/images/secciones/paso-gana.jpg',
   },
 ];
 
-const compare = [
-  { feature: 'Venta inmobiliaria de tu referido directo', premiere: '2%', elite: '4%' },
-  { feature: 'Venta inmobiliaria de un referido de tu referido', premiere: '1%', elite: '2%' },
-  { feature: 'Retiro mínimo (transferencia)', premiere: '$100', elite: '$50' },
-  { feature: 'Liquidación', premiere: '30 días', elite: '3 días' },
-];
 
 const faqs = [
   { q: '¿Cuánto cuesta entrar?', a: 'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.' },
@@ -48,16 +42,6 @@ const faqs = [
   { q: '¿Pierdo mi cuenta si no refiero?', a: 'En Premiere, la cuenta se suspende tras 180 días sin referidos nuevos, con avisos previos. Elite es permanente, salvo el Elite de regalo de la promoción de lanzamiento, que se mantiene con al menos una venta en la temporada.' },
 ];
 
-/**
- * Una venta de cada cosa, con las tasas del motor de comisiones
- * (backend/src/lib/referralRules.ts): 2% / 4% inmobiliario, $50 / $100 membresía.
- */
-function examples(mv: number, ibiza: number) {
-  return [
-    { what: 'Un lote en Montañita View', price: { k: 'desde {p}', p: mv }, premiere: mv * 0.02, elite: mv * 0.04 },
-    { what: 'Una fracción en Ibiza Condohotel', price: { k: 'desde {p}', p: ibiza }, premiere: ibiza * 0.02, elite: ibiza * 0.04 },
-  ];
-}
 
 export default function OfficeLanding() {
   const { t } = useLang();
@@ -65,7 +49,10 @@ export default function OfficeLanding() {
   // Precios desde el inventario en vivo (los mismos de las fichas); respaldo si la API tarda.
   const { data: projects } = useProjects();
   const from = (slug: string, fallback: number) => projects?.find((p) => p.slug === slug)?.priceFrom ?? fallback;
-  const EXAMPLES = examples(from('montanita-view', 41721), from('ibiza-condohotel', 12000));
+  const EXAMPLES = [
+    { what: 'Un lote en Montañita View', from: from('montanita-view', 41721) },
+    { what: 'Una fracción en Ibiza Condohotel', from: from('ibiza-condohotel', 12000) },
+  ];
 
   // Esta es una página de VENTA del programa (pública, sin sidebar). Si ya hay
   // sesión, no tiene sentido mostrarle "Regístrate gratis" a alguien que ya es
@@ -144,60 +131,7 @@ export default function OfficeLanding() {
         </div>
       </section>
 
-      {/* Comparativa */}
-      <section className="bg-light">
-        <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
-          <h2 className="mb-10 text-center text-3xl font-bold text-primary sm:text-4xl">{t('Elige tu nivel')}</h2>
-          <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-primary text-white">
-                  <th className="px-4 py-4 text-sm">{t('Beneficio')}</th>
-                  <th className="px-4 py-4 text-center text-sm">{t('Premiere')}</th>
-                  <th className="px-4 py-4 text-center text-sm text-secondary">{t('Elite')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {compare.map((row) => (
-                  <tr key={row.feature} className="border-b border-black/5">
-                    <td className="px-4 py-3 text-sm text-primary">{t(row.feature)}</td>
-                    <td className="px-4 py-3 text-center text-sm text-brand-gray">{t(row.premiere)}</td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-accent">{t(row.elite)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <Link
-            to="/reglamento"
-            className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-          >
-            <FileText className="h-4 w-4" strokeWidth={1.8} />
-            {t('Ver el reglamento completo del programa')}
-          </Link>
-        </div>
-      </section>
-
-      {/* Cuánto se gana: casos reales, con los precios de hoy */}
-      <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
-        <h2 className="mb-3 text-center text-3xl font-bold text-primary">{t('¿Cuánto podrías ganar?')}</h2>
-        <p className="mb-10 text-center text-brand-gray">{t('Por una sola venta hecha con tu enlace:')}</p>
-        <div className="grid gap-5 sm:grid-cols-3">
-          {EXAMPLES.map((e) => (
-            <div key={e.what} className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5">
-              <p className="text-sm font-medium text-primary">{t(e.what)}</p>
-              <p className="text-xs text-brand-gray">{t(e.price.k, { p: formatCurrency(e.price.p) })}</p>
-              <p className="mt-4 text-xs uppercase tracking-wider text-brand-gray">{t('Premiere')}</p>
-              <p className="font-serif text-2xl font-bold text-primary">{formatCurrency(e.premiere)}</p>
-              <p className="mt-2 text-xs uppercase tracking-wider text-brand-gray">{t('Elite')}</p>
-              <p className="font-serif text-2xl font-bold text-accent">{formatCurrency(e.elite)}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-6 text-center text-xs text-brand-gray">
-          {t('Comisión sobre el precio de venta, que cobras después de la liquidación. El precio depende del lote o la fracción que elija tu referido.')}
-        </p>
-      </section>
+      <LevelsExplainer examples={EXAMPLES} />
 
       {/* Libertad financiera */}
       <section className="relative overflow-hidden bg-primary text-white">

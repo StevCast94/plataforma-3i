@@ -83,8 +83,7 @@ export default function DashboardPage() {
         <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
           <h3 className="text-lg font-semibold text-primary">Disponible para retirar</h3>
           <p className="mt-2 text-sm text-brand-gray">
-            Retíralo cuando quieras desde {member.status === 'ELITE' ? '$50' : '$100'} por transferencia o{' '}
-            {member.status === 'ELITE' ? '$25' : '$50'} por PayPal.
+            Tus comisiones ya liquidadas. Retíralas cuando quieras, sin monto mínimo.
           </p>
           <p className="mt-4 font-serif text-2xl font-bold text-accent">
             {formatCurrency(summary?.liquidated ?? 0)}

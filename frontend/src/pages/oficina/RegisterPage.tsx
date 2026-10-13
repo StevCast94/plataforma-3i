@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { PrivacyNote } from '@/components/shared/PrivacyNote';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Link, useLang } from '@/hooks/useLang';
 import { api } from '@/lib/api';
@@ -53,6 +52,7 @@ export default function RegisterPage() {
   );
   const [errors, setErrors] = useState<StepErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
   function set<K extends keyof RegisterData>(key: K, value: RegisterData[K]) {
     setData((d) => ({ ...d, [key]: value }));
@@ -85,9 +85,13 @@ export default function RegisterPage() {
       setStep(1);
       return;
     }
+    if (!accepted) {
+      setErrors({ terms: t('Para crear tu cuenta debes aceptar los términos y condiciones.') });
+      return;
+    }
     setSubmitting(true);
     try {
-      await register(data);
+      await register({ ...data, acceptTerms: true });
       toast(t('¡Bienvenido a Refiere y gana!') + ' 🎉', 'success');
       navigate('/oficina/dashboard');
     } catch (err) {
@@ -242,7 +246,29 @@ export default function RegisterPage() {
             </Button>
           )}
         </div>
-        {step === 3 && <PrivacyNote account className="mt-3" />}
+        {step === 3 && (
+          <div className="mt-5">
+            <label className="flex items-start gap-3 rounded-xl bg-light p-3 text-sm text-primary">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(e) => {
+                  setAccepted(e.target.checked);
+                  setErrors(({ terms: _t, ...rest }) => rest);
+                }}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-secondary"
+              />
+              <span>
+                {t('Acepto los')}{' '}
+                <a href="/terminos" target="_blank" rel="noreferrer" className="font-semibold underline">{t('términos y condiciones')}</a>
+                {t(', la')}{' '}
+                <a href="/privacidad" target="_blank" rel="noreferrer" className="font-semibold underline">{t('política de privacidad')}</a>{' '}
+                {t('y el reglamento de Refiere y gana, que tendré siempre disponible en mi oficina virtual.')}
+              </span>
+            </label>
+            {errors.terms && <p className="mt-2 text-sm text-red-600">{errors.terms}</p>}
+          </div>
+        )}
 
         <p className="mt-6 text-center text-sm text-brand-gray">
           {t('¿Ya tienes cuenta?')}{' '}

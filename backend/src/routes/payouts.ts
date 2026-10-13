@@ -52,8 +52,8 @@ payoutRoutes.post('/request', authMember, async (req: MemberRequest, res) => {
 
     const status = member.status === 'ELITE' ? 'ELITE' : 'PREMIERE';
     const min = minPayoutFor(status, member.payoutMethod);
-    if (value < min) {
-      res.status(400).json({ error: `El mínimo de retiro es $${min} para tu método` });
+    if (value <= 0 || value < min) {
+      res.status(400).json({ error: min > 0 ? `El mínimo de retiro es $${min} para tu método` : 'Escribe un monto mayor a $0' });
       return;
     }
     if (value > member.walletBalance) {

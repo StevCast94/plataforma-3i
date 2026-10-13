@@ -6,6 +6,8 @@ Disallow: /oficina/
 Disallow: /embed/
 Disallow: /fiesta
 Disallow: /seguimiento/
+Disallow: /reglamento
+Disallow: /en/reglamento
 Disallow: /en/seguimiento/
 Disallow: /propuesta-servicios/
 Disallow: /en/propuesta-servicios/

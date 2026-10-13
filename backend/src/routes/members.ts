@@ -14,6 +14,9 @@ import { notify } from '../services/notifications';
 import { vapidPublicKey } from '../services/push';
 import { LAUNCH_PROMO_END, isLaunchPromoActive } from '../lib/launchPromo';
 
+/** Versión de términos + privacidad + reglamento que acepta quien se registra (cámbiala al publicar cambios importantes). */
+const TERMS_VERSION = '2026-10-12';
+
 export const memberRoutes = Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,9 +74,14 @@ memberRoutes.post('/register', async (req, res) => {
       payoutEmail,
       bankInfo,
       cookieId,
+      acceptTerms,
     } = req.body ?? {};
     const ref = refFromRequest(req);
 
+    if (acceptTerms !== true) {
+      res.status(400).json({ error: 'Debes aceptar los términos y condiciones para crear tu cuenta' });
+      return;
+    }
     if (!fullName || !email || !password || !docId) {
       res.status(400).json({ error: 'Nombre, email, contraseña y documento son requeridos' });
       return;
@@ -140,6 +148,8 @@ memberRoutes.post('/register', async (req, res) => {
             docType: docType ? String(docType) : 'cedula',
             status: 'PREMIERE',
             claimed: true,
+            termsAcceptedAt: new Date(),
+            termsVersion: TERMS_VERSION,
             email: emailLc,
             fullName: String(fullName).trim(),
             phone: phone ? String(phone).trim() : undefined,
@@ -204,6 +214,8 @@ memberRoutes.post('/register', async (req, res) => {
           docId: docIdStr,
           referralCode: code,
           referralSlug,
+          termsAcceptedAt: new Date(),
+          termsVersion: TERMS_VERSION,
           payoutMethod: payoutMethod && PAYOUT_METHODS[payoutMethod] ? String(payoutMethod) : null,
           payoutEmail: payoutEmail ? String(payoutEmail).trim() : null,
           bankInfo: bankInfo ?? undefined,

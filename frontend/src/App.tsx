@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { TRAVEL_ENABLED } from '@/lib/features';
+import { MembersOnly } from '@/components/oficina/MembersOnly';
 import { HelmetProvider } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { OfficeLayout } from '@/components/oficina/OfficeLayout';
@@ -129,7 +130,7 @@ const publicRoutes = () => (
     <Route path="seguimiento/:token" element={<CaseTrackingPage />} />
     <Route path="publica-tu-proyecto/manual" element={<DeveloperManualPage />} />
     <Route path="publica-tu-proyecto/galeria" element={<DeveloperGalleryPage />} />
-    <Route path="reglamento" element={<ReglamentoPage />} />
+    <Route path="reglamento" element={<MembersOnly><ReglamentoPage /></MembersOnly>} />
     <Route path="privacidad" element={<PrivacyPage />} />
     <Route path="terminos" element={<TermsPage />} />
     <Route path="*" element={<NotFoundPage />} />

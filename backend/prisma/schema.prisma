@@ -265,6 +265,8 @@ model ReferralMember {
   // 3IP-XXXXXX sigue siendo la clave interna/de atribución, pero nadie debería
   // ver ese código crudo en un link que comparte por WhatsApp.
   referralSlug          String             @unique
+  termsAcceptedAt       DateTime? // aceptó términos, privacidad y reglamento al registrarse
+  termsVersion          String?
   referrerId            String?
   referrer              ReferralMember?    @relation("ReferralChain", fields: [referrerId], references: [id])
   referrals             ReferralMember[]   @relation("ReferralChain")

@@ -32,7 +32,7 @@ const ES: LegalText = {
       'Los planes de financiamiento directo (entrada y cuotas) se pactan por escrito en ese contrato.',
     ] },
     { title: '5. Refiere y gana', body: [
-      <>El programa de referidos tiene su propio <Link to="/reglamento" className={a}>reglamento de Refiere y gana</Link>, que forma parte de estos términos.</>,
+      <>El programa de referidos tiene su propio reglamento de Refiere y gana, que forma parte de estos términos. Quien se registra lo acepta al crear su cuenta y lo tiene siempre disponible en su oficina virtual.</>,
     ] },
     { title: '6. Tu cuenta', body: [
       'Si creas una cuenta (Refiere y gana o portal de desarrolladoras), te comprometes a dar datos verdaderos y a cuidar tu contraseña. Eres responsable de lo que se haga con tu cuenta. Podemos suspender cuentas con datos falsos, uso fraudulento o que incumplan estos términos.',
@@ -82,7 +82,7 @@ const EN: LegalText = {
       'Direct financing plans (down payment and monthly payments) are agreed in writing in that contract.',
     ] },
     { title: '5. Refer & Earn', body: [
-      <>The referral program has its own <Link to="/reglamento" className={a}>Refer & Earn terms</Link>, which are part of these terms.</>,
+      <>The referral program has its own Refer & Earn program rules, which are part of these terms. Members accept them when they sign up and can always find them in their Virtual Office.</>,
     ] },
     { title: '6. Your account', body: [
       'If you create an account (Refer & Earn or the developer portal), you agree to provide accurate information and keep your password safe. You’re responsible for activity on your account. We may suspend accounts with false information, fraudulent use or that break these terms.',
