@@ -43,6 +43,8 @@ model Project {
   priceFrom       Float?
   priceLabel      String? // "Desde $12,000", "Fracciones desde $5,000"
   propertyTypes   String[]          @default([]) // ids de frontend/src/lib/propertyTypes.ts: lotes, casas, departamentos…
+  /// Plan de pagos que se muestra en las fichas: { downPct, installments, interestFree }. null = sin financiamiento publicado.
+  paymentPlan     Json?
   textEn          Json? // { subtitle, description, priceLabel } en inglés (lo escribe el desarrollador)
   active          Boolean           @default(true)
   featured        Boolean           @default(false)
@@ -121,6 +123,7 @@ model Lot {
   bathrooms Float?
   parking   Int?
   floor     String? // piso o nivel ("3", "PB")
+  typology  String? // tipología: "Tipo A · 2 dormitorios"
 
   // --- Geometría (fuente: DWG / GEO 3i) ---
   /// GeoJSON Polygon en lon/lat WGS84 (reproyectado desde UTM 17S).

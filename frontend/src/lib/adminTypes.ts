@@ -93,6 +93,7 @@ export interface AdminProduct {
 
 export interface AdminProject {
   propertyTypes?: string[];
+  paymentPlan?: unknown;
   id: string;
   slug: string;
   name: string;

@@ -14,8 +14,7 @@ import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { ProjectLeadContext, useTrackView } from '@/lib/projectTracking';
 import { ShareLot } from '@/components/shared/ShareLot';
 import {
-  DOWN_PAYMENT,
-  INSTALLMENTS,
+  downPayment,
   LotPhotos,
   LotSheet,
   Row,
@@ -25,6 +24,7 @@ import {
   CashOnlyNote,
 } from '@/components/shared/LotMap';
 import { unitWord, isBuilt } from '@/lib/propertyTypes';
+import { asPlan, ProjectTermsContext } from '@/lib/lotFinance';
 import { BrandLoader } from '@/components/brand/Isotipo';
 
 /**
@@ -76,6 +76,7 @@ export default function LotPage() {
   const projectName = project?.name ?? 'Montañita View';
   const status = STATUS_STYLE[lot.status];
   const precio = lot.price != null ? `, ${formatCurrency(lot.price)}` : '';
+  const plan = asPlan(project?.paymentPlan);
   const word = t(unitWord(lot.unitType));
   const built = isBuilt(lot.unitType);
   const waMsg = t('Hola, me interesa: *{unit} {code}* de {p} ({area}{precio}). Quiero más información.', {
@@ -149,14 +150,14 @@ export default function LotPage() {
             {lot.parking != null && <Stat label={t('Parqueaderos')} value={String(lot.parking)} />}
             {lot.floor && <Stat label={t('Piso')} value={lot.floor} />}
             {lot.price != null && <Stat label={lot.cashOnly ? t('Precio de contado') : t('Precio')} value={formatCurrency(lot.price)} strong />}
-            {lot.price != null && !lot.cashOnly && (
-              <Stat label={t('{n} cuotas sin interés de', { n: INSTALLMENTS })} value={formatCurrency(monthly(lot.price))} />
+            {lot.price != null && !lot.cashOnly && plan && (
+              <Stat label={t(plan.interestFree ? '{n} cuotas sin interés de' : '{n} cuotas de', { n: plan.installments })} value={formatCurrency(monthly(lot.price, plan))} />
             )}
           </div>
           {lot.price != null && (
             <dl className="mt-4 space-y-2 border-t border-black/5 pt-4 text-sm">
               {lot.pricePerM2 != null && <Row label={t('Precio por m²')} value={formatCurrency(lot.pricePerM2)} />}
-              {lot.cashOnly ? <CashOnlyNote /> : <Row label={t('Entrada (30%)')} value={formatCurrency(lot.price * DOWN_PAYMENT)} />}
+              {lot.cashOnly ? <CashOnlyNote /> : plan ? <Row label={t('Entrada ({p} %)', { p: plan.downPct })} value={formatCurrency(downPayment(lot.price, plan))} /> : null}
             </dl>
           )}
 
@@ -184,7 +185,9 @@ export default function LotPage() {
 
         {lot.geometry && (
           <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">
-            <LotSheet lot={lot} />
+            <ProjectTermsContext.Provider value={{ plan, location: project?.location ?? null }}>
+              <LotSheet lot={lot} />
+            </ProjectTermsContext.Provider>
           </section>
         )}
         {lot.description && !lot.geometry && (

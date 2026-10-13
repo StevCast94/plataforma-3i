@@ -125,6 +125,15 @@ const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 const UNIT_ES: Record<string, string> = { lotes: 'Lote', casas: 'Casa', departamentos: 'Departamento', suites: 'Suite', locales: 'Local', oficinas: 'Oficina', bodegas: 'Bodega', terrenos: 'Terreno' };
 const UNIT_EN: Record<string, string> = { lotes: 'Lot', casas: 'Home', departamentos: 'Condo', suites: 'Suite', locales: 'Retail unit', oficinas: 'Office', bodegas: 'Warehouse', terrenos: 'Land' };
 
+/** «Financiamiento: 30 % de entrada y 24 cuotas sin intereses.» según el plan del proyecto. */
+function planText(plan: unknown, en: boolean): string {
+  const p = plan as { downPct?: number; installments?: number; interestFree?: boolean } | null;
+  if (!p?.installments) return '';
+  return en
+    ? `Financing: ${p.downPct ?? 0}% down and ${p.installments} ${p.interestFree ? 'interest-free ' : ''}monthly payments.`
+    : `Financiamiento: ${p.downPct ?? 0} % de entrada y ${p.installments} cuotas${p.interestFree ? ' sin intereses' : ''}.`;
+}
+
 export function lotOgHandler(frontendPath: string) {
   const indexPath = path.join(frontendPath, 'index.html');
 
@@ -132,11 +141,11 @@ export function lotOgHandler(frontendPath: string) {
     try {
       const slug = String(req.params.slug ?? '');
       const code = String(req.params.code ?? '').toUpperCase();
-      const project = await prisma.project.findUnique({ where: { slug }, select: { id: true, name: true } });
+      const project = await prisma.project.findUnique({ where: { slug }, select: { id: true, name: true, location: true, paymentPlan: true, coverImage: true } });
       const lot = project
         ? await prisma.lot.findFirst({
             where: { projectId: project.id, code: { equals: code, mode: 'insensitive' }, active: true },
-            select: { code: true, unitType: true, builtM2: true, areaM2: true, price: true, status: true, name: true, cashOnly: true },
+            select: { code: true, unitType: true, builtM2: true, areaM2: true, price: true, status: true, name: true, cashOnly: true, geometry: true },
           })
         : null;
       if (!project || !lot) {
@@ -157,18 +166,22 @@ export function lotOgHandler(frontendPath: string) {
             ? en
               ? 'Promotional cash price.'
               : 'Precio promocional de contado.'
-            : en
-              ? '24-month interest-free financing.'
-              : 'Financiamiento a 24 meses sin intereses.'
+            : planText(project.paymentPlan, en)
           : lot.status === 'SOLD'
             ? en ? 'Sold.' : 'Vendido.'
             : lot.status === 'RESERVED'
               ? en ? 'Reserved.' : 'Reservado.'
               : '';
-      const description = en
-        ? `See its shape and location on the satellite map, dimensions, boundaries and price. Manglaralto, Ruta del Spondylus. ${status}`
-        : `Mira su forma y ubicación en el mapa satelital, medidas, linderos y precio. Manglaralto, Ruta del Spondylus. ${status}`;
-      const image = `${origin}/api/og/lot/${slug}/${encodeURIComponent(lot.code)}.jpg`;
+      const place = project.location ? ` ${project.location}.` : '';
+      const description = lot.geometry
+        ? en
+          ? `See its shape and location on the satellite map, dimensions, boundaries and price.${place} ${status}`
+          : `Mira su forma y ubicación en el mapa satelital, medidas, linderos y precio.${place} ${status}`
+        : en
+          ? `Price, size and availability.${place} ${status}`
+          : `Precio, medidas y disponibilidad.${place} ${status}`;
+      const cover = project.coverImage ? (/^https?:\/\//i.test(project.coverImage) ? project.coverImage : `${origin}${project.coverImage}`) : `${origin}/images/og-cover.png`;
+      const image = lot.geometry ? `${origin}/api/og/lot/${slug}/${encodeURIComponent(lot.code)}.jpg` : cover;
       const url = `${origin}${en ? '/en' : ''}/proyectos/${slug}/lote/${encodeURIComponent(lot.code)}`;
 
       let html = fs.readFileSync(indexPath, 'utf8');
@@ -465,7 +478,7 @@ export function landingOgHandler(frontendPath: string) {
       const slug = String(req.params.slug ?? '');
       const project = await prisma.project.findUnique({
         where: { slug },
-        select: { id: true, name: true, location: true, priceFrom: true, priceLabel: true, coverImage: true },
+        select: { id: true, name: true, location: true, priceFrom: true, priceLabel: true, coverImage: true, paymentPlan: true },
       });
       if (!project) {
         res.sendFile(indexPath);
@@ -479,16 +492,17 @@ export function landingOgHandler(frontendPath: string) {
       const prices = lots.map((l) => l.price).filter((p): p is number => p != null);
       const min = prices.length ? Math.min(...prices) : project.priceFrom;
       const place = project.location?.split(',')[0] ?? '';
+      const inst = (project.paymentPlan as { installments?: number } | null)?.installments ?? null;
 
       let title: string;
       let description: string;
       if (lang === 'en') {
-        title = lots.length && min != null ? `${project.name} · Lots from ${usd(min)}, 24 monthly payments` : min != null ? `${project.name} · From ${usd(min)}` : project.name;
+        title = lots.length && min != null ? `${project.name} · Lots from ${usd(min)}${inst ? `, ${inst} monthly payments` : ''}` : min != null ? `${project.name} · From ${usd(min)}` : project.name;
         description = lots.length
           ? `${lots.length} lots available in ${place}, Ecuador. Leave your WhatsApp and we’ll send you pricing, the site plan and payment options.`
           : `Leave your WhatsApp and we’ll send you pricing and payment options for ${project.name} in ${place}, Ecuador.`;
       } else {
-        title = lots.length && min != null ? `${project.name} · Lotes desde ${usd(min)} en 24 cuotas` : `${project.name} · ${project.priceLabel ?? 'Recibe precios'}`;
+        title = lots.length && min != null ? `${project.name} · Lotes desde ${usd(min)}${inst ? ` en ${inst} cuotas` : ''}` : `${project.name} · ${project.priceLabel ?? 'Recibe precios'}`;
         description = lots.length
           ? `${lots.length} lotes disponibles en ${place}. Déjanos tu WhatsApp y te enviamos precios, el plano de lotes y las formas de pago.`
           : `Déjanos tu WhatsApp y te enviamos precios y formas de pago de ${project.name} en ${place}.`;

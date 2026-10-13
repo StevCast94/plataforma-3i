@@ -50,8 +50,8 @@ const ZONE_STYLE = {
   via: { color: '#facc15', label: 'Vías' },
 };
 
-export { DOWN_PAYMENT, INSTALLMENTS, monthly } from '@/lib/lotFinance';
-import { DOWN_PAYMENT, INSTALLMENTS, monthly } from '@/lib/lotFinance';
+export { downPayment, monthly } from '@/lib/lotFinance';
+import { downPayment, monthly, ProjectTermsContext, useProjectTerms, type PaymentPlan } from '@/lib/lotFinance';
 
 type SizeFilter = '' | 'lt800' | '800to1500' | 'gt1500';
 
@@ -161,14 +161,18 @@ function setRest(map: L.Map, rest: boolean) {
   }
 }
 
-export function LotMap({
+function LotMapInner({
   projectSlug,
   projectName,
   mapLat,
   mapLng,
+  plan = null,
 }: {
   projectSlug: string;
   projectName: string;
+  /** Plan de pagos del proyecto; sin plan, solo se muestra el precio. */
+  plan?: PaymentPlan | null;
+  location?: string | null;
   /** Punto de llegada del proyecto, para el botón "Cómo llegar". */
   mapLat?: number | null;
   mapLng?: number | null;
@@ -723,7 +727,7 @@ export function LotMap({
                 <td className="px-3 py-2">{fmtArea(l.areaM2)}</td>
                 <td className="px-3 py-2">{l.price != null ? formatCurrency(l.price) : '—'}</td>
                 <td className="hidden px-3 py-2 sm:table-cell">
-                  {l.price == null ? '—' : l.cashOnly ? <span className="text-xs font-semibold text-accent">{t('Solo contado')}</span> : formatCurrency(monthly(l.price))}
+                  {l.price == null || !plan ? '—' : l.cashOnly ? <span className="text-xs font-semibold text-accent">{t('Solo contado')}</span> : formatCurrency(monthly(l.price, plan))}
                 </td>
                 <td className="px-3 py-2">
                   <span className="rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ background: STATUS_STYLE[l.status].fill }}>
@@ -887,6 +891,7 @@ function LotPanel({
   onClose: () => void;
 }) {
   const { t } = useLang();
+  const { plan } = useProjectTerms();
   const { toast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
   const [sending, setSending] = useState(false);
@@ -954,8 +959,8 @@ function LotPanel({
               <CashOnlyNote />
             ) : (
               <>
-                <Row label={t('Entrada (30%)')} value={formatCurrency(lot.price * DOWN_PAYMENT)} />
-                <Row label={t('{n} cuotas sin interés de', { n: INSTALLMENTS })} value={formatCurrency(monthly(lot.price))} />
+                {plan && <Row label={t('Entrada ({p} %)', { p: plan.downPct })} value={formatCurrency(downPayment(lot.price, plan))} />}
+                {plan && <Row label={t(plan.interestFree ? '{n} cuotas sin interés de' : '{n} cuotas de', { n: plan.installments })} value={formatCurrency(monthly(lot.price, plan))} />}
               </>
             )}
           </>
@@ -1062,6 +1067,7 @@ const num = (n: number, d = 2) => n.toLocaleString('en-US', { minimumFractionDig
 /** Ficha técnica del lote: identificación, linderos y coordenadas (fuente GEO 3i). */
 export function LotSheet({ lot }: { lot: PublicLot }) {
   const { t } = useLang();
+  const { location } = useProjectTerms();
   const note = lot.details?.cadastralNote;
   // Solo hay geometría cuando el lote está digitalizado en GEO 3i.
   const d = lot.details?.linderos ? lot.details : null;
@@ -1078,7 +1084,7 @@ export function LotSheet({ lot }: { lot: PublicLot }) {
         {d?.fondoM ? <Row label={t('Fondo')} value={`${num(d.fondoM)} m`} /> : null}
         {lot.details?.areaNote && <p className="-mt-1 text-right text-[11px] text-amber-700">{nota(t, lot.details.areaNote)}</p>}
         {d && <Row label={t('Lados')} value={String(d.sides.length)} />}
-        <Row label={t('Ubicación')} value="Manglaralto, Santa Elena" />
+        {location && <Row label={t('Ubicación')} value={t(location)} />}
         {d && <Row label={t('Centro (UTM 17S)')} value={`${num(d.centroidUTM.este, 1)} E · ${num(d.centroidUTM.norte, 1)} N`} />}
       </dl>
 
@@ -1123,5 +1129,13 @@ export function LotSheet({ lot }: { lot: PublicLot }) {
         </p>
       )}
     </div>
+  );
+}
+
+export function LotMap(props: Parameters<typeof LotMapInner>[0]) {
+  return (
+    <ProjectTermsContext.Provider value={{ plan: props.plan ?? null, location: props.location ?? null }}>
+      <LotMapInner {...props} />
+    </ProjectTermsContext.Provider>
   );
 }

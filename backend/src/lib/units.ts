@@ -17,7 +17,7 @@ export function unitFields(body: Record<string, unknown>): Record<string, unknow
   }
   for (const k of ['builtM2', 'bathrooms', 'areaM2'] as const) if (k in body) d[k] = num(body[k]);
   for (const k of ['bedrooms', 'parking'] as const) if (k in body) d[k] = int(body[k]);
-  for (const k of ['floor', 'block'] as const) if (k in body) d[k] = str(body[k]);
+  for (const k of ['floor', 'block', 'typology'] as const) if (k in body) d[k] = str(body[k]);
   return d;
 }
 
@@ -38,4 +38,19 @@ export function newUnit(body: Record<string, unknown>) {
 export function cleanTypes(v: unknown): string[] | undefined {
   if (!Array.isArray(v)) return undefined;
   return [...new Set(v.map(String).filter((t) => UNIT_TYPES.includes(t as never)))];
+}
+
+export interface PaymentPlan {
+  downPct: number;
+  installments: number;
+  interestFree: boolean;
+}
+
+/** Plan de pagos del proyecto. null = sin financiamiento publicado (solo precio). */
+export function cleanPlan(v: unknown): PaymentPlan | null {
+  const p = v as Partial<PaymentPlan> | null;
+  const installments = Math.round(Number(p?.installments));
+  const downPct = Number(p?.downPct);
+  if (!p || !Number.isFinite(installments) || installments < 1 || installments > 240) return null;
+  return { downPct: Number.isFinite(downPct) ? Math.min(100, Math.max(0, downPct)) : 0, installments, interestFree: Boolean(p.interestFree) };
 }

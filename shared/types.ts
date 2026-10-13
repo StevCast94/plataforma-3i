@@ -44,6 +44,8 @@ export interface Project {
   priceLabel?: string | null;
   /** Tipos de unidad que vende (ids de frontend/src/lib/propertyTypes.ts). */
   propertyTypes?: string[];
+  /** Plan de pagos: { downPct, installments, interestFree }. null = sin financiamiento publicado. */
+  paymentPlan?: { downPct: number; installments: number; interestFree: boolean } | null;
   /** Textos en inglés que escribe la desarrolladora (si no hay, se usa el diccionario). */
   textEn?: { subtitle?: string; description?: string; priceLabel?: string } | null;
   active: boolean;
@@ -84,6 +86,7 @@ export interface PublicLot {
   bathrooms?: number | null;
   parking?: number | null;
   floor?: string | null;
+  typology?: string | null;
   areaM2?: number | null;
   frontM?: number | null;
   depthM?: number | null;

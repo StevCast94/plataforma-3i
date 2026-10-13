@@ -12,7 +12,7 @@ import { BrandLoader } from '@/components/brand/Isotipo';
 import { api } from '@/lib/api';
 import { cld } from '@/lib/cloudinary';
 import { formatCurrency } from '@/lib/utils';
-import { INSTALLMENTS, monthly } from '@/lib/lotFinance';
+import { asPlan, monthly } from '@/lib/lotFinance';
 import { submitProjectLead, useTrackView } from '@/lib/projectTracking';
 
 // Página de aterrizaje para anuncios (/l/:slug y /en/l/:slug): sin menú ni
@@ -130,6 +130,7 @@ export default function CampaignLandingPage() {
     );
 
   const priceFrom = facts.minPrice ?? project.priceFrom ?? null;
+  const plan = asPlan(project.paymentPlan);
   const images = [project.coverImage, ...(project.images ?? [])].filter((x): x is string => !!x);
   const cover = images[0];
   // Mosaico sin huecos: 1 grande + 2 (3 fotos) o 1 grande + 5 (6 fotos).
@@ -180,10 +181,10 @@ export default function CampaignLandingPage() {
                   <p className="font-serif text-2xl font-bold text-secondary">{formatCurrency(priceFrom)}</p>
                 </div>
               )}
-              {priceFrom != null && (
+              {priceFrom != null && plan && (
                 <div className="rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/15">
-                  <p className="text-[11px] uppercase tracking-wider text-white/60">{t('{n} cuotas de', { n: INSTALLMENTS })}</p>
-                  <p className="font-serif text-2xl font-bold">{formatCurrency(monthly(priceFrom))}</p>
+                  <p className="text-[11px] uppercase tracking-wider text-white/60">{t('{n} cuotas de', { n: plan.installments })}</p>
+                  <p className="font-serif text-2xl font-bold">{formatCurrency(monthly(priceFrom, plan))}</p>
                 </div>
               )}
               {facts.available > 0 && (

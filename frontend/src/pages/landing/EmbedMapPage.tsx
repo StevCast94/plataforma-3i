@@ -4,6 +4,7 @@ import { api } from '@/lib/api';
 import { Seo } from '@/components/shared/Seo';
 import { LotMap } from '@/components/shared/LotMap';
 import { ProjectLeadContext, useTrackView } from '@/lib/projectTracking';
+import { asPlan } from '@/lib/lotFinance';
 
 // Mapa de lotes con la marca del desarrollador (Fase 3), para insertarlo en su web
 // (iframe) o servirlo en su dominio propio. Los contactos entran a su CRM como propios.
@@ -14,6 +15,8 @@ interface EmbedInfo {
   name: string;
   projectName: string;
   mapLat: number | null;
+  paymentPlan?: unknown;
+  location?: string | null;
   mapLng: number | null;
   logo: string | null;
   color: string | null;
@@ -65,7 +68,7 @@ export default function EmbedMapPage({ slug: forcedSlug }: { slug?: string }) {
         <p className="text-right text-xs text-brand-gray">{info.projectName}</p>
       </header>
       <ProjectLeadContext.Provider value={{ slug: info.slug, gated: true, embed: true }}>
-        <LotMap projectSlug={info.slug} projectName={info.projectName} mapLat={info.mapLat} mapLng={info.mapLng} />
+        <LotMap projectSlug={info.slug} projectName={info.projectName} mapLat={info.mapLat} mapLng={info.mapLng} plan={asPlan(info.paymentPlan)} location={info.location ?? null} />
       </ProjectLeadContext.Provider>
       <footer className="px-4 pb-4 text-center text-[11px] text-brand-gray">
         Mapa interactivo por{' '}

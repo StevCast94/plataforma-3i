@@ -14,7 +14,8 @@ import { qualityFor } from '../services/projectQuality';
 import { DOC_KINDS, uploadProjectDocument } from '../lib/projectDocs';
 import { INTERNAL_DEV_ID } from '../services/internalTeam';
 import { v2 as cloudinary } from 'cloudinary';
-import { unitFields, newUnit, cleanTypes } from '../lib/units';
+import { unitFields, newUnit, cleanTypes, cleanPlan } from '../lib/units';
+import { Prisma } from '@prisma/client';
 
 if (process.env.CLOUDINARY_URL) cloudinary.config({ secure: true });
 
@@ -26,7 +27,7 @@ export const developerRoutes = Router();
 // estado de publicación los controla Grupo 3i.
 const EDITABLE = [
   'name', 'subtitle', 'description', 'location', 'coverImage', 'images', 'features',
-  'priceFrom', 'priceLabel', 'mapLat', 'mapLng', 'textEn', 'propertyTypes',
+  'priceFrom', 'priceLabel', 'mapLat', 'mapLng', 'textEn', 'propertyTypes', 'paymentPlan',
 ] as const;
 
 function pick(body: Record<string, unknown>) {
@@ -36,6 +37,7 @@ function pick(body: Record<string, unknown>) {
     if (data[k] === '') data[k] = null;
     else if (data[k] != null) data[k] = Number(data[k]);
   }
+  if ('paymentPlan' in data) data.paymentPlan = cleanPlan(data.paymentPlan) ?? Prisma.DbNull;
   if ('propertyTypes' in data) data.propertyTypes = cleanTypes(data.propertyTypes) ?? [];
   if ('textEn' in data) {
     const t = (data.textEn ?? {}) as Record<string, unknown>;

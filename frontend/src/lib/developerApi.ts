@@ -66,6 +66,7 @@ export const PUBLISH_LABEL: Record<PublishStatus, { text: string; cls: string }>
 
 export interface DevProject {
   propertyTypes?: string[];
+  paymentPlan?: unknown;
   id: string;
   slug: string;
   name: string;

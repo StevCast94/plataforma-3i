@@ -91,6 +91,7 @@ const publicLotSelect = {
   bathrooms: true,
   parking: true,
   floor: true,
+  typology: true,
   name: true,
   description: true,
   images: true,
@@ -290,7 +291,7 @@ async function embedBrandOf(projectId: string): Promise<EmbedBrand | null> {
 projectRoutes.get('/:slug/embed', async (req, res) => {
   const p = await prisma.project.findUnique({
     where: { slug: req.params.slug },
-    select: { id: true, slug: true, name: true, mapLat: true, mapLng: true, publishStatus: true, embedEnabled: true, embedBrand: true },
+    select: { id: true, slug: true, name: true, mapLat: true, mapLng: true, publishStatus: true, embedEnabled: true, embedBrand: true, paymentPlan: true, location: true },
   });
   if (!p || !p.embedEnabled || p.publishStatus !== 'PUBLISHED') {
     res.status(404).json({ error: 'Mapa no disponible' });
@@ -298,5 +299,5 @@ projectRoutes.get('/:slug/embed', async (req, res) => {
   }
   const b = (p.embedBrand ?? {}) as EmbedBrand;
   // El WhatsApp no se expone: se entrega solo después de registrar el contacto.
-  res.json({ slug: p.slug, name: b.name || p.name, projectName: p.name, mapLat: p.mapLat, mapLng: p.mapLng, logo: b.logo ?? null, color: b.color ?? null });
+  res.json({ slug: p.slug, name: b.name || p.name, projectName: p.name, mapLat: p.mapLat, mapLng: p.mapLng, logo: b.logo ?? null, color: b.color ?? null, paymentPlan: p.paymentPlan, location: p.location });
 });

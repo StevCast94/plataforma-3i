@@ -15,6 +15,7 @@ import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { useLang } from '@/hooks/useLang';
 import { LotMap } from '@/components/shared/LotMap';
 import { UnitList } from '@/components/shared/UnitList';
+import { asPlan } from '@/lib/lotFinance';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { DetailSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -224,7 +225,7 @@ export default function ProjectDetailPage() {
 
       {/* 2. LO PRINCIPAL, JUSTO DESPUÉS DEL HERO: el mapa de lotes (si hay lotes)
           y el brochure digital (si está activo). */}
-      <LotMap projectSlug={project.slug} projectName={project.name} mapLat={project.mapLat} mapLng={project.mapLng} />
+      <LotMap projectSlug={project.slug} projectName={project.name} mapLat={project.mapLat} mapLng={project.mapLng} plan={asPlan(project.paymentPlan)} location={project.location ?? null} />
       <UnitList projectSlug={project.slug} />
 
       {project.slug === 'montanita-view' && (

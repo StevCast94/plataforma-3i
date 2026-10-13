@@ -159,6 +159,7 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
         unitType: form.unitType ?? 'lotes',
         block: form.block ?? null,
         floor: form.floor ?? null,
+        typology: form.typology ?? null,
         builtM2: form.builtM2 ?? null,
         bedrooms: form.bedrooms ?? null,
         bathrooms: form.bathrooms ?? null,
@@ -324,6 +325,7 @@ function UnitFields({ form, setForm, fromPlan }: { form: Partial<AdminLot>; setF
         {!fromPlan && <Input label={built ? 'Terreno m²' : 'Área m²'} type="number" value={form.areaM2 ?? ''} onChange={(e) => set('areaM2', numOrNull(e.target.value))} />}
         {built && <Input label="Construcción m²" type="number" value={form.builtM2 ?? ''} onChange={(e) => set('builtM2', numOrNull(e.target.value))} />}
         {built && <Input label="Piso / nivel" value={form.floor ?? ''} onChange={(e) => set('floor', e.target.value)} />}
+        {built && <Input label="Tipología" placeholder="Tipo A" value={form.typology ?? ''} onChange={(e) => set('typology', e.target.value)} />}
         {built && <Input label="Dormitorios" type="number" value={form.bedrooms ?? ''} onChange={(e) => set('bedrooms', numOrNull(e.target.value))} />}
         {built && <Input label="Baños" type="number" step="0.5" value={form.bathrooms ?? ''} onChange={(e) => set('bathrooms', numOrNull(e.target.value))} />}
         {built && <Input label="Parqueaderos" type="number" value={form.parking ?? ''} onChange={(e) => set('parking', numOrNull(e.target.value))} />}

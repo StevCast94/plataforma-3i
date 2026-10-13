@@ -4,6 +4,8 @@ import { requireAdmin, type AuthedRequest } from '../middleware/auth';
 import { audit } from '../services/audit';
 import { slugify } from '../lib/slug';
 import { projectMetrics } from '../services/projectMetrics';
+import { cleanPlan } from '../lib/units';
+import { Prisma } from '@prisma/client';
 
 export const adminProjectRoutes = Router();
 adminProjectRoutes.use(requireAdmin);
@@ -26,6 +28,7 @@ adminProjectRoutes.post('/', async (req: AuthedRequest, res) => {
   try {
     const data = { ...req.body };
     if (!data.slug && data.name) data.slug = slugify(data.name);
+    if ('paymentPlan' in data) data.paymentPlan = cleanPlan(data.paymentPlan) ?? Prisma.DbNull;
     const project = await prisma.project.create({ data });
     await audit(req.staff?.staffId, 'create', 'project', project.id, { name: project.name });
     res.status(201).json(project);
@@ -48,6 +51,7 @@ adminProjectRoutes.put('/:id', async (req: AuthedRequest, res) => {
       const d = String(data.customDomain ?? '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '');
       data.customDomain = d || null;
     }
+    if ('paymentPlan' in data) data.paymentPlan = cleanPlan(data.paymentPlan) ?? Prisma.DbNull;
     if ('mapPaidUntil' in data) data.mapPaidUntil = data.mapPaidUntil ? new Date(data.mapPaidUntil) : null;
     const project = await prisma.project.update({ where: { id: req.params.id }, data });
     await audit(req.staff?.staffId, 'update', 'project', project.id);

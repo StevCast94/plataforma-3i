@@ -16,6 +16,8 @@ import {
   devApi, getDevToken, setDevToken, PUBLISH_LABEL, type DevMe, type DevProject,
 } from '@/lib/developerApi';
 import { TypePicker } from '@/components/admin/TypePicker';
+import { PaymentPlanFields } from '@/components/admin/PaymentPlanFields';
+import { asPlan, type PaymentPlan } from '@/lib/lotFinance';
 
 // Portal del desarrollador (/desarrollador): terceros que publican sus proyectos en
 // la vitrina de Grupo 3i. Arman un borrador, lo envían a revisión y Grupo 3i lo publica.
@@ -92,6 +94,7 @@ function Login({ onDone }: { onDone: () => void }) {
 type Draft = Pick<DevProject, 'name' | 'subtitle' | 'description' | 'location' | 'coverImage' | 'images' | 'priceLabel'> & {
   textEn: { subtitle: string; description: string; priceLabel: string };
   propertyTypes: string[];
+  paymentPlan: PaymentPlan | null;
   priceFrom: string;
   mapLat: string;
   mapLng: string;
@@ -107,6 +110,7 @@ const toDraft = (p?: DevProject): Draft => ({
   priceLabel: p?.priceLabel ?? '',
   textEn: { subtitle: p?.textEn?.subtitle ?? '', description: p?.textEn?.description ?? '', priceLabel: p?.textEn?.priceLabel ?? '' },
   propertyTypes: p?.propertyTypes ?? [],
+  paymentPlan: asPlan(p?.paymentPlan),
   priceFrom: p?.priceFrom != null ? String(p.priceFrom) : '',
   mapLat: p?.mapLat != null ? String(p.mapLat) : '',
   mapLng: p?.mapLng != null ? String(p.mapLng) : '',
@@ -163,6 +167,9 @@ function Editor({ project, onBack, onSaved }: { project?: DevProject; onBack: ()
         </div>
         <div className="sm:col-span-2">
           <TypePicker value={d.propertyTypes} onChange={(v) => set('propertyTypes', v)} />
+          <div className="mt-3">
+            <PaymentPlanFields value={d.paymentPlan} onChange={(v) => set('paymentPlan', v)} />
+          </div>
         </div>
         <Input label="Ubicación *" placeholder="Olón, Santa Elena" value={d.location ?? ''} onChange={(e) => set('location', e.target.value)} />
         <Input label="Precio desde (USD)" type="number" value={d.priceFrom} onChange={(e) => set('priceFrom', e.target.value)} />

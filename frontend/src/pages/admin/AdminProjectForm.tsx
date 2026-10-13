@@ -12,6 +12,8 @@ import { resolveBrochureContent, type BrochureContent } from '@/lib/brochureCont
 import type { AdminProject } from '@/lib/adminTypes';
 import type { Project } from '@shared/types';
 import { TypePicker } from '@/components/admin/TypePicker';
+import { PaymentPlanFields } from '@/components/admin/PaymentPlanFields';
+import { asPlan, type PaymentPlan } from '@/lib/lotFinance';
 
 const slugify = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
@@ -62,6 +64,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
   const [priceFrom, setPriceFrom] = useState('');
   const [priceLabel, setPriceLabel] = useState('');
   const [propertyTypes, setPropertyTypes] = useState<string[]>([]);
+  const [paymentPlan, setPaymentPlan] = useState<PaymentPlan | null>(null);
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
   const [showBrochure, setShowBrochure] = useState(false);
@@ -92,6 +95,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
     setPriceFrom(project?.priceFrom != null ? String(project.priceFrom) : '');
     setPriceLabel(project?.priceLabel ?? '');
     setPropertyTypes(project?.propertyTypes ?? []);
+    setPaymentPlan(asPlan(project?.paymentPlan));
     setActive(project?.active ?? true);
     setFeatured(project?.featured ?? false);
     setShowBrochure(project?.showBrochure ?? false);
@@ -149,6 +153,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
       priceFrom: priceFrom ? Number(priceFrom) : null,
       priceLabel: priceLabel || null,
       propertyTypes,
+      paymentPlan,
       textEn: { subtitle: textEn.subtitle.trim() || undefined, description: textEn.description.trim() || undefined, priceLabel: textEn.priceLabel.trim() || undefined },
       active,
       featured,
@@ -218,6 +223,7 @@ export function AdminProjectForm({ open, project, onClose, onSaved }: Props) {
         <Textarea label="Descripción" value={description} onChange={(e) => setDescription(e.target.value)} />
         <Input label="Ubicación" value={location} onChange={(e) => setLocation(e.target.value)} />
         <TypePicker value={propertyTypes} onChange={setPropertyTypes} />
+        <PaymentPlanFields value={paymentPlan} onChange={setPaymentPlan} />
         <details className="rounded-lg bg-light p-3">
           <summary className="cursor-pointer text-sm font-medium text-primary">Versión en inglés (opcional; si no, se usa el diccionario)</summary>
           <div className="mt-3 space-y-3">
