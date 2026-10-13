@@ -8,6 +8,9 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'Ver los servicios': 'See our services',
+  'Topografía, planos, trámites, marketing y desarrollo de proyectos, con el seguimiento de cada trámite en línea.': 'Surveying, site plans, permits, marketing and project development — with every step trackable online.',
+  'Servicios integrales para tu proyecto': 'Full-service support for your project',
   'Comparte nuestros proyectos con tu enlace y gana una comisión por cada venta. El registro es gratis.': 'Share our projects with your link and earn a commission on every sale. Joining is free.',
   'Recomienda y gana con Grupo 3i': 'Refer buyers and earn with Grupo 3i',
   'Hola, me interesa: *{unit} {code}* de {p} ({area}{precio}). Quiero más información.': 'Hi, I’m interested in *{unit} {code}* at {p} ({area}{precio}). Could you send me more details?',
@@ -263,7 +266,7 @@ export const EN: Record<string, string> = {
   'Para desarrolladoras inmobiliarias': 'For real estate developers',
   'Lotes, terrenos, casas, departamentos, suites, locales y oficinas: inventario en vivo, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.': 'Lots, land, homes, condos, suites, retail and office space: live inventory, 360° tours, a CRM that alerts your agents by phone, legal vetting and a referral network that talks up your project.',
   'Propuesta comercial': 'Partner proposal',
-  'Beneficios, tarifas y solicitud de alta.': 'Benefits, fees and how to apply.',
+  'Beneficios, servicios y solicitud de alta.': 'Benefits, services and how to apply.',
   'Comisión por venta y servicios a convenir. Te lo explicamos.': 'We get paid when you sell — with worked examples.',
   'Todo lo que puedes hacer en la plataforma, paso a paso.': 'Everything the platform does, step by step.',
   'Ver más': 'Learn more',

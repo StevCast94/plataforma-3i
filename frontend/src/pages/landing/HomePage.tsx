@@ -193,7 +193,7 @@ export default function HomePage() {
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { to: '/publica-tu-proyecto', title: t('Publica tu proyecto'), body: t('Beneficios, tarifas y solicitud de alta.') },
+              { to: '/publica-tu-proyecto', title: t('Publica tu proyecto'), body: t('Beneficios, servicios y solicitud de alta.') },
               { to: '/publica-tu-proyecto/propuesta', title: t('Propuesta comercial'), body: t('Comisión por venta y servicios a convenir. Te lo explicamos.') },
               { to: '/publica-tu-proyecto/manual', title: t('Manual de herramientas'), body: t('Todo lo que puedes hacer en la plataforma, paso a paso.') },
               { to: '/publica-tu-proyecto/galeria', title: t('Galería del sistema'), body: t('Capturas reales de cada pantalla del portal.') },
@@ -208,12 +208,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* REFIERE Y GANA (el Club de Viajes queda para desarrollo futuro) */}
+      {/* SERVICIOS INTEGRALES (el Club de Viajes queda para desarrollo futuro) */}
       <CTASection
-        title={t('Recomienda y gana con Grupo 3i')}
-        subtitle={t('Comparte nuestros proyectos con tu enlace y gana una comisión por cada venta. El registro es gratis.')}
-        ctaText={t('Quiero ser socio')}
-        ctaTo="/oficina"
+        title={t('Servicios integrales para tu proyecto')}
+        subtitle={t('Topografía, planos, trámites, marketing y desarrollo de proyectos, con el seguimiento de cada trámite en línea.')}
+        ctaText={t('Ver los servicios')}
+        ctaTo="/servicios"
       />
     </>
   );
