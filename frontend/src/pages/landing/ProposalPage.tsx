@@ -22,12 +22,12 @@ const TX = {
     coverKicker: 'Propuesta comercial',
     coverTitle: 'Vende tus proyectos inmobiliarios con la red de Grupo 3i',
     typesLabel: 'Publicamos proyectos de',
-    types: ['Lotes', 'Casas', 'Departamentos', 'Suites', 'Locales comerciales', 'Oficinas', 'Bodegas y galpones', 'Macrolotes'],
+    types: ['Lotes', 'Terrenos', 'Casas', 'Departamentos', 'Suites', 'Locales comerciales', 'Oficinas', 'Bodegas y galpones'],
     coverSub: 'Seleccionamos y verificamos cada proyecto que publicamos en la costa ecuatoriana. Tú pagas solo cuando vendes.',
     preparedFor: 'Preparada para',
     aboutKicker: 'Quiénes somos',
     aboutTitle: 'Desarrollamos, verificamos y comercializamos proyectos inmobiliarios en la costa',
-    about1: 'Somos una inmobiliaria con proyectos propios en Santa Elena. Creamos esta plataforma para vender nuestros proyectos y hoy la abrimos a otras desarrolladoras: lotes, casas, departamentos, locales, oficinas y macrolotes.',
+    about1: 'Somos una inmobiliaria con proyectos propios en Santa Elena. Creamos esta plataforma para vender nuestros proyectos y hoy la abrimos a otras desarrolladoras: lotes, terrenos, casas, departamentos, suites, locales y oficinas.',
     about2: 'No somos un portal de anuncios: elegimos con quién trabajamos, verificamos cada proyecto y solo ganamos cuando tú vendes.',
     stats: [
       ['112', 'lotes en el mapa interactivo'],
@@ -39,7 +39,7 @@ const TX = {
     compareCols: ['Portal de anuncios', 'Grupo 3i'],
     compare: [
       ['Cómo pagas', 'Un plan mensual, vendas o no', 'Una comisión, solo cuando vendes'],
-      ['Si no vendes', 'Pagas el plan igual', 'No pagas comisión (solo el alta)'],
+      ['Si no vendes', 'Pagas el plan igual', 'No pagas comisión'],
       ['Quién promociona tu proyecto', 'Solo el buscador del portal', 'Nuestra plataforma, nuestras campañas y la red de referidores'],
       ['Tu inventario', 'Un anuncio por cada unidad', 'Todo el proyecto con disponibilidad en vivo y, en lotizaciones y casas, en un mapa interactivo'],
       ['Confianza del comprador', 'Nadie revisa los papeles', 'Sello «Verificado por Grupo 3i»'],
@@ -50,7 +50,7 @@ const TX = {
     stepsKicker: 'Cómo funciona',
     stepsTitle: 'De la firma a la venta, en cinco pasos',
     steps: [
-      ['Alta', 'Cargamos tu inventario, los planos, las fotos y los recorridos 360°. Pago único de $300.'],
+      ['Alta', 'Cargamos tu inventario, los planos, las fotos y los recorridos 360°.'],
       ['Verificación', 'Revisamos escritura y permisos, y tu proyecto recibe el sello.'],
       ['Publicación', 'Tu ficha sale en español e inglés, con su mapa, y la difundimos.'],
       ['Contactos', 'Cada interesado llega al WhatsApp de tu asesor, con su nombre y la unidad que le interesa.'],
@@ -60,7 +60,7 @@ const TX = {
     toolsTitle: 'Todo lo que tu proyecto necesita para venderse',
     tools: [
       ['Inventario en vivo', 'Precio y disponibilidad de cada unidad en tiempo real; en lotizaciones y casas, en un mapa interactivo.'],
-      ['Recorridos 360°', 'Tu cliente conoce el proyecto sin viajar.'],
+      ['Recorridos 360°', 'Lotizaciones, terrenos independientes, suites y departamentos: tu cliente los recorre sin viajar.'],
       ['Red Refiere y gana', 'Socios que recomiendan tu proyecto y cobran solo si se vende.'],
       ['Español e inglés', 'Listo para el comprador extranjero.'],
       ['Métricas en tiempo real', 'Visitas, unidades más vistas, contactos y ventas.'],
@@ -90,22 +90,16 @@ const TX = {
       'Cada contacto guarda la campaña de la que vino, hasta el cierre',
       'Tus enlaces se ven con foto, precio y llamado a la acción al compartirlos por WhatsApp y redes',
     ],
-    priceKicker: 'Tarifas',
-    priceTitle: 'Un solo plan, sin mensualidades',
+    priceKicker: 'Condiciones',
+    priceTitle: 'Una propuesta a la medida de tu proyecto',
     prices: [
-      ['$300', 'Alta por proyecto', 'Pago único. Incluye la carga del proyecto, los 360°, la traducción y la verificación legal.'],
-      ['8 %', 'Si el cliente llega por nosotros', 'Por la ficha, el mapa, los referidores o nuestras campañas. Ya incluye la comisión del referidor.'],
-      ['2 %', 'Si el cliente es tuyo', 'Lo registras en tu portal y lo trabajas con todas las herramientas.'],
+      ['Según tu proyecto', 'Lotización, terreno, casas, departamentos o locales: cada tipo de proyecto tiene sus propias condiciones.'],
+      ['Según los servicios', 'Eliges solo lo que necesitas: publicación, CRM, mapa, recorridos 360°, campañas, trámites o topografía.'],
+      ['En privado', 'Te presentamos la propuesta económica en una reunión y por escrito, sin letra pequeña.'],
     ],
     mapPlanTitle: 'Opcional · Plan Mapa para tu web',
-    mapPlan: 'Para lotizaciones y proyectos de casas: tu mapa interactivo con tu logo, dentro de tu web o en tu propio dominio, con CRM incluido. $49 al mes hasta 150 unidades; $99 al mes si tienes más.',
-    priceNote: 'Valores más impuestos. También puedes destacar tu proyecto en la portada como servicio adicional.',
-    exKicker: 'Ejemplo',
-    exTitle: (p: string) => `Un lote de ${p} con financiamiento`,
-    exSub: 'Pagas la comisión a medida que tu cliente te paga: nunca adelantas dinero que todavía no cobraste.',
-    exCols: ['Pago del cliente', 'Monto', 'Comisión (8 %)'],
-    exRows: ['Entrada', 'Cada cuota mensual (30 cuotas)', 'Total'],
-    exNote: 'Si el cliente desiste, se anulan las comisiones de los pagos que no llegaste a cobrar. Si no vendes, no pagas comisión.',
+    mapPlan: 'Para lotizaciones y proyectos de casas: tu mapa interactivo con tu logo, dentro de tu web o en tu propio dominio, con CRM incluido.',
+    priceNote: 'Los valores se acuerdan en privado. También puedes destacar tu proyecto en la portada como servicio adicional.',
     rulesKicker: 'Reglas claras',
     rulesTitle: 'Transparencia para ambas partes',
     rules: [
@@ -129,12 +123,12 @@ const TX = {
     coverKicker: 'Partner proposal',
     coverTitle: 'Sell your real estate projects through the Grupo 3i network',
     typesLabel: 'We list',
-    types: ['Lots', 'Homes', 'Condos', 'Suites', 'Retail space', 'Office space', 'Warehouses', 'Large land parcels'],
+    types: ['Lots', 'Land', 'Homes', 'Condos', 'Suites', 'Retail space', 'Office space', 'Warehouses'],
     coverSub: 'Every project we list on Ecuador’s coast is hand-picked and vetted. You only pay when you sell.',
     preparedFor: 'Prepared for',
     aboutKicker: 'About us',
     aboutTitle: 'We develop, vet and sell real estate on Ecuador’s coast',
-    about1: 'We’re a real estate company with our own projects in Santa Elena. We built this platform to sell our own projects — and now we’re opening it to partner developers of lots, homes, condos, retail, office space and large land parcels.',
+    about1: 'We’re a real estate company with our own projects in Santa Elena. We built this platform to sell our own projects — and now we’re opening it to partner developers of lots, land, homes, condos, suites, retail and office space.',
     about2: 'We’re not a listings site: we choose who we work with, vet every project and only get paid when you sell.',
     stats: [
       ['112', 'lots on the interactive map'],
@@ -146,7 +140,7 @@ const TX = {
     compareCols: ['Listings site', 'Grupo 3i'],
     compare: [
       ['How you pay', 'A monthly plan, sale or no sale', 'A commission, only when you sell'],
-      ['If nothing sells', 'You still pay the plan', 'No commission (just the setup fee)'],
+      ['If nothing sells', 'You still pay the plan', 'No commission'],
       ['Who markets your project', 'The site’s search bar', 'Our platform, our ad campaigns and our referral network'],
       ['Your inventory', 'One listing per unit', 'Your whole project with live availability — on an interactive map for lot and home developments'],
       ['Buyer confidence', 'Nobody checks the paperwork', '“Verified by Grupo 3i” seal'],
@@ -157,7 +151,7 @@ const TX = {
     stepsKicker: 'How it works',
     stepsTitle: 'From signing to sale in five steps',
     steps: [
-      ['Setup', 'We upload your inventory, plans, photos and 360° tours. One-time fee: $300.'],
+      ['Setup', 'We upload your inventory, plans, photos and 360° tours.'],
       ['Verification', 'We review the title and permits, and your project earns the seal.'],
       ['Launch', 'Your listing goes live in English and Spanish, with its map, and we promote it.'],
       ['Leads', 'Every prospect lands in your agent’s WhatsApp with their name and the unit they want.'],
@@ -167,7 +161,7 @@ const TX = {
     toolsTitle: 'Everything your project needs to sell',
     tools: [
       ['Live inventory', 'Real-time pricing and availability for every unit, with an interactive map for lot and home developments.'],
-      ['360° tours', 'Buyers tour the project without making the trip.'],
+      ['360° tours', 'Subdivisions, standalone land, suites and condos: buyers tour them without making the trip.'],
       ['Refer & Earn network', 'Members who recommend your project and only get paid when it sells.'],
       ['English and Spanish', 'Built for international buyers.'],
       ['Real-time analytics', 'Visits, most-viewed units, leads and sales.'],
@@ -197,22 +191,16 @@ const TX = {
       'Every lead keeps its source campaign, all the way to closing',
       'Your links show a photo, price and call to action when shared on WhatsApp and social media',
     ],
-    priceKicker: 'Pricing',
-    priceTitle: 'One plan. No monthly fees.',
+    priceKicker: 'Terms',
+    priceTitle: 'A proposal built around your project',
     prices: [
-      ['$300', 'One-time setup per project', 'Covers the project upload, 360° tours, translation and legal verification.'],
-      ['8%', 'When we bring the buyer', 'Through the listing, the map, referrers or our ads. Referral fees included.'],
-      ['2%', 'When the buyer is yours', 'Add them in your portal and work them with every tool.'],
+      ['Fit to your project', 'Subdivision, land, homes, condos or retail: every type of project gets its own terms.'],
+      ['Fit to the services', 'Pick only what you need: listing, CRM, map, 360° tours, ad campaigns, permits or surveying.'],
+      ['In private', 'We present our pricing in a meeting and in writing, with no fine print.'],
     ],
     mapPlanTitle: 'Optional · Map for your website',
-    mapPlan: 'For lot and home developments: your interactive map under your logo, on your website or your own domain, CRM included. $49/month up to 150 units; $99/month above that.',
-    priceNote: 'Plus applicable taxes. Homepage placement available as an add-on.',
-    exKicker: 'Example',
-    exTitle: (p: string) => `A ${p} lot, sold on installments`,
-    exSub: 'You pay commission as your buyer pays you, so you never front money you haven’t collected.',
-    exCols: ['Buyer payment', 'Amount', '8% commission'],
-    exRows: ['Down payment', 'Each monthly installment (30 total)', 'Total'],
-    exNote: 'If the buyer walks away, commissions on unpaid installments are cancelled. No sale, no commission.',
+    mapPlan: 'For lot and home developments: your interactive map under your logo, on your website or your own domain, CRM included.',
+    priceNote: 'Pricing is agreed in private. Homepage placement is available as an add-on.',
     rulesKicker: 'Clear rules',
     rulesTitle: 'Transparent for both sides',
     rules: [
@@ -280,7 +268,6 @@ function Kicker({ children, light }: { children: ReactNode; light?: boolean }) {
 
 
 
-const money = (n: number) => `$${n.toLocaleString('en-US')}`;
 
 export default function ProposalPage() {
   const { lang } = useLang();
@@ -290,10 +277,6 @@ export default function ProposalPage() {
   const { data: contact } = useSectionContent('contact');
   const wa = (contact?.whatsapp || '').replace(/\D/g, '');
   const year = new Date().getFullYear();
-
-  const price = 40000;
-  const entry = 10000;
-  const cuota = 1000;
 
   return (
     <div className="bg-light print:bg-white">
@@ -504,10 +487,9 @@ export default function ProposalPage() {
         <Kicker light>{tx.priceKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.priceTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
-          {tx.prices.map(([n, t, d]) => (
+          {tx.prices.map(([t, d]) => (
             <div key={t} className="rounded-2xl bg-white/10 p-6 ring-1 ring-white/15">
-              <p className="font-serif text-5xl font-bold text-secondary">{n}</p>
-              <p className="mt-3 font-semibold">{t}</p>
+              <p className="font-serif text-2xl font-bold text-secondary">{t}</p>
               <p className="mt-2 text-sm leading-relaxed text-white/70">{d}</p>
             </div>
           ))}
@@ -519,44 +501,8 @@ export default function ProposalPage() {
         <p className="mt-6 text-sm text-white/60">{tx.priceNote}</p>
       </Slide>
 
-      {/* 9. Ejemplo */}
-      <Slide n={10}>
-        <Kicker>{tx.exKicker}</Kicker>
-        <h2 className="font-serif text-4xl font-bold">{tx.exTitle(money(price))}</h2>
-        <p className="mt-3 max-w-3xl text-brand-gray">{tx.exSub}</p>
-        <div className="mt-10 overflow-hidden rounded-2xl border border-black/10">
-          <table className="w-full text-left">
-            <thead className="bg-light text-xs uppercase tracking-wide text-brand-gray">
-              <tr>
-                <th className="px-5 py-3">{tx.exCols[0]}</th>
-                <th className="px-5 py-3 text-right">{tx.exCols[1]}</th>
-                <th className="px-5 py-3 text-right">{tx.exCols[2]}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-t border-black/5">
-                <td className="px-5 py-3">{tx.exRows[0]}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{money(entry)}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{money(entry * 0.08)}</td>
-              </tr>
-              <tr className="border-t border-black/5">
-                <td className="px-5 py-3">{tx.exRows[1]}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{money(cuota)}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{money(cuota * 0.08)}</td>
-              </tr>
-              <tr className="border-t-2 border-primary/20 font-semibold">
-                <td className="px-5 py-3">{tx.exRows[2]}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{money(price)}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{money(price * 0.08)}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-sm text-brand-gray">{tx.exNote}</p>
-      </Slide>
-
       {/* 10. Reglas */}
-      <Slide n={11}>
+      <Slide n={10}>
         <Kicker>{tx.rulesKicker}</Kicker>
         <h2 className="font-serif text-4xl font-bold">{tx.rulesTitle}</h2>
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">
@@ -572,7 +518,7 @@ export default function ProposalPage() {
       {/* 11. Contacto */}
       <Slide
         dark
-        n={12}
+        n={11}
         bg={
           <>
             <img src="/images/secciones/hero-home.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />

@@ -2,7 +2,7 @@
 // departamento, local… Las que no vienen del plano (sin geometría) se crean a mano
 // desde el panel y se listan en la ficha, sin dibujarse en el mapa.
 
-export const UNIT_TYPES = ['lotes', 'casas', 'departamentos', 'suites', 'locales', 'oficinas', 'bodegas', 'macrolotes'] as const;
+export const UNIT_TYPES = ['lotes', 'casas', 'departamentos', 'suites', 'locales', 'oficinas', 'bodegas', 'terrenos'] as const;
 
 const num = (v: unknown) => (v === null || v === '' || v === undefined ? null : Number.isFinite(Number(v)) ? Number(v) : null);
 const int = (v: unknown) => { const n = num(v); return n == null ? null : Math.round(n); };

@@ -14,10 +14,10 @@ import { PROPERTY_TYPES } from '@/lib/propertyTypes';
 // formulario crea un desarrollador en estado «En alta» (admin → Desarrolladores).
 
 const BENEFITS = [
-  { icon: HandCoins, title: 'Pagas solo cuando vendes', body: '8 % sobre las ventas que llegan por la plataforma, que pagas a medida que tu cliente te paga. Sin mensualidades ni planes por anuncio.' },
+  { icon: HandCoins, title: 'Pagas solo cuando vendes', body: 'Una comisión sobre las ventas, que pagas a medida que tu cliente te paga. Las condiciones se acuerdan en privado, según tu proyecto y los servicios que necesites.' },
   { icon: Users, title: 'Una red que vende por ti', body: 'Los socios de Refiere y gana recomiendan tu proyecto a sus contactos, en español e inglés, y ganan solo si vendes.' },
   { icon: Map, title: 'Inventario en vivo', body: 'Cada unidad con su precio, medidas y disponibilidad al día. En lotizaciones y proyectos de casas, el cliente elige la suya en un mapa interactivo desde el celular.' },
-  { icon: Box, title: 'Recorridos 360°', body: 'Tus panorámicas ubicadas sobre el mapa: el cliente recorre el proyecto antes de visitarlo.' },
+  { icon: Box, title: 'Recorridos 360°', body: 'Lotizaciones, terrenos independientes, suites y departamentos: el cliente los recorre antes de visitarlos.' },
   { icon: BadgeCheck, title: 'Sello «Verificado por Grupo 3i»', body: 'Revisamos escrituras, gravámenes y aprobaciones. Es lo que más pesa en la decisión de quien compra una propiedad en la costa.' },
   { icon: BarChart3, title: 'Tu portal y tus métricas', body: 'Contactos, ventas, pagos y el embudo de tu proyecto en un solo lugar.' },
 ];
@@ -56,7 +56,7 @@ export default function PublishProjectPage() {
     <>
       <Seo
         title={t('Publica tu proyecto inmobiliario')}
-        description={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i: lotes, casas, departamentos, locales, oficinas y macrolotes. Pagas solo cuando vendes.')}
+        description={t('Vende tus proyectos inmobiliarios con la red de Grupo 3i: lotes, terrenos, casas, departamentos, suites, locales y oficinas. Pagas solo cuando vendes.')}
       />
       <PageHeader
         title={t('Publica tu proyecto')}
@@ -123,18 +123,9 @@ export default function PublishProjectPage() {
               </tbody>
             </table>
           </div>
-          <div className="mt-8 grid gap-4 text-center sm:grid-cols-3">
-            {[
-              ['8 %', 'por venta de la plataforma'],
-              ['2 %', 'por venta a tus propios contactos, usando nuestras herramientas'],
-              ['$300', 'alta única por proyecto'],
-            ].map(([n, l]) => (
-              <div key={n} className="rounded-2xl bg-white p-5 shadow-sm">
-                <p className="font-serif text-3xl font-bold text-primary">{n}</p>
-                <p className="mt-1 text-sm text-brand-gray">{t(l)}</p>
-              </div>
-            ))}
-          </div>
+          <p className="mt-8 rounded-2xl bg-white p-5 text-center text-sm text-brand-gray shadow-sm">
+            {t('Las condiciones económicas se acuerdan en privado y dependen del tipo de proyecto y de los servicios que necesites.')}
+          </p>
         </div>
       </section>
 

@@ -189,7 +189,7 @@ export default function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">{t('Para desarrolladoras inmobiliarias')}</p>
             <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{t('Vende tus proyectos inmobiliarios con la red de Grupo 3i. Pagas solo cuando vendes.')}</h2>
             <p className="mt-4 text-white/70">
-              {t('Lotes, casas, departamentos, locales, oficinas y macrolotes: inventario en vivo, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.')}
+              {t('Lotes, terrenos, casas, departamentos, suites, locales y oficinas: inventario en vivo, recorridos 360°, un CRM para tus asesores con avisos al celular, verificación legal y una red de referidores que recomienda tu proyecto.')}
             </p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -81,7 +81,7 @@ export function EmbedSettings({ project }: { project: DevProject }) {
           </>
         ) : (
           <p className="text-sm text-brand-gray">
-            El mapa para tu web se activa con el plan mensual ($49/mes hasta 150 lotes · $99/mes más de 150). Escríbenos para activarlo.
+            El mapa para tu web se activa con el plan mensual del mapa. Escríbenos para activarlo.
           </p>
         )}
       </div>

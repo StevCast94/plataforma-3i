@@ -122,8 +122,8 @@ const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
  * Tarjeta social de la ficha de un lote (/proyectos/:slug/lote/:code): título con
  * el código, el área y el precio, e imagen satelital con la forma del lote.
  */
-const UNIT_ES: Record<string, string> = { lotes: 'Lote', casas: 'Casa', departamentos: 'Departamento', suites: 'Suite', locales: 'Local', oficinas: 'Oficina', bodegas: 'Bodega', macrolotes: 'Macrolote' };
-const UNIT_EN: Record<string, string> = { lotes: 'Lot', casas: 'Home', departamentos: 'Condo', suites: 'Suite', locales: 'Retail unit', oficinas: 'Office', bodegas: 'Warehouse', macrolotes: 'Land parcel' };
+const UNIT_ES: Record<string, string> = { lotes: 'Lote', casas: 'Casa', departamentos: 'Departamento', suites: 'Suite', locales: 'Local', oficinas: 'Oficina', bodegas: 'Bodega', terrenos: 'Terreno' };
+const UNIT_EN: Record<string, string> = { lotes: 'Lot', casas: 'Home', departamentos: 'Condo', suites: 'Suite', locales: 'Retail unit', oficinas: 'Office', bodegas: 'Warehouse', terrenos: 'Land' };
 
 export function lotOgHandler(frontendPath: string) {
   const indexPath = path.join(frontendPath, 'index.html');
@@ -280,12 +280,12 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   '/publica-tu-proyecto': {
     es: {
       title: 'Publica tu proyecto inmobiliario en Grupo 3i',
-      description: 'Lotes, casas, departamentos, locales, oficinas y macrolotes: inventario en vivo, recorridos 360°, sello de verificación y una red de referidores. Pagas solo cuando vendes.',
+      description: 'Lotes, terrenos, casas, departamentos, suites, locales y oficinas: inventario en vivo, recorridos 360°, sello de verificación y una red de referidores. Pagas solo cuando vendes.',
       image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
     en: {
       title: 'List your real estate project on Grupo 3i',
-      description: 'Lots, homes, condos, retail, office space and large land parcels: live inventory, 360° tours, a verification seal and a referral network. You only pay when you sell.',
+      description: 'Lots, land, homes, condos, suites, retail and office space: live inventory, 360° tours, a verification seal and a referral network. You only pay when you sell.',
       image: '/images/og/montanita-view-mapa.jpg?v=20261012',
     },
   },

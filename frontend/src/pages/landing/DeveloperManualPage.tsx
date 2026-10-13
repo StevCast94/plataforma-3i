@@ -67,7 +67,7 @@ const ES_SECTIONS: Section[] = [
     body: <Steps items={[
       'Grupo 3i te envía por WhatsApp tu correo y una contraseña temporal.',
       'Entra a grupo3i.com/desarrollador e inicia sesión.',
-      'Arriba ves tu empresa y tus condiciones: la comisión por ventas que llegan por la plataforma (8 %), la de ventas a tus propios contactos (2 %) y el estado del alta.',
+      'Arriba ves tu empresa y tus condiciones: la comisión acordada para las ventas que llegan por la plataforma y para las ventas a tus propios contactos, y el estado del alta.',
       'Las pestañas son Proyectos, CRM, Ventas y Equipo.',
     ]} />,
   },
@@ -128,8 +128,8 @@ const ES_SECTIONS: Section[] = [
     body: <Bullets items={[
       'Cuando alguien toca «Contactar un asesor» en tu proyecto, deja su nombre y su WhatsApp, y se abre el chat con tu número con el lote ya escrito.',
       'Origen: «Referido» (llegó por el enlace de un socio de Refiere y gana), «Plataforma» (llegó por grupo3i.com) o «Propio» (lo registraste tú).',
-      'Plazo de 180 días: manda el primer registro de cada número. Si un contacto de la plataforma compra dentro de ese plazo, la venta paga la comisión del 8 %.',
-      'Registra a tus propios clientes en CRM → Lista → «+ Contacto propio». Si compran, la comisión es del 2 %.',
+      'Plazo de 180 días: manda el primer registro de cada número. Si un contacto de la plataforma compra dentro de ese plazo, la venta paga la comisión acordada para la plataforma.',
+      'Registra a tus propios clientes en CRM → Lista → «+ Contacto propio». Si compran, aplica la comisión acordada para tus propios contactos.',
     ]} />,
   },
   {
@@ -220,7 +220,7 @@ const ES_SECTIONS: Section[] = [
         'En CRM → Lista, toca «Venta» en el cliente: lote, precio, contado o financiado, entrada y comprobante.',
         'Grupo 3i confirma la venta: el lote pasa a Vendido y el cliente a Venta.',
         'Si es financiado, registra cada pago del cliente en Ventas → «+ Registrar pago».',
-        'Con cada pago se calcula la comisión (8 % o 2 %, según el origen del contacto). En Ventas ves lo generado, lo pagado y lo pendiente.',
+        'Con cada pago se calcula la comisión acordada (según el origen del contacto). En Ventas ves lo generado, lo pagado y lo pendiente.',
       ]} />
       <Tip>Si el comprador desiste, se anulan las comisiones de los pagos que aún no cobraste.</Tip>
     </>,
@@ -235,7 +235,7 @@ const ES_SECTIONS: Section[] = [
         'El mapa ajusta su altura solo y funciona en el celular.',
         'Los contactos que lleguen desde tu web entran a tu CRM como propios.',
       ]} />
-      <p className="mt-4 text-sm text-brand-gray">Plan mensual: $49 al mes hasta 150 lotes; $99 al mes si tienes más. Si no se renueva, el mapa se apaga solo al vencer.</p>
+      <p className="mt-4 text-sm text-brand-gray">El plan del mapa se acuerda en privado. Si no se renueva, el mapa se apaga solo al vencer.</p>
     </>,
   },
   {
@@ -266,7 +266,7 @@ const EN_SECTIONS: Section[] = [
     body: <Steps items={[
       'We’ll send your login email and a temporary password over WhatsApp.',
       'Go to grupo3i.com/desarrollador and sign in.',
-      'At the top you’ll see your company and your terms: 8% commission on sales we bring in, 2% on sales to your own leads, and your onboarding status.',
+      'At the top you’ll see your company and your terms: the agreed commission on sales we bring in and on sales to your own leads, and your onboarding status.',
       'The tabs are Proyectos (Projects), CRM, Ventas (Sales) and Equipo (Team).',
     ]} />,
   },
@@ -327,8 +327,8 @@ const EN_SECTIONS: Section[] = [
     body: <Bullets items={[
       'When someone taps “Talk to an agent” on your project, they leave their name and WhatsApp number, and a chat opens with your number and the lot already filled in.',
       'Lead source: «Referido» (came through a Refer & Earn member’s link), «Plataforma» (came through grupo3i.com) or «Propio» (you added it yourself).',
-      '180-day window: the first time a number is logged is the one that counts. If a lead we brought in buys within that window, the sale carries the 8% commission.',
-      'Add your own leads under CRM → Lista → «+ Contacto propio» (Own lead). If they buy, the commission is 2%.',
+      '180-day window: the first time a number is logged is the one that counts. If a lead we brought in buys within that window, the sale carries the agreed platform commission.',
+      'Add your own leads under CRM → Lista → «+ Contacto propio» (Own lead). If they buy, the agreed commission for your own leads applies.',
     ]} />,
   },
   {
@@ -419,7 +419,7 @@ const EN_SECTIONS: Section[] = [
         'Under CRM → Lista, tap «Venta» (Sale) on the buyer: lot, price, cash or installments, down payment and receipt.',
         'We confirm the sale: the lot switches to Sold and the buyer to Sold.',
         'For installment sales, log each payment under Ventas → «+ Registrar pago» (Add payment).',
-        'Commission is calculated on each payment (8% or 2%, depending on the lead source). Ventas shows what’s been earned, paid and outstanding.',
+        'Commission is calculated on each payment, at the agreed rate for the lead source. Ventas shows what’s been earned, paid and outstanding.',
       ]} />
       <Tip>If the buyer backs out, commission on payments you haven’t received yet is canceled.</Tip>
     </>,
@@ -434,7 +434,7 @@ const EN_SECTIONS: Section[] = [
         'The map resizes itself and works on phones.',
         'Leads from your website go into your CRM as your own.',
       ]} />
-      <p className="mt-4 text-sm text-brand-gray">Monthly plan: $49/month up to 150 lots; $99/month above that. If it isn’t renewed, the map switches off when the plan expires.</p>
+      <p className="mt-4 text-sm text-brand-gray">Map plan pricing is agreed in private. If it isn’t renewed, the map switches off when the plan expires.</p>
     </>,
   },
   {
