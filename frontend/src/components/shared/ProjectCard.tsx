@@ -8,7 +8,7 @@ import type { Project } from '@shared/types';
 export function ProjectCard({ project }: { project: Project }) {
   const { t, pt } = useLang();
   return (
-    <Link to={`/proyectos/${project.slug}`}>
+    <Link to={project.slug === 'ibiza-condohotel' ? '/ibiza' : `/proyectos/${project.slug}`}>
       <Card className="group h-full">
         <div className="relative h-56 overflow-hidden">
           <img

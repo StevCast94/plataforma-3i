@@ -16,7 +16,7 @@ import { cld } from '@/lib/cloudinary';
 // ?vista=<clave>; el navegador lo recuerda. Sin la clave se ve «muy pronto».
 // ============================================================
 
-const LAUNCH = new Date('2026-10-30T05:00:00Z');
+const LAUNCH = new Date('2026-10-14T05:00:00Z'); // abierta al público desde el 14-oct
 const PREVIEW_KEY = 'ibiza30';
 const STORE = 'g3i_ibiza_preview';
 

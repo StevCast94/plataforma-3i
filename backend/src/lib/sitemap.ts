@@ -6,7 +6,7 @@ import { prisma } from '../prisma';
 
 const BASE = 'https://grupo3i.com';
 const PAGES = [
-  '/', '/proyectos', '/sobre-nosotros', '/contacto', '/oficina',
+  '/', '/proyectos', '/ibiza', '/sobre-nosotros', '/contacto', '/oficina',
   '/publica-tu-proyecto', '/publica-tu-proyecto/propuesta', '/publica-tu-proyecto/manual', '/publica-tu-proyecto/galeria',
   '/privacidad', '/terminos', '/servicios',
 ];
