@@ -14,6 +14,7 @@ import { BrochureDigital } from '@/components/shared/BrochureDigital';
 import { WhatsAppCTA } from '@/components/shared/WhatsAppCTA';
 import { useLang } from '@/hooks/useLang';
 import { LotMap } from '@/components/shared/LotMap';
+import { ProposalSpot, isProposal } from '@/components/shared/ProposalSpot';
 import { UnitList } from '@/components/shared/UnitList';
 import { asPlan } from '@/lib/lotFinance';
 import { EmptyState } from '@/components/shared/EmptyState';
@@ -226,7 +227,26 @@ export default function ProjectDetailPage() {
       {/* 2. LO PRINCIPAL, JUSTO DESPUÉS DEL HERO: el mapa de lotes (si hay lotes)
           y el brochure digital (si está activo). */}
       <LotMap projectSlug={project.slug} projectName={project.name} mapLat={project.mapLat} mapLng={project.mapLng} plan={asPlan(project.paymentPlan)} location={project.location ?? null} />
+      {isProposal(project.brochureContent) && (
+        <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+          <ProposalSpot
+            title="Mapa interactivo con vistas 360°"
+            body="Todos los lotes, los condominios y la plaza dibujados sobre la foto satelital: color según disponibilidad, precio y ficha al tocar cada uno, y puntos 360° para mirar la vista al mar desde cada lote. También se inserta en tu propia web."
+            example="Míralo funcionando en Montañita View"
+            exampleTo="/proyectos/montanita-view"
+            image="/images/galeria-dev/06-vistas-360.webp"
+          />
+        </div>
+      )}
       <UnitList projectSlug={project.slug} />
+      {isProposal(project.brochureContent) && (
+        <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+          <ProposalSpot
+            title="Recorrido virtual en cada departamento"
+            body="Cargamos los recorridos virtuales que ya tienes en otra plataforma: cada departamento muestra el suyo dentro de su ficha, junto a precio, fotos y disponibilidad. Abre cualquier departamento para ver dónde va."
+          />
+        </div>
+      )}
 
       {project.slug === 'montanita-view' && (
         <div className="mx-auto max-w-5xl px-4 pb-12 text-center sm:px-6">

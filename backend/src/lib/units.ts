@@ -8,6 +8,17 @@ const num = (v: unknown) => (v === null || v === '' || v === undefined ? null : 
 const int = (v: unknown) => { const n = num(v); return n == null ? null : Math.round(n); };
 const str = (v: unknown) => (v == null || String(v).trim() === '' ? null : String(v).trim().slice(0, 120));
 
+/** Enlace del recorrido virtual: solo https. Si pegan el código <iframe>, se toma su src. */
+export function tourUrl(v: unknown): string | null {
+  const s = String(v ?? '').trim();
+  if (!s) return null;
+  const src = s.match(/src=["']([^"']+)["']/i)?.[1] ?? s;
+  let u: URL;
+  try { u = new URL(src); } catch { throw new Error('El recorrido virtual debe ser un enlace (https://…)'); }
+  if (u.protocol !== 'https:') throw new Error('El recorrido virtual debe empezar con https://');
+  return u.toString().slice(0, 1000);
+}
+
 /** Campos de unidad que se aceptan del panel (admin y desarrolladora). */
 export function unitFields(body: Record<string, unknown>): Record<string, unknown> {
   const d: Record<string, unknown> = {};
@@ -18,6 +29,7 @@ export function unitFields(body: Record<string, unknown>): Record<string, unknow
   for (const k of ['builtM2', 'bathrooms', 'areaM2'] as const) if (k in body) d[k] = num(body[k]);
   for (const k of ['bedrooms', 'parking'] as const) if (k in body) d[k] = int(body[k]);
   for (const k of ['floor', 'block', 'typology'] as const) if (k in body) d[k] = str(body[k]);
+  if ('tourUrl' in body) d.tourUrl = tourUrl(body.tourUrl);
   return d;
 }
 

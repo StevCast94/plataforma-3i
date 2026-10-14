@@ -87,6 +87,8 @@ export interface PublicLot {
   parking?: number | null;
   floor?: string | null;
   typology?: string | null;
+  /** Recorrido virtual 360° (enlace embebible). */
+  tourUrl?: string | null;
   areaM2?: number | null;
   frontM?: number | null;
   depthM?: number | null;

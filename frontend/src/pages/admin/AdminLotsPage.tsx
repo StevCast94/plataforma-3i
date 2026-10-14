@@ -160,6 +160,7 @@ function LotEditForm({ lot, onClose, onSaved }: { lot: AdminLot | null; onClose:
         block: form.block ?? null,
         floor: form.floor ?? null,
         typology: form.typology ?? null,
+        tourUrl: form.tourUrl || null,
         builtM2: form.builtM2 ?? null,
         bedrooms: form.bedrooms ?? null,
         bathrooms: form.bathrooms ?? null,
@@ -330,6 +331,7 @@ function UnitFields({ form, setForm, fromPlan }: { form: Partial<AdminLot>; setF
         {built && <Input label="Baños" type="number" step="0.5" value={form.bathrooms ?? ''} onChange={(e) => set('bathrooms', numOrNull(e.target.value))} />}
         {built && <Input label="Parqueaderos" type="number" value={form.parking ?? ''} onChange={(e) => set('parking', numOrNull(e.target.value))} />}
       </div>
+      <Input label="Recorrido virtual 360° (enlace)" placeholder="https://my.matterport.com/show/?m=…" value={form.tourUrl ?? ''} onChange={(e) => set('tourUrl', e.target.value)} />
       {!fromPlan && (
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-primary">Descripción pública</span>

@@ -8,6 +8,19 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'Comunidad privada': 'Private community',
+  'Míralo en un lote de Montañita View': 'See it on a Montañita View lot',
+  'Aquí aparece el lote resaltado en el mapa satelital de la comunidad, con medidas, linderos, cómo llegar y la vista 360° desde el terreno.': 'Here the lot appears highlighted on the community’s satellite map, with measurements, boundaries, directions and a 360° view from the land.',
+  'Ubicación en el mapa y vista 360°': 'Map location and 360° view',
+  'Aquí se abre el recorrido 360° del departamento, el mismo que ya tienes en otra plataforma: el cliente lo recorre sin salir de la ficha, con el precio y el botón de contacto a la vista.': 'The condo’s 360° tour opens right here, the same one you already have on another platform: buyers walk through it without leaving the page, with the price and contact button in view.',
+  'Recorrido virtual de esta unidad': 'This unit’s virtual tour',
+  'Recorrido virtual 360°': '360° virtual tour',
+  'Cargamos los recorridos virtuales que ya tienes en otra plataforma: cada departamento muestra el suyo dentro de su ficha, junto a precio, fotos y disponibilidad. Abre cualquier departamento para ver dónde va.': 'We bring in the virtual tours you already have on another platform: each condo shows its own tour on its page, next to price, photos and availability. Open any condo to see where it goes.',
+  'Recorrido virtual en cada departamento': 'A virtual tour in every condo',
+  'Míralo funcionando en Montañita View': 'See it live at Montañita View',
+  'Todos los lotes, los condominios y la plaza dibujados sobre la foto satelital: color según disponibilidad, precio y ficha al tocar cada uno, y puntos 360° para mirar la vista al mar desde cada lote. También se inserta en tu propia web.': 'Every lot, condo and the plaza drawn over the satellite photo: colored by availability, with price and details on tap, plus 360° points to see the ocean view from each lot. It can also be embedded on your own website.',
+  'Mapa interactivo con vistas 360°': 'Interactive map with 360° views',
+  'Propuesta · aquí irá': 'Proposal · this is where it goes',
   '¿Sabías que puedes tener tu lugar junto al mar desde $12,000? Cuatro semanas al año en Ibiza Condohotel, para siempre. Te cuento cómo:': 'Did you know you can have your place by the sea from $12,000? Four weeks a year at Ibiza Condohotel, forever. Let me tell you how:',
   'Tener una parte es tenerlo todo.': 'Owning a part is having it all.',
   'Hablemos de tu lugar en la costa': 'Let’s talk about your place on the coast',

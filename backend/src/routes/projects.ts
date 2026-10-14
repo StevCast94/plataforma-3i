@@ -92,6 +92,7 @@ const publicLotSelect = {
   parking: true,
   floor: true,
   typology: true,
+  tourUrl: true,
   name: true,
   description: true,
   images: true,

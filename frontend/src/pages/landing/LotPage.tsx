@@ -26,6 +26,7 @@ import {
 import { unitWord, isBuilt } from '@/lib/propertyTypes';
 import { asPlan, ProjectTermsContext } from '@/lib/lotFinance';
 import { BrandLoader } from '@/components/brand/Isotipo';
+import { ProposalSpot, isProposal } from '@/components/shared/ProposalSpot';
 
 /**
  * Ficha completa de un lote, pensada para abrirse desde un enlace compartido
@@ -182,6 +183,23 @@ export default function LotPage() {
             <LotPhotos images={lot.images ?? []} code={lot.code} />
           </section>
         )}
+
+        {lot.tourUrl ? (
+          <section className="mt-6 overflow-hidden rounded-2xl bg-white shadow-sm print:hidden">
+            <p className="px-5 pt-5 font-serif text-xl font-bold text-primary sm:px-6">{t('Recorrido virtual 360°')}</p>
+            <div className="mt-3 aspect-video w-full bg-black">
+              <iframe src={lot.tourUrl} title={t('Recorrido virtual 360°')} className="h-full w-full" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" allowFullScreen loading="lazy" />
+            </div>
+          </section>
+        ) : isProposal(project?.brochureContent) ? (
+          <div className="mt-6">
+            {built ? (
+              <ProposalSpot title="Recorrido virtual de esta unidad" body="Aquí se abre el recorrido 360° del departamento, el mismo que ya tienes en otra plataforma: el cliente lo recorre sin salir de la ficha, con el precio y el botón de contacto a la vista." />
+            ) : (
+              <ProposalSpot title="Ubicación en el mapa y vista 360°" body="Aquí aparece el lote resaltado en el mapa satelital de la comunidad, con medidas, linderos, cómo llegar y la vista 360° desde el terreno." example="Míralo en un lote de Montañita View" exampleTo="/proyectos/montanita-view" image="/images/galeria-dev/22-ficha-lote.webp" />
+            )}
+          </div>
+        ) : null}
 
         {lot.geometry && (
           <section className="mt-6 rounded-2xl bg-white p-5 shadow-sm sm:p-6 print:mt-3 print:rounded-none print:p-0 print:shadow-none">

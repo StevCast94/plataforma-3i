@@ -124,6 +124,8 @@ model Lot {
   parking   Int?
   floor     String? // piso o nivel ("3", "PB")
   typology  String? // tipología: "Tipo A · 2 dormitorios"
+  /// Recorrido virtual 360° de la unidad (enlace a Matterport, Kuula, 3DVista, YouTube…).
+  tourUrl   String?
 
   // --- Geometría (fuente: DWG / GEO 3i) ---
   /// GeoJSON Polygon en lon/lat WGS84 (reproyectado desde UTM 17S).
