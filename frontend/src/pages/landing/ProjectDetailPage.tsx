@@ -234,7 +234,7 @@ export default function ProjectDetailPage() {
             body="Todos los lotes, los condominios y la plaza dibujados sobre la foto satelital: color según disponibilidad, precio y ficha al tocar cada uno, y puntos 360° para mirar la vista al mar desde cada lote. También se inserta en tu propia web."
             example="Míralo funcionando en Montañita View"
             exampleTo="/proyectos/montanita-view"
-            image="/images/galeria-dev/06-vistas-360.webp"
+            image="/images/propuesta-dev/mapa-360-montanita.jpg"
           />
         </div>
       )}
