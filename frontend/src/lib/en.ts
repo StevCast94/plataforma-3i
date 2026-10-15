@@ -8,6 +8,16 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'tu comisión por cada venta y, con tu primer referido, pasas a Elite.': 'your commission on every sale, and with your first referral you move up to Elite.',
+  'Durante la promoción de lanzamiento, con tu primer referido: cuando alguien se registre con tu enlace, subes a Elite.': 'During the launch promotion, with your first referral: as soon as someone signs up with your link, you move up to Elite.',
+  'Promoción de lanzamiento: subes a Elite cuando se registre tu primer referido.': 'Launch promotion: you move up to Elite as soon as your first referral signs up.',
+  'Con tu primer referido.': 'With your first referral.',
+  'Ir a mi oficina virtual': 'Go to my Virtual Office',
+  'Seguir navegando': 'Keep browsing',
+  'Los enlaces de referido son para personas que aún no tienen cuenta, así que no necesitas registrarte otra vez.': 'Referral links are for people who don’t have an account yet, so you don’t need to sign up again.',
+  'Este es tu propio enlace de referido: compártelo con personas nuevas para que se registren con él.': 'This is your own referral link: share it with new people so they sign up with it.',
+  'Hola, {n}. En este dispositivo ya tienes una cuenta y la sesión iniciada en tu oficina virtual.': 'Hi {n}. You already have an account and are signed in to your Virtual Office on this device.',
+  'Ya tienes una cuenta': 'You already have an account',
   'Comunidad privada': 'Private community',
   'Míralo en un lote de Montañita View': 'See it on a Montañita View lot',
   'Aquí aparece el lote resaltado en el mapa satelital de la comunidad, con medidas, linderos, cómo llegar y la vista 360° desde el terreno.': 'Here the lot appears highlighted on the community’s satellite map, with measurements, boundaries, directions and a 360° view from the land.',
@@ -212,7 +222,7 @@ export const EN: Record<string, string> = {
   'Promo de contado': 'Cash promo',
   'Promo': 'Promo',
   'Precio promocional válido solo con pago de contado. No aplica el plan de financiamiento.': 'Promotional price for cash buyers only. Financing not available at this price.',
-  'Promoción de lanzamiento (del 6 de octubre al 7 de noviembre de 2026):': 'Launch promotion (October 6 – November 7, 2026):',
+  'Promoción de lanzamiento (del 6 de octubre de 2026 al 28 de febrero de 2027):': 'Launch promotion (6 October 2026 to 28 February 2027):',
   'El socio Premiere que inscriba a su': 'Any Premiere member who signs up their',
   "primer referido directo": "first direct referral",
   'asciende a Elite de regalo, sin necesidad de compra. Aplica también a quienes ya tenían al menos un referido al iniciar la promoción.': 'gets a free upgrade to Elite — no purchase required. This also applies to members who already had at least one referral when the promotion began.',

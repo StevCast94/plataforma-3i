@@ -103,6 +103,12 @@ export const referralRedirect = asyncHandler(async (req: Request, res: Response)
   if (ref) {
     setRefCookieIfAbsent(req, res, code);
     await recordClick(code).catch(() => {});
+    // El destino lleva ?ref=: la página guarda la atribución y, si quien abre el
+    // enlace ya tiene sesión en este dispositivo, le avisa (RefSessionNotice).
+    if (!/[?&]ref=/.test(to)) {
+      res.redirect(302, `${to}${to.includes('?') ? '&' : '?'}ref=${encodeURIComponent(code)}`);
+      return;
+    }
   }
   res.redirect(302, to);
 });

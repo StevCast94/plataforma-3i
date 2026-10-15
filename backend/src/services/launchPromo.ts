@@ -23,7 +23,7 @@ export async function grantLaunchElite(memberId: string, db: Db = prisma): Promi
     memberId,
     'elite_ascension',
     '🎁 Regalo de lanzamiento: ¡ya eres Elite!',
-    'Por inscribir a tu primer referido te regalamos el ascenso a Elite: desde ahora ganas 4% y 2% en comisiones inmobiliarias. Consigue 1 venta antes del 7 de noviembre para conservarlo.',
+    'Por inscribir a tu primer referido te regalamos el ascenso a Elite: desde ahora ganas 4% y 2% en comisiones inmobiliarias. Para conservarlo después del 28 de febrero de 2027, consigue que al menos uno de tus referidos compre.',
     db,
     '/oficina/dashboard',
   );

@@ -37,9 +37,9 @@ const steps: { icon: LucideIcon; title: string; body: string; image: string }[] 
 const faqs = [
   { q: '¿Cuánto cuesta entrar?', a: 'Nada. El registro es gratuito; solo verificamos tu identidad con tu cédula para poder pagarte.' },
   { q: '¿Qué puedo recomendar?', a: 'Los lotes de Montañita View, las fracciones de Ibiza Condohotel y los demás proyectos publicados en Grupo 3i. Tu enlace registra a quien llega por ti, aunque compre semanas después.' },
-  { q: '¿Cómo llego a Elite?', a: 'Comprando cualquier producto inmobiliario, o cuando 5 de tus referidos compren en 180 días. Y durante la promoción de lanzamiento, con tu primer referido.' },
+  { q: '¿Cómo llego a Elite?', a: 'Durante la promoción de lanzamiento, con tu primer referido: cuando alguien se registre con tu enlace, subes a Elite.' },
   { q: '¿Cuándo cobro mis comisiones?', a: 'Después de los 14 días de retracto, más el plazo de liquidación de tu nivel: 30 días en Premiere y 3 días en Elite.' },
-  { q: '¿Pierdo mi cuenta si no refiero?', a: 'En Premiere, la cuenta se suspende tras 180 días sin referidos nuevos, con avisos previos. Elite es permanente, salvo el Elite de regalo de la promoción de lanzamiento, que se mantiene con al menos una venta en la temporada.' },
+  { q: '¿Pierdo mi cuenta si no refiero?', a: 'En Premiere, la cuenta se suspende tras 180 días sin referidos nuevos, con avisos previos. Elite es permanente, salvo el Elite de la promoción de lanzamiento, que se conserva si al menos uno de tus referidos compra hasta el 28 de febrero de 2027.' },
 ];
 
 

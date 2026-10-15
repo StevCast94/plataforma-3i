@@ -13,6 +13,7 @@ import { ToastProvider } from '@/components/shared/Toast';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdminAuthProvider } from '@/context/AdminAuthContext';
 import { InstallAppBanner } from '@/components/shared/InstallAppBanner';
+import { RefSessionNotice } from '@/components/shared/RefSessionNotice';
 import { Tracking } from '@/components/shared/Tracking';
 
 // Sitio público
@@ -149,6 +150,7 @@ export default function App() {
             {/* Dentro del Router: el banner lee el idioma de la URL. */}
             <div className="print:hidden"><InstallAppBanner /></div>
             <Tracking />
+            <RefSessionNotice />
             {isCustomMapHost() ? (
               // Dominio propio de un mapa de lotes (Fase 3): solo el mapa.
               <Routes>

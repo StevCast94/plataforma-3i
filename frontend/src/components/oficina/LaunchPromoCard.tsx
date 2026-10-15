@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { ReferralMember } from '@shared/types';
 
 // Temporada de lanzamiento (misma fecha que backend/src/lib/launchPromo.ts).
-export const LAUNCH_PROMO_END = new Date('2026-11-08T05:00:00Z');
+export const LAUNCH_PROMO_END = new Date('2027-03-01T05:00:00Z');
 export const isLaunchPromoActive = () => Date.now() < LAUNCH_PROMO_END.getTime();
 
 /**
@@ -31,17 +31,17 @@ export function LaunchPromoCard({ member }: { member: Pick<ReferralMember, 'stat
                 <strong className="text-white">4% y 2%</strong> en comisiones inmobiliarias (antes 2% y 1%).
               </p>
               <p className="mt-2 text-sm text-white/80">
-                Para conservarlo después del <strong className="text-white">7 de noviembre</strong>, consigue al
-                menos 1 venta en la temporada, tuya o de uno de tus referidos. Si no, vuelves a Premiere y lo que
-                ya ganaste como Elite se mantiene.
+                Para conservarlo después del <strong className="text-white">28 de febrero de 2027</strong>, consigue
+                que al menos uno de tus referidos compra. Si no, vuelves a Premiere y lo que ya ganaste como Elite se
+                mantiene.
               </p>
             </>
           ) : (
             <>
-              <p className="mt-1 font-serif text-2xl font-bold">Inscribe a tu primer referido y sube a Elite</p>
+              <p className="mt-1 font-serif text-2xl font-bold">Completa tu primer referido y sube a Elite</p>
               <p className="mt-2 text-sm text-white/80">
-                Hasta el 7 de noviembre, cuando alguien se registre con tu enlace te regalamos el ascenso a Elite:
-                comisiones de <strong className="text-white">4% y 2%</strong> en vez de 2% y 1%.
+                Cuando alguien se registre con tu enlace, subes a Elite: comisiones de{' '}
+                <strong className="text-white">4% y 2%</strong> en vez de 2% y 1%.
               </p>
               <Link
                 to="/oficina/herramientas"

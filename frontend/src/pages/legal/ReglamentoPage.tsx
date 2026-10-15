@@ -123,7 +123,7 @@ export function ReglamentoBody() {
       </ul>
       <p>{t('El ascenso es permanente y no reduce las comisiones ya ganadas. La única excepción es el Elite de regalo de la promoción de lanzamiento, que se rige por las condiciones de abajo.')}</p>
       <div className="rounded-xl bg-secondary/15 p-4 ring-1 ring-secondary/40">
-        <p><b>{t('Promoción de lanzamiento (del 6 de octubre al 7 de noviembre de 2026):')}</b></p>
+        <p><b>{t('Promoción de lanzamiento (del 6 de octubre de 2026 al 28 de febrero de 2027):')}</b></p>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>{t('El socio Premiere que inscriba a su')}{' '}<b>{t('primer referido directo')}</b>{' '}{t('asciende a Elite de regalo, sin necesidad de compra. Aplica también a quienes ya tenían al menos un referido al iniciar la promoción.')}</li>
           <li>{t('Al cerrar la temporada conserva el nivel Elite quien tenga al menos')}{' '}<b>{t('1 venta confirmada')}</b>{' '}{t('dentro de la temporada, propia o de un referido directo. Se dan 7 días adicionales para confirmar las ventas hechas dentro del plazo.')}</li>

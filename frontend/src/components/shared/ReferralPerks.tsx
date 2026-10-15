@@ -50,7 +50,7 @@ export function ReferralPerks({ variant }: { variant: 'buyer' | 'member' }) {
           <Sparkle className="mt-0.5 h-4 w-4 flex-none text-secondary" strokeWidth={1.6} />
           <span>
             <strong>{t('Tú ganas:')}</strong>{' '}
-            {t('tu comisión por cada venta y, cuando 5 de tus referidos compren un producto inmobiliario, pasas a Elite.')}
+            {t('tu comisión por cada venta y, con tu primer referido, pasas a Elite.')}
           </span>
         </li>
       </ul>

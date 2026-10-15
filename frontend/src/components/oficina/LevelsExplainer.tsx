@@ -12,7 +12,7 @@ const LEVELS = {
 };
 const RETRACTION_DAYS = 14;
 // Promoción de lanzamiento: Elite de regalo con el primer referido (backend/src/lib/launchPromo.ts).
-const PROMO_END = new Date('2026-11-08T05:00:00Z');
+const PROMO_END = new Date('2027-03-01T05:00:00Z');
 
 const pct = (n: number) => `${Math.round(n * 1000) / 10}%`;
 
@@ -59,7 +59,7 @@ export function LevelsExplainer({ examples }: { examples: { what: string; from: 
                 >
                   <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${elite ? 'text-secondary' : 'text-accent'}`}>{elite ? 'Elite' : 'Premiere'}</p>
                   <p className={`mt-1 text-sm ${elite ? 'text-white/75' : 'text-brand-gray'}`}>
-                    {elite ? t('Cuando compras un inmueble o 5 de tus referidos compran en 180 días.') : t('Tu nivel al registrarte, gratis.')}
+                    {elite ? (promo ? t('Con tu primer referido.') : t('Cuando compras un inmueble o 5 de tus referidos compran en 180 días.')) : t('Tu nivel al registrarte, gratis.')}
                   </p>
                   <dl className="mt-5 space-y-4">
                     <div className="flex items-end justify-between gap-3">
@@ -83,7 +83,7 @@ export function LevelsExplainer({ examples }: { examples: { what: string; from: 
                   {elite && promo && (
                     <p className="mt-5 flex gap-2 rounded-xl bg-secondary/15 p-3 text-sm text-white ring-1 ring-secondary/40">
                       <Gift className="h-5 w-5 shrink-0 text-secondary" aria-hidden />
-                      <span>{t('Promoción de lanzamiento: hasta el 7 de noviembre te regalamos Elite cuando se registre tu primer referido.')}</span>
+                      <span>{t('Promoción de lanzamiento: subes a Elite cuando se registre tu primer referido.')}</span>
                     </p>
                   )}
                 </div>

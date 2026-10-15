@@ -6,10 +6,12 @@ import {
   daysRemaining,
 } from '@/lib/referral';
 import type { ReferralMember } from '@shared/types';
+import { isLaunchPromoActive } from './LaunchPromoCard';
 
 /** Barra de progreso a Elite (solo para Premiere). */
 export function ProgressToElite({ member }: { member: ReferralMember }) {
-  if (member.status !== 'PREMIERE') return null;
+  // Durante la promoción de lanzamiento solo se pide el primer referido (LaunchPromoCard).
+  if (member.status !== 'PREMIERE' || isLaunchPromoActive()) return null;
 
   const count = Math.min(member.referralsCountToElite, ELITE_REFERRALS_REQUIRED);
   const pct = (count / ELITE_REFERRALS_REQUIRED) * 100;
