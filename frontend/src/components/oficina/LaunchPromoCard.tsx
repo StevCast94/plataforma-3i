@@ -1,6 +1,7 @@
 import { Gift } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { ReferralMember } from '@shared/types';
+import { useDismissed } from '@/lib/dismiss';
 
 // Temporada de lanzamiento (misma fecha que backend/src/lib/launchPromo.ts).
 export const LAUNCH_PROMO_END = new Date('2027-03-01T05:00:00Z');
@@ -11,8 +12,12 @@ export const isLaunchPromoActive = () => Date.now() < LAUNCH_PROMO_END.getTime()
  * referido; a quien ya lo hizo le muestra la nota de regalo con la condición
  * para conservar el nivel Elite al cerrar la temporada.
  */
-export function LaunchPromoCard({ member }: { member: Pick<ReferralMember, 'status' | 'eliteBy'> }) {
+export function LaunchPromoCard({ member }: { member: Pick<ReferralMember, 'id' | 'status' | 'eliteBy'> }) {
   const gifted = member.eliteBy === 'LAUNCH_PROMO';
+  // El aviso de «ya eres Elite» se cierra con «Entendido»; la invitación a
+  // inscribir el primer referido no, porque es el objetivo de la promoción.
+  const [seen, dismiss] = useDismissed(`launch_gift_feb2027_${member.id}`);
+  if (gifted && seen) return null;
   if (!gifted && (!isLaunchPromoActive() || member.status !== 'PREMIERE')) return null;
 
   return (
@@ -35,6 +40,13 @@ export function LaunchPromoCard({ member }: { member: Pick<ReferralMember, 'stat
                 que al menos uno de tus referidos compra. Si no, vuelves a Premiere y lo que ya ganaste como Elite se
                 mantiene.
               </p>
+              <button
+                type="button"
+                onClick={dismiss}
+                className="mt-4 rounded-full bg-secondary px-5 py-2 text-sm font-semibold text-primary"
+              >
+                Entendido
+              </button>
             </>
           ) : (
             <>

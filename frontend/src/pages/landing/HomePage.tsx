@@ -14,7 +14,7 @@ import { ImageCrossfade } from '@/components/shared/ImageCrossfade';
 // Las cuatro puertas de Grupo 3i (docs/GUIA-DE-LENGUAJE.md, sección 2).
 const DOORS = [
   { to: '/proyectos', img: '/images/ibiza/portada.jpg', kicker: 'Sé parte', title: 'Tu lugar en la costa', body: 'Fracciones en Ibiza Condohotel, lotes con vista al mar en Montañita View y proyectos verificados.', cta: 'Ver proyectos' },
-  { to: '/bosque', img: 'https://res.cloudinary.com/db3t73yas/image/upload/c_fill,w_800,h_1000/v1787623457/grupo3i/szzat1etcxe280jdtabj.jpg', kicker: 'Cuida la naturaleza', title: 'Montaña Viva', body: 'Adopta un árbol en un bosque protegido de Santa Elena. Aquí no se tala.', cta: 'Adopta un árbol' },
+  { to: '/bosque', img: 'https://res.cloudinary.com/db3t73yas/image/upload/c_fill,w_800,h_1000/v1787623457/grupo3i/szzat1etcxe280jdtabj.jpg', kicker: 'Cuida la naturaleza', title: 'Montaña Viva', body: 'Un bosque protegido en Santa Elena donde podrás adoptar un árbol. Aquí no se tala.', cta: 'Disponible próximamente' },
   { to: '/servicios', img: '/images/secciones/pilar-proyectos.jpg', kicker: 'Construye', title: 'Tu casa, lista y sostenible', body: 'Paisajismo y casas modulares con domótica y energía solar, además de topografía, planos y trámites.', cta: 'Conoce los servicios' },
   { to: '/oficina', img: '/images/secciones/comunidad-3i.jpg', kicker: 'Gana refiriendo', title: 'Compartir también es ganar', body: 'Recomienda cualquiera de nuestros proyectos con tu enlace y cobra una comisión por cada venta.', cta: 'Únete gratis' },
 ];

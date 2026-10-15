@@ -55,7 +55,7 @@ const cards = [
   {
     file: 'og-bosque.jpg', bg: BOSQUE, eyebrow: 'Manglaralto, Santa Elena', title: 'Montaña Viva',
     sub: 'Adopta un árbol con tu nombre en un bosque que nunca se va a talar',
-    stats: [['Adopción desde', '$25', true], ['Primera etapa', '520 árboles'], ['Cuidado incluido', '3 años']],
+    stats: [['Disponible', 'próximamente', true], ['Bosque', '16 hectáreas']],
     green: true,
   },
 ];

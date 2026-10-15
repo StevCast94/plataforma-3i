@@ -8,6 +8,8 @@
 // ============================================================
 
 export const EN: Record<string, string> = {
+  'Disponible próximamente': 'Coming soon',
+  'Un bosque protegido en Santa Elena donde podrás adoptar un árbol. Aquí no se tala.': 'A protected forest in Santa Elena where you’ll be able to adopt a tree. No logging, ever.',
   'tu comisión por cada venta y, con tu primer referido, pasas a Elite.': 'your commission on every sale, and with your first referral you move up to Elite.',
   'Durante la promoción de lanzamiento, con tu primer referido: cuando alguien se registre con tu enlace, subes a Elite.': 'During the launch promotion, with your first referral: as soon as someone signs up with your link, you move up to Elite.',
   'Promoción de lanzamiento: subes a Elite cuando se registre tu primer referido.': 'Launch promotion: you move up to Elite as soon as your first referral signs up.',

@@ -388,14 +388,14 @@ const PAGE_OG: Record<string, { es: PageMeta; en: PageMeta }> = {
   },
   '/bosque': {
     es: {
-      title: 'Montaña Viva — adopta un árbol',
+      title: 'Montaña Viva — disponible próximamente',
       description:
-        'Adopta un árbol con tu nombre en un bosque de conservación en Manglaralto. Certificado con QR, ubicación GPS y 3 años de cuidado.',
+        'Un bosque de conservación en Manglaralto donde muy pronto podrás adoptar un árbol con tu nombre. Aquí no se tala.',
       image: '/images/og/og-bosque.jpg',
     },
     en: {
-      title: 'Montaña Viva — adopt a tree',
-      description: 'Adopt a tree in your name in a conservation forest in Manglaralto.',
+      title: 'Montaña Viva — coming soon',
+      description: 'A conservation forest in Manglaralto where you will soon be able to adopt a tree in your name.',
       image: '/images/og/og-bosque.jpg',
     },
   },

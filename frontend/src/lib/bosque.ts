@@ -3,6 +3,8 @@
 
 export const BOSQUE_NAME = 'Montaña Viva';
 export const BOSQUE_TAGLINE = 'Adopta un árbol en la costa de Santa Elena';
+/** Mientras sea true, /bosque muestra solo «Disponible próximamente» con una breve descripción. */
+export const BOSQUE_COMING_SOON = true;
 
 /**
  * Dominios propios del Bosque. Cuando se compre el dominio y se apunte a

@@ -4,6 +4,7 @@ import { Apple, Droplets, Leaf, MapPin, Sprout, TreeDeciduous, Trees } from 'luc
 import {
   BOSQUE_NAME,
   BOSQUE_TAGLINE,
+  BOSQUE_COMING_SOON,
   bosqueGet,
   CATEGORY_LABEL,
   fechaLarga,
@@ -71,7 +72,37 @@ const FAQ = [
   },
 ];
 
-export default function BosqueHome() {
+export default function BosqueHomePage() {
+  return BOSQUE_COMING_SOON ? <BosqueComingSoon /> : <BosqueHome />;
+}
+
+/** Montaña Viva aún no abre: portada breve con «Disponible próximamente». */
+function BosqueComingSoon() {
+  return (
+    <>
+      <Helmet>
+        <title>{`${BOSQUE_NAME} · Disponible próximamente`}</title>
+        <meta name="description" content="Montaña Viva: un bosque de conservación en Manglaralto, Santa Elena, donde podrás adoptar un árbol nativo o frutal. Disponible próximamente." />
+        <meta property="og:title" content={`${BOSQUE_NAME} · Disponible próximamente`} />
+        <meta property="og:image" content={cld(HERO, { width: 1200 })} />
+      </Helmet>
+      <section className="relative isolate flex min-h-[80vh] items-center overflow-hidden bg-bosque-dark text-white">
+        <img src={cld(HERO, { width: 1800 })} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-45" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-bosque-dark via-bosque-dark/70 to-transparent" />
+        <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+          <span className="inline-block rounded-full bg-guayacan px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-bosque-dark">Disponible próximamente</span>
+          <h1 className="mt-6 max-w-2xl font-bosque text-5xl font-semibold leading-[1.02] sm:text-7xl">{BOSQUE_NAME}</h1>
+          <p className="mt-6 max-w-xl text-lg text-white/85">
+            Un bosque de conservación de 16 hectáreas junto a un río en Manglaralto, Santa Elena. Muy pronto podrás
+            adoptar un árbol nativo o frutal: llevará tu nombre, tendrá su lugar en el mapa y lo cuidaremos por ti. Aquí no se tala.
+          </p>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function BosqueHome() {
   const [species, setSpecies] = useState<TreeSpecies[]>([]);
   const [stats, setStats] = useState<BosqueStats | null>(null);
   const [trees, setTrees] = useState<MapTree[]>([]);
